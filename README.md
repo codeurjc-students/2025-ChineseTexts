@@ -134,13 +134,13 @@ The technical objective of the project is to build a distributed, modular, and s
 
 ### Entity-Relationship Diagram:
 
-![Entity-Relationship Diagram](img/entity-relationship-diagram.drawio.svg)
+![Entity-Relationship Diagram](img/entity-relationship-diagram_v2.drawio.svg)
 
 ## Architecture
 
 ### Cloud architecture:
 
-![Cloud architecture](img/architecture.png)
+![Cloud architecture](img/architecture_v2.svg)
 
 ## Author
 
