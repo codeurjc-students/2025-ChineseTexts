@@ -1,0 +1,53 @@
+body {
+  font-family: 'Noto Serif SC', serif;
+  background-color: #fafafa;
+}
+
+.hero-title {
+  font-size: 3rem;
+  font-weight: 700;
+  color: #c0392b;
+}
+
+.hero-subtitle {
+  font-size: 1.3rem;
+  color: #555;
+  margin-top: 1rem;
+}
+
+.feature-box {
+  background: #fff;
+  border-radius: 8px;
+  padding: 25px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  height: 100%;
+}
+
+.feature-icon {
+  font-size: 2.5rem;
+  color: #c0392b;
+  margin-bottom: 15px;
+}
+
+.btn-main {
+  background-color: #27ae60;
+  color: #fff;
+  padding: 12px 28px;
+  border-radius: 6px;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.btn-main:hover {
+  background-color: #2ecc71;
+}
+
+.premium-badge {
+  background-color: #c0392b;
+  color: #fff;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  margin-left: 6px;
+}

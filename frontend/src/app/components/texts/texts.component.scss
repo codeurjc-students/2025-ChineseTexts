@@ -1,0 +1,76 @@
+.page-title {
+  font-weight: 700;
+  font-size: 2.5rem;
+  color: #c0392b;
+}
+
+.intro-text {
+  font-size: 1.1rem;
+  color: #555;
+}
+
+/* Tarjetas */
+.text-card {
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.text-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+}
+
+/* Imagen */
+.text-image {
+  max-height: 250px;
+  object-fit: cover;
+}
+
+/* Botón Like */
+.like-btn {
+  font-size: 1.3rem;
+  color: #c0392b;
+  cursor: pointer;
+  border: none;
+  background: none;
+  padding: 0;
+  transition: color 0.2s ease;
+}
+
+.like-btn.liked {
+  color: #e74c3c;
+}
+
+/* Botón borrar */
+.delete-btn {
+  font-size: 1.2rem;
+}
+
+/* Meta info */
+.meta-info {
+  font-size: 0.9rem;
+}
+
+.load-more-btn {
+  background: linear-gradient(135deg, #ff4d4d, #ff1a75);
+  color: white;
+  border: none;
+  padding: 12px 28px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.25s ease-in-out;
+  box-shadow: 0 4px 12px rgba(255, 0, 90, 0.25);
+}
+
+.load-more-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(255, 0, 90, 0.35);
+}
+
+.load-more-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 3px 10px rgba(255, 0, 90, 0.25);
+}
+

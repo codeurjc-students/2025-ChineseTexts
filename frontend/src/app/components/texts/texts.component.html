@@ -1,0 +1,60 @@
+<div class="container my-5">
+
+  <h1 class="page-title text-center mb-5">
+    Texts
+  </h1>
+
+  <p class="text-center my-4 intro-text">
+    Click on one of the following texts to start reading.
+  </p>
+
+  <!-- LISTA DE TEXTOS -->
+  <div class="text-card border rounded shadow-sm mb-4 p-4" *ngFor="let t of texts">
+
+    <div class="d-flex justify-content-between mb-2 text-muted meta-info">
+      <div>{{ t.creationDate }}</div>
+
+      <div class="d-flex align-items-center gap-2">
+
+        <!-- Botón Like (NO TOCADO) -->
+        <button class="like-btn" title="Like">
+          <i class="bi bi-heart"></i>
+        </button>
+
+        <div><strong>level:</strong> {{ t.level }}</div>
+
+        <!-- Botón borrar -->
+        <button class="btn btn-sm p-0 border-0 bg-transparent text-danger delete-btn" title="Delete">
+          <i class="bi bi-trash"></i>
+        </button>
+      </div>
+    </div>
+
+    <h3 class="text-dark fw-semibold mb-3">
+      {{ t.titleEnglish }}
+    </h3>
+
+    <!-- ⭐ IMAGEN DEL TEXTO ⭐ -->
+    <img 
+      [src]="'/api/texts/' + t.id + '/image'"
+      [alt]="t.titleEnglish"
+      class="img-fluid rounded mb-3"
+      style="max-height: 250px; object-fit: cover;"
+    >
+
+    <p>{{ t.englishDescription }}</p>
+
+  </div>
+
+  <div class="text-center mt-5" *ngIf="hasMore">
+    <button class="load-more-btn" (click)="loadMore()">
+      Load more
+    </button>
+  </div>
+
+  <!-- CARTEL CUANDO NO HAY MÁS TEXTOS --> 
+  <div class="no-more-texts mt-5 text-center" *ngIf="!hasMore"> 
+    <div class="no-more-box"> 📚 <strong>No more texts available</strong><br> Discover all our stories. New content will be added soon. </div>  
+  </div>
+
+</div>
