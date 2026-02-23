@@ -26,13 +26,29 @@ public class TextControllerRest {
     @Autowired
     private TextService textService;
 
-    @GetMapping public List<TextDTO> getTexts(@RequestParam int page, @RequestParam int size ) { 
+    // Obtener textos sin filtro (paginados)
+    @GetMapping
+    public List<TextDTO> getTexts(
+            @RequestParam int page,
+            @RequestParam int size) {
         return textService.getTexts(page, size);
     }
 
+    // Obtener textos filtrados por nivel (paginados)
+    @GetMapping("/level/{level}")
+    public List<TextDTO> getTextsByLevel(
+            @PathVariable String level,
+            @RequestParam int page,
+            @RequestParam int size) {
+        return textService.getTextsByLevel(level, page, size);
+    }
+
+    // Obtener imagen del texto
     @GetMapping("/{id}/image")
     public ResponseEntity<Resource> getProfileImage(@PathVariable long id) throws SQLException {
         Resource profileImage = textService.getTextImage(id);
-        return ResponseEntity.ok().header(HttpHeaders.CONTENT_TYPE, "image/jpeg").body(profileImage);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_TYPE, "image/jpeg")
+                .body(profileImage);
     }
 }

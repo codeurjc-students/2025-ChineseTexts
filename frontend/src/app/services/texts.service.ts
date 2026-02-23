@@ -12,7 +12,7 @@ export interface TextItem {
   level: string; 
   englishDescription: string; 
   spanishDescription: string; 
-  creationDate: string; // LocalDate llega como string ISO 
+  creationDate: string; 
   liked?: boolean;
 }
 
@@ -25,7 +25,13 @@ export class TextsService {
 
   constructor(private http: HttpClient) {}
 
+  // Obtener textos sin filtro
   getTexts(page: number, size: number): Observable<TextItem[]> {
     return this.http.get<TextItem[]>(`${this.apiUrl}?page=${page}&size=${size}`);
+  }
+
+  // Obtener textos filtrados por nivel
+  getTextsByLevel(level: string, page: number, size: number): Observable<TextItem[]> {
+    return this.http.get<TextItem[]>(`${this.apiUrl}/level/${level}?page=${page}&size=${size}`);
   }
 }
