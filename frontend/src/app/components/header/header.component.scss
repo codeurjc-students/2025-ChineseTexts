@@ -1,0 +1,81 @@
+/* ----------------------------- */
+/* Estilos del formulario login  */
+/* ----------------------------- */
+
+.login-form-container {
+  width: 100%;
+  max-width: 450px;
+  padding: 20px;
+  box-sizing: border-box;
+  transform: translate(-50%, -50%);
+}
+
+@media (max-width: 480px) {
+  .login-form-container {
+    width: 90%;
+    max-width: none;
+  }
+}
+
+@media (min-width: 768px) {
+  .login-form-container {
+    width: 100%;
+    max-width: 500px;
+  }
+}
+
+@media (min-width: 992px) {
+  .login-form-container {
+    margin-top: 140px;
+  }
+}
+
+/* ----------------------------- */
+/* Estilos de las banderas       */
+/* ----------------------------- */
+
+.flag-button {
+  width: 30px;
+  height: 20px;
+  margin-left: 10px;
+  cursor: pointer;
+}
+
+/* ----------------------------- */
+/* Hover para los enlaces HSK    */
+/* ----------------------------- */
+
+.nav-link {
+  transition: background-color 0.2s ease, padding 0.2s ease;
+  border-radius: 4px;
+}
+
+.nav-link:hover {
+  background-color: rgba(0, 0, 0, 0.08);
+  padding-left: 6px;
+  padding-right: 6px;
+}
+
+/* ----------------------------- */
+/* Hover rojo para Profile/Login */
+/* ----------------------------- */
+
+.nav-link.btn-outline-danger:hover,
+.nav-link.btn-danger:hover {
+  background-color: #c0392b !important;
+  color: #fff !important;
+  border-color: #c0392b !important;
+}
+
+/* ----------------------------- */
+/* Fix para el icono hamburguesa */
+/* ----------------------------- */
+
+:host ::ng-deep .navbar-toggler-icon {
+  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgZmlsbD0iIzMzMyI+PHBhdGggZD0iTTMgNmgyMXYySDN6bTAgN2gyMXYySDN6bTAgN2gyMXYySDN6Ii8+PC9zdmc+") !important;
+}
+
+/* Suaviza la animación del colapso */
+.navbar-collapse {
+  transition: height 0.3s ease;
+}
