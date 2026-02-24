@@ -10,7 +10,9 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
 import com.chinesereads.backend.Model.Text;
+import com.chinesereads.backend.Model.User;
 import com.chinesereads.backend.Model.Word;
+import com.chinesereads.backend.dto.UserMapper;
 
 import jakarta.annotation.PostConstruct;
 
@@ -22,6 +24,12 @@ public class DatabaseInitializer {
 
     @Autowired
     private TextService textService;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private UserMapper userMapper;
     
     @PostConstruct
     public void initializeDatabase(){
@@ -667,15 +675,17 @@ public class DatabaseInitializer {
             }
         }
 
-        /* 
+         
         User[] users = new User[]{
-            new User("victorgarciallorente15@gmail.com", "JV", passwordEncoder.encode("1234"), "es", "USER"),
-            new User("victorgarciallorente20@gmail.com", "J. Victor Garcia Llorente", passwordEncoder.encode("1234"), "es", "ADMIN")
+            new User("victorgarciallorente15@gmail.com", "JV", "1234", "es", "USER"),
+            new User("victorgarciallorente20@gmail.com", "J. Victor Garcia Llorente", "1234", "es", "ADMIN")
         };
 
         for(int i=0; i<users.length; i++){
-            userService.save(users[i]);
+            userService.save(userMapper.toDTO(users[i]));
         }
+
+        /* 
 
         Collection[] collections = new Collection[] { 
             new Collection("Adjectives HSK1", 
