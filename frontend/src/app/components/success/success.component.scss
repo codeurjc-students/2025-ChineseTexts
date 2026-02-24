@@ -1,0 +1,75 @@
+body {
+  font-family: 'Noto Serif SC', serif;
+  background-color: #fafafa;
+}
+
+.success-box {
+  background: #fff;
+  border-radius: 10px;
+  padding: 45px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+  max-width: 600px;
+  margin: auto;
+  animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Icono verde bonito */
+.success-icon .checkmark {
+  font-size: 4.5rem;
+  color: #27ae60;
+  font-weight: bold;
+  display: inline-block;
+  transform: scale(1);
+  animation: pop 0.4s ease-out;
+}
+
+@keyframes pop {
+  0%   { transform: scale(0.5); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.title {
+  color: #c0392b;
+  font-weight: 700;
+}
+
+.subtitle {
+  font-size: 1.1rem;
+  color: #6c757d;
+}
+
+/* Botón principal */
+.btn-main {
+  background-color: #27ae60;
+  color: #fff;
+  padding: 12px 28px;
+  border-radius: 6px;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.btn-main:hover {
+  background-color: #2ecc71;
+}
+
+/* Botón secundario */
+.btn-secondary {
+  background: transparent;
+  border: none;
+  color: #555;
+  font-size: 1rem;
+  text-decoration: underline;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.btn-secondary:hover {
+  color: #000;
+}

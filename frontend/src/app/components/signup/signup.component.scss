@@ -1,0 +1,82 @@
+.signup {
+  font-family: 'Noto Serif SC', serif;
+
+  .title {
+    font-weight: 700;
+    font-size: 2.6rem;
+    color: #c0392b;
+  }
+
+  .subtitle {
+    font-size: 1.2rem;
+    color: #555;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .benefits {
+    ul {
+      list-style: none;
+      padding: 0;
+      max-width: 600px;
+      margin: 0 auto;
+
+      li {
+        font-size: 1.1rem;
+        margin-bottom: 0.8rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        i {
+          color: #27ae60;
+          font-size: 1.3rem;
+        }
+      }
+    }
+  }
+
+  .card-box {
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  }
+
+  .section-title {
+    font-weight: 700;
+    font-size: 1.4rem;
+    color: #c0392b;
+    margin-bottom: 1.5rem;
+  }
+
+  .btn-submit {
+    font-size: 1.2rem;
+    color: #fff;
+    background-color: #27ae60;
+    border: none;
+    padding: 14px 32px;
+    border-radius: 8px;
+    transition: 0.2s ease;
+    font-weight: 600;
+
+    &:hover {
+      background-color: #2ecc71;
+      transform: translateY(-2px);
+    }
+  }
+
+  .btn-back {
+    font-size: 1rem;
+    color: #fff;
+    background-color: #c0392b;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 6px;
+    transition: 0.2s ease;
+
+    &:hover {
+      background-color: #e74c3c;
+    }
+  }
+}
