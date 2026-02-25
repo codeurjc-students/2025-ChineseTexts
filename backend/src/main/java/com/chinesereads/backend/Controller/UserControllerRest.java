@@ -2,17 +2,22 @@ package com.chinesereads.backend.Controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.chinesereads.backend.Service.UserService;
 import com.chinesereads.backend.dto.UserDTO;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.net.URI;
+import java.security.Principal;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -35,5 +40,17 @@ public class UserControllerRest {
         URI location = fromCurrentRequest().path("/{id}").buildAndExpand(newUser.id()).toUri();
         return ResponseEntity.created(location).body(newUser);
     }
+
+    @GetMapping("/me")
+	public UserDTO me(HttpServletRequest request) {
+		
+		Principal principal = request.getUserPrincipal();
+		
+		if(principal != null) {
+			return userService.findByEmail(principal.getName());
+		} else {
+			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not authenticated");
+		}
+	}
     
 }
