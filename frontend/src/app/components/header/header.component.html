@@ -30,20 +30,26 @@
 
       <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
 
-        <li class="nav-item me-3">
+        <li *ngIf="!loginService.isLogged()" class="nav-item me-3">
           <a
             class="nav-link btn btn-outline-danger rounded-pill px-3 py-1 fw-bold"
             href="#"
             data-bs-toggle="modal"
             data-bs-target="#loginModal"
           >
-            <i class="bi bi-person-fill me-1"></i> Login
+            <i class="bi bi-box-arrow-in-right me-1"></i> Login
+          </a>
+        </li>
+
+        <li *ngIf="loginService.isLogged()" class="nav-item">
+          <a class="nav-link btn btn-danger rounded-pill px-3 py-1 fw-bold" (click)="logout()">
+            <i class="bi bi-box-arrow-in-right me-1"></i> Logout
           </a>
         </li>
 
         <li class="nav-item">
           <a class="nav-link btn btn-danger rounded-pill px-3 py-1 fw-bold" [routerLink]="['/signup']">
-            <i class="bi bi-box-arrow-in-right me-1"></i> Signup
+            <i class="bi bi-person-fill me-1"></i> Signup
           </a>
         </li>
       </ul>
@@ -58,7 +64,7 @@
 </nav>
 
 <!-- Modal de Login -->
-<div class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true">
+<div *ngIf="!loginService.isLogged()" class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" style="justify-content: center;">
     <div class="modal-content login-form-container bg-light rounded-3 shadow-lg">
 
@@ -68,10 +74,12 @@
       </div>
 
       <div class="modal-body pt-3">
-        <form>
+        <form (ngSubmit)="login()">
           <div class="mb-3">
             <label for="loginEmail" class="form-label">Email</label>
             <input
+              [(ngModel)]="loginEmail"
+              name="loginEmail"
               type="email"
               class="form-control"
               id="loginEmail"
@@ -83,6 +91,8 @@
           <div class="mb-3">
             <label for="loginPassword" class="form-label">Password</label>
             <input
+              [(ngModel)]="loginPassword"
+              name="loginPassword"
               type="password"
               class="form-control"
               id="loginPassword"
