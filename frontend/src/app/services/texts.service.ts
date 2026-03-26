@@ -34,4 +34,16 @@ export class TextsService {
   getTextsByLevel(level: string, page: number, size: number): Observable<TextItem[]> {
     return this.http.get<TextItem[]>(`${this.apiUrl}/level/${level}?page=${page}&size=${size}`);
   }
+
+  getText(id: number): Observable<TextItem> {
+    return this.http.get<TextItem>(`${this.apiUrl}/${id}`);
+  }
+
+  getSpanishText(id: number): Observable<any>{
+    return this.http.get<any>(`${this.apiUrl}/${id}/SpanishText`);
+  }
+
+  getEnglishText(id: number): Observable<any>{
+    return this.http.get<any>(`${this.apiUrl}/${id}/EnglishText`);
+  }
 }
