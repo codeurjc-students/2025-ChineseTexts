@@ -9,7 +9,7 @@
   </p>
 
   <!-- LISTA DE TEXTOS -->
-  <div class="text-card border rounded shadow-sm mb-4 p-4" *ngFor="let t of texts">
+  <div class="text-card border rounded shadow-sm mb-4 p-4" *ngFor="let t of texts" [routerLink]="['/text', t.id]">
 
     <div class="d-flex justify-content-between mb-2 text-muted meta-info">
       <div>{{ t.creationDate }}</div>

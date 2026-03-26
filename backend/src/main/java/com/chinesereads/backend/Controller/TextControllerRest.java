@@ -11,6 +11,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -50,5 +51,34 @@ public class TextControllerRest {
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_TYPE, "image/jpeg")
                 .body(profileImage);
+    }
+
+    @GetMapping("/{id}")
+    public TextDTO getText(@PathVariable long id) {
+        return textService.getText(id);
+    }
+
+    @GetMapping("/{id}/SpanishText")
+    public ResponseEntity<String[][]> getTextSpanish(@PathVariable long id){
+        TextDTO text = this.textService.getText(id);
+        if (text == null){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        } else {
+            String [][] result = textService.getTextSpanish(text);
+            // Devolver el Map con el mapeo
+            return ResponseEntity.status(HttpStatus.OK).body(result);
+        }
+    }
+
+    @GetMapping("/{id}/EnglishText")
+    public ResponseEntity<String[][]> getTextEnglish(@PathVariable long id){
+        TextDTO text = this.textService.getText(id);
+        if (text == null){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        } else {
+            String [][] result = textService.getTextEnglish(text);
+            // Devolver el Map con el mapeo
+            return ResponseEntity.status(HttpStatus.OK).body(result);
+        }
     }
 }

@@ -32,11 +32,9 @@ export class LoginService {
     }
   }
 
-
   public login(user: string, pass: string): Observable<any> {
     return this.http.post(BASE_URL + "login", { username: user, password: pass }, { withCredentials: true }).pipe(
       tap(() => {
-        // después del login, refrescar el usuario
         this.reqIsLogged().subscribe();
       })
     );
@@ -45,9 +43,12 @@ export class LoginService {
   public logout(): Observable<any> {
     return this.http.post(BASE_URL + "logout", {}, { withCredentials: true }).pipe(
       tap(() => {
-        console.log("LOGOUT: Successfully");
         this.user = undefined;
-        localStorage.removeItem("user");
+
+        if (isPlatformBrowser(this.platformId)) {
+          localStorage.removeItem("user");
+        }
+
         this.loggedInSubject.next(false);
       })
     );
@@ -57,15 +58,24 @@ export class LoginService {
     return this.http.get<UserDTO>("/api/users/me", { withCredentials: true }).pipe(
       tap((user) => {
         this.user = user;
-        localStorage.setItem("user", JSON.stringify(user));
+
+        if (isPlatformBrowser(this.platformId)) {
+          localStorage.setItem("user", JSON.stringify(user));
+        }
+
         this.loggedInSubject.next(true);
       }),
       catchError((error) => {
         if (error.status !== 401) {
           console.error("Error checking session: ", error);
         }
+
         this.user = undefined;
-        localStorage.removeItem("user");
+
+        if (isPlatformBrowser(this.platformId)) {
+          localStorage.removeItem("user");
+        }
+
         this.loggedInSubject.next(false);
         return of(null);
       })
