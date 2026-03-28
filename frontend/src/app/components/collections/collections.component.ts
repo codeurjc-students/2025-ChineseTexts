@@ -42,6 +42,7 @@ export class CollectionsComponent implements OnInit {
   studyCorrect = 0;
   studyIncorrect = 0;
   studyDone = false;
+  studyNoWordsError = false;
 
   // ——— Examen ———
   examQuestions: ExamQuestion[] = [];
@@ -49,6 +50,7 @@ export class CollectionsComponent implements OnInit {
   examDone = false;
   examScore = 0;
   examAnswered = false;
+  examMinWordsError = false;
 
   // ——— Modal confirmación borrar ———
   showDeleteModal = false;
@@ -75,8 +77,6 @@ export class CollectionsComponent implements OnInit {
     });
   }
 
-  // ——— Carga ———
-
   loadCollections(): void {
     this.loading = true;
     this.collectionsService.getUserCollections().subscribe({
@@ -94,8 +94,6 @@ export class CollectionsComponent implements OnInit {
       error: () => this.loading = false
     });
   }
-
-  // ——— Añadir colección ———
 
   openAddModal(): void {
     this.newCollectionTitle = '';
@@ -119,8 +117,6 @@ export class CollectionsComponent implements OnInit {
       error: () => this.addingCollection = false
     });
   }
-
-  // ——— Borrar colección (modal propio) ———
 
   deleteCollection(col: CollectionDTO, event: Event): void {
     event.stopPropagation();
@@ -146,8 +142,6 @@ export class CollectionsComponent implements OnInit {
     this.deleteTarget = null;
   }
 
-  // ——— Borrar flashcard ———
-
   deleteFlashcard(card: FlashcardDTO, event: Event): void {
     event.stopPropagation();
     this.collectionsService.deleteFlashcard(card.id).subscribe({
@@ -168,11 +162,11 @@ export class CollectionsComponent implements OnInit {
     this.examDone = false;
   }
 
-  // ——— Selección ———
-
   toggleCollectionSelection(id: number): void {
     if (this.selectedCollectionIds.has(id)) this.selectedCollectionIds.delete(id);
     else this.selectedCollectionIds.add(id);
+    this.studyNoWordsError = false;
+    this.examMinWordsError = false;
   }
 
   isSelected(id: number): boolean {
@@ -197,9 +191,15 @@ export class CollectionsComponent implements OnInit {
   // ——— ESTUDIO ———
 
   async startStudy(): Promise<void> {
+    this.studyNoWordsError = false;
     this.loading = true;
     try {
       const all = await this.loadAllSelectedFlashcards();
+      if (all.length === 0) {
+        this.studyNoWordsError = true;
+        this.loading = false;
+        return;
+      }
       this.studyCards = this.shuffle(all);
       this.studyIndex = 0;
       this.studyFace = Math.random() < 0.5 ? 'chinese' : 'translation';
@@ -234,10 +234,12 @@ export class CollectionsComponent implements OnInit {
   // ——— EXAMEN ———
 
   async startExam(): Promise<void> {
+    this.examMinWordsError = false;
     this.loading = true;
     try {
       const all = await this.loadAllSelectedFlashcards();
       if (all.length < 4) {
+        this.examMinWordsError = true;
         this.loading = false;
         return;
       }
