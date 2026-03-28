@@ -1,0 +1,268 @@
+<div class="collections-page">
+
+  <!-- LOADING -->
+  <div *ngIf="loading" class="center-msg">
+    <div class="spinner"></div>
+  </div>
+
+  <!-- ═══════════════════ MODAL BORRAR ═══════════════════ -->
+  <div class="modal-overlay" *ngIf="showDeleteModal" (click)="cancelDelete()">
+    <div class="modal-box" (click)="$event.stopPropagation()">
+      <div class="modal-icon modal-icon--warn"><i class="bi bi-trash"></i></div>
+      <h3 class="modal-title">Delete collection</h3>
+      <p class="modal-text">Are you sure you want to delete <strong>{{ deleteTarget?.title }}</strong>? This will also remove all its flashcards.</p>
+      <div class="modal-actions">
+        <button class="btn-secondary" (click)="cancelDelete()">Cancel</button>
+        <button class="btn-danger" (click)="confirmDelete()">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════ MODAL AÑADIR ═══════════════════ -->
+  <div class="modal-overlay" *ngIf="showAddModal" (click)="closeAddModal()">
+    <div class="modal-box" (click)="$event.stopPropagation()">
+      <div class="modal-icon modal-icon--add"><i class="bi bi-collection-fill"></i></div>
+      <h3 class="modal-title">New collection</h3>
+      <input
+        class="modal-input"
+        type="text"
+        placeholder="Collection name..."
+        [(ngModel)]="newCollectionTitle"
+        (keydown.enter)="confirmAddCollection()"
+        autofocus
+      >
+      <div class="modal-actions">
+        <button class="btn-secondary" (click)="closeAddModal()">Cancel</button>
+        <button class="btn-primary" [disabled]="!newCollectionTitle.trim() || addingCollection" (click)="confirmAddCollection()">
+          Create
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════ MODO ESTUDIO ═══════════════════ -->
+  <div *ngIf="mode === 'study' && !loading" class="study-view">
+
+    <div *ngIf="studyDone" class="result-screen">
+      <h2 class="result-title">Session complete</h2>
+      <div class="result-ring">
+        <span class="result-fraction">{{ studyCorrect }}<span class="result-total">/{{ studyCards.length }}</span></span>
+      </div>
+      <p class="result-label">words known</p>
+      <div class="result-stats">
+        <div class="rstat rstat--ok"><span>{{ studyCorrect }}</span> Known</div>
+        <div class="rstat rstat--bad"><span>{{ studyIncorrect }}</span> To review</div>
+      </div>
+      <div class="result-actions">
+        <button class="btn-primary" (click)="studyAgain()">Study again</button>
+        <button class="btn-secondary" (click)="backToList()">Back to collections</button>
+      </div>
+    </div>
+
+    <div *ngIf="!studyDone" class="study-container">
+      <div class="study-topbar">
+        <button class="btn-icon" (click)="backToList()"><i class="bi bi-x-lg"></i></button>
+        <div class="topbar-progress">
+          <div class="progress-track">
+            <div class="progress-fill" [style.width.%]="studyProgress"></div>
+          </div>
+          <span class="progress-label">{{ studyIndex + 1 }} / {{ studyCards.length }}</span>
+        </div>
+        <div class="study-score">
+          <span class="score-ok">{{ studyCorrect }}</span>
+          <span class="score-sep">/</span>
+          <span class="score-bad">{{ studyIncorrect }}</span>
+        </div>
+      </div>
+
+      <div class="flashcard" *ngIf="studyFace === 'chinese'">
+        <div class="card-top-label">What does this mean?</div>
+        <div class="card-chinese">{{ currentStudyCard.word.chinese }}</div>
+        <div class="card-pinyin" *ngIf="!studyRevealed">···</div>
+        <div *ngIf="studyRevealed" class="card-reveal">
+          <div class="card-pinyin">{{ currentStudyCard.word.pinyin }}</div>
+          <hr class="card-hr">
+          <div class="card-tr"><span class="badge-lang">EN</span>{{ currentStudyCard.word.english }}</div>
+          <div class="card-tr"><span class="badge-lang">ES</span>{{ currentStudyCard.word.spanish }}</div>
+          <a *ngIf="currentStudyCard.example?.id" [routerLink]="['/text', currentStudyCard.example.id]" class="card-ref">
+            See text <i class="bi bi-arrow-right"></i>
+          </a>
+        </div>
+      </div>
+
+      <div class="flashcard" *ngIf="studyFace === 'translation'">
+        <div class="card-top-label">What is the character?</div>
+        <div class="card-translation-big">
+          <div>{{ currentStudyCard.word.english }}</div>
+          <div class="card-tr-es">{{ currentStudyCard.word.spanish }}</div>
+        </div>
+        <div *ngIf="studyRevealed" class="card-reveal">
+          <hr class="card-hr">
+          <div class="card-chinese-reveal">{{ currentStudyCard.word.chinese }}</div>
+          <div class="card-pinyin">{{ currentStudyCard.word.pinyin }}</div>
+          <a *ngIf="currentStudyCard.example?.id" [routerLink]="['/text', currentStudyCard.example.id]" class="card-ref">
+            See text <i class="bi bi-arrow-right"></i>
+          </a>
+        </div>
+      </div>
+
+      <div *ngIf="!studyRevealed" class="action-row">
+        <button class="btn-flip" (click)="revealStudyCard()">
+          <i class="bi bi-arrow-repeat"></i> Reveal answer
+        </button>
+        <button class="btn-ghost" (click)="studyAgain()">Restart</button>
+      </div>
+
+      <div *ngIf="studyRevealed" class="answer-row">
+        <button class="btn-unknown" (click)="markUnknown()"><i class="bi bi-x-lg"></i> Don't know</button>
+        <button class="btn-known" (click)="markKnown()"><i class="bi bi-check-lg"></i> Got it</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════ MODO EXAMEN ═══════════════════ -->
+  <div *ngIf="mode === 'exam' && !loading" class="exam-view">
+
+    <div *ngIf="examDone" class="result-screen">
+      <h2 class="result-title">Exam complete</h2>
+      <div class="result-ring"
+           [class.ring--perfect]="examScore === examQuestions.length"
+           [class.ring--good]="examScore / examQuestions.length >= 0.6"
+           [class.ring--bad]="examScore / examQuestions.length < 0.6">
+        <span class="result-fraction">{{ examScore }}<span class="result-total">/{{ examQuestions.length }}</span></span>
+      </div>
+      <p class="result-grade">{{ examGrade }}</p>
+      <div class="exam-review">
+        <div *ngFor="let q of examQuestions" class="review-item"
+             [class.review--ok]="q.selectedAnswer === q.correctAnswer"
+             [class.review--bad]="q.selectedAnswer !== q.correctAnswer">
+          <span class="review-chinese">{{ q.flashcard.word.chinese }}</span>
+          <span class="review-detail">{{ q.flashcard.word.pinyin }} · {{ q.flashcard.word.english }}</span>
+          <i class="bi" [ngClass]="q.selectedAnswer === q.correctAnswer ? 'bi-check-circle-fill' : 'bi-x-circle-fill'"></i>
+        </div>
+      </div>
+      <div class="result-actions">
+        <button class="btn-primary" (click)="repeatExam()">Repeat exam</button>
+        <button class="btn-secondary" (click)="newExam()">New exam</button>
+      </div>
+    </div>
+
+    <div *ngIf="!examDone" class="exam-container">
+      <div class="study-topbar">
+        <button class="btn-icon" (click)="backToList()"><i class="bi bi-x-lg"></i></button>
+        <div class="topbar-progress">
+          <div class="progress-track">
+            <div class="progress-fill" [style.width.%]="examProgress"></div>
+          </div>
+          <span class="progress-label">{{ examIndex + 1 }} / {{ examQuestions.length }}</span>
+        </div>
+        <span class="exam-badge">Exam</span>
+      </div>
+
+      <div class="exam-question">
+        <p class="question-prompt">{{ getQuestionPrompt(currentQuestion) }}</p>
+        <div class="options-grid">
+          <button
+            *ngFor="let opt of currentQuestion.options"
+            class="option-btn"
+            [ngClass]="getOptionClass(opt)"
+            (click)="selectExamAnswer(opt)"
+          >{{ opt }}</button>
+        </div>
+        <div *ngIf="examAnswered" class="next-row">
+          <div class="answer-feedback"
+               [class.feedback--ok]="currentQuestion.selectedAnswer === currentQuestion.correctAnswer"
+               [class.feedback--bad]="currentQuestion.selectedAnswer !== currentQuestion.correctAnswer">
+            <i class="bi" [ngClass]="currentQuestion.selectedAnswer === currentQuestion.correctAnswer ? 'bi-check-circle-fill' : 'bi-x-circle-fill'"></i>
+            {{ currentQuestion.selectedAnswer === currentQuestion.correctAnswer ? 'Correct!' : 'Incorrect — ' + currentQuestion.correctAnswer }}
+          </div>
+          <button class="btn-primary" (click)="nextExamQuestion()">
+            {{ examIndex < examQuestions.length - 1 ? 'Next' : 'See results' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════ VISTA NORMAL ═══════════════════ -->
+  <div *ngIf="(mode === 'list' || mode === 'detail') && !loading" class="normal-view container my-5">
+
+    <!-- DETALLE COLECCIÓN -->
+    <div *ngIf="mode === 'detail' && selectedCollection">
+      <div class="detail-header">
+        <button class="btn-icon" (click)="backToList()"><i class="bi bi-arrow-left"></i></button>
+        <h2 class="page-title mb-0">{{ selectedCollection.title }}</h2>
+      </div>
+      <p class="text-muted mt-1 mb-4">{{ flashcards.length }} word{{ flashcards.length !== 1 ? 's' : '' }}</p>
+
+      <div *ngIf="flashcards.length === 0" class="empty-msg">
+        No words yet. Go to a text and save some!
+      </div>
+
+      <div class="flashcard-list">
+        <div *ngFor="let card of flashcards" class="flashcard-item">
+          <div class="fi-chinese">{{ card.word.chinese }}</div>
+          <div class="fi-pinyin">{{ card.word.pinyin }}</div>
+          <div class="fi-translations">
+            <span class="badge-lang">EN</span>{{ card.word.english }}
+            <span class="badge-lang ml">ES</span>{{ card.word.spanish }}
+          </div>
+          <a *ngIf="card.example?.id" [routerLink]="['/text', card.example.id]" class="fi-text-link">
+            See text <i class="bi bi-arrow-right"></i>
+          </a>
+          <button class="btn-delete" (click)="deleteFlashcard(card, $event)">
+            <i class="bi bi-trash"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- LISTA DE COLECCIONES -->
+    <div *ngIf="mode === 'list'">
+      <div class="list-header">
+        <h1 class="page-title mb-0">My Collections</h1>
+        <button class="btn-add" (click)="openAddModal()">
+          <i class="bi bi-plus-lg"></i> New collection
+        </button>
+      </div>
+
+      <div *ngIf="collections.length === 0" class="empty-msg">
+        No collections yet. Start reading and save words!
+      </div>
+
+      <p *ngIf="collections.length > 0" class="select-hint">
+        Select one or more collections, then choose Study or Exam.
+      </p>
+
+      <div class="collection-grid">
+        <div
+          *ngFor="let col of collections"
+          class="collection-card"
+          [class.collection-card--selected]="isSelected(col.id)"
+          (click)="toggleCollectionSelection(col.id)"
+        >
+          <div class="cc-check">
+            <i class="bi" [ngClass]="isSelected(col.id) ? 'bi-check-circle-fill' : 'bi-circle'"></i>
+          </div>
+          <div class="cc-body" (click)="$event.stopPropagation(); selectCollection(col)">
+            <div class="cc-title">{{ col.title }}</div>
+            <div class="cc-date text-muted">{{ col.date | date:'mediumDate' }}</div>
+          </div>
+          <button class="btn-delete" (click)="deleteCollection(col, $event)">
+            <i class="bi bi-trash"></i>
+          </button>
+        </div>
+      </div>
+
+      <div *ngIf="collections.length > 0" class="action-buttons-row">
+        <button class="btn-study" [disabled]="!canStartStudyOrExam" (click)="startStudy()">
+          <i class="bi bi-lightbulb"></i> Study
+        </button>
+        <button class="btn-exam" [disabled]="!canStartStudyOrExam" (click)="startExam()">
+          <i class="bi bi-pencil-square"></i> Exam
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>

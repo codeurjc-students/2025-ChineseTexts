@@ -30,6 +30,12 @@
 
       <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
 
+        <li *ngIf="loginService.isLogged()" class="nav-item me-2">
+          <a class="nav-link fw-semibold text-dark" [routerLink]="['/collections']">
+            <i class="bi bi-collection me-1"></i> My Collections
+          </a>
+        </li>
+
         <li *ngIf="!loginService.isLogged()" class="nav-item me-3">
           <a
             class="nav-link btn btn-outline-danger rounded-pill px-3 py-1 fw-bold"

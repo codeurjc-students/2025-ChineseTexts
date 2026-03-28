@@ -71,4 +71,12 @@ public class Collection {
     public void setFlashcards(List<Flashcard> flashcards) {
         this.flashcards = flashcards;
     }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 }

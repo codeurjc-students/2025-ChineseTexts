@@ -56,7 +56,7 @@
       </div>
     </div>
 
-    <!-- POPOVER PALABRA (centrado en pantalla) -->
+    <!-- POPOVER PALABRA -->
     <div class="popover-overlay" *ngIf="activeWordIndex !== null" (click)="closeWordPopover()">
       <div class="custom-popover" (click)="$event.stopPropagation()">
         <button class="popover-close" (click)="closeWordPopover()">✕</button>
@@ -71,9 +71,73 @@
           <span class="popover-label">ES</span>
           {{ wordsArray[activeWordIndex]?.spanish || translatedSpanishText[activeWordIndex] || '—' }}
         </div>
-        <button class="btn-save" (click)="addWord(originalText[activeWordIndex])">
-          <i class="bi bi-bookmark-plus"></i> Save
-        </button>
+
+        <!-- Botón save o panel de guardado -->
+        <div *ngIf="!showSavePanel">
+          <button class="btn-save" (click)="addWord(originalText[activeWordIndex])">
+            <i class="bi bi-bookmark-plus"></i> Save
+          </button>
+        </div>
+
+        <!-- Panel de guardado -->
+        <div *ngIf="showSavePanel" class="save-panel">
+
+          <!-- No logueado -->
+          <div *ngIf="saveStatus === 'not-logged'" class="save-message save-message--warn">
+            <i class="bi bi-lock"></i> You must be logged in to save words.
+          </div>
+
+          <!-- Sin colecciones -->
+          <div *ngIf="saveStatus === 'no-collections' && !showNewCollectionInput" class="save-message save-message--warn">
+            <i class="bi bi-collection"></i> You have no collections yet.
+            <button class="btn-link-red" (click)="showNewCollectionInput = true">Create one</button>
+          </div>
+
+          <!-- Éxito -->
+          <div *ngIf="saveStatus === 'success'" class="save-message save-message--ok">
+            <i class="bi bi-check-circle"></i> Word saved!
+          </div>
+
+          <!-- Duplicado -->
+          <div *ngIf="saveStatus === 'duplicate'" class="save-message save-message--warn">
+            <i class="bi bi-exclamation-circle"></i> Already in this collection.
+          </div>
+
+          <!-- Error -->
+          <div *ngIf="saveStatus === 'error'" class="save-message save-message--error">
+            <i class="bi bi-x-circle"></i> Something went wrong.
+          </div>
+
+          <!-- Selector de colección -->
+          <div *ngIf="collections.length > 0 && saveStatus !== 'not-logged' && saveStatus !== 'success'">
+            <select class="collection-select" [(ngModel)]="selectedCollectionId">
+              <option [ngValue]="null" disabled>Select a collection...</option>
+              <option *ngFor="let col of collections" [ngValue]="col.id">{{ col.title }}</option>
+            </select>
+            <button class="btn-save mt-2" [disabled]="!selectedCollectionId" (click)="confirmSave()">
+              <i class="bi bi-bookmark-check"></i> Confirm
+            </button>
+            <button class="btn-link-red mt-1" (click)="showNewCollectionInput = true">
+              + New collection
+            </button>
+          </div>
+
+          <!-- Crear nueva colección -->
+          <div *ngIf="showNewCollectionInput" class="new-collection-form">
+            <input
+              class="collection-input"
+              type="text"
+              placeholder="Collection name..."
+              [(ngModel)]="newCollectionTitle"
+            >
+            <button class="btn-save mt-2" (click)="createCollectionAndSave()">
+              <i class="bi bi-plus-circle"></i> Create
+            </button>
+          </div>
+
+          <button class="btn-cancel mt-2" (click)="resetSavePanel()">Cancel</button>
+        </div>
+
       </div>
     </div>
 

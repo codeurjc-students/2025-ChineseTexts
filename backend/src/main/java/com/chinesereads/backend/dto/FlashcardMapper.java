@@ -10,11 +10,13 @@ import com.chinesereads.backend.Model.Flashcard;
 @Mapper(componentModel = "spring")
 public interface FlashcardMapper {
 
-    @Mapping(target = "word", ignore = true)
+    @Mapping(target = "example", ignore = true)
     FlashcardDTO toDTO(Flashcard flashcard);
 
     List<FlashcardDTO> toDTO(List<Flashcard> flashcards);
 
     @Mapping(target = "example", ignore = true)
+    @Mapping(target = "word", ignore = true)
+    @Mapping(target = "collection", ignore = true)
     Flashcard toDomain(FlashcardDTO flashcardDTO);
 }
