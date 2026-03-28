@@ -109,7 +109,7 @@ export class TextComponent implements OnInit {
     this.collectionsService.addFlashcard(this.selectedCollectionId, this.pendingWord, this.text.id).subscribe({
       next: () => {
         this.saveStatus = 'success';
-        setTimeout(() => this.resetSavePanel(), 3000);
+        setTimeout(() => this.resetSavePanel(), 2000);
       },
       error: (err) => {
         this.saveStatus = err.status === 409 ? 'duplicate' : 'error';

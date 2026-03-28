@@ -262,6 +262,16 @@
           <i class="bi bi-pencil-square"></i> Exam
         </button>
       </div>
+
+      <div *ngIf="studyNoWordsError" class="exam-min-error">
+        <i class="bi bi-exclamation-circle"></i>
+        The selected collections have no words yet. Add some words first!
+      </div>
+
+      <div *ngIf="examMinWordsError" class="exam-min-error">
+        <i class="bi bi-exclamation-circle"></i>
+        You need at least 4 words across your selected collections to take an exam.
+      </div>
     </div>
 
   </div>
