@@ -15,5 +15,6 @@ public interface CollectionMapper {
     List<CollectionDTO> toDTO(List<Collection> collections);
 
     @Mapping(target = "flashcards", ignore = true)
+    @Mapping(target = "user", ignore = true)
     Collection toDomain(CollectionDTO collectionDTO);
 }

@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TextsService, TextItem } from '../../services/texts.service';
 import { LoginService } from '../../services/login.service';
 import { WordsService, Word } from '../../services/words.service';
+import { CollectionsService, CollectionDTO } from '../../services/collections.service';
 
 @Component({
   selector: 'app-text',
@@ -16,17 +17,9 @@ import { WordsService, Word } from '../../services/words.service';
 export class TextComponent implements OnInit {
 
   text: TextItem = {
-    id: 0,
-    titleSpanish: '',
-    titleEnglish: '',
-    text: '',
-    spanishTranslation: '',
-    englishTranslation: '',
-    level: '',
-    englishDescription: '',
-    spanishDescription: '',
-    creationDate: '',
-    liked: false
+    id: 0, titleSpanish: '', titleEnglish: '', text: '',
+    spanishTranslation: '', englishTranslation: '', level: '',
+    englishDescription: '', spanishDescription: '', creationDate: '', liked: false
   };
 
   originalText: string[] = [];
@@ -42,11 +35,17 @@ export class TextComponent implements OnInit {
   showSentences = false;
   showPinyin = true;
 
-  // Popover palabra
   activeWordIndex: number | null = null;
-
-  // Modal frase
   activeSentenceIndex: number | null = null;
+
+  // Save word
+  showSavePanel = false;
+  collections: CollectionDTO[] = [];
+  selectedCollectionId: number | null = null;
+  newCollectionTitle = '';
+  showNewCollectionInput = false;
+  saveStatus: 'idle' | 'success' | 'error' | 'duplicate' | 'not-logged' | 'no-collections' = 'idle';
+  pendingWord: string | null = null;
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
@@ -54,11 +53,13 @@ export class TextComponent implements OnInit {
     private loginService: LoginService,
     private activatedRoute: ActivatedRoute,
     private router: Router,
-    private wordService: WordsService
+    private wordService: WordsService,
+    private collectionsService: CollectionsService
   ) {}
 
   ngOnInit(): void {
-    this.loginService.reqIsLogged().subscribe(() => this.init());
+    this.loginService.reqIsLogged().subscribe(); // solo para actualizar el estado del usuario
+    this.init(); // carga el texto independientemente
   }
 
   // ——— Palabra popover ———
@@ -67,15 +68,77 @@ export class TextComponent implements OnInit {
     event.stopPropagation();
     this.activeSentenceIndex = null;
     this.activeWordIndex = this.activeWordIndex === index ? null : index;
+    this.resetSavePanel();
   }
 
   closeWordPopover(): void {
     this.activeWordIndex = null;
+    this.resetSavePanel();
   }
 
+  // ——— Save word ———
+
   addWord(word: string): void {
-    console.log('Add word:', word);
-    this.closeWordPopover();
+    this.pendingWord = word;
+    this.saveStatus = 'idle';
+
+    if (!this.loginService.isLogged()) {
+      this.saveStatus = 'not-logged';
+      this.showSavePanel = true;
+      return;
+    }
+
+    this.collectionsService.getUserCollections().subscribe({
+      next: (cols) => {
+        this.collections = cols;
+        if (cols.length === 0) {
+          this.saveStatus = 'no-collections';
+        }
+        this.showSavePanel = true;
+      },
+      error: () => {
+        this.saveStatus = 'error';
+        this.showSavePanel = true;
+      }
+    });
+  }
+
+  confirmSave(): void {
+    if (!this.selectedCollectionId || !this.pendingWord) return;
+
+    this.collectionsService.addFlashcard(this.selectedCollectionId, this.pendingWord, this.text.id).subscribe({
+      next: () => {
+        this.saveStatus = 'success';
+        setTimeout(() => this.resetSavePanel(), 3000);
+      },
+      error: (err) => {
+        this.saveStatus = err.status === 409 ? 'duplicate' : 'error';
+      }
+    });
+  }
+
+  createCollectionAndSave(): void {
+    if (!this.newCollectionTitle.trim()) return;
+
+    this.collectionsService.createCollection(this.newCollectionTitle.trim()).subscribe({
+      next: (col) => {
+        this.collections.push(col);
+        this.selectedCollectionId = col.id;
+        this.newCollectionTitle = '';
+        this.showNewCollectionInput = false;
+        this.saveStatus = 'idle';
+      },
+      error: () => this.saveStatus = 'error'
+    });
+  }
+
+  resetSavePanel(): void {
+    this.showSavePanel = false;
+    this.selectedCollectionId = null;
+    this.newCollectionTitle = '';
+    this.showNewCollectionInput = false;
+    this.saveStatus = 'idle';
+    this.pendingWord = null;
   }
 
   // ——— Frase modal ———
