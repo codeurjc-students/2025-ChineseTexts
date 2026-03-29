@@ -1,0 +1,241 @@
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+
+import { TextsService, ValidationResult } from '../../services/texts.service';
+import { WordsService, Word } from '../../services/words.service';
+import { LoginService } from '../../services/login.service';
+
+interface MissingWordForm {
+  chinese: string;
+  pinyin: string;
+  english: string;
+  spanish: string;
+  saved: boolean;
+  saving: boolean;
+  error: string;
+}
+
+@Component({
+  selector: 'app-upload-text',
+  standalone: true,
+  imports: [CommonModule, FormsModule],
+  templateUrl: './upload-text.component.html',
+  styleUrl: './upload-text.component.scss'
+})
+export class UploadTextComponent implements OnInit {
+
+  titleEnglish = '';
+  titleSpanish = '';
+  chineseText = '';
+  englishTranslation = '';
+  spanishTranslation = '';
+  englishDescription = '';
+  spanishDescription = '';
+  level = 'HSK1';
+  creationDate = new Date().toISOString().split('T')[0];
+  imageFile: File | null = null;
+  imagePreview: string | null = null;
+
+  status: 'idle' | 'validating' | 'valid' | 'invalid' | 'uploading' | 'success' | 'error' = 'idle';
+  errorMessage = '';
+  validationResult: ValidationResult | null = null;
+  missingWordForms: MissingWordForm[] = [];
+  missingWordsOpen = true;
+
+  levels = ['HSK1', 'HSK2', 'HSK3', 'HSK4', 'HSK5', 'HSK6'];
+
+  constructor(
+    private textsService: TextsService,
+    private wordsService: WordsService,
+    private loginService: LoginService,
+    private router: Router
+  ) {}
+
+  ngOnInit(): void {
+    this.loginService.reqIsLogged().subscribe({
+      next: (user) => {
+        if (!user || !user.roles.includes('ADMIN')) {
+          this.router.navigate(['/']);
+        }
+      },
+      error: () => this.router.navigate(['/'])
+    });
+  }
+
+  onImageChange(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (!input.files?.length) return;
+    this.imageFile = input.files[0];
+    const reader = new FileReader();
+    reader.onload = () => this.imagePreview = reader.result as string;
+    reader.readAsDataURL(this.imageFile);
+  }
+
+  get formComplete(): boolean {
+    return !!(
+      this.titleEnglish.trim() &&
+      this.titleSpanish.trim() &&
+      this.chineseText.trim() &&
+      this.englishTranslation.trim() &&
+      this.spanishTranslation.trim() &&
+      this.englishDescription.trim() &&
+      this.spanishDescription.trim() &&
+      this.level &&
+      this.imageFile
+    );
+  }
+
+  get missingSavedCount(): number {
+    return this.missingWordForms.filter(f => f.saved).length;
+  }
+
+  get hasSomeSaved(): boolean {
+    return this.missingWordForms.some(f => f.saved);
+  }
+
+  get sentenceCountMatch(): boolean {
+    const countSentences = (text: string): number =>
+      (text.match(/[.。]/g) || []).length;
+    const original = countSentences(this.chineseText);
+    const english = countSentences(this.englishTranslation);
+    const spanish = countSentences(this.spanishTranslation);
+    return original === english && original === spanish;
+  }
+
+  validate(): void {
+    this.errorMessage = '';
+
+    if (!this.formComplete) {
+      this.errorMessage = this.imageFile
+        ? 'Please fill in all required fields before validating.'
+        : 'An image is required. Please upload one before validating.';
+      this.status = 'error';
+      return;
+    }
+
+    if (!this.sentenceCountMatch) {
+      this.errorMessage = 'The number of sentences (periods) in the Chinese text, English translation and Spanish translation do not match. Please review them.';
+      this.status = 'error';
+      return;
+    }
+
+    this.status = 'validating';
+
+    this.textsService.validateText(this.chineseText.trim()).subscribe({
+      next: (result) => {
+        this.validationResult = result;
+        if (result.valid) {
+          this.status = 'valid';
+          this.missingWordForms = [];
+        } else {
+          this.status = 'invalid';
+          this.missingWordForms = result.missingWords.map(w => ({
+            chinese: w, pinyin: '', english: '', spanish: '',
+            saved: false, saving: false, error: ''
+          }));
+          this.missingWordsOpen = true;
+        }
+      },
+      error: () => {
+        this.status = 'error';
+        this.errorMessage = 'Error validating text. Please try again.';
+      }
+    });
+  }
+
+  saveWord(form: MissingWordForm): void {
+    if (!form.pinyin.trim() || !form.english.trim() || !form.spanish.trim()) {
+      form.error = 'All fields are required.';
+      return;
+    }
+    form.saving = true;
+    form.error = '';
+
+    const word: Word = {
+      chinese: form.chinese,
+      pinyin: form.pinyin.trim(),
+      english: form.english.trim(),
+      spanish: form.spanish.trim()
+    };
+
+    this.wordsService.saveWord(word).subscribe({
+      next: () => {
+        form.saved = true;
+        form.saving = false;
+        if (this.allMissingWordsSaved) this.validate();
+      },
+      error: (err) => {
+        form.saving = false;
+        form.error = err.status === 409 ? 'Word already exists.' : 'Error saving word.';
+        if (err.status === 409) {
+          form.saved = true;
+          if (this.allMissingWordsSaved) this.validate();
+        }
+      }
+    });
+  }
+
+  get allMissingWordsSaved(): boolean {
+    return this.missingWordForms.length > 0 && this.missingWordForms.every(f => f.saved);
+  }
+
+  get isUploading(): boolean {
+    return this.status === 'uploading';
+  }
+
+  upload(): void {
+    if (this.status !== 'valid') return;
+    this.status = 'uploading';
+
+    const data = {
+      id: null,
+      titleEnglish: this.titleEnglish.trim(),
+      titleSpanish: this.titleSpanish.trim(),
+      text: this.chineseText.trim(),
+      englishTranslation: this.englishTranslation.trim(),
+      spanishTranslation: this.spanishTranslation.trim(),
+      englishDescription: this.englishDescription.trim(),
+      spanishDescription: this.spanishDescription.trim(),
+      level: this.level,
+      creationDate: this.creationDate
+    };
+
+    const formData = new FormData();
+    formData.append('data', new Blob([JSON.stringify(data)], { type: 'application/json' }));
+    if (this.imageFile) formData.append('image', this.imageFile);
+
+    this.textsService.uploadText(formData).subscribe({
+      next: () => { this.status = 'success'; },
+      error: (err) => {
+        this.status = 'error';
+        this.errorMessage = err.status === 409
+          ? 'A text with this title already exists.'
+          : 'Error uploading text. Please try again.';
+      }
+    });
+  }
+
+  goToTexts(): void {
+    this.router.navigate(['/texts']);
+  }
+
+  reset(): void {
+    this.titleEnglish = '';
+    this.titleSpanish = '';
+    this.chineseText = '';
+    this.englishTranslation = '';
+    this.spanishTranslation = '';
+    this.englishDescription = '';
+    this.spanishDescription = '';
+    this.level = 'HSK1';
+    this.creationDate = new Date().toISOString().split('T')[0];
+    this.imageFile = null;
+    this.imagePreview = null;
+    this.status = 'idle';
+    this.errorMessage = '';
+    this.validationResult = null;
+    this.missingWordForms = [];
+  }
+}

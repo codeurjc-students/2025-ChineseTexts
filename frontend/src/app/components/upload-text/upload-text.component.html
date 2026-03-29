@@ -1,0 +1,185 @@
+<div class="upload-page container my-5">
+
+  <!-- ÉXITO -->
+  <div *ngIf="status === 'success'" class="success-screen">
+    <div class="success-icon"><i class="bi bi-check-circle-fill"></i></div>
+    <h2>Text uploaded successfully!</h2>
+    <p class="text-muted">The text is now available in the app.</p>
+    <div class="success-actions">
+      <button class="btn-primary" (click)="goToTexts()">Go to texts</button>
+      <button class="btn-secondary" (click)="reset()">Upload another</button>
+    </div>
+  </div>
+
+  <!-- FORMULARIO -->
+  <div *ngIf="status !== 'success'">
+
+    <h1 class="page-title">Upload new text</h1>
+    <p class="page-subtitle">Fill in all fields, validate the text, and upload it.</p>
+
+    <!-- Basic info -->
+    <div class="form-section">
+      <h3 class="section-title">Basic info</h3>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Title (English) <span class="required">*</span></label>
+          <input type="text" [(ngModel)]="titleEnglish"
+            placeholder="e.g. My daily routine" class="form-input">
+        </div>
+        <div class="form-group">
+          <label>Title (Spanish) <span class="required">*</span></label>
+          <input type="text" [(ngModel)]="titleSpanish"
+            placeholder="e.g. Mi rutina diaria" class="form-input">
+        </div>
+      </div>
+      <div class="form-row mt-3">
+        <div class="form-group">
+          <label>Level <span class="required">*</span></label>
+          <select [(ngModel)]="level" class="form-input">
+            <option *ngFor="let l of levels" [value]="l">{{ l }}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Date</label>
+          <input type="date" [(ngModel)]="creationDate" class="form-input">
+        </div>
+      </div>
+    </div>
+
+    <!-- Texto chino -->
+    <div class="form-section">
+      <h3 class="section-title">Chinese text <span class="required">*</span></h3>
+      <p class="section-hint">
+        Each sentence must end with a Chinese period (。) or a regular period (.).
+        The number of sentences must match the translations.
+      </p>
+      <textarea [(ngModel)]="chineseText" class="form-textarea form-textarea--large"
+        placeholder="我每天早上七点起床。我吃早饭，然后去学校。" rows="5"></textarea>
+    </div>
+
+    <!-- Traducciones -->
+    <div class="form-section">
+      <h3 class="section-title">Translations</h3>
+      <div class="form-group">
+        <label>English translation <span class="required">*</span></label>
+        <textarea [(ngModel)]="englishTranslation" class="form-textarea" rows="3"
+          placeholder="I get up at seven every morning..."></textarea>
+      </div>
+      <div class="form-group mt-3">
+        <label>Spanish translation <span class="required">*</span></label>
+        <textarea [(ngModel)]="spanishTranslation" class="form-textarea" rows="3"
+          placeholder="Me levanto a las siete cada mañana..."></textarea>
+      </div>
+    </div>
+
+    <!-- Descripciones -->
+    <div class="form-section">
+      <h3 class="section-title">Descriptions</h3>
+      <div class="form-group">
+        <label>English description <span class="required">*</span></label>
+        <textarea [(ngModel)]="englishDescription" class="form-textarea" rows="2"
+          placeholder="A text about daily routines..."></textarea>
+      </div>
+      <div class="form-group mt-3">
+        <label>Spanish description <span class="required">*</span></label>
+        <textarea [(ngModel)]="spanishDescription" class="form-textarea" rows="2"
+          placeholder="Un texto sobre rutinas diarias..."></textarea>
+      </div>
+    </div>
+
+    <!-- Imagen -->
+    <div class="form-section">
+      <h3 class="section-title">Image <span class="required">*</span></h3>
+      <div class="image-upload-area" (click)="imageInput.click()">
+        <img *ngIf="imagePreview" [src]="imagePreview" class="image-preview">
+        <div *ngIf="!imagePreview" class="image-placeholder">
+          <i class="bi bi-image"></i>
+          <span>Click to upload an image (required)</span>
+        </div>
+      </div>
+      <input #imageInput type="file" accept="image/*"
+        (change)="onImageChange($event)" style="display:none">
+    </div>
+
+    <!-- Botón validar -->
+    <div class="validate-row">
+      <button class="btn-validate" (click)="validate()"
+        [disabled]="status === 'validating' || isUploading">
+        <i class="bi bi-search" *ngIf="status !== 'validating'"></i>
+        <span class="spinner-sm" *ngIf="status === 'validating'"></span>
+        {{ status === 'validating' ? 'Validating...' : 'Validate text' }}
+      </button>
+    </div>
+
+    <!-- Validación OK -->
+    <div *ngIf="status === 'valid'" class="validation-ok">
+      <i class="bi bi-check-circle-fill"></i>
+      All {{ validationResult?.segments?.length }} words found in the dictionary.
+      Ready to upload!
+    </div>
+
+    <!-- Palabras faltantes -->
+    <div *ngIf="status === 'invalid'" class="validation-error-box">
+      <div class="missing-header" (click)="missingWordsOpen = !missingWordsOpen">
+        <div class="missing-header-left">
+          <i class="bi bi-exclamation-triangle-fill"></i>
+          <span>
+            {{ missingWordForms.length }}
+            word{{ missingWordForms.length !== 1 ? 's' : '' }}
+            missing from dictionary
+          </span>
+          <span class="missing-saved" *ngIf="hasSomeSaved">
+            ({{ missingSavedCount }}/{{ missingWordForms.length }} saved)
+          </span>
+        </div>
+        <i class="bi"
+          [ngClass]="missingWordsOpen ? 'bi-chevron-up' : 'bi-chevron-down'"></i>
+      </div>
+
+      <div *ngIf="missingWordsOpen" class="missing-list">
+        <div *ngFor="let form of missingWordForms" class="missing-word-item"
+             [class.missing-word-item--saved]="form.saved">
+          <div class="missing-word-top">
+            <span class="missing-chinese">{{ form.chinese }}</span>
+            <span *ngIf="form.saved" class="saved-badge">
+              <i class="bi bi-check"></i> Saved
+            </span>
+          </div>
+          <div *ngIf="!form.saved" class="missing-word-fields">
+            <input type="text" [(ngModel)]="form.pinyin"
+              placeholder="Pinyin" class="mini-input">
+            <input type="text" [(ngModel)]="form.english"
+              placeholder="English" class="mini-input">
+            <input type="text" [(ngModel)]="form.spanish"
+              placeholder="Spanish" class="mini-input">
+            <button class="btn-save-word" (click)="saveWord(form)"
+              [disabled]="form.saving">
+              <span *ngIf="form.saving" class="spinner-sm"></span>
+              <span *ngIf="!form.saving"><i class="bi bi-plus"></i> Add</span>
+            </button>
+          </div>
+          <div *ngIf="form.error" class="word-error">{{ form.error }}</div>
+        </div>
+
+        <div *ngIf="allMissingWordsSaved" class="all-saved-msg">
+          <i class="bi bi-check-circle"></i> All words saved! Re-validating...
+        </div>
+      </div>
+    </div>
+
+    <!-- Botón subir -->
+    <div class="upload-row" *ngIf="status === 'valid'">
+      <button class="btn-upload" (click)="upload()" [disabled]="isUploading">
+        <span *ngIf="isUploading" class="spinner-sm"></span>
+        <i class="bi bi-cloud-upload" *ngIf="!isUploading"></i>
+        {{ isUploading ? 'Uploading...' : 'Upload text' }}
+      </button>
+    </div>
+
+    <!-- ERROR — siempre al final, visible tras el botón -->
+    <div *ngIf="status === 'error'" class="alert-error mt-3">
+      <i class="bi bi-exclamation-circle"></i> {{ errorMessage }}
+    </div>
+
+  </div>
+</div>
