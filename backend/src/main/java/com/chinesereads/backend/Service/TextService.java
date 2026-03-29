@@ -1,9 +1,13 @@
 package com.chinesereads.backend.Service;
 
+import java.io.IOException;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+import org.hibernate.engine.jdbc.proxy.BlobProxy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
@@ -12,11 +16,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.chinesereads.backend.Model.Text;
 import com.chinesereads.backend.Repository.TextRepository;
+import com.chinesereads.backend.Repository.WordRepository;
 import com.chinesereads.backend.dto.TextDTO;
 import com.chinesereads.backend.dto.TextMapper;
+import com.chinesereads.backend.dto.ValidationResultDTO;
 
 @Service
 public class TextService {
@@ -33,7 +40,9 @@ public class TextService {
     @Autowired
     private DictionaryService dictionaryService;
 
-    // Guardar texto (solo para inicializar datos)
+    @Autowired
+    private WordRepository wordRepository;
+
     public TextDTO save(Text text) {
         if (textRepository.findByTitleEnglish(text.getTitleEnglish()).isPresent()
                 || textRepository.findByTitleSpanish(text.getTitleSpanish()).isPresent()) {
@@ -43,34 +52,28 @@ public class TextService {
         }
     }
 
-    // Obtener textos sin filtro (paginados)
     public List<TextDTO> getTexts(int page, int size) {
         Pageable pageable = PageRequest.of(
                 page,
                 size,
                 Sort.by("creationDate").descending().and(Sort.by("id").descending())
         );
-
         Page<Text> result = textRepository.findAll(pageable);
         return textMapper.toDTO(result.getContent());
     }
 
-    // Obtener textos filtrados por nivel (paginados)
     public List<TextDTO> getTextsByLevel(String level, int page, int size) {
         Pageable pageable = PageRequest.of(
                 page,
                 size,
                 Sort.by("creationDate").descending().and(Sort.by("id").descending())
         );
-
         Page<Text> result = textRepository.findByLevel(level, pageable);
         return textMapper.toDTO(result.getContent());
     }
 
-    // Obtener imagen del texto
     public Resource getTextImage(Long textId) {
         Text text = textRepository.findById(textId).orElseThrow();
-
         try {
             return new InputStreamResource(text.getImage().getBinaryStream());
         } catch (SQLException e) {
@@ -78,38 +81,55 @@ public class TextService {
         }
     }
 
-    public TextDTO getText(long id){
+    public TextDTO getText(long id) {
         Optional<Text> text = this.textRepository.findById(id);
-        if(text.isPresent()){
-            return textMapper.toDTO(text.get());
-        } else {
-            return null;
-        }
+        return text.map(textMapper::toDTO).orElse(null);
     }
 
-    public String[][] getTextSpanish(TextDTO text){
+    public String[][] getTextSpanish(TextDTO text) {
         List<String> textSegmented = jiebaService.segment(text.text());
         List<String> words = dictionaryService.translateToSpanish(textSegmented);
-
-        String[] chineseArray = textSegmented.toArray(new String[0]);
-        String[] spanishArray = words.toArray(new String[0]);
-
-        String[][] result = new String[2][];
-        result[0] = chineseArray;
-        result[1] = spanishArray;
-        return result;
+        return new String[][] {
+            textSegmented.toArray(new String[0]),
+            words.toArray(new String[0])
+        };
     }
 
-    public String[][] getTextEnglish(TextDTO text){
+    public String[][] getTextEnglish(TextDTO text) {
         List<String> textSegmented = jiebaService.segment(text.text());
         List<String> words = dictionaryService.translateToEnglish(textSegmented);
+        return new String[][] {
+            textSegmented.toArray(new String[0]),
+            words.toArray(new String[0])
+        };
+    }
 
-        String[] chineseArray = textSegmented.toArray(new String[0]);
-        String[] englishArray = words.toArray(new String[0]);
+    public ValidationResultDTO validateText(String chineseText) {
+        List<String> segments = jiebaService.segment(chineseText);
+        List<String> missing = segments.stream()
+                .distinct()
+                .filter(word -> !word.isBlank())
+                .filter(word -> wordRepository.findByChinese(word).isEmpty())
+                .collect(Collectors.toList());
+        return new ValidationResultDTO(missing.isEmpty(), missing, segments);
+    }
 
-        String[][] result = new String[2][];
-        result[0] = chineseArray;
-        result[1] = englishArray;
-        return result;
+    public TextDTO uploadText(TextDTO data, MultipartFile image) throws IOException {
+        Text text = new Text(
+                data.titleEnglish(),
+                data.titleSpanish(),
+                data.text(),
+                data.englishTranslation(),
+                data.spanishTranslation(),
+                data.englishDescription(),
+                data.spanishDescription(),
+                data.level(),
+                data.creationDate() != null ? data.creationDate() : LocalDate.now(),
+                null
+        );
+        if (image != null && !image.isEmpty()) {
+            text.setImage(BlobProxy.generateProxy(image.getInputStream(), image.getSize()));
+        }
+        return save(text);
     }
 }
