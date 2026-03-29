@@ -1,0 +1,165 @@
+<div class="profile-page container my-5">
+
+  <div *ngIf="!user" class="center-msg">
+    <div class="spinner"></div>
+  </div>
+
+  <div *ngIf="user">
+
+    <!-- ══════════ VISTA PERFIL ══════════ -->
+    <div *ngIf="section === 'view'">
+
+      <div class="profile-header">
+        <div class="profile-avatar">
+          {{ user.name.charAt(0).toUpperCase() }}
+        </div>
+        <div>
+          <h1 class="profile-name">{{ user.name }}</h1>
+          <span class="profile-role" [class.role--admin]="user.roles.includes('ADMIN')">
+            {{ user.roles.includes('ADMIN') ? 'Admin' : 'Student' }}
+          </span>
+        </div>
+      </div>
+
+      <div class="info-card">
+        <h2 class="card-section-title">Account details</h2>
+
+        <div class="info-row">
+          <span class="info-label"><i class="bi bi-person"></i> Name</span>
+          <span class="info-value">{{ user.name }}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label"><i class="bi bi-envelope"></i> Email</span>
+          <span class="info-value">{{ user.email }}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label"><i class="bi bi-translate"></i> Language</span>
+          <span class="info-value">{{ languageLabel }}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label"><i class="bi bi-collection"></i> Collections</span>
+          <span class="info-value">{{ user.collections?.length ?? 0 }}</span>
+        </div>
+      </div>
+
+      <div class="action-cards">
+        <div class="action-card" (click)="openEditProfile()">
+          <i class="bi bi-pencil-square"></i>
+          <div>
+            <div class="action-card-title">Edit profile</div>
+            <div class="action-card-sub">Update your name and language</div>
+          </div>
+          <i class="bi bi-chevron-right ms-auto"></i>
+        </div>
+
+        <div class="action-card" (click)="openEditPassword()">
+          <i class="bi bi-lock"></i>
+          <div>
+            <div class="action-card-title">Change password</div>
+            <div class="action-card-sub">Update your account password</div>
+          </div>
+          <i class="bi bi-chevron-right ms-auto"></i>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ══════════ EDITAR PERFIL ══════════ -->
+    <div *ngIf="section === 'editProfile'">
+
+      <div class="section-header">
+        <button class="btn-icon" (click)="cancel()"><i class="bi bi-arrow-left"></i></button>
+        <h2 class="section-title">Edit profile</h2>
+      </div>
+
+      <div class="form-card">
+
+        <div class="form-group">
+          <label>Full name <span class="required">*</span></label>
+          <input type="text" [(ngModel)]="editName" class="form-input"
+            placeholder="Your full name">
+        </div>
+
+        <div class="form-group mt-3">
+          <label>Preferred language <span class="required">*</span></label>
+          <select [(ngModel)]="editLanguage" class="form-input">
+            <option *ngFor="let l of languages" [value]="l.value">{{ l.label }}</option>
+          </select>
+        </div>
+
+        <div *ngIf="profileStatus === 'error'" class="alert-error mt-3">
+          <i class="bi bi-exclamation-circle"></i> {{ profileError }}
+        </div>
+
+        <div *ngIf="profileStatus === 'success'" class="alert-success mt-3">
+          <i class="bi bi-check-circle-fill"></i> Profile updated successfully!
+        </div>
+
+        <div class="form-actions mt-4">
+          <button class="btn-secondary" (click)="cancel()">Cancel</button>
+          <button class="btn-primary" (click)="saveProfile()"
+            [disabled]="profileStatus === 'saving'">
+            <span *ngIf="profileStatus === 'saving'" class="spinner-sm"></span>
+            {{ profileStatus === 'saving' ? 'Saving...' : 'Save changes' }}
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══════════ CAMBIAR CONTRASEÑA ══════════ -->
+    <div *ngIf="section === 'editPassword'">
+
+      <div class="section-header">
+        <button class="btn-icon" (click)="cancel()"><i class="bi bi-arrow-left"></i></button>
+        <h2 class="section-title">Change password</h2>
+      </div>
+
+      <div class="form-card">
+
+        <div class="form-group">
+          <label>Current password <span class="required">*</span></label>
+          <input type="password" [(ngModel)]="currentPassword" class="form-input"
+            placeholder="Enter your current password">
+        </div>
+
+        <div class="form-group mt-3">
+          <label>New password <span class="required">*</span></label>
+          <input type="password" [(ngModel)]="newPassword" class="form-input"
+            placeholder="At least 4 characters">
+        </div>
+
+        <div class="form-group mt-3">
+          <label>Confirm new password <span class="required">*</span></label>
+          <input type="password" [(ngModel)]="confirmPassword" class="form-input"
+            placeholder="Repeat new password">
+          <span class="field-hint"
+            *ngIf="confirmPassword && newPassword !== confirmPassword">
+            Passwords do not match
+          </span>
+        </div>
+
+        <div *ngIf="passwordStatus === 'error'" class="alert-error mt-3">
+          <i class="bi bi-exclamation-circle"></i> {{ passwordError }}
+        </div>
+
+        <div *ngIf="passwordStatus === 'success'" class="alert-success mt-3">
+          <i class="bi bi-check-circle-fill"></i> Password changed successfully!
+        </div>
+
+        <div class="form-actions mt-4">
+          <button class="btn-secondary" (click)="cancel()">Cancel</button>
+          <button class="btn-primary" (click)="savePassword()"
+            [disabled]="passwordStatus === 'checking' || passwordStatus === 'saving'">
+            <span *ngIf="passwordStatus === 'checking' || passwordStatus === 'saving'"
+              class="spinner-sm"></span>
+            {{ passwordStatus === 'checking' ? 'Checking...' :
+               passwordStatus === 'saving' ? 'Saving...' : 'Change password' }}
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
