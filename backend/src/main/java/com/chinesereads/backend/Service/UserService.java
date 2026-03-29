@@ -21,10 +21,10 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public UserDTO save(UserDTO user){
-        if(userRepository.findByEmail(user.email()).isPresent()){
+    public UserDTO save(UserDTO user) {
+        if (userRepository.findByEmail(user.email()).isPresent()) {
             return null;
-        } else{
+        } else {
             User newUser = userMapper.toDomain(user);
             newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
             return userMapper.toDTO(userRepository.save(newUser));
@@ -35,4 +35,21 @@ public class UserService {
         return userMapper.toDTO(userRepository.findByEmail(email).orElseThrow());
     }
 
+    public UserDTO updateProfile(String email, UserDTO data) {
+        User user = userRepository.findByEmail(email).orElseThrow();
+        user.setName(data.name());
+        user.setLanguage(data.language());
+        return userMapper.toDTO(userRepository.save(user));
+    }
+
+    public boolean checkPassword(String email, String rawPassword) {
+        User user = userRepository.findByEmail(email).orElseThrow();
+        return passwordEncoder.matches(rawPassword, user.getPassword());
+    }
+
+    public UserDTO changePassword(String email, String newPassword) {
+        User user = userRepository.findByEmail(email).orElseThrow();
+        user.setPassword(passwordEncoder.encode(newPassword));
+        return userMapper.toDTO(userRepository.save(user));
+    }
 }

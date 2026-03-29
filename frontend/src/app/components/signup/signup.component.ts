@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Location } from '@angular/common';
 import { UserService, UserDTO } from '../../services/users.service';
+import { LoginService } from '../../services/login.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -12,7 +13,7 @@ import { Router } from '@angular/router';
   templateUrl: './signup.component.html',
   styleUrls: ['./signup.component.scss']
 })
-export class SignupComponent {
+export class SignupComponent implements OnInit {
 
   signupForm: FormGroup;
 
@@ -20,6 +21,7 @@ export class SignupComponent {
     private fb: FormBuilder,
     private location: Location,
     private userService: UserService,
+    private loginService: LoginService,
     private router: Router
   ) {
     this.signupForm = this.fb.group({
@@ -27,6 +29,19 @@ export class SignupComponent {
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required],
       language: ['en', Validators.required]
+    });
+  }
+
+  ngOnInit(): void {
+    // Si ya está logueado, redirige a home
+    if (this.loginService.isLogged()) {
+      this.router.navigate(['/']);
+      return;
+    }
+
+    // Si inicia sesión mientras está en signup, redirige a home
+    this.loginService.loggedIn$.subscribe(isLogged => {
+      if (isLogged) this.router.navigate(['/']);
     });
   }
 
@@ -49,28 +64,16 @@ export class SignupComponent {
 
     this.userService.register(userDTO).subscribe({
       next: (response: UserDTO) => {
-        console.log('User registered:', response);
         this.router.navigate(['/success'], {
           queryParams: { msg: 'Your account has been created successfully!' }
         });
       },
       error: (err: any) => {
-        console.error('Error registering user:', err);
-
-        // Extraer mensaje del backend
-        const msg =
-          err.error?.message ||
-          err.error ||
-          'An unexpected error occurred.';
-
-        // Redirigir a /error con el mensaje
-        this.router.navigate(['/error'], {
-          queryParams: { msg }
-        });
+        const msg = err.error?.message || err.error || 'An unexpected error occurred.';
+        this.router.navigate(['/error'], { queryParams: { msg } });
       }
     });
   }
-
 
   goBack() {
     this.location.back();
