@@ -2,7 +2,7 @@ import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideRouter } from '@angular/router';
-import { of, throwError, BehaviorSubject } from 'rxjs';
+import { of, throwError, BehaviorSubject, EMPTY } from 'rxjs';
 import { Router } from '@angular/router';
 
 import { HeaderComponent } from './header.component';
@@ -52,6 +52,17 @@ describe('HeaderComponent', () => {
 
     expect(loginServiceSpy.login).not.toHaveBeenCalled();
     expect(component.messageError).toBe('Please fill in all fields.');
+  });
+
+  // Test 3: Login exitoso llama al servicio con credenciales correctas
+  it('should call login service with correct credentials on successful login', () => {
+    loginServiceSpy.login.and.returnValue(EMPTY);
+
+    component.loginEmail = 'test@test.com';
+    component.loginPassword = 'password123';
+    component.login();
+
+    expect(loginServiceSpy.login).toHaveBeenCalledWith('test@test.com', 'password123');
   });
 
   // Test 4: Login fallido muestra mensaje de error y limpia los campos
