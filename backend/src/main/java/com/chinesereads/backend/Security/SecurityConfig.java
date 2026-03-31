@@ -77,6 +77,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.PUT, "/api/users/me").hasAnyRole("USER", "ADMIN")
                 .requestMatchers(HttpMethod.POST, "/api/users/me/check-password").hasAnyRole("USER", "ADMIN")
                 .requestMatchers(HttpMethod.PUT, "/api/users/me/password").hasAnyRole("USER", "ADMIN")
+                .requestMatchers(HttpMethod.POST, "/api/ai/**").hasAnyRole("ADMIN")
                 .anyRequest().permitAll()
             );
 

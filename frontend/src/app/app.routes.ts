@@ -8,6 +8,7 @@ import { TextComponent } from './components/text/text.component';
 import { CollectionsComponent } from './components/collections/collections.component';
 import { UploadTextComponent } from './components/upload-text/upload-text.component';
 import { ProfileComponent } from './components/profile/profile.component';
+import { AiToolsComponent } from './components/ai-tools/ai-tools.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -20,4 +21,5 @@ export const routes: Routes = [
   { path: 'collections', component: CollectionsComponent },
   { path: 'upload-text', component: UploadTextComponent },
   { path: 'profile', component: ProfileComponent },
+  { path: 'ai-tools', component: AiToolsComponent}
 ];

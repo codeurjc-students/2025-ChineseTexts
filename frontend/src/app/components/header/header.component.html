@@ -42,6 +42,12 @@
           </a>
         </li>
 
+        <li *ngIf="loginService.isRoleAdmin()" class="nav-item me-2">
+          <a class="nav-link fw-semibold text-dark" [routerLink]="['/ai-tools']">
+            <i class="bi bi-stars me-1"></i> AI Tools
+          </a>
+        </li>
+
         <li *ngIf="!loginService.isLogged()" class="nav-item me-2">
           
           <a  class="nav-link btn btn-outline-danger rounded-pill px-3 py-1 fw-bold"
