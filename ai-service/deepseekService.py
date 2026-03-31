@@ -30,11 +30,20 @@ Texto: "{input_text}"
 
 PROMPT_GET_TRANSLATIONS = """
 Toma el siguiente texto en chino y tradúcelo completamente al inglés y al español.
-El número de frases en cada traducción debe coincidir exactamente con el número de frases del texto original (cada frase termina en 。).
-No uses puntos finales (.) en las traducciones. Usa otros signos si es necesario.
+
+Cada frase del texto original está separada por el carácter 。.
+Debes traducir cada frase de forma independiente, manteniendo exactamente el mismo número de frases y el mismo orden.
+
+En las traducciones:
+- Cada frase debe terminar con un punto (.).
+- Debe haber exactamente el mismo número de puntos (.) que de 。 en el texto original.
+- No unas ni dividas frases.
+
 Devuelve solo un array con dos elementos exactamente con este formato (comillas simples, formato Python):
 ['Traducción completa al inglés', 'Traducción completa al español']
+
 No incluyas explicaciones ni texto adicional. Solo el array.
+
 Texto: "{input_text}"
 """
 
