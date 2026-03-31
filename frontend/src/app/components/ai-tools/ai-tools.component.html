@@ -49,6 +49,18 @@
             <option *ngFor="let l of levels" [value]="l">{{ l }}</option>
           </select>
         </div>
+
+        <div class="form-group mt-3">
+          <label>Topic or guidelines</label>
+          <textarea
+            [(ngModel)]="topic"
+            class="form-textarea"
+            rows="3"
+            placeholder="e.g. A text about food and cooking. Include vocabulary about vegetables and kitchen tools. The story should be about a student learning to cook for the first time."
+          ></textarea>
+          <span class="field-hint">Optional. Describe what the text should be about or any specific guidelines for the AI.</span>
+        </div>
+
         <div class="mt-4 text-center">
           <button class="btn-ai" (click)="generate()">
             <i class="bi bi-stars"></i> Generate with AI
@@ -224,6 +236,11 @@
       <div *ngIf="allMissingWordsSaved && !imageFile" class="alert-warn mt-3">
         <i class="bi bi-image"></i>
         Please upload an image before submitting.
+      </div>
+
+      <!-- Error de validación -->
+      <div *ngIf="validationError" class="alert-error mt-3">
+        <i class="bi bi-exclamation-circle"></i> {{ validationError }}
       </div>
 
       <!-- Botón subir -->

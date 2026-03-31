@@ -26,9 +26,9 @@ export class AiService {
 
   constructor(private http: HttpClient) {}
 
-  generateText(level: string): Observable<AiTextResult> {
+  generateText(level: string, topic: string = ''): Observable<AiTextResult> {
     return this.http.post<AiTextResult>(
-      `${this.apiUrl}/generate?level=${level}`,
+      `${this.apiUrl}/generate?level=${level}&topic=${encodeURIComponent(topic)}`,
       {},
       { withCredentials: true }
     );

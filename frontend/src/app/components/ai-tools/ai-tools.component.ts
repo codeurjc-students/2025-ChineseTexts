@@ -34,7 +34,7 @@ export class AiToolsComponent implements OnInit {
   status: Status = 'idle';
   errorMessage = '';
 
-  // Campos del formulario (pre-rellenados por la IA)
+  // Campos del formulario
   chineseText = '';
   titleEnglish = '';
   titleSpanish = '';
@@ -43,6 +43,7 @@ export class AiToolsComponent implements OnInit {
   englishDescription = '';
   spanishDescription = '';
   level = 'HSK1';
+  topic = '';
   creationDate = new Date().toISOString().split('T')[0];
   imageFile: File | null = null;
   imagePreview: string | null = null;
@@ -51,12 +52,14 @@ export class AiToolsComponent implements OnInit {
   missingWordForms: MissingWordForm[] = [];
   missingWordsOpen = true;
 
-  // Opciones
-  levels = ['HSK1', 'HSK2', 'HSK3', 'HSK4', 'HSK5', 'HSK6'];
-
   // OCR
   ocrImageFile: File | null = null;
   ocrImagePreview: string | null = null;
+
+  levels = ['HSK1', 'HSK2', 'HSK3', 'HSK4', 'HSK5', 'HSK6'];
+
+  // Validación
+  validationError = '';
 
   constructor(
     private aiService: AiService,
@@ -77,11 +80,57 @@ export class AiToolsComponent implements OnInit {
     });
   }
 
-  // ——— Modo ———
-
   selectMode(mode: AiMode): void {
     this.mode = mode;
     this.reset();
+  }
+
+  // ——— Validación del formulario ———
+
+  get sentenceCountMatch(): boolean {
+    const count = (text: string) => (text.match(/[.。]/g) || []).length;
+    const original = count(this.chineseText);
+    const english = count(this.englishTranslation);
+    const spanish = count(this.spanishTranslation);
+    return original > 0 && original === english && original === spanish;
+  }
+
+  get formComplete(): boolean {
+    return !!(
+      this.chineseText.trim() &&
+      this.titleEnglish.trim() &&
+      this.titleSpanish.trim() &&
+      this.englishTranslation.trim() &&
+      this.spanishTranslation.trim() &&
+      this.englishDescription.trim() &&
+      this.spanishDescription.trim()
+    );
+  }
+
+  validateBeforeUpload(): boolean {
+    this.validationError = '';
+
+    if (!this.formComplete) {
+      this.validationError = 'Please fill in all fields before uploading.';
+      return false;
+    }
+
+    if (!this.imageFile) {
+      this.validationError = 'An image is required. Please upload one before submitting.';
+      return false;
+    }
+
+    if (!this.sentenceCountMatch) {
+      this.validationError = 'The number of sentences does not match between the Chinese text and the translations. Please review them.';
+      return false;
+    }
+
+    if (!this.allMissingWordsSaved) {
+      this.validationError = 'Please save all missing words before uploading.';
+      return false;
+    }
+
+    return true;
   }
 
   // ——— Generar texto con IA ———
@@ -90,7 +139,7 @@ export class AiToolsComponent implements OnInit {
     this.status = 'loading';
     this.errorMessage = '';
 
-    this.aiService.generateText(this.level).subscribe({
+    this.aiService.generateText(this.level, this.topic).subscribe({
       next: (result) => this.applyAiResult(result),
       error: () => {
         this.status = 'error';
@@ -124,8 +173,6 @@ export class AiToolsComponent implements OnInit {
     });
   }
 
-  // ——— Aplicar resultado de la IA al formulario ———
-
   private applyAiResult(result: AiTextResult): void {
     this.chineseText = result.chineseText;
     this.titleEnglish = result.titleEnglish;
@@ -146,9 +193,8 @@ export class AiToolsComponent implements OnInit {
     }));
 
     this.status = 'ready';
+    this.validationError = '';
   }
-
-  // ——— Imagen del texto ———
 
   onImageChange(event: Event): void {
     const input = event.target as HTMLInputElement;
@@ -157,6 +203,7 @@ export class AiToolsComponent implements OnInit {
     const reader = new FileReader();
     reader.onload = () => this.imagePreview = reader.result as string;
     reader.readAsDataURL(this.imageFile);
+    this.validationError = '';
   }
 
   // ——— Guardar palabras faltantes ———
@@ -197,18 +244,17 @@ export class AiToolsComponent implements OnInit {
     return this.missingWordForms.filter(f => f.saved).length;
   }
 
-  // ——— Subir texto ———
-
   get canUpload(): boolean {
-    return this.status === 'ready' &&
-           this.allMissingWordsSaved &&
-           !!this.imageFile &&
-           !!this.chineseText.trim();
+    return this.status === 'ready';
   }
 
+  // ——— Subir texto ———
+
   upload(): void {
-    if (!this.canUpload) return;
+    if (!this.validateBeforeUpload()) return;
+
     this.status = 'uploading';
+    this.validationError = '';
 
     const data = {
       id: null,
@@ -230,10 +276,10 @@ export class AiToolsComponent implements OnInit {
     this.textsService.uploadText(formData).subscribe({
       next: () => { this.status = 'success'; },
       error: (err) => {
-        this.status = 'error';
-        this.errorMessage = err.status === 409
+        this.status = 'ready';
+        this.validationError = err.status === 409
           ? 'A text with this title already exists.'
-          : 'Error uploading text.';
+          : 'Error uploading text. Please try again.';
       }
     });
   }
@@ -245,6 +291,7 @@ export class AiToolsComponent implements OnInit {
   reset(): void {
     this.status = 'idle';
     this.errorMessage = '';
+    this.validationError = '';
     this.chineseText = '';
     this.titleEnglish = '';
     this.titleSpanish = '';
@@ -252,6 +299,7 @@ export class AiToolsComponent implements OnInit {
     this.spanishTranslation = '';
     this.englishDescription = '';
     this.spanishDescription = '';
+    this.topic = '';
     this.imageFile = null;
     this.imagePreview = null;
     this.ocrImageFile = null;

@@ -30,11 +30,12 @@ public class AiServiceController {
     @PostMapping("/generate")
     public ResponseEntity<?> generateText(
             @RequestParam String level,
+            @RequestParam(defaultValue = "") String topic,
             HttpServletRequest request) {
         Principal principal = request.getUserPrincipal();
         if (principal == null) return ResponseEntity.status(401).build();
         try {
-            Map<String, Object> result = aiService.generateFullText(level);
+            Map<String, Object> result = aiService.generateFullText(level, topic);
             return ResponseEntity.ok(result);
         } catch (Exception e) {
             return ResponseEntity.status(500).body(Map.of("error", e.getMessage()));

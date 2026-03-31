@@ -38,8 +38,11 @@ public class AiService {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
-    public Map<String, Object> generateFullText(String level) throws Exception {
-        Map<String, String> generateRequest = Map.of("level", level);
+    public Map<String, Object> generateFullText(String level, String topic) throws Exception {
+        Map<String, String> generateRequest = new HashMap<>();
+        generateRequest.put("level", level);
+        generateRequest.put("topic", topic);
+
         Map<String, Object> response = restTemplate.exchange(
                 aiServiceUrl + "/generate",
                 HttpMethod.POST,
