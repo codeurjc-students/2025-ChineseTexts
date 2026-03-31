@@ -13,45 +13,68 @@ import { FormsModule } from '@angular/forms';
 })
 export class HeaderComponent {
 
-    loginEmail = '';
-    loginPassword = '';
-    messageError = '';
+  loginEmail = '';
+  loginPassword = '';
+  messageError = '';
+  emailError = '';
+  passwordError = '';
+  loginAttempted = false;
 
-    constructor(
-      public loginService: LoginService, // Cambiado a público para acceder desde la plantilla
-      private router: Router,
-    ) {}
+  constructor(
+    public loginService: LoginService,
+    private router: Router,
+  ) {}
 
-    public login() {
-      if (this.loginEmail && this.loginPassword) {
-        this.loginService.login(this.loginEmail, this.loginPassword).subscribe(
-        () => {
-          this.loginService.reqIsLogged().subscribe(
-            () => window.location.reload()// Cerrar el formulario de inicio de sesión
-          )
-        },
-        () => {
-          //this.modalService.open(this.loginErrorModal, { centered: true });
-          this.loginEmail = '';
-          this.loginPassword = '';
-          this.messageError = '"Incorrect credentials. Please try again."'
-        });
-      } else {
-        this.messageError = 'Please fill in all fields.';
+  public login() {
+    this.loginAttempted = true;
+    this.emailError = '';
+    this.passwordError = '';
+    this.messageError = '';
+
+    let valid = true;
+
+    if (!this.loginEmail.trim()) {
+      this.emailError = 'Email is required.';
+      valid = false;
+    } else if (!this.isValidEmail(this.loginEmail)) {
+      this.emailError = 'Please enter a valid email address.';
+      valid = false;
+    }
+
+    if (!this.loginPassword.trim()) {
+      this.passwordError = 'Password is required.';
+      valid = false;
+    }
+
+    if (!valid) return;
+
+    this.loginService.login(this.loginEmail, this.loginPassword).subscribe(
+      () => {
+        this.loginService.reqIsLogged().subscribe(
+          () => window.location.reload()
+        );
+      },
+      () => {
+        this.loginEmail = '';
+        this.loginPassword = '';
+        this.loginAttempted = false;
+        this.messageError = 'Incorrect credentials. Please try again.';
       }
-    }
+    );
+  }
 
-    public logout(): void {
-      this.loginService.logout().subscribe({
-        next: () => {
-          // Aquí el logout ya se completó
-          this.router.navigate(['/']);
-          console.log(this.loginService.isLogged()); // Debe mostrar false
-        },
-        error: (error) => {
-          console.error("Error en logout:", error);
-        }
-      });
-    }
+  public logout(): void {
+    this.loginService.logout().subscribe({
+      next: () => {
+        this.router.navigate(['/']);
+      },
+      error: (error) => {
+        console.error('Error en logout:', error);
+      }
+    });
+  }
 
+  private isValidEmail(email: string): boolean {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  }
 }

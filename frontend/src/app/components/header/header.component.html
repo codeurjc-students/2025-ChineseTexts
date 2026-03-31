@@ -96,6 +96,7 @@
 
       <div class="modal-body pt-3">
         <form (ngSubmit)="login()">
+
           <div class="mb-3">
             <label for="loginEmail" class="form-label">Email</label>
             <input
@@ -103,10 +104,13 @@
               name="loginEmail"
               type="email"
               class="form-control"
+              [class.is-invalid]="loginAttempted && emailError"
               id="loginEmail"
               placeholder="Enter your email"
-              required
             />
+            <div class="invalid-feedback" *ngIf="loginAttempted && emailError">
+              {{ emailError }}
+            </div>
           </div>
 
           <div class="mb-3">
@@ -116,20 +120,27 @@
               name="loginPassword"
               type="password"
               class="form-control"
+              [class.is-invalid]="loginAttempted && passwordError"
               id="loginPassword"
               placeholder="Enter your password"
-              required
             />
+            <div class="invalid-feedback" *ngIf="loginAttempted && passwordError">
+              {{ passwordError }}
+            </div>
           </div>
 
-          <div class="text-danger mb-3 text-center">
-            <!-- Aquí podrías mostrar mensajes de error si luego conectas lógica -->
+          <div class="text-danger mb-3 text-center" *ngIf="messageError">
+            <i class="bi bi-exclamation-circle me-1"></i>{{ messageError }}
           </div>
 
           <div class="d-grid gap-2">
             <button type="submit" class="btn btn-danger">Login</button>
-            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal"
+              (click)="loginAttempted = false; emailError = ''; passwordError = ''; messageError = ''">
+              Cancel
+            </button>
           </div>
+
         </form>
       </div>
 
