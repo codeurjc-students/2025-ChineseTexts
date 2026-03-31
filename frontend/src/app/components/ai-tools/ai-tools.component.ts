@@ -1,0 +1,261 @@
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+
+import { AiService, AiTextResult } from '../../services/ai.service';
+import { LoginService } from '../../services/login.service';
+import { TextsService } from '../../services/texts.service';
+import { WordsService } from '../../services/words.service';
+
+interface MissingWordForm {
+  chinese: string;
+  pinyin: string;
+  english: string;
+  spanish: string;
+  saved: boolean;
+  saving: boolean;
+  error: string;
+}
+
+type AiMode = 'choose' | 'generate' | 'ocr';
+type Status = 'idle' | 'loading' | 'ready' | 'uploading' | 'success' | 'error';
+
+@Component({
+  selector: 'app-ai-tools',
+  standalone: true,
+  imports: [CommonModule, FormsModule],
+  templateUrl: './ai-tools.component.html',
+  styleUrl: './ai-tools.component.scss'
+})
+export class AiToolsComponent implements OnInit {
+
+  mode: AiMode = 'choose';
+  status: Status = 'idle';
+  errorMessage = '';
+
+  // Campos del formulario (pre-rellenados por la IA)
+  chineseText = '';
+  titleEnglish = '';
+  titleSpanish = '';
+  englishTranslation = '';
+  spanishTranslation = '';
+  englishDescription = '';
+  spanishDescription = '';
+  level = 'HSK1';
+  creationDate = new Date().toISOString().split('T')[0];
+  imageFile: File | null = null;
+  imagePreview: string | null = null;
+
+  // Palabras faltantes
+  missingWordForms: MissingWordForm[] = [];
+  missingWordsOpen = true;
+
+  // Opciones
+  levels = ['HSK1', 'HSK2', 'HSK3', 'HSK4', 'HSK5', 'HSK6'];
+
+  // OCR
+  ocrImageFile: File | null = null;
+  ocrImagePreview: string | null = null;
+
+  constructor(
+    private aiService: AiService,
+    private textsService: TextsService,
+    private wordsService: WordsService,
+    private loginService: LoginService,
+    private router: Router
+  ) {}
+
+  ngOnInit(): void {
+    this.loginService.reqIsLogged().subscribe({
+      next: (user) => {
+        if (!user || !user.roles.includes('ADMIN')) {
+          this.router.navigate(['/']);
+        }
+      },
+      error: () => this.router.navigate(['/'])
+    });
+  }
+
+  // ——— Modo ———
+
+  selectMode(mode: AiMode): void {
+    this.mode = mode;
+    this.reset();
+  }
+
+  // ——— Generar texto con IA ———
+
+  generate(): void {
+    this.status = 'loading';
+    this.errorMessage = '';
+
+    this.aiService.generateText(this.level).subscribe({
+      next: (result) => this.applyAiResult(result),
+      error: () => {
+        this.status = 'error';
+        this.errorMessage = 'Error connecting to AI service. Make sure it is running.';
+      }
+    });
+  }
+
+  // ——— OCR ———
+
+  onOcrImageChange(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (!input.files?.length) return;
+    this.ocrImageFile = input.files[0];
+    const reader = new FileReader();
+    reader.onload = () => this.ocrImagePreview = reader.result as string;
+    reader.readAsDataURL(this.ocrImageFile);
+  }
+
+  processOcr(): void {
+    if (!this.ocrImageFile) return;
+    this.status = 'loading';
+    this.errorMessage = '';
+
+    this.aiService.processOcr(this.ocrImageFile).subscribe({
+      next: (result) => this.applyAiResult(result),
+      error: () => {
+        this.status = 'error';
+        this.errorMessage = 'Error processing image. Make sure the OCR service is running.';
+      }
+    });
+  }
+
+  // ——— Aplicar resultado de la IA al formulario ———
+
+  private applyAiResult(result: AiTextResult): void {
+    this.chineseText = result.chineseText;
+    this.titleEnglish = result.titleEnglish;
+    this.titleSpanish = result.titleSpanish;
+    this.englishTranslation = result.englishTranslation;
+    this.spanishTranslation = result.spanishTranslation;
+    this.englishDescription = result.englishDescription;
+    this.spanishDescription = result.spanishDescription;
+
+    this.missingWordForms = result.missingWordSuggestions.map(s => ({
+      chinese: s.chinese,
+      pinyin: s.pinyin,
+      english: s.english,
+      spanish: s.spanish,
+      saved: false,
+      saving: false,
+      error: ''
+    }));
+
+    this.status = 'ready';
+  }
+
+  // ——— Imagen del texto ———
+
+  onImageChange(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (!input.files?.length) return;
+    this.imageFile = input.files[0];
+    const reader = new FileReader();
+    reader.onload = () => this.imagePreview = reader.result as string;
+    reader.readAsDataURL(this.imageFile);
+  }
+
+  // ——— Guardar palabras faltantes ———
+
+  saveWord(form: MissingWordForm): void {
+    if (!form.pinyin.trim() || !form.english.trim() || !form.spanish.trim()) {
+      form.error = 'All fields are required.';
+      return;
+    }
+    form.saving = true;
+    form.error = '';
+
+    this.wordsService.saveWord({
+      chinese: form.chinese,
+      pinyin: form.pinyin.trim(),
+      english: form.english.trim(),
+      spanish: form.spanish.trim()
+    }).subscribe({
+      next: () => { form.saved = true; form.saving = false; },
+      error: (err) => {
+        form.saving = false;
+        form.error = err.status === 409 ? 'Word already exists.' : 'Error saving word.';
+        if (err.status === 409) form.saved = true;
+      }
+    });
+  }
+
+  get allMissingWordsSaved(): boolean {
+    return this.missingWordForms.length === 0 ||
+           this.missingWordForms.every(f => f.saved);
+  }
+
+  get hasSomeSaved(): boolean {
+    return this.missingWordForms.some(f => f.saved);
+  }
+
+  get missingSavedCount(): number {
+    return this.missingWordForms.filter(f => f.saved).length;
+  }
+
+  // ——— Subir texto ———
+
+  get canUpload(): boolean {
+    return this.status === 'ready' &&
+           this.allMissingWordsSaved &&
+           !!this.imageFile &&
+           !!this.chineseText.trim();
+  }
+
+  upload(): void {
+    if (!this.canUpload) return;
+    this.status = 'uploading';
+
+    const data = {
+      id: null,
+      titleEnglish: this.titleEnglish.trim(),
+      titleSpanish: this.titleSpanish.trim(),
+      text: this.chineseText.trim(),
+      englishTranslation: this.englishTranslation.trim(),
+      spanishTranslation: this.spanishTranslation.trim(),
+      englishDescription: this.englishDescription.trim(),
+      spanishDescription: this.spanishDescription.trim(),
+      level: this.level,
+      creationDate: this.creationDate
+    };
+
+    const formData = new FormData();
+    formData.append('data', new Blob([JSON.stringify(data)], { type: 'application/json' }));
+    if (this.imageFile) formData.append('image', this.imageFile);
+
+    this.textsService.uploadText(formData).subscribe({
+      next: () => { this.status = 'success'; },
+      error: (err) => {
+        this.status = 'error';
+        this.errorMessage = err.status === 409
+          ? 'A text with this title already exists.'
+          : 'Error uploading text.';
+      }
+    });
+  }
+
+  goToTexts(): void {
+    this.router.navigate(['/texts']);
+  }
+
+  reset(): void {
+    this.status = 'idle';
+    this.errorMessage = '';
+    this.chineseText = '';
+    this.titleEnglish = '';
+    this.titleSpanish = '';
+    this.englishTranslation = '';
+    this.spanishTranslation = '';
+    this.englishDescription = '';
+    this.spanishDescription = '';
+    this.imageFile = null;
+    this.imagePreview = null;
+    this.ocrImageFile = null;
+    this.ocrImagePreview = null;
+    this.missingWordForms = [];
+  }
+}
