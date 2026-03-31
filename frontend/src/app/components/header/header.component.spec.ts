@@ -51,7 +51,8 @@ describe('HeaderComponent', () => {
     component.login();
 
     expect(loginServiceSpy.login).not.toHaveBeenCalled();
-    expect(component.messageError).toBe('Please fill in all fields.');
+    expect(component.emailError).toBe('Email is required.');
+    expect(component.passwordError).toBe('Password is required.');
   });
 
   // Test 3: Login exitoso llama al servicio con credenciales correctas
