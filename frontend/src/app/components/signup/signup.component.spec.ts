@@ -9,7 +9,6 @@ import { SignupComponent } from './signup.component';
 import { UserService, UserDTO } from '../../services/users.service';
 import { LoginService } from '../../services/login.service';
 
-
 @Component({ template: '' })
 class DummyComponent {}
 
@@ -23,17 +22,12 @@ describe('SignupComponent', () => {
 
   beforeEach(async () => {
     loggedInSubject = new BehaviorSubject<boolean>(false);
-
     userServiceSpy = jasmine.createSpyObj('UserService', ['register']);
-
-    loginServiceSpy = jasmine.createSpyObj(
-      'LoginService',
+    loginServiceSpy = jasmine.createSpyObj('LoginService',
       ['isLogged', 'reqIsLogged'],
       { loggedIn$: loggedInSubject.asObservable() }
     );
-
     loginServiceSpy.isLogged.and.returnValue(false);
-
     loginServiceSpy.reqIsLogged.and.returnValue(of(null));
 
     await TestBed.configureTestingModule({
@@ -41,23 +35,20 @@ describe('SignupComponent', () => {
       providers: [
         { provide: UserService, useValue: userServiceSpy },
         { provide: LoginService, useValue: loginServiceSpy },
-
         provideHttpClient(),
         provideHttpClientTesting(),
-
         provideRouter([
           { path: '', component: DummyComponent },
           { path: 'success', component: DummyComponent },
           { path: 'error', component: DummyComponent }
         ])
       ],
-      schemas: [NO_ERRORS_SCHEMA] // evita problemas con <img>
+      schemas: [NO_ERRORS_SCHEMA]
     }).compileComponents();
 
     fixture = TestBed.createComponent(SignupComponent);
     component = fixture.componentInstance;
     router = TestBed.inject(Router);
-
     fixture.detectChanges();
   });
 
@@ -95,60 +86,39 @@ describe('SignupComponent', () => {
 
   it('should call register with correct data when form is valid', () => {
     const mockUser: UserDTO = {
-      id: 1,
-      email: 'test@test.com',
-      name: 'Test User',
-      language: 'en',
-      collections: [],
-      roles: ['USER'],
-      password: 'password123',
-      newPassword: null
+      id: 1, email: 'test@test.com', name: 'Test User',
+      language: 'en', collections: [], roles: ['USER'],
+      password: 'password123', newPassword: null
     };
-
     userServiceSpy.register.and.returnValue(of(mockUser));
 
     component.signupForm.setValue({
-      name: 'Test User',
-      email: 'test@test.com',
-      password: 'password123',
-      language: 'en'
+      name: 'Test User', email: 'test@test.com',
+      password: 'password123', language: 'en'
     });
-
     component.submitSignup();
 
     expect(userServiceSpy.register).toHaveBeenCalledWith(
       jasmine.objectContaining({
-        email: 'test@test.com',
-        name: 'Test User',
-        language: 'en',
-        roles: ['USER']
+        email: 'test@test.com', name: 'Test User',
+        language: 'en', roles: ['USER']
       })
     );
   });
 
   it('should navigate to /success after successful registration', () => {
     const navigateSpy = spyOn(router, 'navigate').and.resolveTo(true);
-
     const mockUser: UserDTO = {
-      id: 1,
-      email: 'test@test.com',
-      name: 'Test',
-      language: 'en',
-      collections: [],
-      roles: ['USER'],
-      password: 'pass',
-      newPassword: null
+      id: 1, email: 'test@test.com', name: 'Test',
+      language: 'en', collections: [], roles: ['USER'],
+      password: 'pass', newPassword: null
     };
-
     userServiceSpy.register.and.returnValue(of(mockUser));
 
     component.signupForm.setValue({
-      name: 'Test',
-      email: 'test@test.com',
-      password: 'pass',
-      language: 'en'
+      name: 'Test', email: 'test@test.com',
+      password: 'pass', language: 'en'
     });
-
     component.submitSignup();
 
     expect(navigateSpy).toHaveBeenCalledWith(['/success'], jasmine.any(Object));
@@ -156,18 +126,14 @@ describe('SignupComponent', () => {
 
   it('should navigate to /error when registration fails', () => {
     const navigateSpy = spyOn(router, 'navigate').and.resolveTo(true);
-
     userServiceSpy.register.and.returnValue(
       throwError(() => ({ error: { message: 'Email already in use' } }))
     );
 
     component.signupForm.setValue({
-      name: 'Test',
-      email: 'existing@test.com',
-      password: 'pass',
-      language: 'en'
+      name: 'Test', email: 'existing@test.com',
+      password: 'pass', language: 'en'
     });
-
     component.submitSignup();
 
     expect(navigateSpy).toHaveBeenCalledWith(['/error'], jasmine.any(Object));
@@ -175,7 +141,6 @@ describe('SignupComponent', () => {
 
   it('should redirect to home if user is already logged in', () => {
     const navigateSpy = spyOn(router, 'navigate').and.resolveTo(true);
-
     loginServiceSpy.isLogged.and.returnValue(true);
 
     component.ngOnInit();
