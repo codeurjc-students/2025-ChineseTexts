@@ -29,22 +29,13 @@ No devuelvas nada más. Solo el array con este formato exacto:
 Texto: "{input_text}"
 """
 
-PROMPT_GET_TRANSLATIONS = """
-Toma el siguiente texto en chino y tradúcelo al inglés y al español.
-
-REGLAS ESTRICTAS:
-- El texto original tiene exactamente {sentence_count} frases, separadas por 。
-- Tu traducción DEBE tener exactamente {sentence_count} frases.
-- Cada frase traducida debe terminar con punto (.).
-- Cuenta los puntos de tu respuesta antes de enviarla. Deben ser exactamente {sentence_count} en cada idioma.
-- No unas ni dividas frases. Traduce frase por frase en el mismo orden.
-
+PROMPT_TRANSLATE_SENTENCE = """
+Traduce la siguiente frase en chino al inglés y al español. 
+La frase no debe contener ningún punto (.) ni punto chino (。). Pero otros signos de puntuación sí.
 Devuelve solo un array con dos elementos con este formato (comillas simples, formato Python):
-['Frase1 inglés. Frase2 inglés.', 'Frase1 español. Frase2 español.']
-
+['English translation', 'Traducción en español']
 No incluyas explicaciones ni texto adicional. Solo el array.
-
-Texto: "{input_text}"
+Frase: "{sentence}"
 """
 
 PROMPT_GET_DESCRIPTIONS = """
@@ -112,12 +103,6 @@ def get_titles():
         return jsonify({"error": f"Invalid format: {str(e)}", "raw": raw}), 500
 
 
-def count_sentences(text: str) -> int:
-    return text.count('。')
-
-def count_periods(text: str) -> int:
-    return text.count('.')
-
 @app.route("/getTranslations", methods=["POST"])
 def get_translations():
     data = request.get_json()
@@ -125,33 +110,31 @@ def get_translations():
         return jsonify({"error": "text is required"}), 400
 
     input_text = data["text"]
-    sentence_count = count_sentences(input_text)
 
-    max_retries = 3
-    for attempt in range(max_retries):
-        prompt = PROMPT_GET_TRANSLATIONS\
-            .replace("{input_text}", input_text)\
-            .replace("{sentence_count}", str(sentence_count))
-        
+    # Dividimos por 。 y filtramos vacíos
+    sentences = [s.strip() for s in input_text.split('。') if s.strip()]
+
+    english_parts = []
+    spanish_parts = []
+
+    for sentence in sentences:
+        prompt = PROMPT_TRANSLATE_SENTENCE.replace("{sentence}", sentence)
         raw = call_deepseek(prompt)
-        print(f"Intento {attempt + 1} - Respuesta: {raw}")
-
         try:
             parsed = ast.literal_eval(raw)
             if not isinstance(parsed, list) or len(parsed) != 2:
-                raise ValueError("Expected list of 2 elements")
-            
-            english_periods = count_periods(parsed[0])
-            spanish_periods = count_periods(parsed[1])
-            
-            if english_periods == sentence_count and spanish_periods == sentence_count:
-                return jsonify(parsed)
-            else:
-                print(f"Número de frases incorrecto. Original: {sentence_count}, EN: {english_periods}, ES: {spanish_periods}. Reintentando...")
+                raise ValueError("Expected list of 2")
+            english_parts.append(parsed[0].strip().rstrip('.') + '.')
+            spanish_parts.append(parsed[1].strip().rstrip('.') + '.')
         except Exception as e:
-            print(f"Error parseando respuesta: {e}")
+            print(f"Error traduciendo frase '{sentence}': {e}")
+            english_parts.append('')
+            spanish_parts.append('')
 
-    return jsonify({"error": f"Could not get matching sentence count after {max_retries} attempts"}), 500
+    english_full = ' '.join(english_parts)
+    spanish_full = ' '.join(spanish_parts)
+
+    return jsonify([english_full, spanish_full])
 
 
 @app.route("/getDescriptions", methods=["POST"])
