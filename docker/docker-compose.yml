@@ -1,0 +1,78 @@
+services:
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - ../frontend/dist/frontend/browser:/srv
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+  backend:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/chinesereads
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: password
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      AI_SERVICE_URL: http://ai-service:5001
+      OCR_SERVICE_URL: http://ocr-service:5000
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - app-network
+
+  db:
+    image: mysql:8.0
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: chinesereads
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - app-network
+
+  ai-service:
+    build:
+      context: ../ai-service
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      DEEPSEEK_API_KEY: ${DEEPSEEK_API_KEY}
+    networks:
+      - app-network
+
+  ocr-service:
+    build:
+      context: ../ocr-service
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    networks:
+      - app-network
+
+volumes:
+  mysql_data:
+  caddy_data:
+  caddy_config:
+
+networks:
+  app-network:
+    driver: bridge
