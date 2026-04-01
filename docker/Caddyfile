@@ -1,0 +1,18 @@
+chinesereads.com, www.chinesereads.com {
+    encode gzip
+
+    # Frontend Angular (archivos estáticos)
+    handle /api/* {
+        reverse_proxy backend:8080
+    }
+
+    handle {
+        root * /srv
+        try_files {path} /index.html
+        file_server
+    }
+}
+
+http://chinesereads.com, http://www.chinesereads.com {
+    redir https://chinesereads.com{uri} permanent
+}
