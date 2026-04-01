@@ -76,16 +76,30 @@ describe('AiToolsComponent', () => {
   it('should not upload when image is missing', () => {
     component.status = 'ready';
     component.imageFile = null;
-    expect(component.canUpload).toBeFalse();
+    component.chineseText = '你好。';
+
+    const valid = component.validateBeforeUpload();
+    expect(valid).toBeFalse();
+  expect(component.validationError).toBe('Please fill in all fields before uploading.');
   });
 
   it('should not upload when missing words are not saved', () => {
     component.status = 'ready';
     component.imageFile = new File([''], 'test.jpg');
+    component.chineseText = '你好。';
+    component.titleEnglish = 'Title';
+    component.titleSpanish = 'Título';
+    component.englishTranslation = 'Hello.';
+    component.spanishTranslation = 'Hola.';
+    component.englishDescription = 'Desc';
+    component.spanishDescription = 'Desc';
     component.missingWordForms = [
       { chinese: '世界', pinyin: '', english: '', spanish: '', saved: false, saving: false, error: '' }
     ];
-    expect(component.canUpload).toBeFalse();
+
+    const valid = component.validateBeforeUpload();
+    expect(valid).toBeFalse();
+    expect(component.validationError).toContain('missing words');
   });
 
   it('should allow upload when all conditions are met', () => {

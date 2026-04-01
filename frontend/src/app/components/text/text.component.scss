@@ -88,6 +88,8 @@ body {
 // ——— Modal frase ———
 .sentence-modal {
   max-width: 480px;
+  max-height: 80vh;
+  overflow-y: auto;
 
   .sentence-modal-chinese {
     font-size: 1.4rem;
