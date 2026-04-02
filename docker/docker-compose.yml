@@ -65,6 +65,10 @@ services:
       context: ../ocr-service
       dockerfile: Dockerfile
     restart: unless-stopped
+    environment:
+      GOOGLE_APPLICATION_CREDENTIALS: /app/credentials.json
+    volumes:
+      - ../ocr-service/credentials.json:/app/credentials.json:ro
     networks:
       - app-network
 
