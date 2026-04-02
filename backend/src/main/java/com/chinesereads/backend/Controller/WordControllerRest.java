@@ -33,12 +33,12 @@ public class WordControllerRest {
 
     @GetMapping("/textWords")
     public ResponseEntity<WordDTO[]> getTextWords(@RequestParam String text) {
-        String[] originalTextArray = text.split(",");
-        WordDTO[] results = new WordDTO[originalTextArray.length];
+        String[] originalTextArray = text.split("\\|");
+        WordDTO[] pinyinResults = new WordDTO[originalTextArray.length];
         for (int i = 0; i < originalTextArray.length; i++) {
-            results[i] = wordService.getWord(originalTextArray[i]);
+            pinyinResults[i] = wordService.getWord(originalTextArray[i]);
         }
-        return ResponseEntity.status(HttpStatus.OK).body(results);
+        return ResponseEntity.status(HttpStatus.OK).body(pinyinResults);
     }
 
     @PostMapping

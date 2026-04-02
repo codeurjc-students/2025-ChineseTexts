@@ -18,7 +18,7 @@ export class WordsService {
   constructor(private http: HttpClient) {}
 
   getTextWords(originalText: string[]): Observable<Word[]> {
-    const params = new HttpParams().set('text', originalText.join(','));
+    const params = new HttpParams().set('text', originalText.join('|'));
     return this.http.get<Word[]>(`${this.apiUrl}/textWords`, { params });
   }
 
