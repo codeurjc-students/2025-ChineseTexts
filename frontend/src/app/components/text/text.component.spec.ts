@@ -43,13 +43,17 @@ describe('TextComponent', () => {
     textsServiceSpy = jasmine.createSpyObj('TextsService',
       ['getText', 'getSpanishText', 'getEnglishText']);
     loginServiceSpy = jasmine.createSpyObj('LoginService',
-      ['reqIsLogged', 'isLogged'], { loggedIn$: of(true) });
+      ['reqIsLogged', 'isLogged', 'isRoleAdmin', 'isRoleUser'],
+      { loggedIn$: of(true) }
+    );
     wordsServiceSpy = jasmine.createSpyObj('WordsService', ['getTextWords']);
     collectionsServiceSpy = jasmine.createSpyObj('CollectionsService',
       ['getUserCollections', 'addFlashcard', 'createCollection']);
 
     loginServiceSpy.reqIsLogged.and.returnValue(of(null));
     loginServiceSpy.isLogged.and.returnValue(false);
+    loginServiceSpy.isRoleAdmin.and.returnValue(false);
+    loginServiceSpy.isRoleUser.and.returnValue(false);
     textsServiceSpy.getText.and.returnValue(of(mockText));
     textsServiceSpy.getSpanishText.and.returnValue(of([
       ['我', '每天', '七点', '起床', '。', '我', '吃', '早饭', '。', '然后', '去', '学校', '。'],
