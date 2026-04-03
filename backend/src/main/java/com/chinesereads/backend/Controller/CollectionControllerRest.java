@@ -2,6 +2,7 @@ package com.chinesereads.backend.Controller;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -87,5 +88,25 @@ public class CollectionControllerRest {
         Principal principal = request.getUserPrincipal();
         if (principal == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         return ResponseEntity.ok(collectionService.getCollectionFlashcards(id, principal.getName()));
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<?> renameCollection(
+            @PathVariable Long id,
+            @RequestBody Map<String, String> body,
+            HttpServletRequest request) {
+        Principal principal = request.getUserPrincipal();
+        if (principal == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        String newTitle = body.get("title");
+        if (newTitle == null || newTitle.isBlank()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("error", "Title cannot be empty"));
+        }
+        try {
+            CollectionDTO updated = collectionService.renameCollection(id, newTitle.trim(), principal.getName());
+            return ResponseEntity.ok(updated);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("error", e.getMessage()));
+        }
     }
 }

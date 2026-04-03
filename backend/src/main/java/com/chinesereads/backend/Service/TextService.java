@@ -132,4 +132,11 @@ public class TextService {
         }
         return save(text);
     }
+
+    public void deleteText(long id) {
+        if (!textRepository.existsById(id)) {
+            throw new RuntimeException("Text not found with id: " + id);
+        }
+        textRepository.deleteById(id);
+    }
 }

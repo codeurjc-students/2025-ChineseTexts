@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { TextsService, TextItem } from '../../services/texts.service';
+import { LoginService } from '../../services/login.service';
 
 @Component({
   selector: 'app-texts',
@@ -18,10 +19,18 @@ export class TextsComponent implements OnInit {
   hasMore: boolean = true;
   currentLevel: string | null = null;
 
+  showDeleteModal = false;
+  textToDelete: TextItem | null = null;
+
   constructor(
     private textsService: TextsService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private loginService: LoginService
   ) {}
+
+  get isAdmin(): boolean {
+    return this.loginService.isRoleAdmin();
+  }
 
   ngOnInit(): void {
     // Detecta cambios en la URL (por ejemplo /texts/HSK3)
@@ -83,5 +92,27 @@ export class TextsComponent implements OnInit {
   toggleLike(text: TextItem, event: Event): void {
     event.stopPropagation();
     text.liked = !text.liked;
+  }
+
+  openDeleteModal(text: TextItem, event: Event): void {
+    event.stopPropagation();
+    this.textToDelete = text;
+    this.showDeleteModal = true;
+  }
+
+  confirmDeleteText(): void {
+    if (!this.textToDelete) return;
+    this.textsService.deleteText(this.textToDelete.id).subscribe({
+      next: () => {
+        this.texts = this.texts.filter(t => t.id !== this.textToDelete!.id);
+        this.cancelDelete();
+      },
+      error: (err) => console.error('Error deleting text', err)
+    });
+  }
+
+  cancelDelete(): void {
+    this.showDeleteModal = false;
+    this.textToDelete = null;
   }
 }

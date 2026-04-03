@@ -47,6 +47,8 @@ export class TextComponent implements OnInit {
   saveStatus: 'idle' | 'success' | 'error' | 'duplicate' | 'not-logged' | 'no-collections' = 'idle';
   pendingWord: string | null = null;
 
+  showDeleteTextModal = false;
+
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
     private textService: TextsService,
@@ -56,6 +58,10 @@ export class TextComponent implements OnInit {
     private wordService: WordsService,
     private collectionsService: CollectionsService
   ) {}
+
+  get isAdmin(): boolean {
+    return this.loginService.isRoleAdmin();
+  }
 
   ngOnInit(): void {
     this.loginService.reqIsLogged().subscribe(); // solo para actualizar el estado del usuario
@@ -222,5 +228,20 @@ export class TextComponent implements OnInit {
 
   private getSentencesString(text: string): string[] {
     return text.split(/(?<=\.|。)(?=\s|$)/).filter(s => s.trim() !== '');
+  }
+
+  openDeleteTextModal(): void {
+    this.showDeleteTextModal = true;
+  }
+
+  cancelDeleteText(): void {
+    this.showDeleteTextModal = false;
+  }
+
+  confirmDeleteText(): void {
+    this.textService.deleteText(this.text.id).subscribe({
+      next: () => this.router.navigate(['/texts']),
+      error: (err) => console.error('Error deleting text', err)
+    });
   }
 }

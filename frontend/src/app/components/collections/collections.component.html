@@ -18,6 +18,30 @@
     </div>
   </div>
 
+  <!-- ═══════════════════ MODAL RENOMBRAR ═══════════════════ -->
+  <div class="modal-overlay" *ngIf="showRenameModal" (click)="closeRenameModal()">
+    <div class="modal-box" (click)="$event.stopPropagation()">
+      <div class="modal-icon modal-icon--add"><i class="bi bi-pencil-square"></i></div>
+      <h3 class="modal-title">Rename collection</h3>
+      <input
+        class="modal-input"
+        type="text"
+        placeholder="New name..."
+        [(ngModel)]="renameTitle"
+        (keydown.enter)="confirmRename()"
+        autofocus
+      >
+      <div class="modal-actions">
+        <button class="btn-secondary" (click)="closeRenameModal()">Cancel</button>
+        <button class="btn-primary"
+          [disabled]="!renameTitle.trim() || renaming"
+          (click)="confirmRename()">
+          {{ renaming ? 'Saving...' : 'Save' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- ═══════════════════ MODAL AÑADIR ═══════════════════ -->
   <div class="modal-overlay" *ngIf="showAddModal" (click)="closeAddModal()">
     <div class="modal-box" (click)="$event.stopPropagation()">
@@ -248,6 +272,9 @@
             <div class="cc-title">{{ col.title }}</div>
             <div class="cc-date text-muted">{{ col.date | date:'mediumDate' }}</div>
           </div>
+          <button class="btn-edit me-1" (click)="openRenameModal(col, $event)">
+            <i class="bi bi-pencil"></i>
+          </button>
           <button class="btn-delete" (click)="deleteCollection(col, $event)">
             <i class="bi bi-trash"></i>
           </button>

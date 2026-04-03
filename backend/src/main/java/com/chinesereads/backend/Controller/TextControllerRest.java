@@ -1,7 +1,9 @@
 package com.chinesereads.backend.Controller;
 
+import java.security.Principal;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -10,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,6 +25,8 @@ import org.springframework.web.multipart.MultipartFile;
 import com.chinesereads.backend.Service.TextService;
 import com.chinesereads.backend.dto.TextDTO;
 import com.chinesereads.backend.dto.ValidationResultDTO;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 @CrossOrigin
 @RestController
@@ -85,6 +90,18 @@ public class TextControllerRest {
             return ResponseEntity.status(HttpStatus.CREATED).body(saved);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteText(@PathVariable long id, HttpServletRequest request) {
+        Principal principal = request.getUserPrincipal();
+        if (principal == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        try {
+            textService.deleteText(id);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
         }
     }
 }

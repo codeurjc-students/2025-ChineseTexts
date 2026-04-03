@@ -55,4 +55,12 @@ export class CollectionsService {
   deleteFlashcard(flashcardId: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/flashcards/${flashcardId}`, { withCredentials: true });
   }
+
+  renameCollection(id: number, title: string): Observable<CollectionDTO> {
+    return this.http.patch<CollectionDTO>(
+      `${this.apiUrl}/${id}`,
+      { title },
+      { withCredentials: true }
+    );
+  }
 }

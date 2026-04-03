@@ -510,3 +510,11 @@
   gap: 8px;
   animation: fadeIn 0.2s ease;
 }
+
+.btn-edit {
+  background: none; border: none; color: #aaa;
+  font-size: 0.95rem; cursor: pointer;
+  padding: 4px 8px; border-radius: 6px;
+  transition: color 0.15s, background 0.15s;
+  &:hover { color: #2471a3; background: #eaf4ff; }
+}
