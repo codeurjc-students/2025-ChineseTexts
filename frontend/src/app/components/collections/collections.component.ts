@@ -61,6 +61,12 @@ export class CollectionsComponent implements OnInit {
   newCollectionTitle = '';
   addingCollection = false;
 
+  // ——— Editar colección ———
+  showRenameModal = false;
+  renameTarget: CollectionDTO | null = null;
+  renameTitle = '';
+  renaming = false;
+
   constructor(
     private collectionsService: CollectionsService,
     private loginService: LoginService,
@@ -318,5 +324,35 @@ export class CollectionsComponent implements OnInit {
       [a[i], a[j]] = [a[j], a[i]];
     }
     return a;
+  }
+
+  openRenameModal(col: CollectionDTO, event: Event): void {
+    event.stopPropagation();
+    this.renameTarget = col;
+    this.renameTitle = col.title;
+    this.showRenameModal = true;
+  }
+
+  closeRenameModal(): void {
+    this.showRenameModal = false;
+    this.renameTarget = null;
+    this.renameTitle = '';
+    this.renaming = false;
+  }
+
+  confirmRename(): void {
+    if (!this.renameTarget || !this.renameTitle.trim()) return;
+    this.renaming = true;
+    this.collectionsService.renameCollection(this.renameTarget.id, this.renameTitle.trim()).subscribe({
+      next: (updated) => {
+        const idx = this.collections.findIndex(c => c.id === updated.id);
+        if (idx !== -1) this.collections[idx] = updated;
+        if (this.selectedCollection?.id === updated.id) {
+          this.selectedCollection = updated;
+        }
+        this.closeRenameModal();
+      },
+      error: () => { this.renaming = false; }
+    });
   }
 }

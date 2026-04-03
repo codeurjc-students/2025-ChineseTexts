@@ -56,4 +56,13 @@ public class CollectionService {
         }
         return flashcardMapper.toDTO(collection.getFlashcards());
     }
+
+    public CollectionDTO renameCollection(Long id, String newTitle, String email) {
+        Collection collection = collectionRepository.findById(id).orElseThrow();
+        if (!collection.getUser().getEmail().equals(email)) {
+            throw new RuntimeException("Unauthorized");
+        }
+        collection.setTitle(newTitle);
+        return collectionMapper.toDTO(collectionRepository.save(collection));
+    }
 }

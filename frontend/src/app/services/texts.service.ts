@@ -58,4 +58,8 @@ export class TextsService {
   uploadText(formData: FormData): Observable<TextItem> {
     return this.http.post<TextItem>(this.apiUrl, formData, { withCredentials: true });
   }
+
+  deleteText(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`, { withCredentials: true });
+  }
 }
