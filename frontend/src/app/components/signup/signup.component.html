@@ -7,7 +7,6 @@
     </p>
   </header>
 
-  <!-- BENEFITS SECTION (SEO + conversión) -->
   <article class="benefits mb-5">
     <h2 class="visually-hidden">Why Join Us</h2>
     <ul>
@@ -19,7 +18,6 @@
     </ul>
   </article>
 
-  <!-- USER INFORMATION -->
   <article class="card-box p-4 mb-5">
     <h2 class="section-title">Your Information</h2>
 
@@ -31,9 +29,14 @@
           id="name"
           type="text"
           class="form-control"
+          [class.is-invalid]="signupForm.get('name')?.invalid && signupForm.get('name')?.touched"
           formControlName="name"
           placeholder="Enter your full name"
         >
+        <div class="invalid-feedback"
+             *ngIf="signupForm.get('name')?.invalid && signupForm.get('name')?.touched">
+          Full name is required.
+        </div>
       </div>
 
       <div class="form-group mb-3">
@@ -42,9 +45,16 @@
           id="email"
           type="email"
           class="form-control"
+          [class.is-invalid]="signupForm.get('email')?.invalid && signupForm.get('email')?.touched"
           formControlName="email"
           placeholder="Enter your email"
         >
+        <div class="invalid-feedback" *ngIf="signupForm.get('email')?.touched">
+          <span *ngIf="signupForm.get('email')?.errors?.['required']">Email is required.</span>
+          <span *ngIf="signupForm.get('email')?.errors?.['email'] || signupForm.get('email')?.errors?.['invalidEmail']">
+            Please enter a valid email address.
+          </span>
+        </div>
       </div>
 
       <div class="form-group mb-3">
@@ -53,9 +63,17 @@
           id="password"
           type="password"
           class="form-control"
+          [class.is-invalid]="signupForm.get('password')?.invalid && signupForm.get('password')?.touched"
           formControlName="password"
-          placeholder="Create a secure password"
+          placeholder="Create a secure password (min. 6 characters)"
         >
+        <div class="invalid-feedback"
+             *ngIf="signupForm.get('password')?.touched">
+          <span *ngIf="signupForm.get('password')?.errors?.['required']">Password is required.</span>
+          <span *ngIf="signupForm.get('password')?.errors?.['minlength']">
+            Password must be at least 6 characters.
+          </span>
+        </div>
       </div>
 
       <div class="form-group mb-3">
@@ -73,7 +91,6 @@
     </form>
   </article>
 
-  <!-- CTA -->
   <div class="text-center">
     <button class="btn-submit" (click)="submitSignup()">
       Create My Account

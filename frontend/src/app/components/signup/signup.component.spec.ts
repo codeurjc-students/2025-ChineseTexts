@@ -79,6 +79,19 @@ describe('SignupComponent', () => {
     expect(component.signupForm.get('email')?.invalid).toBeTrue();
   });
 
+  // Test nuevo: password con menos de 6 caracteres es inválida
+  it('should mark password as invalid when shorter than 6 characters', () => {
+    component.signupForm.get('password')?.setValue('abc');
+    expect(component.signupForm.get('password')?.invalid).toBeTrue();
+    expect(component.signupForm.get('password')?.errors?.['minlength']).toBeTruthy();
+  });
+
+  // Test nuevo: password con 6 o más caracteres es válida
+  it('should mark password as valid when 6 or more characters', () => {
+    component.signupForm.get('password')?.setValue('abc123');
+    expect(component.signupForm.get('password')?.valid).toBeTrue();
+  });
+
   it('should not call register when form is invalid', () => {
     component.submitSignup();
     expect(userServiceSpy.register).not.toHaveBeenCalled();
@@ -111,13 +124,13 @@ describe('SignupComponent', () => {
     const mockUser: UserDTO = {
       id: 1, email: 'test@test.com', name: 'Test',
       language: 'en', collections: [], roles: ['USER'],
-      password: 'pass', newPassword: null
+      password: 'pass123', newPassword: null
     };
     userServiceSpy.register.and.returnValue(of(mockUser));
 
     component.signupForm.setValue({
       name: 'Test', email: 'test@test.com',
-      password: 'pass', language: 'en'
+      password: 'pass123', language: 'en'
     });
     component.submitSignup();
 
@@ -132,7 +145,7 @@ describe('SignupComponent', () => {
 
     component.signupForm.setValue({
       name: 'Test', email: 'existing@test.com',
-      password: 'pass', language: 'en'
+      password: 'pass123', language: 'en'
     });
     component.submitSignup();
 

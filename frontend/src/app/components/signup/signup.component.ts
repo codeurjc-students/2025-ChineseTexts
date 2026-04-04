@@ -26,8 +26,8 @@ export class SignupComponent implements OnInit {
   ) {
     this.signupForm = this.fb.group({
       name: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email, this.strictEmailValidator]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
       language: ['en', Validators.required]
     });
   }
@@ -73,6 +73,13 @@ export class SignupComponent implements OnInit {
         this.router.navigate(['/error'], { queryParams: { msg } });
       }
     });
+  }
+
+  private strictEmailValidator(control: any) {
+    const value = control.value;
+    if (!value) return null;
+    const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+    return valid ? null : { invalidEmail: true };
   }
 
   goBack() {
