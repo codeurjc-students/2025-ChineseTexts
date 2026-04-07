@@ -1,0 +1,315 @@
+# Development Guide
+
+## Index
+
+- [Introduction](#introduction)
+- [Technologies](#technologies)
+- [Tools](#tools)
+- [Architecture](#architecture)
+- [Quality Control](quality-control.md)
+- [Development Process](#development-process)
+- [Running the Application](#running-the-application)
+- [Running Tests](#running-tests)
+- [Deployment](#deployment)
+- [Creating a Release](#creating-a-release)
+
+---
+
+## Introduction
+
+ChineseReads follows a **distributed MVC architecture** composed of multiple independent services that communicate via REST APIs. The system is split into four main components: a Spring Boot backend (REST API + business logic), an Angular frontend (SPA), a MySQL database, and two Python microservices for AI text generation and OCR image processing.
+
+| Aspect | Description |
+|---|---|
+| **Type** | Web MVC + SPA frontend + REST API + AI Microservices |
+| **Technologies** | Java 21, Spring Boot 4, Angular 17, MySQL 8, Python 3.11, Flask, DeepSeek API, Google Cloud Vision |
+| **Tools** | IntelliJ IDEA, VS Code, Docker, Docker Compose, Caddy, GitHub, Postman |
+| **Quality Control** | Unit tests (JUnit + Mockito), Integration tests (H2), E2E tests (MockMvc), Frontend tests (Jasmine/Karma) |
+| **Deployment** | Docker Compose + Caddy (HTTPS automatic via Let's Encrypt), Azure VM |
+| **Development Process** | Iterative and incremental, GitHub Issues + Projects, feature branches |
+
+---
+
+## Technologies
+
+### Backend — Spring Boot
+Java 21 + Spring Boot 4. Exposes a REST API consumed by the Angular frontend. Handles authentication via JWT stored in HttpOnly cookies, text management, vocabulary collections, flashcards, and user management.  
+Official site: https://spring.io/projects/spring-boot
+
+### Frontend — Angular 17
+Standalone components architecture with SSR (Server Side Rendering) enabled via Angular Universal for SEO optimization. Communicates with the backend exclusively via HTTP.  
+Official site: https://angular.io
+
+### Database — MySQL 8
+Relational database storing users, texts, words, collections, and flashcards. Managed via Spring Data JPA / Hibernate.  
+Official site: https://www.mysql.com
+
+### AI Microservice — DeepSeek API
+Python 3.11 + Flask microservice running on port 5001. Calls the DeepSeek API to generate Chinese texts by HSK level and topic, produce titles and descriptions, translate sentence by sentence, and suggest translations for missing dictionary words.  
+Official site: https://www.deepseek.com
+
+### OCR Microservice — Google Cloud Vision
+Python 3.11 + Flask microservice running on port 5000. Uses the Google Cloud Vision `text_detection` API to extract Chinese text from uploaded images. Free up to 1 million requests/month.  
+Official site: https://cloud.google.com/vision
+
+### Reverse Proxy — Caddy
+Serves the Angular static files, proxies `/api/*` requests to the Spring Boot backend, and manages HTTPS certificates automatically via Let's Encrypt.  
+Official site: https://caddyserver.com
+
+### Chinese Tokenizer — Jieba
+Java library integrated in the backend to segment Chinese text into individual words. Used for text breakdown and dictionary validation.  
+Official site: https://github.com/huaban/jieba-analysis
+
+---
+
+## Tools
+
+### Visual Studio Code
+IDE for Java/Spring Boot backend development, Angular frontend development and Python microservices.  
+Official site: https://code.visualstudio.com
+
+### Docker + Docker Compose
+Used to containerize all services (backend, database, frontend proxy, AI microservice, OCR microservice) and orchestrate them in a single `docker-compose.yml`.  
+Official site: https://www.docker.com
+
+### GitHub
+Version control, issue tracking, and project management via GitHub Issues and GitHub Projects.  
+Official site: https://github.com
+
+### Postman
+Used to test and document the REST API. A collection with examples of all API endpoints is available at `docs/ChineseReads.postman_collection.json`.  
+Official site: https://www.postman.com
+
+---
+
+## Architecture
+
+To see full details about the architecture, refer to the [Analysis](analysis.md) doc.
+
+### Deployment Architecture
+
+All services communicate within the same Docker network (`app-network`). Only ports 80 and 443 are exposed to the internet via Caddy.
+
+### API Documentation
+
+The REST API documentation is available in OpenAPI format. You can view it at:  
+👉 [API Documentation](https://raw.githack.com/codeurjc-students/2025-ChineseTexts/main/docs/api/openapi.html) *(pending generation)*
+
+A Postman collection with examples of all endpoints is available at:  
+`docs/ChineseReads.postman_collection.json` *(pending)*
+
+---
+
+## Development Process
+
+ChineseReads follows an **iterative and incremental** development process inspired by Agile principles and some XP (Extreme Programming) and Kanban practices.
+
+### Task Management
+- **GitHub Issues** — each feature, bug, or task is tracked as an issue.
+- **GitHub Projects** — visual Kanban board with columns: Backlog, In Progress, Done.
+
+### Git Strategy
+- `main` — stable production branch, only receives merges from feature branches via Pull Requests.
+- `action/<name>` — where action can be `feature, fix, test, docs, etc.`.
+- Commit messages have a descriptive name.
+
+Example workflow:
+```bash
+git checkout -b feature/my-feature
+git add .
+git commit -m "feat: add my feature"
+git push -u origin feature/my-feature
+# Open Pull Request on GitHub, review, merge
+git checkout main
+git pull
+```
+
+### Continuous Integration
+*(CI/CD workflows via GitHub Actions — planned for future phases)*
+
+---
+
+## Running the Application
+
+### Prerequisites
+- Java 21
+- Node.js 20+
+- Docker + Docker Compose
+- Python 3.11 (for local microservice development)
+
+### Clone the repository
+```bash
+git clone https://github.com/codeurjc-students/2025-ChineseTexts.git
+cd 2025-ChineseTexts
+```
+
+### Database (local)
+```bash
+docker run --name chinesereads-mysql \
+  -e MYSQL_ROOT_PASSWORD=password \
+  -e MYSQL_DATABASE=chinesereads \
+  -p 3306:3306 -d mysql:8
+```
+
+### Backend
+```bash
+cd backend
+./mvnw spring-boot:run
+```
+The API will be available at `http://localhost:8080`.
+
+### Frontend
+```bash
+cd frontend
+npm install
+ng serve
+```
+The app will be available at `http://localhost:4200`.
+
+### AI Microservice
+```bash
+cd ai-service
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+# Create .env with: DEEPSEEK_API_KEY=your_key_here
+python3 deepseekService.py
+```
+The service will be available at `http://localhost:5001`.
+
+### OCR Microservice
+```bash
+cd ocr-service
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+# Place credentials.json from Google Cloud in this folder
+export GOOGLE_APPLICATION_CREDENTIALS="./credentials.json"
+python3 googleOCRService.py
+```
+The service will be available at `http://localhost:5000`.
+
+---
+
+## Running Tests
+
+### Backend tests
+```bash
+cd backend
+./mvnw test
+```
+Runs unit tests (Mockito), integration tests (H2 in-memory database), and E2E API tests (MockMvc).
+
+### Frontend tests
+```bash
+cd frontend
+ng test
+```
+Runs all Jasmine/Karma component tests. Opens a Chrome browser and shows test results.
+
+---
+
+## Deployment
+
+### Required secret files (not committed to Git)
+
+**`docker/.env`:**\
+```DEEPSEEK_API_KEY=sk-your-deepseek-key-here```
+
+**`ocr-service/credentials.json`:**
+```json
+{
+  "type": "service_account",
+  "project_id": "chinesereads",
+  "private_key_id": "...",
+  "private_key": "-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n",
+  "client_email": "chinesereads@chinesereads.iam.gserviceaccount.com",
+  "client_id": "...",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "...",
+  "universe_domain": "googleapis.com"
+}
+```
+
+### Deploy to Azure VM
+
+1. Create a Resource Group and an Ubuntu 24.04 LTS VM on Azure.
+2. Open inbound ports 80 (HTTP) and 443 (HTTPS) in the networking settings.
+3. Connect via SSH:
+```bash
+chmod 600 ./chinesereads_key.pem
+ssh -i ./chinesereads_key.pem azureuser@<VM_IP>
+```
+
+4. Prepare the VM:
+```bash
+# Install Docker
+curl -fsSL https://get.docker.com | sh
+
+# Install Node.js 20
+curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+sudo apt-get install -y nodejs
+
+# Add user to docker group
+sudo groupadd docker
+sudo usermod -aG docker $USER
+exit
+# Reconnect via SSH
+
+# Clone the repository
+git clone https://github.com/codeurjc-students/2025-ChineseTexts.git
+cd 2025-ChineseTexts/docker
+chmod +x ./deploy.sh
+```
+
+5. Create the required secret files:
+   - `docker/.env` with the DeepSeek API key
+   - `ocr-service/credentials.json` with Google Cloud credentials
+
+6. Deploy:
+```bash
+./deploy.sh
+```
+
+### Verify HTTPS certificates
+```bash
+# Enter the Caddy container
+docker exec -it docker-caddy-1 sh
+ls -R /data/caddy/certificates/acme-v02.api.letsencrypt.org-directory/
+# Caddy should have generated 2 certificates: chinesereads.com and www.chinesereads.com
+exit
+
+# If certificates failed, restart Caddy
+docker restart docker-caddy-1
+```
+
+### Verify SSR is working
+```bash
+curl https://chinesereads.com | grep "<title>"
+```
+If the HTML title ``<title>Chinese Texts</title>`` appears in the response, SSR is working correctly. If ``<app-root></app-root>`` or nothing shows, it is not working.
+
+### Update the deployment after code changes
+```bash
+cd ~/2025-ChineseTexts
+git pull
+cd docker
+./deploy.sh
+
+# Clean up unused Docker images
+docker image prune -f
+
+# Check Docker disk usage
+docker system df
+```
+
+---
+
+## Creating a Release
+
+1. Make sure all tests pass locally.
+2. Merge your feature branch into `main` via Pull Request.
+3. Create a new GitHub Release from the `main` branch with a version tag (e.g., `v1.0.0`).
+4. Add a description of the changes included in this release.
