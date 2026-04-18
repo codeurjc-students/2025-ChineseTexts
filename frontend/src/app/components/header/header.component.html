@@ -1,19 +1,14 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
   <div class="container">
 
-    <a class="navbar-brand d-flex align-items-center" href="#" style="font-weight: 700; font-size: 1.8rem; color: #c0392b;">
+    <a class="navbar-brand d-flex align-items-center" [routerLink]="['/']"
+       style="font-weight: 700; font-size: 1.8rem; color: #c0392b;">
       <i class="bi bi-book-half me-2" style="font-size: 1.8rem;"></i> Home
     </a>
 
-    <button
-      class="navbar-toggler border-0"
-      type="button"
-      data-bs-toggle="collapse"
-      data-bs-target="#navbarNav"
-      aria-controls="navbarNav"
-      aria-expanded="false"
-      aria-label="Toggle navigation"
-    >
+    <button class="navbar-toggler border-0" type="button"
+      data-bs-toggle="collapse" data-bs-target="#navbarNav"
+      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
@@ -30,7 +25,7 @@
 
       <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
 
-        <li *ngIf="loginService.isLogged()" class="nav-item me-2">
+        <li *ngIf="isLoggedIn$ | async" class="nav-item me-2">
           <a class="nav-link fw-semibold text-dark" [routerLink]="['/collections']">
             <i class="bi bi-collection me-1"></i> My Collections
           </a>
@@ -48,33 +43,28 @@
           </a>
         </li>
 
-        <li *ngIf="!loginService.isLogged()" class="nav-item me-2">
-          
-          <a  class="nav-link btn btn-outline-danger rounded-pill px-3 py-1 fw-bold"
-            href="#"
-            data-bs-toggle="modal"
-            data-bs-target="#loginModal"
-          >
+        <li *ngIf="!(isLoggedIn$ | async)" class="nav-item me-2">
+          <a class="nav-link btn btn-outline-danger rounded-pill px-3 py-1 fw-bold"
+            href="#" data-bs-toggle="modal" data-bs-target="#loginModal">
             <i class="bi bi-box-arrow-in-right me-1"></i> Login
           </a>
         </li>
 
-        <li *ngIf="!loginService.isLogged()" class="nav-item me-2">
+        <li *ngIf="!(isLoggedIn$ | async)" class="nav-item me-2">
           <a class="nav-link btn btn-danger rounded-pill px-3 py-1 fw-bold"
             [routerLink]="['/signup']">
             <i class="bi bi-person-fill me-1"></i> Signup
           </a>
         </li>
 
-        <li *ngIf="loginService.isLogged()" class="nav-item me-2">
+        <li *ngIf="isLoggedIn$ | async" class="nav-item me-2">
           <a class="nav-link fw-semibold text-dark" [routerLink]="['/profile']">
             <i class="bi bi-person-circle me-1"></i> Profile
           </a>
         </li>
 
-        <li *ngIf="loginService.isLogged()" class="nav-item">
-          <a class="nav-link btn btn-danger rounded-pill px-3 py-1 fw-bold"
-            (click)="logout()">
+        <li *ngIf="isLoggedIn$ | async" class="nav-item">
+          <a class="nav-link btn btn-danger rounded-pill px-3 py-1 fw-bold" (click)="logout()">
             <i class="bi bi-box-arrow-right me-1"></i> Logout
           </a>
         </li>
@@ -90,8 +80,8 @@
   </div>
 </nav>
 
-<!-- Modal de Login -->
-<div *ngIf="!loginService.isLogged()" class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true">
+<!-- Modal de Login — sin <form> para evitar submit nativo -->
+<div *ngIf="!(isLoggedIn$ | async)" class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" style="justify-content: center;">
     <div class="modal-content login-form-container bg-light rounded-3 shadow-lg">
 
@@ -101,55 +91,54 @@
       </div>
 
       <div class="modal-body pt-3">
-        <form (ngSubmit)="login()">
 
-          <div class="mb-3">
-            <label for="loginEmail" class="form-label">Email</label>
-            <input
-              [(ngModel)]="loginEmail"
-              name="loginEmail"
-              type="email"
-              class="form-control"
-              [class.is-invalid]="loginAttempted && emailError"
-              id="loginEmail"
-              placeholder="Enter your email"
-            />
-            <div class="invalid-feedback" *ngIf="loginAttempted && emailError">
-              {{ emailError }}
-            </div>
+        <div class="mb-3">
+          <label for="loginEmail" class="form-label">Email</label>
+          <input
+            [(ngModel)]="loginEmail"
+            name="loginEmail"
+            type="email"
+            class="form-control"
+            [class.is-invalid]="loginAttempted && emailError"
+            id="loginEmail"
+            placeholder="Enter your email"
+            (keydown.enter)="login()"
+          />
+          <div class="invalid-feedback" *ngIf="loginAttempted && emailError">
+            {{ emailError }}
           </div>
+        </div>
 
-          <div class="mb-3">
-            <label for="loginPassword" class="form-label">Password</label>
-            <input
-              [(ngModel)]="loginPassword"
-              name="loginPassword"
-              type="password"
-              class="form-control"
-              [class.is-invalid]="loginAttempted && passwordError"
-              id="loginPassword"
-              placeholder="Enter your password"
-            />
-            <div class="invalid-feedback" *ngIf="loginAttempted && passwordError">
-              {{ passwordError }}
-            </div>
+        <div class="mb-3">
+          <label for="loginPassword" class="form-label">Password</label>
+          <input
+            [(ngModel)]="loginPassword"
+            name="loginPassword"
+            type="password"
+            class="form-control"
+            [class.is-invalid]="loginAttempted && passwordError"
+            id="loginPassword"
+            placeholder="Enter your password"
+            (keydown.enter)="login()"
+          />
+          <div class="invalid-feedback" *ngIf="loginAttempted && passwordError">
+            {{ passwordError }}
           </div>
+        </div>
 
-          <div class="text-danger mb-3 text-center" *ngIf="messageError">
-            <i class="bi bi-exclamation-circle me-1"></i>{{ messageError }}
-          </div>
+        <div class="text-danger mb-3 text-center" *ngIf="messageError">
+          <i class="bi bi-exclamation-circle me-1"></i>{{ messageError }}
+        </div>
 
-          <div class="d-grid gap-2">
-            <button type="submit" class="btn btn-danger">Login</button>
-            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal"
-              (click)="loginAttempted = false; emailError = ''; passwordError = ''; messageError = ''">
-              Cancel
-            </button>
-          </div>
+        <div class="d-grid gap-2">
+          <button type="button" class="btn btn-danger" (click)="login()">Login</button>
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal"
+            (click)="loginAttempted = false; emailError = ''; passwordError = ''; messageError = ''">
+            Cancel
+          </button>
+        </div>
 
-        </form>
       </div>
-
     </div>
   </div>
 </div>
