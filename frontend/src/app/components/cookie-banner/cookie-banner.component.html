@@ -1,0 +1,16 @@
+<div class="cookie-banner" *ngIf="visible">
+  <div class="cookie-content">
+    <div class="cookie-text">
+      <p>
+        We use cookies to analyze traffic and improve your experience.
+        You can accept or reject non-essential cookies.
+        For more information see our
+        <a routerLink="/privacy-policy">Privacy Policy</a>.
+      </p>
+    </div>
+    <div class="cookie-actions">
+      <button class="btn-reject" (click)="reject()">Reject</button>
+      <button class="btn-accept" (click)="accept()">Accept cookies</button>
+    </div>
+  </div>
+</div>
