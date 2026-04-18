@@ -4,11 +4,12 @@ import { RouterOutlet } from '@angular/router';
 import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { HomeComponent } from './components/home/home.component';
+import { CookieBannerComponent } from './components/cookie-banner/cookie-banner.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, HeaderComponent, FooterComponent, HomeComponent],
+  imports: [CommonModule, RouterOutlet, HeaderComponent, FooterComponent, HomeComponent, CookieBannerComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })

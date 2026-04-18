@@ -1,17 +1,17 @@
 import { TestBed } from '@angular/core/testing';
-import { FooterComponent } from './footer.component';
+import { CookieBannerComponent } from './cookie-banner.component';
 import { provideRouter } from '@angular/router';
 
-describe('FooterComponent', () => {
+describe('CookieBannerComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FooterComponent],
+      imports: [CookieBannerComponent],
       providers: [provideRouter([])]
     }).compileComponents();
   });
 
   it('should create', () => {
-    const fixture = TestBed.createComponent(FooterComponent);
+    const fixture = TestBed.createComponent(CookieBannerComponent);
     expect(fixture.componentInstance).toBeTruthy();
   });
 });
