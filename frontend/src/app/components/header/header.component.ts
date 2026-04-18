@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { LoginService } from '../../services/login.service';
 import { FormsModule } from '@angular/forms';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-header',
@@ -19,11 +20,14 @@ export class HeaderComponent {
   emailError = '';
   passwordError = '';
   loginAttempted = false;
+  isLoggedIn$: Observable<boolean>;
 
   constructor(
     public loginService: LoginService,
     private router: Router,
-  ) {}
+  ) {
+    this.isLoggedIn$ = this.loginService.loggedIn$;
+  }
 
   public login() {
     this.loginAttempted = true;
@@ -48,19 +52,29 @@ export class HeaderComponent {
 
     if (!valid) return;
 
-    this.loginService.login(this.loginEmail, this.loginPassword).subscribe(
-      () => {
-        this.loginService.reqIsLogged().subscribe(
-          () => window.location.reload()
-        );
+    this.loginService.login(this.loginEmail, this.loginPassword).subscribe({
+      next: () => {
+        this.loginService.reqIsLogged().subscribe({
+          next: () => {
+            const modalEl = document.getElementById('loginModal');
+            if (modalEl) {
+              const modal = (window as any).bootstrap?.Modal?.getInstance(modalEl);
+              modal?.hide();
+            }
+            document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+            document.body.classList.remove('modal-open');
+            document.body.style.removeProperty('overflow');
+            document.body.style.removeProperty('padding-right');
+          }
+        });
       },
-      () => {
+      error: () => {
         this.loginEmail = '';
         this.loginPassword = '';
         this.loginAttempted = false;
         this.messageError = 'Incorrect credentials. Please try again.';
       }
-    );
+    });
   }
 
   public logout(): void {

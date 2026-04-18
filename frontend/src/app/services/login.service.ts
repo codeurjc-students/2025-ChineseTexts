@@ -24,11 +24,15 @@ export class LoginService {
     if (isPlatformBrowser(this.platformId)) {
       const savedUser = localStorage.getItem("user");
       if (savedUser) {
-        this.user = JSON.parse(savedUser);
-        this.loggedInSubject.next(true);
-      } else {
-        this.reqIsLogged().subscribe();
+        try {
+          this.user = JSON.parse(savedUser);
+          this.loggedInSubject.next(true); // inmediato, sin parpadeo
+        } catch {
+          localStorage.removeItem("user");
+        }
       }
+      // Siempre verificamos con el backend para refrescar el estado real
+      this.reqIsLogged().subscribe();
     }
   }
 
