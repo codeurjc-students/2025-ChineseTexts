@@ -25,49 +25,56 @@
 
       <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
 
-        <li *ngIf="isLoggedIn$ | async" class="nav-item me-2">
-          <a class="nav-link fw-semibold text-dark" [routerLink]="['/collections']">
-            <i class="bi bi-collection me-1"></i> My Collections
-          </a>
-        </li>
+        <ng-container *ngIf="authReady; else loadingNav">
 
-        <li *ngIf="loginService.isRoleAdmin()" class="nav-item me-2">
-          <a class="nav-link fw-semibold text-dark" [routerLink]="['/upload-text']">
-            <i class="bi bi-cloud-upload me-1"></i> Upload text
-          </a>
-        </li>
+          <li *ngIf="isLoggedIn$ | async" class="nav-item me-2">
+            <a class="nav-link fw-semibold text-dark" [routerLink]="['/collections']">
+              <i class="bi bi-collection me-1"></i> My Collections
+            </a>
+          </li>
 
-        <li *ngIf="loginService.isRoleAdmin()" class="nav-item me-2">
-          <a class="nav-link fw-semibold text-dark" [routerLink]="['/ai-tools']">
-            <i class="bi bi-stars me-1"></i> AI Tools
-          </a>
-        </li>
+          <li *ngIf="loginService.isRoleAdmin()" class="nav-item me-2">
+            <a class="nav-link fw-semibold text-dark" [routerLink]="['/upload-text']">
+              <i class="bi bi-cloud-upload me-1"></i> Upload text
+            </a>
+          </li>
 
-        <li *ngIf="!(isLoggedIn$ | async)" class="nav-item me-2">
-          <a class="nav-link btn btn-outline-danger rounded-pill px-3 py-1 fw-bold"
-            href="#" data-bs-toggle="modal" data-bs-target="#loginModal">
-            <i class="bi bi-box-arrow-in-right me-1"></i> Login
-          </a>
-        </li>
+          <li *ngIf="loginService.isRoleAdmin()" class="nav-item me-2">
+            <a class="nav-link fw-semibold text-dark" [routerLink]="['/ai-tools']">
+              <i class="bi bi-stars me-1"></i> AI Tools
+            </a>
+          </li>
 
-        <li *ngIf="!(isLoggedIn$ | async)" class="nav-item me-2">
-          <a class="nav-link btn btn-danger rounded-pill px-3 py-1 fw-bold"
-            [routerLink]="['/signup']">
-            <i class="bi bi-person-fill me-1"></i> Signup
-          </a>
-        </li>
+          <li *ngIf="!(isLoggedIn$ | async)" class="nav-item me-2">
+            <a class="nav-link btn btn-outline-danger rounded-pill px-3 py-1 fw-bold"
+              href="#" data-bs-toggle="modal" data-bs-target="#loginModal">
+              <i class="bi bi-box-arrow-in-right me-1"></i> Login
+            </a>
+          </li>
 
-        <li *ngIf="isLoggedIn$ | async" class="nav-item me-2">
-          <a class="nav-link fw-semibold text-dark" [routerLink]="['/profile']">
-            <i class="bi bi-person-circle me-1"></i> Profile
-          </a>
-        </li>
+          <li *ngIf="!(isLoggedIn$ | async)" class="nav-item me-2">
+            <a class="nav-link btn btn-danger rounded-pill px-3 py-1 fw-bold"
+              [routerLink]="['/signup']">
+              <i class="bi bi-person-fill me-1"></i> Signup
+            </a>
+          </li>
 
-        <li *ngIf="isLoggedIn$ | async" class="nav-item">
-          <a class="nav-link btn btn-danger rounded-pill px-3 py-1 fw-bold" (click)="logout()">
-            <i class="bi bi-box-arrow-right me-1"></i> Logout
-          </a>
-        </li>
+          <li *ngIf="isLoggedIn$ | async" class="nav-item me-2">
+            <a class="nav-link fw-semibold text-dark" [routerLink]="['/profile']">
+              <i class="bi bi-person-circle me-1"></i> Profile
+            </a>
+          </li>
+
+          <li *ngIf="isLoggedIn$ | async" class="nav-item">
+            <a class="nav-link btn btn-danger rounded-pill px-3 py-1 fw-bold" (click)="logout()">
+              <i class="bi bi-box-arrow-right me-1"></i> Logout
+            </a>
+          </li>
+
+        </ng-container>
+
+        <!-- Mientras se verifica el estado de autenticación, no se muestra nada -->
+        <ng-template #loadingNav></ng-template>
 
       </ul>
 

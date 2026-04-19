@@ -1,9 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { LoginService } from '../../services/login.service';
 import { FormsModule } from '@angular/forms';
 import { Observable } from 'rxjs';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-header',
@@ -12,7 +13,7 @@ import { Observable } from 'rxjs';
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss'
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit {
 
   loginEmail = '';
   loginPassword = '';
@@ -21,12 +22,26 @@ export class HeaderComponent {
   passwordError = '';
   loginAttempted = false;
   isLoggedIn$: Observable<boolean>;
+  authReady = false;
 
   constructor(
     public loginService: LoginService,
     private router: Router,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {
     this.isLoggedIn$ = this.loginService.loggedIn$;
+  }
+
+  ngOnInit(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      // Esperamos a que el LoginService haya verificado el estado real
+      this.loginService.loggedIn$.subscribe(() => {
+        this.authReady = true;
+      });
+    } else {
+      // En SSR no mostramos nada condicionado al login
+      this.authReady = false;
+    }
   }
 
   public login() {
@@ -56,6 +71,12 @@ export class HeaderComponent {
       next: () => {
         this.loginService.reqIsLogged().subscribe({
           next: () => {
+            this.loginEmail = '';
+            this.loginPassword = '';
+            this.loginAttempted = false;
+            this.emailError = '';
+            this.passwordError = '';
+            this.messageError = '';
             const modalEl = document.getElementById('loginModal');
             if (modalEl) {
               const modal = (window as any).bootstrap?.Modal?.getInstance(modalEl);

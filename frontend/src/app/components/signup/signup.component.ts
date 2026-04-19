@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Location } from '@angular/common';
 import { UserService, UserDTO } from '../../services/users.service';
 import { LoginService } from '../../services/login.service';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-signup',
@@ -13,9 +14,10 @@ import { Router } from '@angular/router';
   templateUrl: './signup.component.html',
   styleUrls: ['./signup.component.scss']
 })
-export class SignupComponent implements OnInit {
+export class SignupComponent implements OnInit, OnDestroy {
 
   signupForm: FormGroup;
+  private loginSub?: Subscription;
 
   constructor(
     private fb: FormBuilder,
@@ -33,16 +35,18 @@ export class SignupComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Si ya está logueado, redirige a home
     if (this.loginService.isLogged()) {
       this.router.navigate(['/']);
       return;
     }
 
-    // Si inicia sesión mientras está en signup, redirige a home
-    this.loginService.loggedIn$.subscribe(isLogged => {
+    this.loginSub = this.loginService.loggedIn$.subscribe(isLogged => {
       if (isLogged) this.router.navigate(['/']);
     });
+  }
+
+  ngOnDestroy(): void {
+    this.loginSub?.unsubscribe();
   }
 
   submitSignup() {
@@ -75,14 +79,14 @@ export class SignupComponent implements OnInit {
     });
   }
 
+  goBack() {
+    this.location.back();
+  }
+
   private strictEmailValidator(control: any) {
     const value = control.value;
     if (!value) return null;
     const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
     return valid ? null : { invalidEmail: true };
-  }
-
-  goBack() {
-    this.location.back();
   }
 }
