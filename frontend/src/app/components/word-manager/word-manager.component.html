@@ -1,0 +1,111 @@
+<div class="word-manager">
+
+  <div class="section-header">
+    <button class="btn-icon" (click)="goBack()" title="Back to Admin Tools">
+      <i class="bi bi-arrow-left"></i>
+    </button>
+    <h2 class="section-title">Manage dictionary word</h2>
+  </div>
+
+  <p class="section-hint">
+    Search a word by its Chinese characters. If it exists you can edit or delete it;
+    if it does not, you can add it to the dictionary.
+  </p>
+
+  <!-- ══════ BUSCADOR ══════ -->
+  <div class="form-card">
+    <div class="search-row">
+      <input type="text" [(ngModel)]="searchTerm" class="form-input search-input"
+        placeholder="e.g. 你好" (keydown.enter)="search()" [disabled]="loading">
+      <button class="btn-primary" (click)="search()" [disabled]="loading">
+        <span *ngIf="loading && mode === 'search'" class="spinner-sm"></span>
+        <i class="bi bi-search" *ngIf="!(loading && mode === 'search')"></i>
+        Search
+      </button>
+    </div>
+  </div>
+
+  <!-- ══════ MENSAJE (éxito / error) ══════ -->
+  <div *ngIf="message" class="mt-3"
+       [ngClass]="messageType === 'success' ? 'alert-success' : 'alert-error'">
+    <i class="bi" [ngClass]="messageType === 'success' ? 'bi-check-circle' : 'bi-exclamation-circle'"></i>
+    {{ message }}
+  </div>
+
+  <!-- ══════ FORMULARIO (editar o crear) ══════ -->
+  <div *ngIf="mode === 'edit' || mode === 'create'" class="form-card mt-3">
+
+    <div class="card-header-row">
+      <h3 class="card-label">
+        {{ mode === 'edit' ? 'Edit word' : 'Add new word' }}
+      </h3>
+      <span class="mode-badge" [ngClass]="mode === 'edit' ? 'mode-badge--edit' : 'mode-badge--new'">
+        {{ mode === 'edit' ? 'In dictionary' : 'New' }}
+      </span>
+    </div>
+
+    <div class="chinese-display">{{ word.chinese || '—' }}</div>
+
+    <div class="form-group mt-3">
+      <label>Chinese <span class="required">*</span></label>
+      <!-- The Chinese characters are the word identity: fixed when editing, set from the
+           search when creating. -->
+      <input type="text" [(ngModel)]="word.chinese" class="form-input"
+        [readonly]="mode === 'edit'" [class.readonly]="mode === 'edit'">
+    </div>
+
+    <div class="form-row mt-3">
+      <div class="form-group">
+        <label>Pinyin <span class="required">*</span></label>
+        <input type="text" [(ngModel)]="word.pinyin" class="form-input" placeholder="e.g. nǐ hǎo">
+      </div>
+      <div class="form-group">
+        <label>English <span class="required">*</span></label>
+        <input type="text" [(ngModel)]="word.english" class="form-input" placeholder="e.g. hello">
+      </div>
+    </div>
+
+    <div class="form-group mt-3">
+      <label>Spanish <span class="required">*</span></label>
+      <input type="text" [(ngModel)]="word.spanish" class="form-input" placeholder="e.g. hola">
+    </div>
+
+    <!-- Acciones EDITAR -->
+    <div *ngIf="mode === 'edit'" class="action-row mt-4">
+      <button class="btn-primary" (click)="update()" [disabled]="loading || !fieldsComplete()">
+        <span *ngIf="loading" class="spinner-sm"></span>
+        <i class="bi bi-save" *ngIf="!loading"></i>
+        Save changes
+      </button>
+      <button class="btn-danger" (click)="askDelete()" [disabled]="loading">
+        <i class="bi bi-trash"></i> Delete
+      </button>
+      <button class="btn-secondary" (click)="newSearch()" [disabled]="loading">
+        Search another
+      </button>
+    </div>
+
+    <!-- Confirmación de borrado -->
+    <div *ngIf="confirmingDelete" class="confirm-box mt-3">
+      <span><i class="bi bi-exclamation-triangle-fill"></i>
+        Delete "<strong>{{ word.chinese }}</strong>" from the dictionary?</span>
+      <div class="confirm-actions">
+        <button class="btn-danger btn-sm" (click)="confirmDelete()">Yes, delete</button>
+        <button class="btn-secondary btn-sm" (click)="cancelDelete()">Cancel</button>
+      </div>
+    </div>
+
+    <!-- Acciones CREAR -->
+    <div *ngIf="mode === 'create'" class="action-row mt-4">
+      <button class="btn-primary" (click)="create()" [disabled]="loading || !fieldsComplete()">
+        <span *ngIf="loading" class="spinner-sm"></span>
+        <i class="bi bi-plus-lg" *ngIf="!loading"></i>
+        Add word
+      </button>
+      <button class="btn-secondary" (click)="newSearch()" [disabled]="loading">
+        Cancel
+      </button>
+    </div>
+
+  </div>
+</div>

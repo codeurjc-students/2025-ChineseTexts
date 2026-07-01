@@ -4,8 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -47,5 +50,37 @@ public class WordControllerRest {
         Word saved = dictionaryService.save(word);
         if (saved == null) return ResponseEntity.status(HttpStatus.CONFLICT).body("Word already exists.");
         return ResponseEntity.status(HttpStatus.CREATED).body(wordMapper.toDTO(saved));
+    }
+
+    /** Admin dictionary lookup of a single word by its Chinese characters. */
+    @GetMapping("/dictionary")
+    public ResponseEntity<?> getDictionaryWord(@RequestParam String chinese) {
+        Word word = dictionaryService.findByChinese(chinese);
+        if (word == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Word not found.");
+        return ResponseEntity.status(HttpStatus.OK).body(wordMapper.toDTO(word));
+    }
+
+    /** Updates an existing word (pinyin/english/spanish). The Chinese characters are the identity. */
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateWord(@PathVariable Long id, @RequestBody WordDTO wordDTO) {
+        Word data = new Word(wordDTO.chinese(), wordDTO.pinyin(), wordDTO.english(), wordDTO.spanish());
+        Word updated = dictionaryService.update(id, data);
+        if (updated == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Word not found.");
+        return ResponseEntity.status(HttpStatus.OK).body(wordMapper.toDTO(updated));
+    }
+
+    /** Deletes a word, unless it is still used by flashcards (then 409 CONFLICT). */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteWord(@PathVariable Long id) {
+        DictionaryService.DeleteResult result = dictionaryService.delete(id);
+        switch (result) {
+            case NOT_FOUND:
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Word not found.");
+            case IN_USE:
+                return ResponseEntity.status(HttpStatus.CONFLICT)
+                        .body("This word is used in existing flashcards and cannot be deleted.");
+            default:
+                return ResponseEntity.noContent().build();
+        }
     }
 }

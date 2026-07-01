@@ -8,11 +8,16 @@
     <div class="success-actions">
       <button class="btn-primary" (click)="goToTexts()">Go to texts</button>
       <button class="btn-secondary" (click)="reset()">Upload another</button>
+      <button *ngIf="embedded" class="btn-secondary" (click)="back()">Back to menu</button>
     </div>
   </div>
 
   <!-- FORMULARIO -->
   <div *ngIf="status !== 'success'">
+
+    <button *ngIf="embedded" class="btn-back" (click)="back()">
+      <i class="bi bi-arrow-left"></i> Back to Admin Tools
+    </button>
 
     <h1 class="page-title">Upload new text</h1>
     <p class="page-subtitle">Fill in all fields, validate the text, and upload it.</p>

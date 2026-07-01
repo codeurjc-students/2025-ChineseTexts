@@ -8,4 +8,5 @@ import com.chinesereads.backend.Model.Word;
 
 public interface FlashcardRepository extends JpaRepository<Flashcard, Long> {
     boolean existsByWordAndCollection(Word word, Collection collection);
+    boolean existsByWord(Word word);
 }

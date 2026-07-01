@@ -1,0 +1,154 @@
+.word-manager {
+  font-family: 'Noto Serif SC', serif;
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+// ——— Header de sección ———
+.section-header {
+  display: flex; align-items: center; gap: 14px;
+  margin-bottom: 0.75rem;
+}
+
+.section-title {
+  font-size: 1.3rem; font-weight: 700; color: #c0392b; margin: 0;
+}
+
+.section-hint {
+  font-size: 0.88rem; color: #888; margin-bottom: 1.25rem; line-height: 1.5;
+}
+
+// ——— Tarjeta / formulario ———
+.form-card {
+  background: white; border: 1px solid #eee;
+  border-radius: 14px; padding: 1.5rem;
+}
+
+.card-header-row {
+  display: flex; align-items: center; justify-content: space-between;
+}
+
+.card-label {
+  font-size: 0.85rem; font-weight: 700;
+  color: #aaa; text-transform: uppercase;
+  letter-spacing: 1px; margin: 0;
+}
+
+.mode-badge {
+  font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.5px; border-radius: 6px; padding: 3px 8px;
+  &--edit { background: #eafaf1; color: #1e8449; }
+  &--new  { background: #fef9e7; color: #b7770d; }
+}
+
+.chinese-display {
+  text-align: center; font-size: 3rem; font-weight: 700;
+  color: #c0392b; margin-top: 0.75rem; line-height: 1.2;
+}
+
+.form-row {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+  @media (max-width: 600px) { grid-template-columns: 1fr; }
+}
+
+.form-group {
+  display: flex; flex-direction: column; gap: 6px;
+  label { font-size: 0.88rem; font-weight: 600; color: #444; }
+}
+
+.mt-3 { margin-top: 1rem; }
+.mt-4 { margin-top: 1.5rem; }
+.required { color: #c0392b; }
+
+.form-input {
+  padding: 10px 14px; border: 1.5px solid #ddd;
+  border-radius: 10px; font-size: 0.95rem; outline: none;
+  transition: border-color 0.15s; font-family: inherit;
+  &:focus { border-color: #c0392b; }
+  &.readonly { background: #f6f6f6; color: #666; cursor: not-allowed; }
+}
+
+// ——— Buscador ———
+.search-row {
+  display: flex; gap: 10px; align-items: stretch;
+  @media (max-width: 480px) { flex-direction: column; }
+}
+
+.search-input { flex: 1; font-size: 1.1rem; }
+
+// ——— Botones ———
+.btn-primary {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  background: #c0392b; color: white; border: none;
+  border-radius: 10px; padding: 10px 22px;
+  font-size: 0.95rem; font-weight: 600; cursor: pointer;
+  transition: background 0.15s; white-space: nowrap;
+  &:hover:not(:disabled) { background: #e74c3c; }
+  &:disabled { background: #e0a09a; cursor: not-allowed; }
+}
+
+.btn-secondary {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  background: white; color: #555; border: 1.5px solid #ccc;
+  border-radius: 10px; padding: 10px 22px;
+  font-size: 0.95rem; font-weight: 600; cursor: pointer;
+  transition: background 0.15s;
+  &:hover:not(:disabled) { background: #f2f2f2; }
+  &:disabled { opacity: 0.6; cursor: not-allowed; }
+}
+
+.btn-danger {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  background: white; color: #c0392b; border: 1.5px solid #c0392b;
+  border-radius: 10px; padding: 10px 22px;
+  font-size: 0.95rem; font-weight: 600; cursor: pointer;
+  transition: background 0.15s;
+  &:hover:not(:disabled) { background: #c0392b; color: white; }
+  &:disabled { opacity: 0.6; cursor: not-allowed; }
+}
+
+.btn-sm { padding: 7px 16px; font-size: 0.88rem; }
+
+.btn-icon {
+  background: none; border: none; font-size: 1.1rem;
+  color: #999; cursor: pointer; padding: 6px 10px; border-radius: 8px;
+  &:hover { background: #f0f0f0; color: #333; }
+}
+
+.action-row {
+  display: flex; gap: 12px; flex-wrap: wrap;
+}
+
+// ——— Confirmación de borrado ———
+.confirm-box {
+  background: #fdecea; border: 1.5px solid #f5b7b1; border-radius: 10px;
+  padding: 14px 16px; display: flex; align-items: center;
+  justify-content: space-between; gap: 12px; flex-wrap: wrap;
+  color: #c0392b; font-size: 0.92rem;
+  i { margin-right: 6px; }
+}
+
+.confirm-actions { display: flex; gap: 8px; }
+
+// ——— Alertas ———
+.alert-error {
+  background: #fdecea; color: #c0392b; border-radius: 10px;
+  padding: 12px 16px; font-size: 0.9rem;
+  display: flex; align-items: center; gap: 8px;
+}
+
+.alert-success {
+  background: #eafaf1; color: #1e8449; border-radius: 10px;
+  padding: 12px 16px; font-size: 0.9rem;
+  display: flex; align-items: center; gap: 8px;
+}
+
+// ——— Spinner ———
+.spinner-sm {
+  display: inline-block; width: 16px; height: 16px;
+  border: 2px solid rgba(255,255,255,0.4);
+  border-top-color: white; border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }

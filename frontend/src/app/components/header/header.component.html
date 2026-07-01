@@ -34,14 +34,8 @@
           </li>
 
           <li *ngIf="loginService.isRoleAdmin()" class="nav-item me-2">
-            <a class="nav-link fw-semibold text-dark" [routerLink]="['/upload-text']">
-              <i class="bi bi-cloud-upload me-1"></i> Upload text
-            </a>
-          </li>
-
-          <li *ngIf="loginService.isRoleAdmin()" class="nav-item me-2">
-            <a class="nav-link fw-semibold text-dark" [routerLink]="['/ai-tools']">
-              <i class="bi bi-stars me-1"></i> AI Tools
+            <a class="nav-link fw-semibold text-dark" [routerLink]="['/admin-tools']">
+              <i class="bi bi-stars me-1"></i> Admin Tools
             </a>
           </li>
 

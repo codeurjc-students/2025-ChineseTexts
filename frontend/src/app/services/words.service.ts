@@ -25,4 +25,20 @@ export class WordsService {
   saveWord(word: Word): Observable<Word> {
     return this.http.post<Word>(this.apiUrl, word, { withCredentials: true });
   }
+
+  /** Admin: look up a single word by its Chinese characters (404 if it does not exist). */
+  getDictionaryWord(chinese: string): Observable<Word> {
+    const params = new HttpParams().set('chinese', chinese);
+    return this.http.get<Word>(`${this.apiUrl}/dictionary`, { params, withCredentials: true });
+  }
+
+  /** Admin: update an existing word (pinyin/english/spanish). */
+  updateWord(id: number, word: Word): Observable<Word> {
+    return this.http.put<Word>(`${this.apiUrl}/${id}`, word, { withCredentials: true });
+  }
+
+  /** Admin: delete a word (409 if it is still used by flashcards). */
+  deleteWord(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`, { withCredentials: true });
+  }
 }
