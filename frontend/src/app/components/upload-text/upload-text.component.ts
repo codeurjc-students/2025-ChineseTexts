@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -25,6 +25,12 @@ interface MissingWordForm {
   styleUrl: './upload-text.component.scss'
 })
 export class UploadTextComponent implements OnInit {
+
+  /** True when hosted inside Admin Tools; shows a "back to menu" control. */
+  @Input() embedded = false;
+
+  /** Emitted when the admin wants to go back to the Admin Tools menu. */
+  @Output() exit = new EventEmitter<void>();
 
   titleEnglish = '';
   titleSpanish = '';
@@ -219,6 +225,10 @@ export class UploadTextComponent implements OnInit {
 
   goToTexts(): void {
     this.router.navigate(['/texts']);
+  }
+
+  back(): void {
+    this.exit.emit();
   }
 
   reset(): void {

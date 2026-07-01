@@ -7,14 +7,16 @@
     <p class="text-muted">The text is now available in the app.</p>
     <div class="success-actions">
       <button class="btn-primary" (click)="goToTexts()">Go to texts</button>
-      <button class="btn-secondary" (click)="selectMode('choose')">Use AI again</button>
+      <button class="btn-secondary" (click)="goBack()">Use AI again</button>
     </div>
   </div>
 
   <div *ngIf="status !== 'success'">
 
-    <h1 class="page-title">AI Tools</h1>
-    <p class="page-subtitle">Let AI generate or extract Chinese texts automatically.</p>
+    <ng-container *ngIf="!forcedMode">
+      <h1 class="page-title">AI Tools</h1>
+      <p class="page-subtitle">Let AI generate or extract Chinese texts automatically.</p>
+    </ng-container>
 
     <!-- ══════ ELEGIR MODO ══════ -->
     <div *ngIf="mode === 'choose'" class="mode-grid">
@@ -38,7 +40,7 @@
     <!-- ══════ MODO GENERAR ══════ -->
     <div *ngIf="mode === 'generate' && status === 'idle'">
       <div class="section-header">
-        <button class="btn-icon" (click)="selectMode('choose')"><i class="bi bi-arrow-left"></i></button>
+        <button class="btn-icon" (click)="goBack()"><i class="bi bi-arrow-left"></i></button>
         <h2 class="section-title">Generate text with AI</h2>
       </div>
 
@@ -72,7 +74,7 @@
     <!-- ══════ MODO OCR ══════ -->
     <div *ngIf="mode === 'ocr' && status === 'idle'">
       <div class="section-header">
-        <button class="btn-icon" (click)="selectMode('choose')"><i class="bi bi-arrow-left"></i></button>
+        <button class="btn-icon" (click)="goBack()"><i class="bi bi-arrow-left"></i></button>
         <h2 class="section-title">Extract text from image</h2>
       </div>
 

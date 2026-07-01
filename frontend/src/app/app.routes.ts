@@ -9,6 +9,7 @@ import { CollectionsComponent } from './components/collections/collections.compo
 import { UploadTextComponent } from './components/upload-text/upload-text.component';
 import { ProfileComponent } from './components/profile/profile.component';
 import { AiToolsComponent } from './components/ai-tools/ai-tools.component';
+import { AdminToolsComponent } from './components/admin-tools/admin-tools.component';
 import { PrivacyPolicyComponent } from './components/privacy-policy/privacy-policy.component';
 
 export const routes: Routes = [
@@ -23,5 +24,6 @@ export const routes: Routes = [
   { path: 'upload-text', component: UploadTextComponent },
   { path: 'profile', component: ProfileComponent },
   { path: 'ai-tools', component: AiToolsComponent},
+  { path: 'admin-tools', component: AdminToolsComponent },
   { path: 'privacy-policy', component: PrivacyPolicyComponent },
 ];

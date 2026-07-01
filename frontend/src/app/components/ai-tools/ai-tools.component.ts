@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -29,6 +29,15 @@ type Status = 'idle' | 'loading' | 'ready' | 'uploading' | 'success' | 'error';
   styleUrl: './ai-tools.component.scss'
 })
 export class AiToolsComponent implements OnInit {
+
+  /**
+   * When set (e.g. embedded inside Admin Tools), the component skips its own mode chooser
+   * and starts directly in that mode. Going "back" then returns to the host via {@link exit}.
+   */
+  @Input() forcedMode: 'generate' | 'ocr' | null = null;
+
+  /** Emitted when the admin wants to leave this tool (only meaningful when embedded). */
+  @Output() exit = new EventEmitter<void>();
 
   mode: AiMode = 'choose';
   status: Status = 'idle';
@@ -70,6 +79,9 @@ export class AiToolsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    if (this.forcedMode) {
+      this.mode = this.forcedMode;
+    }
     this.loginService.reqIsLogged().subscribe({
       next: (user) => {
         if (!user || !user.roles.includes('ADMIN')) {
@@ -83,6 +95,18 @@ export class AiToolsComponent implements OnInit {
   selectMode(mode: AiMode): void {
     this.mode = mode;
     this.reset();
+  }
+
+  /**
+   * Back navigation: when embedded with a forced mode, leave the tool entirely;
+   * otherwise return to this component's own mode chooser.
+   */
+  goBack(): void {
+    if (this.forcedMode) {
+      this.exit.emit();
+    } else {
+      this.selectMode('choose');
+    }
   }
 
   // ——— Validación del formulario ———
