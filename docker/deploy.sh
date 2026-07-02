@@ -14,6 +14,13 @@ cd ../docker
 echo "Starting all services..."
 docker compose --env-file .env up -d --build
 
+# 3. Reclamar espacio: caché de build + imágenes huérfanas (versiones antiguas
+#    de backend/frontend que quedan sin etiqueta tras el --build).
+#    Seguro: no toca imágenes en uso, contenedores ni volúmenes (la BD MySQL).
+echo "Reclaiming unused Docker space..."
+docker builder prune -f || true
+docker image prune -f || true
+
 echo ""
 echo "=== Deploy complete ==="
 echo "App running at https://chinesereads.com"
