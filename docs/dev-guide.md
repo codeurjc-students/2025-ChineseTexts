@@ -17,12 +17,12 @@
 
 ## Introduction
 
-ChineseReads follows a **distributed MVC architecture** composed of multiple independent services that communicate via REST APIs. The system is split into four main components: a Spring Boot backend (REST API + business logic), an Angular frontend (SPA), a MySQL database, and two Python microservices for AI text generation and OCR image processing.
+ChineseReads follows a **distributed MVC architecture** composed of multiple independent services that communicate via REST APIs. The system is split into four main components: a Spring Boot backend (REST API + business logic), an Angular frontend (SPA), a MySQL database, and three Python microservices for AI text generation, OCR image processing, and text-to-speech audio.
 
 | Aspect | Description |
 |---|---|
 | **Type** | Web MVC + SPA frontend + REST API + AI Microservices |
-| **Technologies** | Java 21, Spring Boot 4, Angular 17, MySQL 8, Python 3.11, Flask, DeepSeek API, Google Cloud Vision |
+| **Technologies** | Java 21, Spring Boot 4, Angular 17, MySQL 8, Python 3.11, Flask, DeepSeek API, Google Cloud Vision, Google Cloud Text-to-Speech |
 | **Tools** | IntelliJ IDEA, VS Code, Docker, Docker Compose, Caddy, GitHub, Postman |
 | **Quality Control** | Unit tests (JUnit + Mockito), Integration tests (H2), E2E tests (MockMvc), Frontend tests (Jasmine/Karma) |
 | **Deployment** | Docker Compose + Caddy (HTTPS automatic via Let's Encrypt), Azure VM |
@@ -52,6 +52,10 @@ Official site: https://www.deepseek.com
 Python 3.11 + Flask microservice running on port 5000. Uses the Google Cloud Vision `text_detection` API to extract Chinese text from uploaded images. Free up to 1 million requests/month.  
 Official site: https://cloud.google.com/vision
 
+### TTS Microservice — Google Cloud Text-to-Speech
+Python 3.11 + Flask microservice running on port 5002. Uses the Google Cloud Text-to-Speech API (WaveNet Mandarin voice `cmn-CN-Wavenet-A`) to synthesize natural audio for a full text, an individual word, a sentence, or a saved flashcard. The backend exposes it publicly at `/api/tts`, so anonymous readers can also listen. Free up to 1 million WaveNet characters/month.  
+Official site: https://cloud.google.com/text-to-speech
+
 ### Reverse Proxy — Caddy
 Serves the Angular static files, proxies `/api/*` requests to the Spring Boot backend, and manages HTTPS certificates automatically via Let's Encrypt.  
 Official site: https://caddyserver.com
@@ -69,7 +73,7 @@ IDE for Java/Spring Boot backend development, Angular frontend development and P
 Official site: https://code.visualstudio.com
 
 ### Docker + Docker Compose
-Used to containerize all services (backend, database, frontend proxy, AI microservice, OCR microservice) and orchestrate them in a single `docker-compose.yml`.  
+Used to containerize all services (backend, database, frontend proxy, AI microservice, OCR microservice, TTS microservice) and orchestrate them in a single `docker-compose.yml`.  
 Official site: https://www.docker.com
 
 ### GitHub
@@ -189,6 +193,19 @@ python3 googleOCRService.py
 ```
 The service will be available at `http://localhost:5000`.
 
+### TTS Microservice
+```bash
+cd tts-service
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+# Place credentials.json in this folder (the same Google Cloud key used by the
+# OCR service; the "Cloud Text-to-Speech API" must be enabled in the GCP project)
+export GOOGLE_APPLICATION_CREDENTIALS="./credentials.json"
+python3 ttsService.py
+```
+The service will be available at `http://localhost:5002`.
+
 ---
 
 ## Running Tests
@@ -233,6 +250,8 @@ Runs all Jasmine/Karma component tests. Opens a Chrome browser and shows test re
 }
 ```
 
+**`tts-service/credentials.json`:** the same Google service-account key as the OCR service. The **Cloud Text-to-Speech API** must be enabled in the Google Cloud project (Console → APIs & Services → Enable APIs → "Cloud Text-to-Speech API").
+
 ### Deploy to Azure VM
 
 1. Create a Resource Group and an Ubuntu 24.04 LTS VM on Azure.
@@ -267,6 +286,7 @@ chmod +x ./deploy.sh
 5. Create the required secret files:
    - `docker/.env` with the DeepSeek API key
    - `ocr-service/credentials.json` with Google Cloud credentials
+   - `tts-service/credentials.json` with the same Google Cloud credentials (Cloud Text-to-Speech API enabled)
 
 6. Deploy:
 ```bash

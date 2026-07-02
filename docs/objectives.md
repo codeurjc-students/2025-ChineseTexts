@@ -24,6 +24,7 @@ The main goal of ChineseReads is to provide a structured and accessible platform
 | F14 | Admin: generate AI text by HSK level and topic | ✅ |
 | F15 | Admin: extract text from image via OCR + AI | ✅ |
 | F16 | Admin: delete texts | ✅ |
+| F17 | Listen to texts, words, sentences and flashcards (text-to-speech audio) | ✅ |
 
 ### Pending Functionalities
 
@@ -51,3 +52,4 @@ The main goal of ChineseReads is to provide a structured and accessible platform
 | T09 | SSR for SEO optimization | ✅ |
 | T10 | Secure credential management (.env, secrets) | ✅ |
 | T11 | CI/CD pipeline | 🔄 Planned |
+| T12 | Text-to-speech synthesis (Google Cloud Text-to-Speech) | ✅ |

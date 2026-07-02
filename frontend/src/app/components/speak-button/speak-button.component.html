@@ -1,0 +1,15 @@
+<button
+  type="button"
+  class="speak-btn"
+  [class.speak-btn--sm]="size === 'sm'"
+  [class.speak-btn--lg]="size === 'lg'"
+  [class.is-playing]="state === 'playing'"
+  [class.is-error]="state === 'error'"
+  [attr.aria-label]="ariaLabel"
+  [title]="state === 'error' ? 'Audio unavailable — click to retry' : ariaLabel"
+  [disabled]="!text"
+  (click)="toggle($event)"
+>
+  <span *ngIf="state === 'loading'" class="speak-spinner"></span>
+  <i *ngIf="state !== 'loading'" class="bi" [ngClass]="icon"></i>
+</button>
