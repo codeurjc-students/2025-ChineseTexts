@@ -28,6 +28,7 @@ services:
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
       AI_SERVICE_URL: http://ai-service:5001
       OCR_SERVICE_URL: http://ocr-service:5000
+      TTS_SERVICE_URL: http://tts-service:5002
     depends_on:
       db:
         condition: service_healthy
@@ -69,6 +70,18 @@ services:
       GOOGLE_APPLICATION_CREDENTIALS: /app/credentials.json
     volumes:
       - ../ocr-service/credentials.json:/app/credentials.json:ro
+    networks:
+      - app-network
+
+  tts-service:
+    build:
+      context: ../tts-service
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      GOOGLE_APPLICATION_CREDENTIALS: /app/credentials.json
+    volumes:
+      - ../tts-service/credentials.json:/app/credentials.json:ro
     networks:
       - app-network
 

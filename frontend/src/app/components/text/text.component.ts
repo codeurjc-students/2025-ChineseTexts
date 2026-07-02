@@ -6,11 +6,12 @@ import { TextsService, TextItem } from '../../services/texts.service';
 import { LoginService } from '../../services/login.service';
 import { WordsService, Word } from '../../services/words.service';
 import { CollectionsService, CollectionDTO } from '../../services/collections.service';
+import { SpeakButtonComponent } from '../speak-button/speak-button.component';
 
 @Component({
   selector: 'app-text',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, SpeakButtonComponent],
   templateUrl: './text.component.html',
   styleUrl: './text.component.scss'
 })

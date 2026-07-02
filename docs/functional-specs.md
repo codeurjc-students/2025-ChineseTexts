@@ -4,7 +4,7 @@
 
 | Role | Description |
 |---|---|
-| **Unregistered user** | Can browse and read texts, see word/sentence breakdowns |
+| **Unregistered user** | Can browse and read texts, see word/sentence breakdowns, and listen to text/word/sentence audio |
 | **Registered user** | Can create collections, save words, study and take exams, edit profile |
 | **Admin** | All registered user capabilities plus text management and AI tools |
 
@@ -14,11 +14,13 @@
 |---|:---:|:---:|:---:|
 | Browse texts by level | ✅ | ✅ | ✅ |
 | Read text with word/sentence breakdown | ✅ | ✅ | ✅ |
+| Listen to text / word / sentence (audio) | ✅ | ✅ | ✅ |
 | Register | ✅ | ✅ | ✅ |
 | Login / Logout | ❌ | ✅ | ✅ |
 | Edit profile | ❌ | ✅ | ✅ |
 | Create collections | ❌ | ✅ | ✅ |
 | Save words to collections | ❌ | ✅ | ✅ |
+| Listen to flashcard word (audio) | ❌ | ✅ | ✅ |
 | Rename / delete collections | ❌ | ✅ | ✅ |
 | Study mode | ❌ | ✅ | ✅ |
 | Exam mode | ❌ | ✅ | ✅ |

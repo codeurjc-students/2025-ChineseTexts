@@ -105,6 +105,35 @@ body {
   }
 }
 
+// ——— Escuchar texto completo ———
+.listen-full {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 1rem;
+}
+
+.listen-full-label {
+  font-size: 0.95rem;
+  color: #c0392b;
+  font-weight: 600;
+}
+
+// ——— Cabecera con audio (palabra / frase) ———
+.popover-chinese-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sentence-modal-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+
+  .sentence-modal-chinese { flex: 1; }
+}
+
 // ——— Palabras ———
 .words-container {
   display: flex;

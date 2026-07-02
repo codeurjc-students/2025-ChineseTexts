@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { CollectionsService, CollectionDTO, FlashcardDTO } from '../../services/collections.service';
 import { LoginService } from '../../services/login.service';
+import { SpeakButtonComponent } from '../speak-button/speak-button.component';
 
 type AppMode = 'list' | 'detail' | 'study' | 'exam';
 type CardFace = 'chinese' | 'translation';
@@ -19,7 +20,7 @@ interface ExamQuestion {
 @Component({
   selector: 'app-collections',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, FormsModule, RouterModule, SpeakButtonComponent],
   templateUrl: './collections.component.html',
   styleUrl: './collections.component.scss'
 })

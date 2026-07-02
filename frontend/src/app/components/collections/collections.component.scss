@@ -212,6 +212,13 @@
   text-transform: uppercase; letter-spacing: 1px;
 }
 
+.card-chinese-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
 .card-chinese { font-size: 4rem; font-weight: 700; color: #c0392b; line-height: 1.2; }
 .card-pinyin { font-size: 1rem; color: #999; }
 

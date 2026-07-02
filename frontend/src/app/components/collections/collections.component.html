@@ -101,7 +101,10 @@
 
       <div class="flashcard" *ngIf="studyFace === 'chinese'">
         <div class="card-top-label">What does this mean?</div>
-        <div class="card-chinese">{{ currentStudyCard.word.chinese }}</div>
+        <div class="card-chinese-row">
+          <div class="card-chinese">{{ currentStudyCard.word.chinese }}</div>
+          <app-speak-button [text]="currentStudyCard.word.chinese" size="lg" ariaLabel="Listen to this word"></app-speak-button>
+        </div>
         <div class="card-pinyin" *ngIf="!studyRevealed">···</div>
         <div *ngIf="studyRevealed" class="card-reveal">
           <div class="card-pinyin">{{ currentStudyCard.word.pinyin }}</div>
@@ -122,7 +125,10 @@
         </div>
         <div *ngIf="studyRevealed" class="card-reveal">
           <hr class="card-hr">
-          <div class="card-chinese-reveal">{{ currentStudyCard.word.chinese }}</div>
+          <div class="card-chinese-row">
+            <div class="card-chinese-reveal">{{ currentStudyCard.word.chinese }}</div>
+            <app-speak-button [text]="currentStudyCard.word.chinese" size="md" ariaLabel="Listen to this word"></app-speak-button>
+          </div>
           <div class="card-pinyin">{{ currentStudyCard.word.pinyin }}</div>
           <a *ngIf="currentStudyCard.example?.id" [routerLink]="['/text', currentStudyCard.example.id]" class="card-ref">
             See text <i class="bi bi-arrow-right"></i>
@@ -226,6 +232,7 @@
       <div class="flashcard-list">
         <div *ngFor="let card of flashcards" class="flashcard-item">
           <div class="fi-chinese">{{ card.word.chinese }}</div>
+          <app-speak-button [text]="card.word.chinese" size="sm" ariaLabel="Listen to this word"></app-speak-button>
           <div class="fi-pinyin">{{ card.word.pinyin }}</div>
           <div class="fi-translations">
             <span class="badge-lang">EN</span>{{ card.word.english }}
