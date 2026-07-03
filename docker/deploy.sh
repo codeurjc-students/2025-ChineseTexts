@@ -20,12 +20,13 @@ cd ../docker
 echo "Starting all services..."
 docker compose --env-file .env up -d --build
 
-# 2b. Recargar Caddy. El Caddyfile va bind-mounted, así que `up -d` no reinicia el
-#     contenedor cuando solo cambia su contenido; sin esto, los cambios del Caddyfile
-#     no se aplican. `caddy reload` es sin cortes; si falla, reinicio el contenedor.
-echo "Reloading Caddy configuration..."
-docker compose --env-file .env exec caddy caddy reload --config /etc/caddy/Caddyfile 2>/dev/null \
-  || docker compose --env-file .env restart caddy
+# 2b. Recrear Caddy para que tome el Caddyfile actualizado. El Caddyfile va
+#     bind-mounted como fichero ÚNICO: al hacer `git pull` se sustituye por un
+#     inodo nuevo, pero el contenedor en marcha sigue apuntando al inodo viejo,
+#     así que ni `up -d` ni `restart` aplican los cambios. `--force-recreate`
+#     vuelve a montar el fichero actual; `--no-deps` evita tocar backend/db.
+echo "Recreating Caddy to pick up Caddyfile changes..."
+docker compose --env-file .env up -d --force-recreate --no-deps caddy
 
 # 3. Reclamar espacio: caché de build + imágenes huérfanas (versiones antiguas
 #    de backend/frontend que quedan sin etiqueta tras el --build).
