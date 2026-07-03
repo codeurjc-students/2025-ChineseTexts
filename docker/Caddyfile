@@ -8,7 +8,12 @@ chinesereads.com, www.chinesereads.com {
 
     handle {
         root * /srv
-        try_files {path} /index.html
+        # Sirve el HTML prerenderizado por ruta ({path}/index.html) antes de caer
+        # al index.html raíz. Sin la parte "{path}/index.html", rutas como /texts
+        # o /signup servían la home y perdían su SEO (título/meta/Open Graph propios).
+        # El último fallback /index.html mantiene el enrutado SPA para rutas no
+        # prerenderizadas (p. ej. /text/:id, /texts/HSK1).
+        try_files {path} {path}/index.html /index.html
         file_server
     }
 }
