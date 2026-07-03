@@ -25,6 +25,7 @@ The main goal of ChineseReads is to provide a structured and accessible platform
 | F15 | Admin: extract text from image via OCR + AI | ✅ |
 | F16 | Admin: delete texts | ✅ |
 | F17 | Listen to texts, words, sentences and flashcards (text-to-speech audio) | ✅ |
+| F18 | Admin: manage dictionary words (add, edit, delete) | ✅ |
 
 ### Pending Functionalities
 
@@ -49,7 +50,7 @@ The main goal of ChineseReads is to provide a structured and accessible platform
 | T06 | AI service integration (DeepSeek) | ✅ |
 | T07 | OCR image processing (Google Cloud Vision) | ✅ |
 | T08 | Modern SPA frontend (Angular 17) | ✅ |
-| T09 | SSR for SEO optimization | ✅ |
+| T09 | SSR + SEO optimization (per-route meta, Open Graph, robots.txt, sitemap.xml, structured data) | ✅ |
 | T10 | Secure credential management (.env, secrets) | ✅ |
 | T11 | CI/CD pipeline | 🔄 Planned |
 | T12 | Text-to-speech synthesis (Google Cloud Text-to-Speech) | ✅ |
