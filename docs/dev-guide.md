@@ -6,6 +6,7 @@
 - [Technologies](#technologies)
 - [Tools](#tools)
 - [Architecture](#architecture)
+- [SEO](#seo)
 - [Quality Control](quality-control.md)
 - [Development Process](#development-process)
 - [Running the Application](#running-the-application)
@@ -33,11 +34,11 @@ ChineseReads follows a **distributed MVC architecture** composed of multiple ind
 ## Technologies
 
 ### Backend — Spring Boot
-Java 21 + Spring Boot 4. Exposes a REST API consumed by the Angular frontend. Handles authentication via JWT stored in HttpOnly cookies, text management, vocabulary collections, flashcards, and user management.  
+Java 21 + Spring Boot 4. Exposes a REST API consumed by the Angular frontend. Handles authentication via JWT stored in HttpOnly cookies, text management, dictionary word management (admin CRUD), vocabulary collections, flashcards, and user management.  
 Official site: https://spring.io/projects/spring-boot
 
 ### Frontend — Angular 17
-Standalone components architecture with SSR (Server Side Rendering) enabled via Angular Universal for SEO optimization. Communicates with the backend exclusively via HTTP.  
+Standalone components architecture with SSR (Server Side Rendering) enabled via Angular Universal. Communicates with the backend exclusively via HTTP. SEO is a first-class requirement (see the [SEO](#seo) section below): a reusable `SeoService` sets per-route title, meta description, canonical, Open Graph and Twitter tags on every navigation — including during SSR — so crawlers receive page-specific metadata.  
 Official site: https://angular.io
 
 ### Database — MySQL 8
@@ -101,6 +102,35 @@ The REST API documentation is available in OpenAPI format. You can view it at:
 
 A Postman collection with examples of all endpoints is available at:  
 `docs/ChineseReads.postman_collection.json` *(pending)*
+
+---
+
+## SEO
+
+> ⚠️ **SEO is a permanent, first-class requirement.** Any new public page or content change must keep the app fully optimized for search engines. When adding a route, add its metadata to the SEO route table.
+
+The frontend is optimized so public pages rank for queries like *"learn chinese by reading"*, *"chinese reads"*, *"chinese texts"*, *"read chinese texts"*, *"learn chinese with graded texts"* and *"chinese graded readers"*.
+
+### How it works
+
+| Piece | File | Purpose |
+|---|---|---|
+| **Server-Side Rendering** | Angular Universal (`server.ts`, `main.server.ts`) | Public pages render to full HTML so crawlers index real content. |
+| **Per-route metadata** | `src/app/services/seo.service.ts` | Reusable, SSR-safe service that sets title, description, canonical, Open Graph and Twitter tags on every navigation. |
+| **Route → metadata table** | `src/app/services/seo.config.ts` | One place mapping each route (incl. `/texts/:level`) to its SEO metadata. **Add new public routes here.** |
+| **Dynamic text pages** | `src/app/components/text/text.component.ts` | Each `/text/:id` page sets a unique title/description from the text itself. |
+| **Default tags + structured data** | `src/index.html` | Site-wide defaults, plus JSON-LD (`WebSite`, `EducationalOrganization`, `WebApplication`) for rich results. |
+| **Crawl directives** | `src/robots.txt` | Allows public routes, disallows private/authenticated ones, points to the sitemap. |
+| **Sitemap** | `src/sitemap.xml` | Lists the public, indexable URLs. |
+| **PWA manifest** | `src/manifest.webmanifest` | App name, theme color and icon. |
+
+All four static files (`robots.txt`, `sitemap.xml`, `manifest.webmanifest`, `favicon.ico`) are declared in `angular.json` → `assets`, so they are copied to the build output and served at the site root.
+
+### Adding a new public page (checklist)
+
+1. Add the route in `app.routes.ts`.
+2. Add its metadata (title, description, `path`) to `STATIC_SEO` in `seo.config.ts`. Keep titles keyword-rich and under ~60 characters where possible.
+3. If it should be indexed, add its `<loc>` to `sitemap.xml`; if it is private/authenticated, set `noindex: true` and add a `Disallow` line to `robots.txt`.
 
 ---
 
@@ -309,7 +339,14 @@ docker restart docker-caddy-1
 ```bash
 curl https://chinesereads.com | grep "<title>"
 ```
-If the HTML title ``<title>Chinese Texts</title>`` appears in the response, SSR is working correctly. If ``<app-root></app-root>`` or nothing shows, it is not working.
+If the HTML title ``<title>ChineseReads — Learn Chinese by Reading Graded HSK Texts</title>`` appears in the response, SSR is working correctly. If ``<app-root></app-root>`` or nothing shows, it is not working.
+
+### Verify SEO files are served
+```bash
+curl https://chinesereads.com/robots.txt      # should list the sitemap and Disallow rules
+curl https://chinesereads.com/sitemap.xml      # should list the public URLs
+curl -s https://chinesereads.com/texts | grep -o '<meta name="description"[^>]*>'  # route-specific description
+```
 
 ### Update the deployment after code changes
 ```bash

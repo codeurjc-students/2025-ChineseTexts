@@ -7,6 +7,7 @@ import { LoginService } from '../../services/login.service';
 import { WordsService, Word } from '../../services/words.service';
 import { CollectionsService, CollectionDTO } from '../../services/collections.service';
 import { SpeakButtonComponent } from '../speak-button/speak-button.component';
+import { SeoService } from '../../services/seo.service';
 
 @Component({
   selector: 'app-text',
@@ -57,7 +58,8 @@ export class TextComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private router: Router,
     private wordService: WordsService,
-    private collectionsService: CollectionsService
+    private collectionsService: CollectionsService,
+    private seo: SeoService
   ) {}
 
   get isAdmin(): boolean {
@@ -177,8 +179,28 @@ export class TextComponent implements OnInit {
 
   private getText(id: number): void {
     this.textService.getText(id).subscribe({
-      next: (text) => this.text = text,
+      next: (text) => {
+        this.text = text;
+        this.updateSeo();
+      },
       error: (err) => console.error('Error loading text', err)
+    });
+  }
+
+  /** Gives each text page a unique, content-rich title & description for SEO. */
+  private updateSeo(): void {
+    const title = (this.text.titleEnglish || '').trim();
+    const level = this.text.level || 'HSK';
+    const summary = (this.text.englishDescription || '').trim();
+
+    this.seo.update({
+      title: title
+        ? `${title} — ${level} Chinese Reading Text | ChineseReads`
+        : `Read a ${level} Chinese Text | ChineseReads`,
+      description: summary
+        || `Read this ${level} graded Chinese text with word-by-word pinyin, instant translations, `
+           + `sentence breakdown and natural audio pronunciation on ChineseReads.`,
+      path: `/text/${this.text.id}`
     });
   }
 

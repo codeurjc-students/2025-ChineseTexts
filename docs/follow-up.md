@@ -6,7 +6,7 @@
 |---|---|---|
 | Phase 1 | Core architecture, text reading, user auth, collections, flashcards, study/exam modes | ✅ Complete |
 |Phase 2 | Project setup, testing files and essential features | ✅ Complete |
-| Phase 3 | AI tools (DeepSeek + Google OCR), text-to-speech audio, deployment, CI/CD | 🔄 In Progress |
+| Phase 3 | AI tools (DeepSeek + Google OCR), text-to-speech audio, dictionary word management, SEO optimization, deployment, CI/CD | 🔄 In Progress |
 | Phase 4 | Statistics, payment gateway, advanced admin features | 📋 Planned |
 
 ## Known Limitations
@@ -22,4 +22,4 @@
 - Personalized statistics dashboard
 - Payment gateway integration
 - Admin user management (ban, delete, password reset)
-- User Terms, Privacy Policy and Contact info
+- User Terms of Use and Contact page (Privacy Policy already implemented)

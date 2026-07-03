@@ -26,7 +26,12 @@
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
-              "src/favicon.png",
+              "src/favicon.ico",
+              "src/apple-touch-icon.png",
+              "src/icon-512.png",
+              "src/robots.txt",
+              "src/sitemap.xml",
+              "src/manifest.webmanifest",
               "src/assets"
             ],
             "styles": [
@@ -92,7 +97,12 @@
             "tsConfig": "tsconfig.spec.json",
             "inlineStyleLanguage": "scss",
             "assets": [
-              "src/favicon.png",
+              "src/favicon.ico",
+              "src/apple-touch-icon.png",
+              "src/icon-512.png",
+              "src/robots.txt",
+              "src/sitemap.xml",
+              "src/manifest.webmanifest",
               "src/assets"
             ],
             "styles": [

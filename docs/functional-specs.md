@@ -6,7 +6,7 @@
 |---|---|
 | **Unregistered user** | Can browse and read texts, see word/sentence breakdowns, and listen to text/word/sentence audio |
 | **Registered user** | Can create collections, save words, study and take exams, edit profile |
-| **Admin** | All registered user capabilities plus text management and AI tools |
+| **Admin** | All registered user capabilities plus text management, dictionary word management, and AI tools |
 
 ## Permissions Table
 
@@ -29,6 +29,9 @@
 | Delete text | ❌ | ❌ | ✅ |
 | Generate AI text | ❌ | ❌ | ✅ |
 | Extract text from image (OCR) | ❌ | ❌ | ✅ |
+| Manage dictionary: add word | ❌ | ❌ | ✅ |
+| Manage dictionary: edit word | ❌ | ❌ | ✅ |
+| Manage dictionary: delete word | ❌ | ❌ | ✅ |
 
 ## Data Model
 

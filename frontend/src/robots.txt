@@ -1,0 +1,17 @@
+# robots.txt for ChineseReads (https://chinesereads.com)
+# Public content is fully crawlable; private / authenticated areas are excluded
+# so search engines do not waste crawl budget on pages that require login.
+
+User-agent: *
+Allow: /
+
+# Private or transactional routes (no useful content for search engines)
+Disallow: /profile
+Disallow: /collections
+Disallow: /admin-tools
+Disallow: /ai-tools
+Disallow: /upload-text
+Disallow: /success
+Disallow: /error
+
+Sitemap: https://chinesereads.com/sitemap.xml
