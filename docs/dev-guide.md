@@ -119,6 +119,7 @@ The frontend is optimized so public pages rank for queries like *"learn chinese 
 | **Per-route metadata** | `src/app/services/seo.service.ts` | Reusable, SSR-safe service that sets title, description, canonical, Open Graph and Twitter tags on every navigation. |
 | **Route → metadata table** | `src/app/services/seo.config.ts` | One place mapping each route (incl. `/texts/:level`) to its SEO metadata. **Add new public routes here.** |
 | **Dynamic text pages** | `src/app/components/text/text.component.ts` | Each `/text/:id` page sets a unique title/description from the text itself. |
+| **Prerendered parameterised routes** | `prerender-routes.txt` (referenced from `angular.json` → `prerender.routesFile`) | Lists fixed parameterised URLs to prerender to static HTML — currently the six `/texts/HSK1…6` level pages — so they get real per-route meta in the initial HTML (not just client-side). |
 | **Default tags + structured data** | `src/index.html` | Site-wide defaults, plus JSON-LD (`WebSite`, `EducationalOrganization`, `WebApplication`) for rich results. |
 | **Crawl directives** | `src/robots.txt` | Allows public routes, disallows private/authenticated ones, points to the sitemap. |
 | **Sitemap** | `src/sitemap.xml` | Lists the public, indexable URLs. |

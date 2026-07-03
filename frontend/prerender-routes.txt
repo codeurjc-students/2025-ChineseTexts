@@ -1,0 +1,6 @@
+/texts/HSK1
+/texts/HSK2
+/texts/HSK3
+/texts/HSK4
+/texts/HSK5
+/texts/HSK6
