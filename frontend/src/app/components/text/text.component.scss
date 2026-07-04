@@ -130,6 +130,9 @@ body {
   display: flex;
   align-items: flex-start;
   gap: 8px;
+  // Reserva espacio a la derecha para que el botón de audio no quede pegado
+  // a la "✕" de cerrar y evitar pulsaciones por error.
+  padding-right: 1.75rem;
 
   .sentence-modal-chinese { flex: 1; }
 }
