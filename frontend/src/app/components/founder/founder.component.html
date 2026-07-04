@@ -1,0 +1,238 @@
+<main class="founder">
+
+  <!-- ============ Barra de admin ============ -->
+  <div *ngIf="isAdmin" class="founder-adminbar">
+    <div class="container d-flex align-items-center justify-content-between py-2">
+      <span class="small text-muted">
+        <i class="bi bi-shield-lock me-1"></i>Admin view — only you can see these controls
+      </span>
+      <button class="btn btn-sm rounded-pill px-3"
+              [class.btn-danger]="!editing" [class.btn-outline-secondary]="editing"
+              (click)="toggleEdit()">
+        <i class="bi me-1" [class.bi-pencil-square]="!editing" [class.bi-check2]="editing"></i>
+        {{ editing ? 'Done' : 'Edit page' }}
+      </button>
+    </div>
+  </div>
+
+  <!-- ============ Mensaje de feedback ============ -->
+  <div *ngIf="feedback" class="container mt-2">
+    <div class="alert py-2 mb-0" [class.alert-success]="!feedbackError" [class.alert-danger]="feedbackError" role="alert">
+      <i class="bi me-1" [class.bi-check-circle]="!feedbackError" [class.bi-exclamation-triangle]="feedbackError"></i>{{ feedback }}
+    </div>
+  </div>
+
+  <!-- ============ Cargando ============ -->
+  <div *ngIf="loading" class="container py-5 text-center text-muted">
+    <div class="spinner-border text-danger" role="status"><span class="visually-hidden">Loading…</span></div>
+  </div>
+
+  <ng-container *ngIf="!loading && profile as p">
+
+    <!-- ============ Estado vacío (solo admin, cuando no hay nada aún) ============ -->
+    <div *ngIf="!editing && !hasAnyContent()" class="container py-5 text-center text-muted">
+      <i class="bi bi-person-badge display-4 d-block mb-3"></i>
+      <p class="mb-0" *ngIf="isAdmin">This page is empty. Press <strong>Edit page</strong> to add your information.</p>
+      <p class="mb-0" *ngIf="!isAdmin">Coming soon.</p>
+    </div>
+
+    <!-- ============ HERO ============ -->
+    <section class="founder-hero" *ngIf="editing || hasAnyContent()">
+      <div class="container py-5">
+        <div class="row align-items-center g-4">
+
+          <!-- Foto / avatar -->
+          <div class="col-12 col-md-auto text-center">
+            <img *ngIf="p.hasPhoto" [src]="photoUrl()" [alt]="p.name || 'Profile photo'" class="founder-photo shadow" />
+            <div *ngIf="!p.hasPhoto" class="founder-avatar shadow" aria-hidden="true">{{ initials }}</div>
+
+            <div *ngIf="editing" class="mt-2 d-flex flex-column align-items-center gap-1">
+              <label class="btn btn-sm btn-outline-danger rounded-pill px-3 mb-0">
+                <i class="bi bi-upload me-1"></i>Photo
+                <input type="file" accept="image/*" hidden (change)="onPhotoSelected($event)" />
+              </label>
+              <button *ngIf="p.hasPhoto" class="btn btn-sm btn-link text-muted p-0" (click)="removePhoto()">Remove photo</button>
+            </div>
+          </div>
+
+          <!-- Datos de cabecera -->
+          <div class="col-12 col-md text-center text-md-start">
+
+            <!-- Vista -->
+            <ng-container *ngIf="!editing">
+              <h1 class="fw-bold mb-1">{{ p.name }}</h1>
+              <p class="fs-5 text-danger fw-semibold mb-2" *ngIf="p.role">{{ p.role }}</p>
+              <p class="text-muted mb-3" *ngIf="p.location"><i class="bi bi-geo-alt-fill me-1"></i>{{ p.location }}</p>
+              <p class="lead mb-4" *ngIf="p.tagline">{{ p.tagline }}</p>
+              <div class="d-flex flex-wrap gap-2 justify-content-center justify-content-md-start" *ngIf="p.socials.length">
+                <a *ngFor="let s of p.socials" [href]="s.url" target="_blank" rel="noopener noreferrer"
+                   class="btn btn-outline-danger rounded-pill px-3">
+                  <i class="bi {{ s.icon }} me-1"></i>{{ s.label }}
+                </a>
+              </div>
+            </ng-container>
+
+            <!-- Edición de cabecera -->
+            <ng-container *ngIf="editing">
+              <div class="founder-edit-grid">
+                <input class="form-control form-control-lg fw-bold" [(ngModel)]="p.name" placeholder="Full name" />
+                <input class="form-control" [(ngModel)]="p.role" placeholder="Role / headline (e.g. Software Engineer)" />
+                <input class="form-control" [(ngModel)]="p.location" placeholder="Location" />
+                <textarea class="form-control" rows="2" [(ngModel)]="p.tagline" placeholder="Short tagline"></textarea>
+                <button class="btn btn-danger rounded-pill px-4 align-self-start" (click)="saveProfile()">
+                  <i class="bi bi-save me-1"></i>Save header
+                </button>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="container pb-5">
+
+      <!-- ============ Enlaces (edición) ============ -->
+      <section *ngIf="editing" class="mb-5 mt-4">
+        <h2 class="founder-heading"><i class="bi bi-link-45deg me-2"></i>Links</h2>
+        <div class="d-flex flex-column gap-2">
+          <div *ngFor="let s of p.socials" class="founder-card d-flex flex-wrap gap-2 align-items-center">
+            <input class="form-control" style="max-width: 12rem;" [(ngModel)]="s.label" placeholder="Label" />
+            <input class="form-control" style="max-width: 12rem;" [(ngModel)]="s.icon" placeholder="Icon (e.g. bi-github)" />
+            <input class="form-control flex-grow-1" [(ngModel)]="s.url" placeholder="https://…  or  mailto:…" />
+            <button class="btn btn-sm btn-danger rounded-pill px-3" (click)="saveSocial(s)"><i class="bi bi-save"></i></button>
+            <button class="btn btn-sm btn-outline-danger rounded-pill px-3" (click)="deleteSocial(s)"><i class="bi bi-trash"></i></button>
+          </div>
+        </div>
+        <button class="btn btn-outline-danger rounded-pill px-3 mt-2" (click)="addSocial()">
+          <i class="bi bi-plus-lg me-1"></i>Add link
+        </button>
+      </section>
+
+      <!-- ============ ABOUT ============ -->
+      <section class="mb-5" *ngIf="editing || p.summary">
+        <h2 class="founder-heading"><i class="bi bi-person-badge me-2"></i>About</h2>
+        <p *ngIf="!editing" class="founder-summary">{{ p.summary }}</p>
+        <div *ngIf="editing">
+          <textarea class="form-control" rows="5" [(ngModel)]="p.summary" placeholder="Write a short professional summary…"></textarea>
+          <button class="btn btn-danger rounded-pill px-4 mt-2" (click)="saveProfile()">
+            <i class="bi bi-save me-1"></i>Save about
+          </button>
+        </div>
+      </section>
+
+      <!-- ============ SECCIONES ============ -->
+      <section *ngFor="let section of p.sections; let si = index" class="mb-5">
+
+        <!-- Cabecera de sección -->
+        <div class="d-flex align-items-center gap-2 mb-3 flex-wrap">
+          <ng-container *ngIf="!editing">
+            <h2 class="founder-heading mb-0 flex-grow-1">{{ section.title }}</h2>
+          </ng-container>
+          <ng-container *ngIf="editing">
+            <input class="form-control fw-bold" style="max-width: 20rem;" [(ngModel)]="section.title" placeholder="Section title" />
+            <select class="form-select" style="max-width: 10rem;" [(ngModel)]="section.type">
+              <option *ngFor="let t of sectionTypes" [value]="t">{{ t }}</option>
+            </select>
+            <button class="btn btn-sm btn-danger rounded-pill px-3" (click)="saveSection(section)"><i class="bi bi-save"></i></button>
+            <button class="btn btn-sm btn-outline-secondary rounded-pill px-2" (click)="moveSection(si, -1)" [disabled]="si === 0"><i class="bi bi-arrow-up"></i></button>
+            <button class="btn btn-sm btn-outline-secondary rounded-pill px-2" (click)="moveSection(si, 1)" [disabled]="si === p.sections.length - 1"><i class="bi bi-arrow-down"></i></button>
+            <button class="btn btn-sm btn-outline-danger rounded-pill px-3" (click)="deleteSection(section)"><i class="bi bi-trash"></i></button>
+          </ng-container>
+        </div>
+
+        <!-- SKILLS: etiquetas -->
+        <div *ngIf="isSkills(section) && !editing" class="founder-card">
+          <div class="d-flex flex-wrap gap-2">
+            <span *ngFor="let item of section.items" class="founder-badge">{{ item.heading }}</span>
+          </div>
+        </div>
+
+        <!-- OTRAS SECCIONES: timeline / tarjetas (vista) -->
+        <div *ngIf="!isSkills(section) && !editing" class="founder-timeline">
+          <article *ngFor="let item of section.items" class="founder-timeline-item">
+            <div class="founder-timeline-dot"></div>
+            <div class="founder-card">
+              <div class="d-flex gap-3">
+                <img *ngIf="item.hasLogo" [src]="itemLogoUrl(item)" [alt]="item.subheading || item.heading" class="founder-logo" />
+                <div class="flex-grow-1">
+                  <div class="d-flex flex-column flex-sm-row justify-content-between">
+                    <h3 class="h5 fw-bold mb-1">{{ item.heading }}</h3>
+                    <span class="text-muted small text-nowrap" *ngIf="item.period">{{ item.period }}</span>
+                  </div>
+                  <p class="text-danger fw-semibold mb-1" *ngIf="item.subheading || item.location">
+                    {{ item.subheading }}<span *ngIf="item.location" class="text-muted fw-normal"> · {{ item.location }}</span>
+                  </p>
+                  <p *ngIf="item.description" class="mb-2" style="white-space: pre-line;">{{ item.description }}</p>
+                  <a *ngIf="item.linkUrl" [href]="item.linkUrl" target="_blank" rel="noopener noreferrer"
+                     class="btn btn-sm btn-outline-danger rounded-pill px-3">
+                    <i class="bi bi-box-arrow-up-right me-1"></i>{{ item.linkLabel || 'Open' }}
+                  </a>
+                </div>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <!-- ÍTEMS (edición) — mismo editor para todas las secciones -->
+        <div *ngIf="editing" class="d-flex flex-column gap-3">
+          <div *ngFor="let item of section.items; let ii = index" class="founder-card">
+            <div class="d-flex gap-3">
+              <!-- Logo -->
+              <div class="text-center" style="min-width: 4.5rem;">
+                <img *ngIf="item.hasLogo" [src]="itemLogoUrl(item)" [alt]="item.heading" class="founder-logo mb-1" />
+                <div *ngIf="!item.hasLogo" class="founder-logo-placeholder mb-1"><i class="bi bi-image"></i></div>
+                <label class="btn btn-sm btn-outline-danger rounded-pill px-2 mb-0 w-100">
+                  Logo<input type="file" accept="image/*" hidden (change)="onItemLogoSelected(item, $event)" />
+                </label>
+                <button *ngIf="item.hasLogo" class="btn btn-sm btn-link text-muted p-0" (click)="removeItemLogo(item)">remove</button>
+              </div>
+              <!-- Campos -->
+              <div class="flex-grow-1 founder-edit-grid">
+                <input class="form-control" [(ngModel)]="item.heading" placeholder="Heading (e.g. job title / degree / skill)" />
+                <input class="form-control" [(ngModel)]="item.subheading" placeholder="Subheading (company / university)" />
+                <div class="d-flex gap-2 flex-wrap">
+                  <input class="form-control" style="max-width: 14rem;" [(ngModel)]="item.period" placeholder="Period (e.g. 2025 — Present)" />
+                  <input class="form-control flex-grow-1" [(ngModel)]="item.location" placeholder="Location" />
+                </div>
+                <textarea class="form-control" rows="3" [(ngModel)]="item.description" placeholder="Description"></textarea>
+                <div class="d-flex gap-2 flex-wrap">
+                  <input class="form-control flex-grow-1" [(ngModel)]="item.linkUrl" placeholder="Link URL (optional)" />
+                  <input class="form-control" style="max-width: 12rem;" [(ngModel)]="item.linkLabel" placeholder="Link label" />
+                </div>
+                <div class="d-flex gap-2 flex-wrap">
+                  <button class="btn btn-sm btn-danger rounded-pill px-3" (click)="saveItem(item)"><i class="bi bi-save me-1"></i>Save</button>
+                  <button class="btn btn-sm btn-outline-secondary rounded-pill px-2" (click)="moveItem(section, ii, -1)" [disabled]="ii === 0"><i class="bi bi-arrow-up"></i></button>
+                  <button class="btn btn-sm btn-outline-secondary rounded-pill px-2" (click)="moveItem(section, ii, 1)" [disabled]="ii === section.items.length - 1"><i class="bi bi-arrow-down"></i></button>
+                  <button class="btn btn-sm btn-outline-danger rounded-pill px-3" (click)="deleteItem(section, item)"><i class="bi bi-trash me-1"></i>Delete</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <button class="btn btn-outline-danger rounded-pill px-3 align-self-start" (click)="addItem(section)">
+            <i class="bi bi-plus-lg me-1"></i>Add entry
+          </button>
+        </div>
+      </section>
+
+      <!-- ============ Añadir sección (edición) ============ -->
+      <div *ngIf="editing" class="text-center mb-5">
+        <button class="btn btn-danger rounded-pill px-4" (click)="addSection()">
+          <i class="bi bi-plus-circle me-1"></i>Add section
+        </button>
+      </div>
+
+      <!-- ============ Contacto (vista) ============ -->
+      <section *ngIf="!editing && p.socials.length" class="founder-cta text-center p-4 p-md-5">
+        <h2 class="fw-bold mb-2">Let's get in touch</h2>
+        <p class="mb-4">Interested in working together or want to know more about my work?</p>
+        <div class="d-flex flex-wrap gap-2 justify-content-center">
+          <a *ngFor="let s of p.socials" [href]="s.url" target="_blank" rel="noopener noreferrer"
+             class="btn btn-outline-danger rounded-pill px-3">
+            <i class="bi {{ s.icon }} me-1"></i>{{ s.label }}
+          </a>
+        </div>
+      </section>
+
+    </div>
+  </ng-container>
+</main>

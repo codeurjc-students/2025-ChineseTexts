@@ -43,6 +43,14 @@ const STATIC_SEO: Record<string, SeoConfig> = {
     path: '/privacy-policy'
   },
 
+  '/founder': {
+    title: 'José Víctor García Llorente — Software Engineer & Creator of ChineseReads',
+    description:
+      'Software engineer and full-stack developer, creator of ChineseReads. Experience, ' +
+      'education, skills and projects. Get in touch on GitHub, LinkedIn or by email.',
+    path: '/founder'
+  },
+
   // Authenticated / transactional pages — kept out of the search index.
   '/collections': { title: 'My Collections | ChineseReads', description: 'Your saved Chinese vocabulary collections and flashcards.', path: '/collections', noindex: true },
   '/profile':     { title: 'My Profile | ChineseReads',     description: 'Manage your ChineseReads account.',                      path: '/profile',     noindex: true },

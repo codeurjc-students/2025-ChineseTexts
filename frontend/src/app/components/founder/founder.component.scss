@@ -1,0 +1,164 @@
+// Paleta coherente con el resto de la app (rojo de marca #c0392b).
+$brand: #c0392b;
+$brand-soft: rgba(192, 57, 43, 0.08);
+
+.founder {
+  display: block;
+}
+
+// ---------- Hero ----------
+.founder-hero {
+  background: linear-gradient(135deg, $brand-soft 0%, rgba(192, 57, 43, 0.02) 100%);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.founder-photo {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid #fff;
+}
+
+.founder-avatar {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  background: $brand;
+  color: #fff;
+  font-size: 3.5rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  border: 4px solid #fff;
+}
+
+// ---------- Section headings ----------
+.founder-heading {
+  font-weight: 700;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid $brand-soft;
+
+  i {
+    color: $brand;
+  }
+}
+
+.founder-summary {
+  font-size: 1.05rem;
+  line-height: 1.7;
+  max-width: 60rem;
+}
+
+// ---------- Cards ----------
+.founder-card {
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 0.75rem;
+  padding: 1.25rem 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+
+  &:hover {
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
+  }
+}
+
+// ---------- Badges (skills / tech) ----------
+.founder-badge {
+  display: inline-block;
+  background: $brand-soft;
+  color: $brand;
+  font-weight: 600;
+  font-size: 0.85rem;
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+}
+
+// ---------- Timeline ----------
+.founder-timeline {
+  position: relative;
+  padding-left: 1.75rem;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0.35rem;
+    top: 0.4rem;
+    bottom: 0.4rem;
+    width: 2px;
+    background: $brand-soft;
+  }
+}
+
+.founder-timeline-item {
+  position: relative;
+  margin-bottom: 1.5rem;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.founder-timeline-dot {
+  position: absolute;
+  left: -1.55rem;
+  top: 0.5rem;
+  width: 0.85rem;
+  height: 0.85rem;
+  border-radius: 50%;
+  background: $brand;
+  border: 3px solid #fff;
+  box-shadow: 0 0 0 2px $brand-soft;
+}
+
+// ---------- Contact CTA ----------
+.founder-cta {
+  background: $brand-soft;
+  border-radius: 1rem;
+}
+
+// ---------- Barra de admin ----------
+.founder-adminbar {
+  background: #fff;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  position: sticky;
+  top: 0;
+  z-index: 1020;
+}
+
+// ---------- Logos de los ítems (universidad / empresa) ----------
+.founder-logo {
+  width: 3.25rem;
+  height: 3.25rem;
+  object-fit: contain;
+  border-radius: 0.5rem;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  flex-shrink: 0;
+}
+
+.founder-logo-placeholder {
+  width: 3.25rem;
+  height: 3.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  background: $brand-soft;
+  color: $brand;
+  font-size: 1.25rem;
+  margin: 0 auto;
+}
+
+// ---------- Rejilla de campos en modo edición ----------
+.founder-edit-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}

@@ -11,6 +11,7 @@ import { ProfileComponent } from './components/profile/profile.component';
 import { AiToolsComponent } from './components/ai-tools/ai-tools.component';
 import { AdminToolsComponent } from './components/admin-tools/admin-tools.component';
 import { PrivacyPolicyComponent } from './components/privacy-policy/privacy-policy.component';
+import { FounderComponent } from './components/founder/founder.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -26,4 +27,5 @@ export const routes: Routes = [
   { path: 'ai-tools', component: AiToolsComponent},
   { path: 'admin-tools', component: AdminToolsComponent },
   { path: 'privacy-policy', component: PrivacyPolicyComponent },
+  { path: 'founder', component: FounderComponent },
 ];
