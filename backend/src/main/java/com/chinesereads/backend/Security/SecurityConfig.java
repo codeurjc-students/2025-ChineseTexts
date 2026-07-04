@@ -62,6 +62,7 @@ public class SecurityConfig {
                 // PUBLIC
                 .requestMatchers(HttpMethod.GET, "/api/words/textWords").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/texts/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/founder/**").permitAll()
                 // USER
                 .requestMatchers(HttpMethod.GET, "/api/flashcards/**").hasAnyRole("USER", "ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/api/flashcards/**").hasAnyRole("USER", "ADMIN")
@@ -82,6 +83,10 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/api/users/me/check-password").hasAnyRole("USER", "ADMIN")
                 .requestMatchers(HttpMethod.PUT, "/api/users/me/password").hasAnyRole("USER", "ADMIN")
                 .requestMatchers(HttpMethod.POST, "/api/ai/**").hasAnyRole("ADMIN")
+                // Perfil del creador: escritura sólo ADMIN (el GET ya es público arriba)
+                .requestMatchers(HttpMethod.POST, "/api/founder/**").hasAnyRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/api/founder/**").hasAnyRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/api/founder/**").hasAnyRole("ADMIN")
                 .anyRequest().permitAll()
             );
 

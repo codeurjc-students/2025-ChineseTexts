@@ -57,6 +57,12 @@
   </url>
 
   <url>
+    <loc>https://chinesereads.com/founder</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <url>
     <loc>https://chinesereads.com/privacy-policy</loc>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
