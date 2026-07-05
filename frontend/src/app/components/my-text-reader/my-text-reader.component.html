@@ -61,11 +61,14 @@
       <div class="text-muted my-2">Click on a word to see its translation.</div>
 
       <div class="words-container">
-        <div *ngFor="let word of originalText; let i = index" class="word-wrapper"
-             (click)="onWordClick($event, i)">
-          <span class="hover-highlight" [class.active]="activeWordIndex === i">{{ word }}</span>
-          <span class="pinyin" *ngIf="showPinyin">{{ wordsArray[i]?.pinyin || '' }}</span>
-        </div>
+        <ng-container *ngFor="let word of originalText; let i = index">
+          <div class="word-wrapper" (click)="onWordClick($event, i)">
+            <span class="hover-highlight" [class.active]="activeWordIndex === i">{{ word }}</span>
+            <span class="pinyin" *ngIf="showPinyin">{{ wordsArray[i]?.pinyin || '' }}</span>
+          </div>
+          <!-- Preserva la disposición original (diálogos, líneas) -->
+          <div class="line-break" *ngIf="wordsArray[i]?.newlineAfter"></div>
+        </ng-container>
       </div>
 
       <!-- POPOVER PALABRA (solo lectura) -->

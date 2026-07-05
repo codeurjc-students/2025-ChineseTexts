@@ -73,6 +73,24 @@ public class UsageService {
         appUsageRepository.save(usage);
     }
 
+    /**
+     * Lighter guard for the OCR "extract" step (Google Vision is much cheaper than
+     * the DeepSeek generation): consumes one unit from the global daily counter only,
+     * bounding total OCR spend, without touching the user's monthly quota (which is
+     * spent when they actually generate the reader).
+     */
+    @Transactional
+    public void reserveOcr() {
+        LocalDate today = LocalDate.now();
+        AppUsage usage = appUsageRepository.findByDay(today).orElseGet(() -> new AppUsage(today, 0));
+        if (usage.getCount() >= globalDailyLimit) {
+            throw new UsageLimitException(
+                    "Text scanning is temporarily unavailable for today. Please try again tomorrow.");
+        }
+        usage.setCount(usage.getCount() + 1);
+        appUsageRepository.save(usage);
+    }
+
     public int getUserMonthlyLimit() {
         return userMonthlyLimit;
     }

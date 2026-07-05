@@ -84,8 +84,12 @@ public class AiService {
 
     // ——————————— Reusable building blocks (also used for private user texts) ———————————
 
-    /** Runs OCR on an image and returns the extracted Chinese text (no AI generation). */
-    public String ocrImageToText(MultipartFile image) throws Exception {
+    /**
+     * Runs OCR on an image and returns the extracted Chinese text (no AI generation).
+     * When {@code preserveLayout} is true, the OCR service keeps the original line
+     * breaks (dialogues, conversations) instead of returning continuous text.
+     */
+    public String ocrImageToText(MultipartFile image, boolean preserveLayout) throws Exception {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
@@ -96,6 +100,7 @@ public class AiService {
                 return image.getOriginalFilename();
             }
         });
+        body.add("preserve_layout", preserveLayout ? "true" : "false");
 
         ResponseEntity<Map<String, Object>> ocrResponse = restTemplate.exchange(
                 ocrServiceUrl + "/ocr",

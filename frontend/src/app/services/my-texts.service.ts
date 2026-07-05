@@ -15,6 +15,7 @@ export interface UserTextWord {
   pinyin: string;
   english: string;
   spanish: string;
+  newlineAfter: boolean;
 }
 
 /** Everything the private reader needs to render one of the user's texts. */
@@ -50,11 +51,18 @@ export class MyTextsService {
     return this.http.post<UserTextSummary>(this.apiUrl, form, { withCredentials: true });
   }
 
-  /** Creates a private text from an uploaded image (OCR). */
+  /** Creates a private text from an uploaded image (OCR) in one step. */
   createFromImage(image: File): Observable<UserTextSummary> {
     const form = new FormData();
     form.append('image', image);
     return this.http.post<UserTextSummary>(this.apiUrl, form, { withCredentials: true });
+  }
+
+  /** OCR "extract" step: image -> extracted Chinese text (with layout) for review/edit. */
+  extractFromImage(image: File): Observable<{ text: string }> {
+    const form = new FormData();
+    form.append('image', image);
+    return this.http.post<{ text: string }>(`${this.apiUrl}/extract`, form, { withCredentials: true });
   }
 
   delete(id: number): Observable<void> {

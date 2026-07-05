@@ -1,9 +1,10 @@
 package com.chinesereads.backend.dto;
 
-/** One segment of a user's private text with its pinyin and translations. */
+/** One segment of a user's private text with its pinyin, translations and layout. */
 public record UserTextWordDTO(
         String chinese,
         String pinyin,
         String english,
-        String spanish) {
+        String spanish,
+        boolean newlineAfter) {
 }

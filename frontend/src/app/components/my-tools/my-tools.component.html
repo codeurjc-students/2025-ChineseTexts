@@ -6,31 +6,27 @@
   <!-- ══════ Crear ══════ -->
   <div class="create-card">
 
-    <div class="mode-tabs">
-      <button class="mode-tab" [class.active]="mode === 'paste'" (click)="setMode('paste')">
-        <i class="bi bi-clipboard"></i> Paste text
-      </button>
-      <button class="mode-tab" [class.active]="mode === 'ocr'" (click)="setMode('ocr')">
-        <i class="bi bi-camera"></i> Upload photo
-      </button>
-    </div>
-
-    <!-- Pegar texto -->
-    <div *ngIf="mode === 'paste'" class="create-body">
-      <label class="field-label">Paste Chinese text</label>
-      <textarea class="paste-area" [(ngModel)]="pasteText" rows="5" maxlength="1500"
-        placeholder="你好，世界。今天天气很好。"></textarea>
-      <p class="hint">Up to 1500 characters. For longer material, split it into shorter pieces.</p>
-    </div>
-
-    <!-- Subir foto -->
-    <div *ngIf="mode === 'ocr'" class="create-body">
-      <label class="field-label">Upload a photo of Chinese text</label>
+    <!-- Extraer de una foto (OCR) -->
+    <label class="field-label"><i class="bi bi-camera me-1"></i>Have a photo? Extract the text first</label>
+    <div class="ocr-controls">
       <input class="file-input" type="file" accept="image/*" (change)="onFileSelected($event)">
-      <p class="hint" *ngIf="selectedFile">Selected: {{ selectedFile.name }}</p>
+      <button class="btn-secondary" (click)="extract()" [disabled]="extracting || !selectedFile">
+        <span *ngIf="extracting" class="spinner-sm-dark"></span>
+        {{ extracting ? 'Reading…' : 'Extract text' }}
+      </button>
     </div>
 
-    <div class="alert-error mt-3" *ngIf="messageType === 'error'">
+    <!-- Texto editable -->
+    <label class="field-label mt-3"><i class="bi bi-pencil me-1"></i>Chinese text</label>
+    <textarea class="paste-area" [(ngModel)]="pasteText" rows="6" maxlength="1500"
+      placeholder="Paste Chinese text here, or extract it from a photo above."></textarea>
+    <p class="hint">Up to 1500 characters. Your line breaks (dialogues, conversations…) are preserved.</p>
+
+    <!-- Feedback -->
+    <div class="alert-info mt-2" *ngIf="messageType === 'info'">
+      <i class="bi bi-info-circle"></i> {{ message }}
+    </div>
+    <div class="alert-error mt-2" *ngIf="messageType === 'error'">
       <i class="bi bi-exclamation-triangle"></i> {{ message }}
     </div>
 
@@ -50,7 +46,7 @@
 
   <div class="empty-state" *ngIf="!loadingList && texts.length === 0">
     <i class="bi bi-inbox"></i>
-    <p>You haven't created any texts yet. Paste some text or upload a photo above to start.</p>
+    <p>You haven't created any texts yet. Paste some text or extract it from a photo above to start.</p>
   </div>
 
   <div class="text-row" *ngFor="let t of texts" (click)="openText(t.id)">
