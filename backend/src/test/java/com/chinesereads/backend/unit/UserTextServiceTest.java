@@ -18,11 +18,11 @@ import com.chinesereads.backend.Service.UserTextService;
 public class UserTextServiceTest {
 
     @SuppressWarnings("unchecked")
-    private List<String> buildSentences(List<String> segments, List<Boolean> newlineFlags) {
+    private List<String> buildSentences(List<String> segments) {
         try {
-            Method m = UserTextService.class.getDeclaredMethod("buildSentences", List.class, List.class);
+            Method m = UserTextService.class.getDeclaredMethod("buildSentences", List.class);
             m.setAccessible(true);
-            return (List<String>) m.invoke(new UserTextService(), segments, newlineFlags);
+            return (List<String>) m.invoke(new UserTextService(), segments);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -32,32 +32,30 @@ public class UserTextServiceTest {
     @DisplayName("Splits on Chinese terminators (。？！)")
     public void testSplitsOnTerminators() {
         List<String> segments = List.of("你好", "。", "你", "好吗", "？");
-        List<Boolean> flags = List.of(false, false, false, false, false);
 
-        List<String> sentences = buildSentences(segments, flags);
+        List<String> sentences = buildSentences(segments);
 
         assertEquals(List.of("你好。", "你好吗？"), sentences);
     }
 
     @Test
-    @DisplayName("Splits on a line break even without a terminator (dialogue lines)")
-    public void testSplitsOnLineBreak() {
-        // Two dialogue lines with no punctuation; the newline flag ends the first.
-        List<String> segments = List.of("我", "来", "你", "去");
-        List<Boolean> flags = List.of(false, true, false, false);
+    @DisplayName("A line break without a terminator does NOT split (avoids mid-word/mid-sentence cuts)")
+    public void testDoesNotSplitOnLineWrap() {
+        // A sentence wrapped across two photo lines with no punctuation at the wrap:
+        // 你做什 | 么运动了？  must stay as ONE sentence.
+        List<String> segments = List.of("你", "做", "什么", "运动", "了", "？");
 
-        List<String> sentences = buildSentences(segments, flags);
+        List<String> sentences = buildSentences(segments);
 
-        assertEquals(List.of("我来", "你去"), sentences);
+        assertEquals(List.of("你做什么运动了？"), sentences);
     }
 
     @Test
     @DisplayName("Trailing text without a terminator becomes its own sentence")
     public void testTrailingWithoutTerminator() {
         List<String> segments = List.of("第一句", "。", "没有句号的结尾");
-        List<Boolean> flags = List.of(false, false, false);
 
-        List<String> sentences = buildSentences(segments, flags);
+        List<String> sentences = buildSentences(segments);
 
         assertEquals(List.of("第一句。", "没有句号的结尾"), sentences);
     }
@@ -65,6 +63,6 @@ public class UserTextServiceTest {
     @Test
     @DisplayName("Empty input yields no sentences")
     public void testEmpty() {
-        assertEquals(List.of(), buildSentences(List.of(), List.of()));
+        assertEquals(List.of(), buildSentences(List.of()));
     }
 }

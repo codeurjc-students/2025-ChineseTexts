@@ -96,27 +96,52 @@ public class UserTextService {
                 : snippet(chineseText);
         userText.setTitle(title);
 
-        // Segment line by line so the original layout (dialogues, line breaks) is
-        // preserved: a newline flag is set on the last word of each line.
-        List<String> segments = new ArrayList<>();
-        List<Boolean> newlineFlags = new ArrayList<>();
-        String[] lines = chineseText.split("\n", -1);
-        for (int li = 0; li < lines.length; li++) {
-            for (String seg : jiebaService.segment(lines[li])) {
-                if (!seg.isEmpty()) {
-                    segments.add(seg);
-                    newlineFlags.add(false);
+        // Segment the WHOLE text (not line by line) so a word is never split by a
+        // cosmetic line wrap in the photo (e.g. 什\n么 → 什么 stays one word, with the
+        // right definition). Line breaks are then snapped to the nearest word boundary
+        // and kept only as a visual layout hint (newlineAfter) — never inside a word.
+        StringBuilder strippedBuilder = new StringBuilder();
+        List<Integer> newlineAfterChar = new ArrayList<>(); // stripped char index after which a line break falls
+        for (int i = 0; i < chineseText.length(); i++) {
+            char c = chineseText.charAt(i);
+            if (c == '\n') {
+                if (strippedBuilder.length() > 0) {
+                    newlineAfterChar.add(strippedBuilder.length() - 1);
                 }
-            }
-            if (li < lines.length - 1 && !newlineFlags.isEmpty()) {
-                newlineFlags.set(newlineFlags.size() - 1, true);
+            } else {
+                strippedBuilder.append(c);
             }
         }
+        String stripped = strippedBuilder.toString();
 
-        // Group into sentences (ending on a terminator OR a line break) and translate
+        List<String> segments = new ArrayList<>();
+        List<Boolean> newlineFlags = new ArrayList<>();
+        int cursor = 0;   // running char offset within the stripped text
+        int nlIdx = 0;    // pointer into newlineAfterChar
+        for (String seg : jiebaService.segment(stripped)) {
+            if (seg.isEmpty()) {
+                continue;
+            }
+            int start = stripped.indexOf(seg, cursor);
+            if (start < 0) {
+                start = cursor;
+            }
+            int end = start + seg.length();
+            segments.add(seg);
+            newlineFlags.add(false);
+            // Snap every line break that falls within this token onto its boundary,
+            // so the break renders after a whole word, never mid-word.
+            while (nlIdx < newlineAfterChar.size() && newlineAfterChar.get(nlIdx) < end) {
+                newlineFlags.set(newlineFlags.size() - 1, true);
+                nlIdx++;
+            }
+            cursor = end;
+        }
+
+        // Group into sentences (ending ONLY on a punctuation terminator) and translate
         // each one on its own, so the Chinese and its translation stay aligned 1:1.
         // The full translations are then just the sentences joined, so both views agree.
-        List<String> sentenceTexts = buildSentences(segments, newlineFlags);
+        List<String> sentenceTexts = buildSentences(segments);
         List<List<String>> sentencePairs = aiService.getSentenceTranslations(sentenceTexts);
 
         List<String> englishParts = new ArrayList<>();
@@ -224,18 +249,18 @@ public class UserTextService {
     private static final String SENTENCE_TERMINATORS = "。！？…；.!?;";
 
     /**
-     * Groups the ordered segments into sentences. A sentence ends when a segment
-     * finishes with a terminator (。！？…；．！？) OR when a line break follows it, so
-     * dialogues and lines without punctuation are still split correctly (and stay
-     * aligned with the layout shown word by word).
+     * Groups the ordered segments into sentences, ending ONLY on a punctuation
+     * terminator (。！？…；．！？). Line breaks are deliberately NOT used here: in a
+     * photo they are often cosmetic wraps that fall mid-sentence (even mid-word), so
+     * splitting on them would cut a sentence like 你做什么运动了？ into 你做什 | 么…. Line
+     * breaks drive the visual layout only (see {@code newlineAfter}), not sentences.
      */
-    private List<String> buildSentences(List<String> segments, List<Boolean> newlineFlags) {
+    private List<String> buildSentences(List<String> segments) {
         List<String> sentences = new ArrayList<>();
         StringBuilder current = new StringBuilder();
-        for (int i = 0; i < segments.size(); i++) {
-            current.append(segments.get(i));
-            boolean endsHere = endsWithTerminator(segments.get(i)) || Boolean.TRUE.equals(newlineFlags.get(i));
-            if (endsHere) {
+        for (String seg : segments) {
+            current.append(seg);
+            if (endsWithTerminator(seg)) {
                 String s = current.toString().strip();
                 if (!s.isEmpty()) {
                     sentences.add(s);
