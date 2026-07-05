@@ -33,6 +33,12 @@
             </a>
           </li>
 
+          <li *ngIf="isLoggedIn$ | async" class="nav-item me-2">
+            <a class="nav-link fw-semibold text-dark" [routerLink]="['/my-tools']">
+              <i class="bi bi-magic me-1"></i> My Tools
+            </a>
+          </li>
+
           <li *ngIf="loginService.isRoleAdmin()" class="nav-item me-2">
             <a class="nav-link fw-semibold text-dark" [routerLink]="['/admin-tools']">
               <i class="bi bi-stars me-1"></i> Admin Tools

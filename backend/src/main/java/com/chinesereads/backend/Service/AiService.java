@@ -82,6 +82,75 @@ public class AiService {
         return buildAiResult(chineseText);
     }
 
+    // ——————————— Reusable building blocks (also used for private user texts) ———————————
+
+    /** Runs OCR on an image and returns the extracted Chinese text (no AI generation). */
+    public String ocrImageToText(MultipartFile image) throws Exception {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        body.add("file", new ByteArrayResource(image.getBytes()) {
+            @Override
+            public String getFilename() {
+                return image.getOriginalFilename();
+            }
+        });
+
+        ResponseEntity<Map<String, Object>> ocrResponse = restTemplate.exchange(
+                ocrServiceUrl + "/ocr",
+                HttpMethod.POST,
+                new HttpEntity<>(body, headers),
+                new ParameterizedTypeReference<Map<String, Object>>() {}
+        );
+        return (String) ocrResponse.getBody().get("text");
+    }
+
+    /** [englishTitle, spanishTitle] for the given Chinese text ("" on failure). */
+    public List<String> getTitles(String chineseText) {
+        try {
+            return restTemplate.exchange(
+                    aiServiceUrl + "/getTitles",
+                    HttpMethod.POST,
+                    new HttpEntity<>(Map.of("text", chineseText)),
+                    new ParameterizedTypeReference<List<String>>() {}
+            ).getBody();
+        } catch (Exception e) {
+            return List.of();
+        }
+    }
+
+    /** [englishTranslation, spanishTranslation] for the given Chinese text ("" on failure). */
+    public List<String> getTranslations(String chineseText) {
+        try {
+            return restTemplate.exchange(
+                    aiServiceUrl + "/getTranslations",
+                    HttpMethod.POST,
+                    new HttpEntity<>(Map.of("text", chineseText)),
+                    new ParameterizedTypeReference<List<String>>() {}
+            ).getBody();
+        } catch (Exception e) {
+            return List.of();
+        }
+    }
+
+    /** [{chinese,pinyin,english,spanish}, ...] definitions for a list of words ([] on failure). */
+    public List<Map<String, String>> getWordDefinitions(List<String> words) {
+        if (words == null || words.isEmpty()) {
+            return List.of();
+        }
+        try {
+            return restTemplate.exchange(
+                    aiServiceUrl + "/getMissingWords",
+                    HttpMethod.POST,
+                    new HttpEntity<>(Map.of("words", words)),
+                    new ParameterizedTypeReference<List<Map<String, String>>>() {}
+            ).getBody();
+        } catch (Exception e) {
+            return List.of();
+        }
+    }
+
     private Map<String, Object> buildAiResult(String chineseText) {
         Map<String, Object> result = new HashMap<>();
         result.put("chineseText", chineseText);

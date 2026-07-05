@@ -12,6 +12,8 @@ import { AiToolsComponent } from './components/ai-tools/ai-tools.component';
 import { AdminToolsComponent } from './components/admin-tools/admin-tools.component';
 import { PrivacyPolicyComponent } from './components/privacy-policy/privacy-policy.component';
 import { FounderComponent } from './components/founder/founder.component';
+import { MyToolsComponent } from './components/my-tools/my-tools.component';
+import { MyTextReaderComponent } from './components/my-text-reader/my-text-reader.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -26,6 +28,8 @@ export const routes: Routes = [
   { path: 'profile', component: ProfileComponent },
   { path: 'ai-tools', component: AiToolsComponent},
   { path: 'admin-tools', component: AdminToolsComponent },
+  { path: 'my-tools', component: MyToolsComponent },
+  { path: 'my-text/:id', component: MyTextReaderComponent },
   { path: 'privacy-policy', component: PrivacyPolicyComponent },
   { path: 'founder', component: FounderComponent },
 ];

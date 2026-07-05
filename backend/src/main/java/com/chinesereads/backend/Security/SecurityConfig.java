@@ -64,6 +64,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/api/texts/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/founder/**").permitAll()
                 // USER
+                .requestMatchers("/api/my-texts/**").hasAnyRole("USER", "ADMIN")
                 .requestMatchers(HttpMethod.GET, "/api/flashcards/**").hasAnyRole("USER", "ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/api/flashcards/**").hasAnyRole("USER", "ADMIN")
                 .requestMatchers(HttpMethod.GET, "/api/collections/**").hasAnyRole("USER", "ADMIN")

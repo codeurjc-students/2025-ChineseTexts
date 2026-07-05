@@ -1,0 +1,75 @@
+<div class="my-tools container my-5">
+
+  <h1 class="page-title"><i class="bi bi-magic me-2"></i>My Tools</h1>
+  <p class="page-subtitle">Turn any Chinese text or a photo into your own private reader — with pinyin, translations and audio.</p>
+
+  <!-- ══════ Crear ══════ -->
+  <div class="create-card">
+
+    <div class="mode-tabs">
+      <button class="mode-tab" [class.active]="mode === 'paste'" (click)="setMode('paste')">
+        <i class="bi bi-clipboard"></i> Paste text
+      </button>
+      <button class="mode-tab" [class.active]="mode === 'ocr'" (click)="setMode('ocr')">
+        <i class="bi bi-camera"></i> Upload photo
+      </button>
+    </div>
+
+    <!-- Pegar texto -->
+    <div *ngIf="mode === 'paste'" class="create-body">
+      <label class="field-label">Paste Chinese text</label>
+      <textarea class="paste-area" [(ngModel)]="pasteText" rows="5"
+        placeholder="你好，世界。今天天气很好。"></textarea>
+    </div>
+
+    <!-- Subir foto -->
+    <div *ngIf="mode === 'ocr'" class="create-body">
+      <label class="field-label">Upload a photo of Chinese text</label>
+      <input class="file-input" type="file" accept="image/*" (change)="onFileSelected($event)">
+      <p class="hint" *ngIf="selectedFile">Selected: {{ selectedFile.name }}</p>
+    </div>
+
+    <div class="alert-error mt-3" *ngIf="messageType === 'error'">
+      <i class="bi bi-exclamation-triangle"></i> {{ message }}
+    </div>
+
+    <button class="btn-primary mt-3" (click)="create()" [disabled]="creating">
+      <span *ngIf="creating" class="spinner-sm"></span>
+      {{ creating ? 'Processing…' : 'Create reader' }}
+    </button>
+    <p class="hint mt-2" *ngIf="creating">Segmenting, translating and generating audio — this can take a few seconds.</p>
+  </div>
+
+  <!-- ══════ Mis textos ══════ -->
+  <h2 class="section-title mt-5"><i class="bi bi-journal-bookmark me-2"></i>Your texts</h2>
+
+  <div class="text-center py-4" *ngIf="loadingList && texts.length === 0">
+    <div class="spinner-red"></div>
+  </div>
+
+  <div class="empty-state" *ngIf="!loadingList && texts.length === 0">
+    <i class="bi bi-inbox"></i>
+    <p>You haven't created any texts yet. Paste some text or upload a photo above to start.</p>
+  </div>
+
+  <div class="text-row" *ngFor="let t of texts" (click)="openText(t.id)">
+    <div class="text-row-main">
+      <div class="text-row-title">{{ t.title || 'Untitled text' }}</div>
+      <div class="text-row-meta">{{ t.creationDate }} · {{ t.wordCount }} words</div>
+    </div>
+
+    <div class="text-row-actions" *ngIf="confirmingDeleteId !== t.id">
+      <i class="bi bi-chevron-right chevron"></i>
+      <button class="btn-icon-danger" (click)="askDelete($event, t.id)" title="Delete">
+        <i class="bi bi-trash"></i>
+      </button>
+    </div>
+
+    <div class="confirm-inline" *ngIf="confirmingDeleteId === t.id" (click)="$event.stopPropagation()">
+      <span>Delete?</span>
+      <button class="btn-danger btn-xs" (click)="confirmDelete($event, t.id)">Yes</button>
+      <button class="btn-secondary btn-xs" (click)="cancelDelete($event)">No</button>
+    </div>
+  </div>
+
+</div>
