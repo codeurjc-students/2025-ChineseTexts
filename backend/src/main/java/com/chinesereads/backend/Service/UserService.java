@@ -3,6 +3,7 @@ package com.chinesereads.backend.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -137,7 +138,7 @@ public class UserService {
     @Transactional
     public AdminUserDTO setBlocked(long id, boolean blocked, String requesterEmail) {
         User user = userRepository.findById(id).orElseThrow();
-        if (user.getEmail().equals(requesterEmail)) {
+        if (Objects.equals(user.getEmail(), requesterEmail)) {
             throw new IllegalStateException("You cannot block your own account.");
         }
         user.setBlocked(blocked);
@@ -160,7 +161,7 @@ public class UserService {
             user.setLanguage(data.language());
         }
         if (data.roles() != null && !data.roles().isEmpty()) {
-            if (user.getEmail().equals(requesterEmail) && !data.roles().contains("ADMIN")) {
+            if (Objects.equals(user.getEmail(), requesterEmail) && !data.roles().contains("ADMIN")) {
                 throw new IllegalStateException("You cannot remove your own admin role.");
             }
             user.setRoles(data.roles());
@@ -173,7 +174,7 @@ public class UserService {
     @Transactional
     public void deleteUser(long id, String requesterEmail) {
         User user = userRepository.findById(id).orElseThrow();
-        if (user.getEmail().equals(requesterEmail)) {
+        if (Objects.equals(user.getEmail(), requesterEmail)) {
             throw new IllegalStateException("You cannot delete your own account from the admin panel.");
         }
         userRepository.delete(user);

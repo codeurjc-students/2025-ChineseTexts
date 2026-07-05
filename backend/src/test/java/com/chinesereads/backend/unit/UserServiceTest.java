@@ -122,6 +122,21 @@ public class UserServiceTest {
         assertFalse(result);
     }
 
+    // Test unitario: un admin puede borrar un usuario con email nulo (dato basura)
+    // sin provocar NullPointerException en la salvaguarda anti-auto-borrado.
+    @Test
+    @DisplayName("Admin can delete a user with a null email without throwing")
+    public void testDeleteUserWithNullEmail() {
+        User junk = new User(); // email queda a null
+        junk.setId(99);
+
+        when(userRepository.findById(99L)).thenReturn(Optional.of(junk));
+
+        userService.deleteUser(99L, "admin@test.com");
+
+        verify(userRepository, times(1)).delete(junk);
+    }
+
     // Test unitario 5: Cuando se actualiza el perfil, se guarda el nuevo nombre y lenguaje
     @Test
     @DisplayName("When a profile is updated, name and language should be saved")

@@ -41,6 +41,23 @@ public class UserControllerRest {
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody UserDTO userDTO) {
+        // Server-side validation: never create accounts with missing/invalid data.
+        String email = userDTO.email();
+        String name = userDTO.name();
+        String password = userDTO.password();
+        if (email == null || !email.matches("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$")) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("message", "A valid email is required"));
+        }
+        if (name == null || name.isBlank()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("message", "Name is required"));
+        }
+        if (password == null || password.length() < 4) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("message", "Password must be at least 4 characters"));
+        }
+
         UserDTO newUser = userService.save(userDTO);
         if (newUser == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
