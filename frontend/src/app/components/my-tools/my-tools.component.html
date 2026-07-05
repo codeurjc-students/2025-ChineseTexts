@@ -18,8 +18,9 @@
     <!-- Pegar texto -->
     <div *ngIf="mode === 'paste'" class="create-body">
       <label class="field-label">Paste Chinese text</label>
-      <textarea class="paste-area" [(ngModel)]="pasteText" rows="5"
+      <textarea class="paste-area" [(ngModel)]="pasteText" rows="5" maxlength="1500"
         placeholder="你好，世界。今天天气很好。"></textarea>
+      <p class="hint">Up to 1500 characters. For longer material, split it into shorter pieces.</p>
     </div>
 
     <!-- Subir foto -->

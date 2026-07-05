@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -50,6 +51,10 @@ public class UserTextService {
     @Autowired
     private UsageService usageService;
 
+    /** Max characters per text: bounds per-generation API cost and keeps full-text audio working. */
+    @Value("${usage.text.max-chars:1500}")
+    private int maxChars;
+
     /**
      * Builds a private text from an uploaded image (OCR) or pasted Chinese text.
      * Reserves usage BEFORE any paid API call so cost stays bounded.
@@ -72,6 +77,10 @@ public class UserTextService {
             throw new IllegalArgumentException("No Chinese text could be read from the image.");
         }
         chineseText = chineseText.trim();
+        if (chineseText.length() > maxChars) {
+            throw new IllegalArgumentException(
+                    "This text is too long (max " + maxChars + " characters). Please split it into shorter pieces.");
+        }
 
         UserText userText = new UserText();
         userText.setOwner(owner);
