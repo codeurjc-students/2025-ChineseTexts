@@ -31,8 +31,11 @@ public class RepositoryUserDetailsService implements UserDetailsService {
 			roles.add(new SimpleGrantedAuthority("ROLE_" + role));
 		}
 
+		// A blocked user is exposed as "disabled" so Spring Security rejects the
+		// login automatically (DisabledException).
+		boolean enabled = !user.isBlocked();
 		return new org.springframework.security.core.userdetails.User(user.getEmail(),
-				user.getPassword(), roles);
+				user.getPassword(), enabled, true, true, true, roles);
 
 	}
 }

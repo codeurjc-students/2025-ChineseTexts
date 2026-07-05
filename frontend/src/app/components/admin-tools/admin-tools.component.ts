@@ -6,18 +6,19 @@ import { LoginService } from '../../services/login.service';
 import { UploadTextComponent } from '../upload-text/upload-text.component';
 import { AiToolsComponent } from '../ai-tools/ai-tools.component';
 import { WordManagerComponent } from '../word-manager/word-manager.component';
+import { AdminUsersComponent } from '../admin-users/admin-users.component';
 
 /**
- * Single admin entry point. Shows a menu of four tools and hosts each one as a child
+ * Single admin entry point. Shows a menu of tools and hosts each one as a child
  * component, so every feature stays self-contained and independently testable while the
  * navigation lives in one place.
  */
-type Tool = 'menu' | 'manual' | 'ai' | 'ocr' | 'words';
+type Tool = 'menu' | 'manual' | 'ai' | 'ocr' | 'words' | 'users';
 
 @Component({
   selector: 'app-admin-tools',
   standalone: true,
-  imports: [CommonModule, UploadTextComponent, AiToolsComponent, WordManagerComponent],
+  imports: [CommonModule, UploadTextComponent, AiToolsComponent, WordManagerComponent, AdminUsersComponent],
   templateUrl: './admin-tools.component.html',
   styleUrl: './admin-tools.component.scss'
 })

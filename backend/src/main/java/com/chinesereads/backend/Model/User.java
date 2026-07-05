@@ -1,5 +1,7 @@
 package com.chinesereads.backend.Model;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -15,7 +17,7 @@ import jakarta.persistence.OneToMany;
 
 @Entity
 public class User {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -24,9 +26,15 @@ public class User {
     private String password;
     private String language;
 
+    // Si está bloqueado, no puede iniciar sesión (Spring Security lo rechaza).
+    private boolean blocked = false;
+    // Fecha de alta y última conexión, usadas por el panel de administración.
+    private LocalDate registrationDate;
+    private LocalDateTime lastAccess;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Collection> collections = new ArrayList<>();
-    
+
     @ElementCollection(fetch = FetchType.EAGER)
 	private List<String> roles;
 
@@ -98,5 +106,29 @@ public class User {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public boolean isBlocked() {
+        return blocked;
+    }
+
+    public void setBlocked(boolean blocked) {
+        this.blocked = blocked;
+    }
+
+    public LocalDate getRegistrationDate() {
+        return registrationDate;
+    }
+
+    public void setRegistrationDate(LocalDate registrationDate) {
+        this.registrationDate = registrationDate;
+    }
+
+    public LocalDateTime getLastAccess() {
+        return lastAccess;
+    }
+
+    public void setLastAccess(LocalDateTime lastAccess) {
+        this.lastAccess = lastAccess;
     }
 }

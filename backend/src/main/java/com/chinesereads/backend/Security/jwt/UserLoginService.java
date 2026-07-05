@@ -3,14 +3,19 @@ package com.chinesereads.backend.Security.jwt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
+
+import com.chinesereads.backend.Service.UserService;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
@@ -23,23 +28,36 @@ public class UserLoginService {
 	private final AuthenticationManager authenticationManager;
 	private final UserDetailsService userDetailsService;
 	private final JwtTokenProvider jwtTokenProvider;
+	private final UserService userService;
 
-	public UserLoginService(AuthenticationManager authenticationManager, UserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider) {
+	public UserLoginService(AuthenticationManager authenticationManager, UserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider, UserService userService) {
 		this.authenticationManager = authenticationManager;
 		this.userDetailsService = userDetailsService;
 		this.jwtTokenProvider = jwtTokenProvider;
+		this.userService = userService;
 	}
 
 	public ResponseEntity<AuthResponse> login(HttpServletResponse response, LoginRequest loginRequest) {
-		
-		Authentication authentication = authenticationManager.authenticate(
-				new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+
+		Authentication authentication;
+		try {
+			authentication = authenticationManager.authenticate(
+					new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+		} catch (DisabledException | LockedException e) {
+			// Blocked account: reject with a clear, distinguishable response (403).
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AuthResponse(
+					AuthResponse.Status.FAILURE,
+					"Your account has been blocked. Please contact support."));
+		}
 
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 
-		
+
 		String username = loginRequest.getUsername();
 		UserDetails user = userDetailsService.loadUserByUsername(username);
+
+		// Record the successful login moment for the admin panel.
+		userService.recordLastAccess(username);
 
 		HttpHeaders responseHeaders = new HttpHeaders();
 		var newAccessToken = jwtTokenProvider.generateAccessToken(user);
@@ -57,6 +75,11 @@ public class UserLoginService {
 		try {
 			var claims = jwtTokenProvider.validateToken(refreshToken);
 			UserDetails user = userDetailsService.loadUserByUsername(claims.getSubject());
+
+			if (!user.isEnabled()) {
+				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AuthResponse(
+						AuthResponse.Status.FAILURE, "Your account has been blocked."));
+			}
 
 			var newAccessToken = jwtTokenProvider.generateAccessToken(user);
 			response.addCookie(buildTokenCookie(TokenType.ACCESS, newAccessToken));
