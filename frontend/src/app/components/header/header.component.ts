@@ -89,11 +89,15 @@ export class HeaderComponent implements OnInit {
           }
         });
       },
-      error: () => {
+      error: (err) => {
         this.loginEmail = '';
         this.loginPassword = '';
         this.loginAttempted = false;
-        this.messageError = 'Incorrect credentials. Please try again.';
+        // A blocked account returns 403 with a specific message; anything else
+        // is treated as invalid credentials.
+        this.messageError = err?.status === 403
+          ? (err?.error?.message || 'Your account has been blocked.')
+          : 'Incorrect credentials. Please try again.';
       }
     });
   }

@@ -2,21 +2,29 @@ package com.chinesereads.backend.Controller;
 
 import java.net.URI;
 import java.security.Principal;
+import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.chinesereads.backend.Service.UserService;
+import com.chinesereads.backend.dto.AdminUserDTO;
+import com.chinesereads.backend.dto.AdminUserUpdateDTO;
 import com.chinesereads.backend.dto.UserDTO;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -92,5 +100,90 @@ public class UserControllerRest {
         }
         UserDTO updated = userService.changePassword(principal.getName(), newPassword);
         return ResponseEntity.ok(updated);
+    }
+
+    // ——————————————————— Self-service account deletion ———————————————————
+
+    @DeleteMapping("/me")
+    public ResponseEntity<?> deleteOwnAccount(HttpServletRequest request) {
+        Principal principal = request.getUserPrincipal();
+        if (principal == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        userService.deleteOwnAccount(principal.getName());
+        return ResponseEntity.noContent().build();
+    }
+
+    // ——————————————————————— Admin user management ———————————————————————
+
+    @GetMapping
+    public ResponseEntity<List<AdminUserDTO>> listUsers(
+            @RequestParam(required = false) String search,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+        return ResponseEntity.ok(userService.listUsers(search, page, size));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getUserDetail(@PathVariable long id) {
+        try {
+            return ResponseEntity.ok(userService.getUserDetail(id));
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("message", "User not found"));
+        }
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateUser(@PathVariable long id,
+            @RequestBody AdminUserUpdateDTO data, HttpServletRequest request) {
+        Principal principal = request.getUserPrincipal();
+        String requesterEmail = principal != null ? principal.getName() : null;
+        try {
+            return ResponseEntity.ok(userService.updateUserByAdmin(id, data, requesterEmail));
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("message", "User not found"));
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(Map.of("message", e.getMessage()));
+        }
+    }
+
+    @PatchMapping("/{id}/blocked")
+    public ResponseEntity<?> setBlocked(@PathVariable long id,
+            @RequestBody Map<String, Boolean> body, HttpServletRequest request) {
+        Principal principal = request.getUserPrincipal();
+        String requesterEmail = principal != null ? principal.getName() : null;
+        Boolean blocked = body.get("blocked");
+        if (blocked == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("message", "Missing 'blocked' field"));
+        }
+        try {
+            return ResponseEntity.ok(userService.setBlocked(id, blocked, requesterEmail));
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("message", "User not found"));
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(Map.of("message", e.getMessage()));
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteUser(@PathVariable long id, HttpServletRequest request) {
+        Principal principal = request.getUserPrincipal();
+        String requesterEmail = principal != null ? principal.getName() : null;
+        try {
+            userService.deleteUser(id, requesterEmail);
+            return ResponseEntity.noContent().build();
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("message", "User not found"));
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(Map.of("message", e.getMessage()));
+        }
     }
 }

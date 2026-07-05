@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 import { LoginService } from '../../services/login.service';
 import { UserService, UserDTO } from '../../services/users.service';
 
-type ProfileSection = 'view' | 'editProfile' | 'editPassword';
+type ProfileSection = 'view' | 'editProfile' | 'editPassword' | 'deleteAccount';
 
 @Component({
   selector: 'app-profile',
@@ -32,6 +32,11 @@ export class ProfileComponent implements OnInit {
   confirmPassword = '';
   passwordStatus: 'idle' | 'checking' | 'saving' | 'success' | 'error' = 'idle';
   passwordError = '';
+
+  // Borrar cuenta
+  deleteConfirmText = '';
+  deleteStatus: 'idle' | 'deleting' | 'error' = 'idle';
+  deleteError = '';
 
   languages = [
     { value: 'en', label: 'English' },
@@ -168,6 +173,43 @@ export class ProfileComponent implements OnInit {
       error: () => {
         this.passwordStatus = 'error';
         this.passwordError = 'Current password is incorrect.';
+      }
+    });
+  }
+
+  // ——— Borrar cuenta ———
+
+  openDeleteAccount(): void {
+    this.deleteConfirmText = '';
+    this.deleteStatus = 'idle';
+    this.deleteError = '';
+    this.section = 'deleteAccount';
+  }
+
+  get deleteConfirmValid(): boolean {
+    return this.deleteConfirmText.trim().toUpperCase() === 'DELETE';
+  }
+
+  confirmDeleteAccount(): void {
+    if (!this.deleteConfirmValid) {
+      this.deleteError = 'Please type DELETE to confirm.';
+      this.deleteStatus = 'error';
+      return;
+    }
+    this.deleteError = '';
+    this.deleteStatus = 'deleting';
+
+    this.userService.deleteOwnAccount().subscribe({
+      next: () => {
+        // Clear the (now orphaned) session and go home.
+        this.loginService.logout().subscribe({
+          next: () => this.router.navigate(['/']),
+          error: () => this.router.navigate(['/'])
+        });
+      },
+      error: () => {
+        this.deleteStatus = 'error';
+        this.deleteError = 'Error deleting your account. Please try again.';
       }
     });
   }

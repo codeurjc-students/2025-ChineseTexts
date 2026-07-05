@@ -31,6 +31,12 @@
         <p class="tool-desc">Search a word to edit or delete it, or add a brand new word to the dictionary.</p>
       </div>
 
+      <div class="tool-card" (click)="select('users')">
+        <div class="tool-icon"><i class="bi bi-people"></i></div>
+        <h3 class="tool-title">Manage users</h3>
+        <p class="tool-desc">List and search users, view their activity and collections, and block, edit or delete them.</p>
+      </div>
+
     </div>
   </div>
 
@@ -39,5 +45,6 @@
   <app-ai-tools     *ngIf="tool === 'ai'"     [forcedMode]="'generate'" (exit)="backToMenu()"></app-ai-tools>
   <app-ai-tools     *ngIf="tool === 'ocr'"    [forcedMode]="'ocr'"      (exit)="backToMenu()"></app-ai-tools>
   <app-word-manager *ngIf="tool === 'words'"                            (exit)="backToMenu()"></app-word-manager>
+  <app-admin-users  *ngIf="tool === 'users'"                            (exit)="backToMenu()"></app-admin-users>
 
 </div>

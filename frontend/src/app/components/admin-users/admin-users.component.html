@@ -1,0 +1,196 @@
+<div class="admin-users">
+
+  <!-- ══════ Cabecera ══════ -->
+  <div class="section-header">
+    <button class="btn-icon" (click)="goBack()" title="Back to Admin Tools">
+      <i class="bi bi-arrow-left"></i>
+    </button>
+    <h2 class="section-title"><i class="bi bi-people me-2"></i>Manage users</h2>
+  </div>
+
+  <!-- ══════ Feedback ══════ -->
+  <div class="alert-error mb-3" *ngIf="messageType === 'error'">
+    <i class="bi bi-exclamation-triangle"></i> {{ message }}
+  </div>
+  <div class="alert-success mb-3" *ngIf="messageType === 'success'">
+    <i class="bi bi-check-circle"></i> {{ message }}
+  </div>
+
+  <!-- ══════════════════════ LISTA ══════════════════════ -->
+  <ng-container *ngIf="view === 'list'">
+
+    <p class="section-hint">Search by email or name, then click a user to see their profile and manage them.</p>
+
+    <div class="search-row mb-3">
+      <input class="form-input search-input" type="text" [(ngModel)]="searchTerm"
+             placeholder="Search by email or name…" (keydown.enter)="search()" />
+      <button class="btn-primary" (click)="search()">
+        <i class="bi bi-search"></i> Search
+      </button>
+      <button class="btn-secondary" *ngIf="searchTerm" (click)="clearSearch()">Clear</button>
+    </div>
+
+    <!-- Spinner inicial -->
+    <div class="text-center py-4" *ngIf="listLoading && users.length === 0">
+      <div class="spinner-red"></div>
+    </div>
+
+    <!-- Vacío -->
+    <div class="empty-state" *ngIf="!listLoading && users.length === 0">
+      <i class="bi bi-inbox"></i>
+      <p>No users found.</p>
+    </div>
+
+    <!-- Filas -->
+    <div class="user-row" *ngFor="let u of users" (click)="openDetail(u.id)">
+      <div class="user-row-main">
+        <div class="user-email">{{ u.email }}</div>
+        <div class="user-name">{{ u.name }}</div>
+      </div>
+      <div class="user-row-side">
+        <span class="badge badge-admin" *ngIf="u.roles.includes('ADMIN')">ADMIN</span>
+        <span class="badge badge-blocked" *ngIf="u.blocked">BLOCKED</span>
+        <span class="user-lastaccess">
+          <i class="bi bi-clock-history"></i>
+          {{ u.lastAccess ? (u.lastAccess | date:'medium') : 'Never logged in' }}
+        </span>
+        <i class="bi bi-chevron-right chevron"></i>
+      </div>
+    </div>
+
+    <div class="text-center mt-4" *ngIf="hasMore && users.length > 0">
+      <button class="btn-secondary" (click)="loadMore()" [disabled]="listLoading">
+        <span *ngIf="!listLoading">Load more</span>
+        <span *ngIf="listLoading" class="spinner-sm"></span>
+      </button>
+    </div>
+
+  </ng-container>
+
+  <!-- ══════════════════════ DETALLE ══════════════════════ -->
+  <ng-container *ngIf="view === 'detail'">
+
+    <button class="btn-secondary btn-sm mb-3" (click)="backToList()">
+      <i class="bi bi-arrow-left"></i> Back to list
+    </button>
+
+    <div class="text-center py-4" *ngIf="detailLoading && !detail">
+      <div class="spinner-red"></div>
+    </div>
+
+    <div class="detail-card" *ngIf="detail">
+
+      <!-- Identidad -->
+      <div class="detail-head">
+        <div class="detail-avatar">{{ detail.name ? detail.name.charAt(0).toUpperCase() : '?' }}</div>
+        <div>
+          <h3 class="detail-name">{{ detail.name }}</h3>
+          <div class="detail-email">{{ detail.email }}</div>
+          <div class="detail-badges">
+            <span class="badge badge-admin" *ngIf="isTargetAdmin">ADMIN</span>
+            <span class="badge badge-blocked" *ngIf="detail.blocked">BLOCKED</span>
+            <span class="badge badge-self" *ngIf="isSelf">YOU</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Datos -->
+      <div class="detail-grid">
+        <div class="detail-field">
+          <span class="field-label">Language</span>
+          <span class="field-value">{{ detail.language || '—' }}</span>
+        </div>
+        <div class="detail-field">
+          <span class="field-label">Registered</span>
+          <span class="field-value">{{ detail.registrationDate ? (detail.registrationDate | date:'longDate') : '—' }}</span>
+        </div>
+        <div class="detail-field">
+          <span class="field-label">Last access</span>
+          <span class="field-value">{{ detail.lastAccess ? (detail.lastAccess | date:'medium') : 'Never logged in' }}</span>
+        </div>
+        <div class="detail-field">
+          <span class="field-label">Status</span>
+          <span class="field-value">{{ detail.blocked ? 'Blocked' : 'Active' }}</span>
+        </div>
+      </div>
+
+      <!-- Estadísticas -->
+      <div class="stats-row">
+        <div class="stat-box">
+          <div class="stat-num">{{ detail.collectionsCount }}</div>
+          <div class="stat-label">Collections</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num">{{ detail.flashcardsCount }}</div>
+          <div class="stat-label">Flashcards</div>
+        </div>
+      </div>
+
+      <!-- Colecciones -->
+      <div class="collections-block" *ngIf="detail.collections.length > 0">
+        <h4 class="block-title">Collections</h4>
+        <div class="collection-item" *ngFor="let c of detail.collections">
+          <span class="collection-title">{{ c.title }}</span>
+          <span class="collection-count">{{ c.flashcardsCount }} card{{ c.flashcardsCount === 1 ? '' : 's' }}</span>
+        </div>
+      </div>
+
+      <!-- Edición de nombre / idioma -->
+      <div class="edit-form" *ngIf="editing">
+        <h4 class="block-title">Edit user</h4>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Name</label>
+            <input class="form-input" type="text" [(ngModel)]="editName" />
+          </div>
+          <div class="form-group">
+            <label>Language</label>
+            <input class="form-input" type="text" [(ngModel)]="editLanguage" />
+          </div>
+        </div>
+        <div class="action-row mt-3">
+          <button class="btn-primary btn-sm" (click)="saveEdit()" [disabled]="detailLoading">Save</button>
+          <button class="btn-secondary btn-sm" (click)="cancelEdit()">Cancel</button>
+        </div>
+      </div>
+
+      <!-- Confirmación de borrado -->
+      <div class="confirm-box mt-3" *ngIf="confirmingDelete">
+        <span><i class="bi bi-exclamation-triangle"></i>
+          Permanently delete this user and all their data? This cannot be undone.</span>
+        <div class="confirm-actions">
+          <button class="btn-danger btn-sm" (click)="confirmDelete()">Yes, delete</button>
+          <button class="btn-secondary btn-sm" (click)="cancelDelete()">Cancel</button>
+        </div>
+      </div>
+
+      <!-- Acciones -->
+      <div class="action-row mt-4" *ngIf="!editing && !confirmingDelete">
+        <button class="btn-secondary" (click)="startEdit()" [disabled]="detailLoading">
+          <i class="bi bi-pencil"></i> Edit
+        </button>
+
+        <ng-container *ngIf="!isSelf">
+          <button class="btn-secondary" (click)="toggleBlocked()" [disabled]="detailLoading">
+            <i class="bi" [ngClass]="detail.blocked ? 'bi-unlock' : 'bi-lock'"></i>
+            {{ detail.blocked ? 'Unblock' : 'Block' }}
+          </button>
+          <button class="btn-secondary" (click)="toggleAdmin()" [disabled]="detailLoading">
+            <i class="bi bi-shield"></i>
+            {{ isTargetAdmin ? 'Remove admin' : 'Make admin' }}
+          </button>
+          <button class="btn-danger" (click)="askDelete()" [disabled]="detailLoading">
+            <i class="bi bi-trash"></i> Delete
+          </button>
+        </ng-container>
+      </div>
+
+      <p class="self-note" *ngIf="isSelf">
+        <i class="bi bi-info-circle"></i>
+        This is your own account. You can edit your details, but you can't block, delete or change your own admin role here.
+      </p>
+
+    </div>
+  </ng-container>
+
+</div>
