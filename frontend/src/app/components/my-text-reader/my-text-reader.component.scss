@@ -67,6 +67,9 @@ body { font-family: 'Noto Serif SC', serif; }
 }
 .pinyin { font-size: 0.7rem; color: #888; line-height: 1.2; }
 
+// Salto de línea dentro del flujo de palabras (preserva diálogos / disposición).
+.line-break { flex-basis: 100%; width: 100%; height: 0.5rem; }
+
 // ——— Frases ———
 .sentence-row {
   border-left: 3px solid #f9c6c0; padding-left: 12px; cursor: pointer;

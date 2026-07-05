@@ -64,6 +64,30 @@ public class UserTextControllerRest {
         }
     }
 
+    /** OCR "extract" step: image -> extracted Chinese text (with layout) for review/edit. */
+    @PostMapping(value = "/extract", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> extract(
+            @RequestPart(value = "image") MultipartFile image,
+            HttpServletRequest request) {
+        Principal principal = request.getUserPrincipal();
+        if (principal == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        try {
+            String text = userTextService.extract(principal.getName(), image);
+            return ResponseEntity.ok(Map.of("text", text));
+        } catch (UsageLimitException e) {
+            return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
+                    .body(Map.of("message", e.getMessage()));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("message", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("message", "Could not read the image. Please try another photo."));
+        }
+    }
+
     @GetMapping
     public ResponseEntity<List<UserTextSummaryDTO>> listMine(HttpServletRequest request) {
         Principal principal = request.getUserPrincipal();

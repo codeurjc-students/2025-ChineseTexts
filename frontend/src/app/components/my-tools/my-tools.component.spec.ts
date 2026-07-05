@@ -30,18 +30,17 @@ describe('MyToolsComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('switches between paste and OCR input modes', () => {
-    component.setMode('ocr');
-    expect(component.mode).toBe('ocr');
-    component.setMode('paste');
-    expect(component.mode).toBe('paste');
-  });
-
-  it('rejects an empty paste submission without calling the API', () => {
-    component.mode = 'paste';
+  it('rejects an empty text submission without calling the API', () => {
     component.pasteText = '   ';
     component.create();
     expect(component.messageType).toBe('error');
     httpMock.expectNone('/api/my-texts');
+  });
+
+  it('rejects extract with no image selected without calling the API', () => {
+    component.selectedFile = null;
+    component.extract();
+    expect(component.messageType).toBe('error');
+    httpMock.expectNone('/api/my-texts/extract');
   });
 });

@@ -8,13 +8,12 @@ import { MyTextsService, UserTextSummary } from '../../services/my-texts.service
 import { SeoService } from '../../services/seo.service';
 
 /**
- * "My Tools" — the user-facing counterpart of Admin Tools. Lets a registered user
- * turn a pasted Chinese text OR a photo (OCR) into their own private graded reader,
- * and lists their existing texts (open to read, or delete). All processing is
- * server-side and rate-limited; this component only orchestrates the calls.
+ * "My Tools" — the user-facing counterpart of Admin Tools. A registered user turns
+ * Chinese text into their own PRIVATE graded reader. Flow: paste text OR extract it
+ * from a photo (OCR) into an editable box, review/fix it, then create the reader.
+ * Generating always happens from the (possibly edited) text box, so the AI only ever
+ * works on text the user confirmed — better quality and less wasted spend.
  */
-type Mode = 'paste' | 'ocr';
-
 @Component({
   selector: 'app-my-tools',
   standalone: true,
@@ -27,9 +26,9 @@ export class MyToolsComponent implements OnInit {
   texts: UserTextSummary[] = [];
   loadingList = false;
 
-  mode: Mode = 'paste';
   pasteText = '';
   selectedFile: File | null = null;
+  extracting = false;
   creating = false;
 
   message = '';
@@ -77,53 +76,52 @@ export class MyToolsComponent implements OnInit {
     this.router.navigate(['/my-text', id]);
   }
 
-  // ——— Create ———
-
-  setMode(mode: Mode): void {
-    this.mode = mode;
-    this.clearFeedback();
-  }
+  // ——— Extract from photo (OCR) ———
 
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     this.selectedFile = input.files && input.files.length ? input.files[0] : null;
   }
 
-  create(): void {
+  extract(): void {
     this.clearFeedback();
-
-    if (this.mode === 'paste' && !this.pasteText.trim()) {
-      this.showError('Please paste some Chinese text first.');
-      return;
-    }
-    if (this.mode === 'ocr' && !this.selectedFile) {
+    if (!this.selectedFile) {
       this.showError('Please choose an image first.');
       return;
     }
+    this.extracting = true;
+    this.myTexts.extractFromImage(this.selectedFile).subscribe({
+      next: (res) => {
+        this.extracting = false;
+        this.pasteText = res.text || '';
+        this.selectedFile = null;
+        this.showInfo('Text extracted. Review and fix it below, then create your reader.');
+      },
+      error: (err) => {
+        this.extracting = false;
+        this.handleError(err, 'Could not read the image. Please try another photo.');
+      }
+    });
+  }
 
+  // ——— Create the reader ———
+
+  create(): void {
+    this.clearFeedback();
+    if (!this.pasteText.trim()) {
+      this.showError('Paste some Chinese text, or extract it from a photo first.');
+      return;
+    }
     this.creating = true;
-    const request$ = this.mode === 'paste'
-      ? this.myTexts.createFromText(this.pasteText.trim())
-      : this.myTexts.createFromImage(this.selectedFile as File);
-
-    request$.subscribe({
+    this.myTexts.createFromText(this.pasteText.trim()).subscribe({
       next: (created) => {
         this.creating = false;
         this.pasteText = '';
-        this.selectedFile = null;
-        this.loadTexts();
-        // Take the user straight to their new reader.
         this.router.navigate(['/my-text', created.id]);
       },
       error: (err) => {
         this.creating = false;
-        if (err.status === 429) {
-          this.showError(err.error?.message || 'You have reached your usage limit. Please try again later.');
-        } else if (err.status === 400) {
-          this.showError(err.error?.message || 'Please provide a valid Chinese text or image.');
-        } else {
-          this.showError('Could not process your text. Please try again.');
-        }
+        this.handleError(err, 'Could not process your text. Please try again.');
       }
     });
   }
@@ -156,13 +154,17 @@ export class MyToolsComponent implements OnInit {
 
   // ——— Helpers ———
 
-  private clearFeedback(): void {
-    this.message = '';
-    this.messageType = '';
+  private handleError(err: any, fallback: string): void {
+    if (err?.status === 429) {
+      this.showError(err.error?.message || 'You have reached your usage limit. Please try again later.');
+    } else if (err?.status === 400) {
+      this.showError(err.error?.message || 'Please provide a valid Chinese text or image.');
+    } else {
+      this.showError(fallback);
+    }
   }
 
-  private showError(msg: string): void {
-    this.message = msg;
-    this.messageType = 'error';
-  }
+  private clearFeedback(): void { this.message = ''; this.messageType = ''; }
+  private showError(msg: string): void { this.message = msg; this.messageType = 'error'; }
+  private showInfo(msg: string): void { this.message = msg; this.messageType = 'info'; }
 }

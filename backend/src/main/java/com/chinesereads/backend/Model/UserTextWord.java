@@ -32,6 +32,9 @@ public class UserTextWord {
     private String english;
     private String spanish;
 
+    /** True if a line break follows this word (preserves the original layout). */
+    private boolean newlineAfter;
+
     public UserTextWord() {}
 
     public UserTextWord(int position, String chinese, String pinyin, String english, String spanish) {
@@ -62,4 +65,7 @@ public class UserTextWord {
 
     public String getSpanish() { return spanish; }
     public void setSpanish(String spanish) { this.spanish = spanish; }
+
+    public boolean isNewlineAfter() { return newlineAfter; }
+    public void setNewlineAfter(boolean newlineAfter) { this.newlineAfter = newlineAfter; }
 }

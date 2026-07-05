@@ -72,7 +72,7 @@ public class UserTextService {
         // Cost guard: consumes one unit from the per-user and global counters, or throws.
         usageService.reserveGeneration(owner);
 
-        String chineseText = hasImage ? aiService.ocrImageToText(image) : pastedText.trim();
+        String chineseText = hasImage ? aiService.ocrImageToText(image, true) : pastedText.trim();
         if (chineseText == null || chineseText.isBlank()) {
             throw new IllegalArgumentException("No Chinese text could be read from the image.");
         }
@@ -98,19 +98,58 @@ public class UserTextService {
         userText.setEnglishTranslation(translations != null && translations.size() > 0 ? nz(translations.get(0)) : "");
         userText.setSpanishTranslation(translations != null && translations.size() > 1 ? nz(translations.get(1)) : "");
 
+        // Segment line by line so the original layout (dialogues, line breaks) is
+        // preserved: a newline flag is set on the last word of each line.
+        List<String> segments = new ArrayList<>();
+        List<Boolean> newlineFlags = new ArrayList<>();
+        String[] lines = chineseText.split("\n", -1);
+        for (int li = 0; li < lines.length; li++) {
+            for (String seg : jiebaService.segment(lines[li])) {
+                if (!seg.isEmpty()) {
+                    segments.add(seg);
+                    newlineFlags.add(false);
+                }
+            }
+            if (li < lines.length - 1 && !newlineFlags.isEmpty()) {
+                newlineFlags.set(newlineFlags.size() - 1, true);
+            }
+        }
+
         // Per-word definitions: reuse the global dictionary where possible, ask the AI
         // only for the rest — and store them ONLY on this text (never in the global dict).
-        List<String> segments = jiebaService.segment(chineseText);
+        // Punctuation / non-Chinese segments are never sent to the AI (no fake pinyin).
         Map<String, String[]> defs = resolveDefinitions(segments);
 
-        int position = 0;
-        for (String seg : segments) {
+        for (int i = 0; i < segments.size(); i++) {
+            String seg = segments.get(i);
             String[] d = defs.getOrDefault(seg, EMPTY_DEF);
-            userText.addWord(new UserTextWord(position++, seg, d[0], d[1], d[2]));
+            UserTextWord word = new UserTextWord(i, seg, d[0], d[1], d[2]);
+            word.setNewlineAfter(newlineFlags.get(i));
+            userText.addWord(word);
         }
 
         UserText saved = userTextRepository.save(userText);
         return toSummary(saved);
+    }
+
+    /**
+     * OCR "extract" step: reads an image and returns the extracted Chinese text with
+     * its original layout, for the user to review/edit before generating. Cheaper than
+     * a full generation, so it only consumes from the global daily counter.
+     */
+    @Transactional
+    public String extract(String ownerEmail, MultipartFile image) throws Exception {
+        if (image == null || image.isEmpty()) {
+            throw new IllegalArgumentException("Please choose an image.");
+        }
+        userRepository.findByEmail(ownerEmail).orElseThrow();
+        usageService.reserveOcr();
+
+        String text = aiService.ocrImageToText(image, true);
+        if (text == null || text.isBlank()) {
+            throw new IllegalArgumentException("No Chinese text could be read from the image.");
+        }
+        return text.strip();
     }
 
     @Transactional(readOnly = true)
@@ -125,7 +164,8 @@ public class UserTextService {
     public UserTextReaderDTO getMine(long id, String ownerEmail) {
         UserText text = ownedOrThrow(id, ownerEmail);
         List<UserTextWordDTO> words = text.getWords().stream()
-                .map(w -> new UserTextWordDTO(w.getChinese(), w.getPinyin(), w.getEnglish(), w.getSpanish()))
+                .map(w -> new UserTextWordDTO(w.getChinese(), w.getPinyin(), w.getEnglish(),
+                        w.getSpanish(), w.isNewlineAfter()))
                 .toList();
         return new UserTextReaderDTO(
                 text.getId(),
@@ -165,7 +205,9 @@ public class UserTextService {
         List<String> missing = new ArrayList<>();
 
         for (String seg : segments.stream().distinct().toList()) {
-            if (seg.isBlank()) {
+            // Skip punctuation / non-Chinese segments: they render as-is with no
+            // pinyin/translation and are never sent to the AI (avoids fake pinyin).
+            if (seg.isBlank() || !containsCjk(seg)) {
                 continue;
             }
             Word w = wordRepository.findByChinese(seg).orElse(null);
@@ -188,6 +230,12 @@ public class UserTextService {
     private UserTextSummaryDTO toSummary(UserText t) {
         return new UserTextSummaryDTO(t.getId(), t.getTitle(), t.getCreationDate(),
                 t.getWords() != null ? t.getWords().size() : 0);
+    }
+
+    /** True if the segment contains at least one CJK ideograph (i.e. is a real word). */
+    private static boolean containsCjk(String s) {
+        return s.codePoints().anyMatch(cp ->
+                (cp >= 0x4E00 && cp <= 0x9FFF) || (cp >= 0x3400 && cp <= 0x4DBF));
     }
 
     private static String nz(String s) {
