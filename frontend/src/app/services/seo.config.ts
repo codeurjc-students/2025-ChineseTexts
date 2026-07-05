@@ -55,6 +55,8 @@ const STATIC_SEO: Record<string, SeoConfig> = {
   '/collections': { title: 'My Collections | ChineseReads', description: 'Your saved Chinese vocabulary collections and flashcards.', path: '/collections', noindex: true },
   '/profile':     { title: 'My Profile | ChineseReads',     description: 'Manage your ChineseReads account.',                      path: '/profile',     noindex: true },
   '/admin-tools': { title: 'Admin Tools | ChineseReads',    description: 'Content management tools for administrators.',           path: '/admin-tools', noindex: true },
+  '/my-tools':    { title: 'My Tools | ChineseReads',       description: 'Turn any Chinese text or photo into your own private graded reader.', path: '/my-tools', noindex: true },
+  '/my-text':     { title: 'My Text | ChineseReads',        description: 'Read your private Chinese text.',                        path: '/my-text',     noindex: true },
   '/ai-tools':    { title: 'AI Tools | ChineseReads',       description: 'AI-assisted Chinese text tools.',                        path: '/ai-tools',    noindex: true },
   '/upload-text': { title: 'Upload Text | ChineseReads',    description: 'Upload a new Chinese text.',                             path: '/upload-text', noindex: true },
   '/success':     { title: 'Success | ChineseReads',        description: 'Operation completed successfully.',                      path: '/success',     noindex: true },
@@ -98,6 +100,9 @@ export function resolveSeo(path: string): SeoConfig {
     if (HSK_LEVELS.includes(level)) return hskConfig(level);
     return STATIC_SEO['/texts'];
   }
+
+  // /my-text/:id — private per-user reader, always noindex.
+  if (/^\/my-text\/[^/]+$/.test(clean)) return STATIC_SEO['/my-text'];
 
   // /text/:id — the TextComponent refines this with the actual text title.
   if (/^\/text\/[^/]+$/.test(clean)) return TEXT_DEFAULT;

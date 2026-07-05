@@ -32,8 +32,18 @@ public class User {
     private LocalDate registrationDate;
     private LocalDateTime lastAccess;
 
+    // Contador mensual de creaciones de texto propio (OCR + pegado) para el límite
+    // por usuario. Se reinicia cuando cambia el mes (ver usagePeriodStart).
+    private int monthlyTextCount = 0;
+    private LocalDate usagePeriodStart;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Collection> collections = new ArrayList<>();
+
+    // Textos privados del usuario. Cascade para que al borrar el usuario se borren
+    // también sus textos (y sus palabras) sin violar la clave foránea.
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserText> userTexts = new ArrayList<>();
 
     @ElementCollection(fetch = FetchType.EAGER)
 	private List<String> roles;
@@ -130,5 +140,29 @@ public class User {
 
     public void setLastAccess(LocalDateTime lastAccess) {
         this.lastAccess = lastAccess;
+    }
+
+    public int getMonthlyTextCount() {
+        return monthlyTextCount;
+    }
+
+    public void setMonthlyTextCount(int monthlyTextCount) {
+        this.monthlyTextCount = monthlyTextCount;
+    }
+
+    public LocalDate getUsagePeriodStart() {
+        return usagePeriodStart;
+    }
+
+    public void setUsagePeriodStart(LocalDate usagePeriodStart) {
+        this.usagePeriodStart = usagePeriodStart;
+    }
+
+    public List<UserText> getUserTexts() {
+        return userTexts;
+    }
+
+    public void setUserTexts(List<UserText> userTexts) {
+        this.userTexts = userTexts;
     }
 }
