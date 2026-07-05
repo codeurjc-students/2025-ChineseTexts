@@ -139,6 +139,27 @@ public class AiService {
         }
     }
 
+    /**
+     * Translates each Chinese sentence independently and returns the results in the
+     * same order, one [english, spanish] pair per input sentence, so the Chinese and
+     * its translation stay aligned 1:1 ([] on failure).
+     */
+    public List<List<String>> getSentenceTranslations(List<String> sentences) {
+        if (sentences == null || sentences.isEmpty()) {
+            return List.of();
+        }
+        try {
+            return restTemplate.exchange(
+                    aiServiceUrl + "/translateSentences",
+                    HttpMethod.POST,
+                    new HttpEntity<>(Map.of("sentences", sentences)),
+                    new ParameterizedTypeReference<List<List<String>>>() {}
+            ).getBody();
+        } catch (Exception e) {
+            return List.of();
+        }
+    }
+
     /** [{chinese,pinyin,english,spanish}, ...] definitions for a list of words ([] on failure). */
     public List<Map<String, String>> getWordDefinitions(List<String> words) {
         if (words == null || words.isEmpty()) {

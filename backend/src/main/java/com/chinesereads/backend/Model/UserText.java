@@ -50,6 +50,10 @@ public class UserText {
     @OrderBy("position ASC, id ASC")
     private List<UserTextWord> words = new ArrayList<>();
 
+    @OneToMany(mappedBy = "userText", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("position ASC, id ASC")
+    private List<UserTextSentence> sentences = new ArrayList<>();
+
     public UserText() {}
 
     public long getId() { return id; }
@@ -76,9 +80,18 @@ public class UserText {
     public List<UserTextWord> getWords() { return words; }
     public void setWords(List<UserTextWord> words) { this.words = words; }
 
+    public List<UserTextSentence> getSentences() { return sentences; }
+    public void setSentences(List<UserTextSentence> sentences) { this.sentences = sentences; }
+
     /** Adds a word and keeps the bidirectional link consistent. */
     public void addWord(UserTextWord word) {
         word.setUserText(this);
         this.words.add(word);
+    }
+
+    /** Adds a sentence and keeps the bidirectional link consistent. */
+    public void addSentence(UserTextSentence sentence) {
+        sentence.setUserText(this);
+        this.sentences.add(sentence);
     }
 }
