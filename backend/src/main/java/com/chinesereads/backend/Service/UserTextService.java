@@ -15,12 +15,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.chinesereads.backend.Model.User;
 import com.chinesereads.backend.Model.UserText;
+import com.chinesereads.backend.Model.UserTextSentence;
 import com.chinesereads.backend.Model.UserTextWord;
 import com.chinesereads.backend.Model.Word;
 import com.chinesereads.backend.Repository.UserRepository;
 import com.chinesereads.backend.Repository.UserTextRepository;
 import com.chinesereads.backend.Repository.WordRepository;
 import com.chinesereads.backend.dto.UserTextReaderDTO;
+import com.chinesereads.backend.dto.UserTextSentenceDTO;
 import com.chinesereads.backend.dto.UserTextSummaryDTO;
 import com.chinesereads.backend.dto.UserTextWordDTO;
 
@@ -87,16 +89,12 @@ public class UserTextService {
         userText.setText(chineseText);
         userText.setCreationDate(LocalDate.now());
 
-        // Title + full translations (best-effort; empty on AI failure).
+        // Title (best-effort; empty on AI failure).
         List<String> titles = aiService.getTitles(chineseText);
         String title = (titles != null && !titles.isEmpty() && titles.get(0) != null && !titles.get(0).isBlank())
                 ? titles.get(0)
                 : snippet(chineseText);
         userText.setTitle(title);
-
-        List<String> translations = aiService.getTranslations(chineseText);
-        userText.setEnglishTranslation(translations != null && translations.size() > 0 ? nz(translations.get(0)) : "");
-        userText.setSpanishTranslation(translations != null && translations.size() > 1 ? nz(translations.get(1)) : "");
 
         // Segment line by line so the original layout (dialogues, line breaks) is
         // preserved: a newline flag is set on the last word of each line.
@@ -114,6 +112,25 @@ public class UserTextService {
                 newlineFlags.set(newlineFlags.size() - 1, true);
             }
         }
+
+        // Group into sentences (ending on a terminator OR a line break) and translate
+        // each one on its own, so the Chinese and its translation stay aligned 1:1.
+        // The full translations are then just the sentences joined, so both views agree.
+        List<String> sentenceTexts = buildSentences(segments, newlineFlags);
+        List<List<String>> sentencePairs = aiService.getSentenceTranslations(sentenceTexts);
+
+        List<String> englishParts = new ArrayList<>();
+        List<String> spanishParts = new ArrayList<>();
+        for (int i = 0; i < sentenceTexts.size(); i++) {
+            List<String> pair = (sentencePairs != null && i < sentencePairs.size()) ? sentencePairs.get(i) : null;
+            String en = (pair != null && pair.size() > 0) ? nz(pair.get(0)) : "";
+            String es = (pair != null && pair.size() > 1) ? nz(pair.get(1)) : "";
+            userText.addSentence(new UserTextSentence(i, sentenceTexts.get(i), en, es));
+            if (!en.isBlank()) englishParts.add(en);
+            if (!es.isBlank()) spanishParts.add(es);
+        }
+        userText.setEnglishTranslation(String.join(" ", englishParts));
+        userText.setSpanishTranslation(String.join(" ", spanishParts));
 
         // Per-word definitions: reuse the global dictionary where possible, ask the AI
         // only for the rest — and store them ONLY on this text (never in the global dict).
@@ -167,6 +184,9 @@ public class UserTextService {
                 .map(w -> new UserTextWordDTO(w.getChinese(), w.getPinyin(), w.getEnglish(),
                         w.getSpanish(), w.isNewlineAfter()))
                 .toList();
+        List<UserTextSentenceDTO> sentences = text.getSentences().stream()
+                .map(s -> new UserTextSentenceDTO(s.getChinese(), s.getEnglish(), s.getSpanish()))
+                .toList();
         return new UserTextReaderDTO(
                 text.getId(),
                 text.getTitle(),
@@ -174,7 +194,8 @@ public class UserTextService {
                 text.getEnglishTranslation(),
                 text.getSpanishTranslation(),
                 text.getCreationDate(),
-                words);
+                words,
+                sentences);
     }
 
     @Transactional
@@ -197,6 +218,43 @@ public class UserTextService {
         return userTextRepository.findById(id)
                 .filter(t -> t.getOwner() != null && t.getOwner().getId() == owner.getId())
                 .orElseThrow(() -> new NoSuchElementException("Text not found"));
+    }
+
+    /** Chinese sentence terminators used to split a text into sentences. */
+    private static final String SENTENCE_TERMINATORS = "。！？…；.!?;";
+
+    /**
+     * Groups the ordered segments into sentences. A sentence ends when a segment
+     * finishes with a terminator (。！？…；．！？) OR when a line break follows it, so
+     * dialogues and lines without punctuation are still split correctly (and stay
+     * aligned with the layout shown word by word).
+     */
+    private List<String> buildSentences(List<String> segments, List<Boolean> newlineFlags) {
+        List<String> sentences = new ArrayList<>();
+        StringBuilder current = new StringBuilder();
+        for (int i = 0; i < segments.size(); i++) {
+            current.append(segments.get(i));
+            boolean endsHere = endsWithTerminator(segments.get(i)) || Boolean.TRUE.equals(newlineFlags.get(i));
+            if (endsHere) {
+                String s = current.toString().strip();
+                if (!s.isEmpty()) {
+                    sentences.add(s);
+                }
+                current.setLength(0);
+            }
+        }
+        String tail = current.toString().strip();
+        if (!tail.isEmpty()) {
+            sentences.add(tail);
+        }
+        return sentences;
+    }
+
+    private static boolean endsWithTerminator(String seg) {
+        if (seg == null || seg.isEmpty()) {
+            return false;
+        }
+        return SENTENCE_TERMINATORS.indexOf(seg.charAt(seg.length() - 1)) >= 0;
     }
 
     /** Builds a map chinese -> [pinyin, english, spanish] for the unique segments. */

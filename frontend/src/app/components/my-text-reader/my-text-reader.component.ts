@@ -79,9 +79,18 @@ export class MyTextReaderComponent implements OnInit {
         this.originalText = reader.words.map(w => w.chinese);
         this.translatedEnglishText = reader.words.map(w => w.english);
         this.translatedSpanishText = reader.words.map(w => w.spanish);
-        this.sentences = this.groupSentences(this.originalText);
-        this.englishSentences = this.splitSentences(reader.englishTranslation);
-        this.spanishSentences = this.splitSentences(reader.spanishTranslation);
+
+        if (reader.sentences && reader.sentences.length) {
+          // New texts carry sentences with translations aligned 1:1 (built at creation).
+          this.sentences = reader.sentences.map(s => s.chinese);
+          this.englishSentences = reader.sentences.map(s => s.english);
+          this.spanishSentences = reader.sentences.map(s => s.spanish);
+        } else {
+          // Fallback for texts created before aligned sentences existed.
+          this.sentences = this.groupSentences(this.originalText);
+          this.englishSentences = this.splitSentences(reader.englishTranslation);
+          this.spanishSentences = this.splitSentences(reader.spanishTranslation);
+        }
         this.loading = false;
       },
       error: () => {

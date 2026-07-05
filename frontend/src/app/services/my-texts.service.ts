@@ -18,6 +18,13 @@ export interface UserTextWord {
   newlineAfter: boolean;
 }
 
+/** One sentence with its translation, aligned 1:1 (chinese ↔ english/spanish). */
+export interface UserTextSentence {
+  chinese: string;
+  english: string;
+  spanish: string;
+}
+
 /** Everything the private reader needs to render one of the user's texts. */
 export interface UserTextReader {
   id: number;
@@ -27,6 +34,7 @@ export interface UserTextReader {
   spanishTranslation: string;
   creationDate: string;
   words: UserTextWord[];
+  sentences: UserTextSentence[];
 }
 
 @Injectable({ providedIn: 'root' })

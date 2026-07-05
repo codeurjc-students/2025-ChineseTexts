@@ -6,8 +6,8 @@ import java.util.List;
 /**
  * Everything the private reader needs to render a user's text, in a single
  * payload and derived purely from stored data (no global dictionary lookup):
- * the ordered word list (chinese + pinyin + per-word translations) plus the
- * full sentence-level translations.
+ * the ordered word list (chinese + pinyin + per-word translations), the full
+ * translations, and the ordered sentences with their translations aligned 1:1.
  */
 public record UserTextReaderDTO(
         Long id,
@@ -16,5 +16,6 @@ public record UserTextReaderDTO(
         String englishTranslation,
         String spanishTranslation,
         LocalDate creationDate,
-        List<UserTextWordDTO> words) {
+        List<UserTextWordDTO> words,
+        List<UserTextSentenceDTO> sentences) {
 }

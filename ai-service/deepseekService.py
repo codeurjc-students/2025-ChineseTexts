@@ -137,6 +137,39 @@ def get_translations():
     return jsonify([english_full, spanish_full])
 
 
+@app.route("/translateSentences", methods=["POST"])
+def translate_sentences():
+    data = request.get_json()
+    if not data or "sentences" not in data:
+        return jsonify({"error": "sentences is required"}), 400
+
+    sentences = data["sentences"]
+    if not isinstance(sentences, list):
+        return jsonify({"error": "sentences must be a list"}), 400
+
+    # Traducimos frase a frase para que la salida quede alineada 1:1 con la entrada
+    # (mismo número de elementos y mismo orden). Si una frase falla, devolvemos
+    # ['', ''] para esa posición sin romper la alineación del resto.
+    result = []
+    for sentence in sentences:
+        s = (sentence or "").strip()
+        if not s:
+            result.append(["", ""])
+            continue
+        prompt = PROMPT_TRANSLATE_SENTENCE.replace("{sentence}", s)
+        raw = call_deepseek(prompt)
+        try:
+            parsed = ast.literal_eval(raw)
+            if not isinstance(parsed, list) or len(parsed) != 2:
+                raise ValueError("Expected list of 2")
+            result.append([str(parsed[0]).strip(), str(parsed[1]).strip()])
+        except Exception as e:
+            print(f"Error traduciendo frase '{s}': {e}")
+            result.append(["", ""])
+
+    return jsonify(result)
+
+
 @app.route("/getDescriptions", methods=["POST"])
 def get_descriptions():
     data = request.get_json()
