@@ -21,7 +21,7 @@ describe('AdminUsersComponent', () => {
   const mockDetail: AdminUserDetail = {
     id: 2, email: 'admin@a.com', name: 'Bob', language: 'en',
     roles: ['USER', 'ADMIN'], blocked: false, registrationDate: null, lastAccess: null,
-    collectionsCount: 0, flashcardsCount: 0, collections: []
+    collectionsCount: 0, flashcardsCount: 0, textsCount: 0, collections: []
   };
 
   beforeEach(async () => {

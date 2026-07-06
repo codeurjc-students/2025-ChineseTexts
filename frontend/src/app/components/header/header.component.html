@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+<nav class="navbar navbar-light bg-light shadow-sm">
   <div class="container">
 
     <a class="navbar-brand d-flex align-items-center" [routerLink]="['/'] | localizeLink"
@@ -6,11 +6,22 @@
       <i class="bi bi-book-half me-2" style="font-size: 1.8rem;"></i> {{ 'header.brand' | transloco }}
     </a>
 
-    <button class="navbar-toggler border-0" type="button"
-      data-bs-toggle="collapse" data-bs-target="#navbarNav"
-      aria-controls="navbarNav" aria-expanded="false" [attr.aria-label]="'header.nav.toggle' | transloco">
-      <span class="navbar-toggler-icon"></span>
-    </button>
+    <!-- Always visible on every screen size: the language flags and the menu
+         button. All navigation lives inside the collapsible menu below, so the
+         header stays compact and never overflows regardless of label length. -->
+    <div class="d-flex align-items-center">
+      <div class="d-flex me-2">
+        <img src="assets/flags/es.svg" class="flag-button" [class.active]="(lang$ | async) === 'es'"
+             role="button" (click)="switchLang('es')" [attr.aria-label]="'header.lang.spanish' | transloco" alt="Español" />
+        <img src="assets/flags/gb.svg" class="flag-button" [class.active]="(lang$ | async) === 'en'"
+             role="button" (click)="switchLang('en')" [attr.aria-label]="'header.lang.english' | transloco" alt="English" />
+      </div>
+      <button class="navbar-toggler border-0" type="button"
+        data-bs-toggle="collapse" data-bs-target="#navbarNav"
+        aria-controls="navbarNav" aria-expanded="false" [attr.aria-label]="'header.nav.toggle' | transloco">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    </div>
 
     <div class="collapse navbar-collapse" id="navbarNav">
 
@@ -77,13 +88,6 @@
         <ng-template #loadingNav></ng-template>
 
       </ul>
-
-      <div class="d-flex ms-3">
-        <img src="assets/flags/es.svg" class="flag-button" [class.active]="(lang$ | async) === 'es'"
-             role="button" (click)="switchLang('es')" [attr.aria-label]="'header.lang.spanish' | transloco" alt="Español" />
-        <img src="assets/flags/gb.svg" class="flag-button" [class.active]="(lang$ | async) === 'en'"
-             role="button" (click)="switchLang('en')" [attr.aria-label]="'header.lang.english' | transloco" alt="English" />
-      </div>
 
     </div>
   </div>
