@@ -2,39 +2,39 @@
 
   <!-- ══════ MENÚ PRINCIPAL ══════ -->
   <div *ngIf="tool === 'menu'">
-    <h1 class="page-title"><i class="bi bi-stars me-2"></i>Admin Tools</h1>
-    <p class="page-subtitle">Everything you need to manage the app's content.</p>
+    <h1 class="page-title"><i class="bi bi-stars me-2"></i>{{ 'adminTools.title' | transloco }}</h1>
+    <p class="page-subtitle">{{ 'adminTools.subtitle' | transloco }}</p>
 
     <div class="tools-grid">
 
       <div class="tool-card" (click)="select('manual')">
         <div class="tool-icon"><i class="bi bi-pencil-square"></i></div>
-        <h3 class="tool-title">Upload text manually</h3>
-        <p class="tool-desc">Create a new text by filling in every field yourself and validating it.</p>
+        <h3 class="tool-title">{{ 'adminTools.cards.manual.title' | transloco }}</h3>
+        <p class="tool-desc">{{ 'adminTools.cards.manual.desc' | transloco }}</p>
       </div>
 
       <div class="tool-card" (click)="select('ai')">
         <div class="tool-icon"><i class="bi bi-stars"></i></div>
-        <h3 class="tool-title">Upload text with AI</h3>
-        <p class="tool-desc">Let AI generate a Chinese text with translations and descriptions at the level you choose.</p>
+        <h3 class="tool-title">{{ 'adminTools.cards.ai.title' | transloco }}</h3>
+        <p class="tool-desc">{{ 'adminTools.cards.ai.desc' | transloco }}</p>
       </div>
 
       <div class="tool-card" (click)="select('ocr')">
         <div class="tool-icon"><i class="bi bi-camera"></i></div>
-        <h3 class="tool-title">Extract text from image</h3>
-        <p class="tool-desc">Upload a photo of Chinese text and let OCR + AI turn it into a ready-to-review text.</p>
+        <h3 class="tool-title">{{ 'adminTools.cards.ocr.title' | transloco }}</h3>
+        <p class="tool-desc">{{ 'adminTools.cards.ocr.desc' | transloco }}</p>
       </div>
 
       <div class="tool-card" (click)="select('words')">
         <div class="tool-icon"><i class="bi bi-journal-text"></i></div>
-        <h3 class="tool-title">Manage dictionary word</h3>
-        <p class="tool-desc">Search a word to edit or delete it, or add a brand new word to the dictionary.</p>
+        <h3 class="tool-title">{{ 'adminTools.cards.words.title' | transloco }}</h3>
+        <p class="tool-desc">{{ 'adminTools.cards.words.desc' | transloco }}</p>
       </div>
 
       <div class="tool-card" (click)="select('users')">
         <div class="tool-icon"><i class="bi bi-people"></i></div>
-        <h3 class="tool-title">Manage users</h3>
-        <p class="tool-desc">List and search users, view their activity and collections, and block, edit or delete them.</p>
+        <h3 class="tool-title">{{ 'adminTools.cards.users.title' | transloco }}</h3>
+        <p class="tool-desc">{{ 'adminTools.cards.users.desc' | transloco }}</p>
       </div>
 
     </div>

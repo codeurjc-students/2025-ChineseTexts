@@ -3,11 +3,13 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { TextsService, TextItem } from '../../services/texts.service';
 import { LoginService } from '../../services/login.service';
+import { TranslocoModule } from '@jsverse/transloco';
+import { LocalizeLinkPipe } from '../../i18n/localize-link.pipe';
 
 @Component({
   selector: 'app-texts',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, TranslocoModule, LocalizeLinkPipe],
   templateUrl: './texts.component.html',
   styleUrl: './texts.component.scss'
 })

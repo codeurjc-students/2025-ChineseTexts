@@ -6,6 +6,8 @@ import { of, throwError } from 'rxjs';
 import { WordManagerComponent } from './word-manager.component';
 import { WordsService, Word } from '../../services/words.service';
 
+import { translocoTesting } from "../../i18n/transloco-testing";
+
 describe('WordManagerComponent', () => {
   let component: WordManagerComponent;
   let fixture: ComponentFixture<WordManagerComponent>;
@@ -20,7 +22,7 @@ describe('WordManagerComponent', () => {
       ['getDictionaryWord', 'saveWord', 'updateWord', 'deleteWord']);
 
     await TestBed.configureTestingModule({
-      imports: [WordManagerComponent],
+      imports: [translocoTesting(), WordManagerComponent],
       providers: [
         { provide: WordsService, useValue: wordsServiceSpy },
         provideHttpClient(),

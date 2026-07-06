@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { TranslocoModule } from '@jsverse/transloco';
 
 import { LoginService } from '../../services/login.service';
+import { LocaleNavService } from '../../i18n/locale-nav.service';
 import { UploadTextComponent } from '../upload-text/upload-text.component';
 import { AiToolsComponent } from '../ai-tools/ai-tools.component';
 import { WordManagerComponent } from '../word-manager/word-manager.component';
@@ -18,7 +19,7 @@ type Tool = 'menu' | 'manual' | 'ai' | 'ocr' | 'words' | 'users';
 @Component({
   selector: 'app-admin-tools',
   standalone: true,
-  imports: [CommonModule, UploadTextComponent, AiToolsComponent, WordManagerComponent, AdminUsersComponent],
+  imports: [CommonModule, TranslocoModule, UploadTextComponent, AiToolsComponent, WordManagerComponent, AdminUsersComponent],
   templateUrl: './admin-tools.component.html',
   styleUrl: './admin-tools.component.scss'
 })
@@ -28,17 +29,17 @@ export class AdminToolsComponent implements OnInit {
 
   constructor(
     private loginService: LoginService,
-    private router: Router
+    private localeNav: LocaleNavService
   ) {}
 
   ngOnInit(): void {
     this.loginService.reqIsLogged().subscribe({
       next: (user) => {
         if (!user || !user.roles.includes('ADMIN')) {
-          this.router.navigate(['/']);
+          this.localeNav.navigate(['/']);
         }
       },
-      error: () => this.router.navigate(['/'])
+      error: () => this.localeNav.navigate(['/'])
     });
   }
 

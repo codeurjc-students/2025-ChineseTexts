@@ -15,7 +15,12 @@ import { FounderComponent } from './components/founder/founder.component';
 import { MyToolsComponent } from './components/my-tools/my-tools.component';
 import { MyTextReaderComponent } from './components/my-text-reader/my-text-reader.component';
 
-export const routes: Routes = [
+/**
+ * The application's routes, defined once. English is served from the root and
+ * Spanish is served from the same components under an `/es` prefix (see below),
+ * so there is a single source of truth and no component duplication.
+ */
+const appRoutes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'texts', component: TextsComponent },
   { path: 'texts/:level', component: TextsComponent },
@@ -32,4 +37,11 @@ export const routes: Routes = [
   { path: 'my-text/:id', component: MyTextReaderComponent },
   { path: 'privacy-policy', component: PrivacyPolicyComponent },
   { path: 'founder', component: FounderComponent },
+];
+
+export const routes: Routes = [
+  ...appRoutes,
+  // Spanish locale: same components, prefixed URLs (`/es`, `/es/texts`, …).
+  // The active language is resolved from this prefix in AppComponent.
+  { path: 'es', children: appRoutes },
 ];

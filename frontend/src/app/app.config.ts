@@ -4,6 +4,8 @@ import { routes } from './app.routes';
 import { provideClientHydration } from '@angular/platform-browser';
 import { provideHttpClient, withFetch, withInterceptors, HttpInterceptorFn } from '@angular/common/http';
 import { isPlatformServer } from '@angular/common';
+import { provideTransloco } from '@jsverse/transloco';
+import { InlineTranslocoLoader } from './transloco-loader';
 
 const ssrBaseUrlInterceptor: HttpInterceptorFn = (req, next) => {
   const platformId = inject(PLATFORM_ID);
@@ -23,5 +25,17 @@ export const appConfig: ApplicationConfig = {
       withFetch(),
       withInterceptors([ssrBaseUrlInterceptor])
     ),
+    provideTransloco({
+      config: {
+        availableLangs: ['en', 'es'],
+        defaultLang: 'en',
+        fallbackLang: 'en',
+        // Re-render bound templates when the language changes so the header,
+        // footer and current page update instantly on flag click.
+        reRenderOnLangChange: true,
+        prodMode: true,
+      },
+      loader: InlineTranslocoLoader,
+    }),
   ]
 };

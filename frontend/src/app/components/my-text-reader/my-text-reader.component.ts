@@ -2,11 +2,12 @@ import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { TranslocoModule } from '@jsverse/transloco';
 
 import { MyTextsService, UserTextReader, UserTextWord } from '../../services/my-texts.service';
 import { LoginService } from '../../services/login.service';
 import { SpeakButtonComponent } from '../speak-button/speak-button.component';
-import { SeoService } from '../../services/seo.service';
+import { LocaleNavService } from '../../i18n/locale-nav.service';
 
 /**
  * Read-only reader for one of the user's PRIVATE texts. Mirrors the public text
@@ -17,7 +18,7 @@ import { SeoService } from '../../services/seo.service';
 @Component({
   selector: 'app-my-text-reader',
   standalone: true,
-  imports: [CommonModule, FormsModule, SpeakButtonComponent],
+  imports: [CommonModule, FormsModule, SpeakButtonComponent, TranslocoModule],
   templateUrl: './my-text-reader.component.html',
   styleUrl: './my-text-reader.component.scss'
 })
@@ -49,24 +50,20 @@ export class MyTextReaderComponent implements OnInit {
     private loginService: LoginService,
     private route: ActivatedRoute,
     private router: Router,
-    private seo: SeoService
+    private localeNav: LocaleNavService
   ) {}
 
   ngOnInit(): void {
-    this.seo.update({
-      title: 'My Text | ChineseReads',
-      description: 'Read your private Chinese text.',
-      path: '/my-text',
-      noindex: true
-    });
+    // SEO for this private (noindex) page is applied globally by AppComponent
+    // via resolveSeo('/my-text', lang), so no per-component override is needed.
     if (!isPlatformBrowser(this.platformId)) return;
 
     this.loginService.reqIsLogged().subscribe({
       next: (user) => {
-        if (!user) { this.router.navigate(['/']); return; }
+        if (!user) { this.localeNav.navigate(['/']); return; }
         this.load();
       },
-      error: () => this.router.navigate(['/'])
+      error: () => this.localeNav.navigate(['/'])
     });
   }
 
@@ -95,7 +92,7 @@ export class MyTextReaderComponent implements OnInit {
       },
       error: () => {
         // Not found or not the owner → back to the list.
-        this.router.navigate(['/my-tools']);
+        this.localeNav.navigate(['/my-tools']);
       }
     });
   }
@@ -131,13 +128,13 @@ export class MyTextReaderComponent implements OnInit {
   confirmDelete(): void {
     if (!this.reader) return;
     this.myTexts.delete(this.reader.id).subscribe({
-      next: () => this.router.navigate(['/my-tools']),
-      error: () => this.router.navigate(['/my-tools'])
+      next: () => this.localeNav.navigate(['/my-tools']),
+      error: () => this.localeNav.navigate(['/my-tools'])
     });
   }
 
   goBack(): void {
-    this.router.navigate(['/my-tools']);
+    this.localeNav.navigate(['/my-tools']);
   }
 
   // ——— Helpers (same sentence logic as the public reader) ———

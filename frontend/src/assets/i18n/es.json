@@ -1,0 +1,883 @@
+{
+  "common": {
+    "buttons": {
+      "cancel": "Cancelar",
+      "save": "Guardar",
+      "delete": "Eliminar",
+      "close": "Cerrar",
+      "back": "Atrás",
+      "loading": "Cargando…"
+    }
+  },
+  "header": {
+    "brand": "Inicio",
+    "nav": {
+      "toggle": "Alternar navegación",
+      "myCollections": "Mis colecciones",
+      "myTools": "Mis herramientas",
+      "adminTools": "Administración",
+      "login": "Iniciar sesión",
+      "signup": "Registrarse",
+      "profile": "Perfil",
+      "logout": "Cerrar sesión"
+    },
+    "lang": {
+      "spanish": "Español",
+      "english": "Inglés"
+    },
+    "login": {
+      "emailLabel": "Correo electrónico",
+      "emailPlaceholder": "Introduce tu correo",
+      "passwordLabel": "Contraseña",
+      "passwordPlaceholder": "Introduce tu contraseña",
+      "emailRequired": "El correo es obligatorio.",
+      "emailInvalid": "Introduce un correo electrónico válido.",
+      "passwordRequired": "La contraseña es obligatoria.",
+      "blocked": "Tu cuenta ha sido bloqueada.",
+      "incorrect": "Credenciales incorrectas. Inténtalo de nuevo."
+    }
+  },
+  "home": {
+    "hero": {
+      "title": "Aprende chino leyendo",
+      "subtitle": "Mejora tu vocabulario y tu comprensión del chino con relatos cortos adaptados a tu nivel HSK. Disfruta de traducciones instantáneas gratuitas y desbloquea herramientas de aprendizaje avanzadas al registrarte.",
+      "cta": "Empieza a leer gratis"
+    },
+    "donation": {
+      "top": "Si te gusta ChineseReads y quieres apoyar su desarrollo, plantéate seguirnos en Instagram.",
+      "bottom": "ChineseReads es gratis y se mantiene gracias a usuarios como tú. Si quieres ayudar a mantenerlo en marcha, puedes apoyarnos aquí:",
+      "button": "Apoya el proyecto"
+    },
+    "badges": {
+      "free": "Gratis",
+      "comingSoon": "Próximamente",
+      "register": "Regístrate"
+    },
+    "benefits": {
+      "heading": "Por qué funciona ChineseReads",
+      "read": {
+        "title": "Lee relatos cortos",
+        "text": "Aprende chino de forma natural con historias amenas escritas y adaptadas para estudiantes de HSK1 a HSK6."
+      },
+      "translation": {
+        "title": "Traducción instantánea de palabras",
+        "text": "Toca cualquier palabra o frase para ver al instante su pinyin y su traducción. Sin límites y sin muros de pago."
+      },
+      "ai": {
+        "title": "Explicaciones con IA",
+        "text": "Haz una foto de cualquier texto en chino y obtén una traducción instantánea, con desgloses automáticos de palabras y frases. Disponible al crear una cuenta gratuita."
+      }
+    },
+    "register": {
+      "heading": "Funciones extra disponibles al registrarte",
+      "statistics": {
+        "title": "Estadísticas detalladas",
+        "text": "Sigue el crecimiento de tu vocabulario, tus resultados en los tests, tus textos favoritos y tu progreso general."
+      },
+      "tests": {
+        "title": "Tests personalizados",
+        "text": "Practica con cuestionarios generados a partir de las palabras y los puntos gramaticales que más te cuestan."
+      },
+      "collections": {
+        "title": "Colecciones y flashcards",
+        "text": "Usa herramientas de IA para traducir textos en chino, analizar frases y desglosar la gramática."
+      }
+    },
+    "final": {
+      "heading": "Empieza hoy tu aventura con el chino",
+      "text": "Leer es una de las formas más eficaces de aprender un idioma. Únete a miles de estudiantes que mejoran su chino cada día.",
+      "cta": "Crea una cuenta gratis"
+    }
+  },
+  "footer": {
+    "copyright": "© 2026 ChineseReads. Todos los derechos reservados",
+    "links": {
+      "creator": "Sobre el creador",
+      "privacy": "Política de privacidad",
+      "terms": "Condiciones de uso"
+    }
+  },
+  "texts": {
+    "title": "Textos",
+    "intro": "Haz clic en uno de los siguientes textos para empezar a leer.",
+    "meta": {
+      "level": "nivel:",
+      "likeTitle": "Me gusta",
+      "deleteTitle": "Eliminar"
+    },
+    "delete": {
+      "title": "Eliminar texto",
+      "confirmPrefix": "¿Seguro que quieres eliminar",
+      "confirmSuffix": "? Esta acción no se puede deshacer.",
+      "cancel": "Cancelar",
+      "confirm": "Eliminar"
+    },
+    "loadMore": "Cargar más",
+    "noMore": {
+      "title": "No hay más textos disponibles",
+      "subtitle": "Descubre todas nuestras historias. Pronto añadiremos contenido nuevo."
+    }
+  },
+  "text": {
+    "delete": {
+      "title": "Eliminar texto",
+      "confirmPrefix": "¿Seguro que quieres eliminar",
+      "confirmSuffix": "? Esta acción no se puede deshacer.",
+      "cancel": "Cancelar",
+      "confirm": "Eliminar"
+    },
+    "deleteButtonTitle": "Eliminar texto",
+    "meta": {
+      "level": "Nivel:"
+    },
+    "audio": {
+      "fullText": "Escuchar el texto completo",
+      "word": "Escuchar esta palabra",
+      "sentence": "Escuchar esta frase"
+    },
+    "options": {
+      "showTranslation": "Ver el texto traducido",
+      "showSentences": "Ver el texto desglosado por frases",
+      "showPinyin": "Mostrar pinyin"
+    },
+    "words": {
+      "heading": "Texto desglosado por palabras",
+      "hint": "Haz clic en una palabra para ver su traducción."
+    },
+    "save": {
+      "button": "Guardar",
+      "notLogged": "Debes iniciar sesión para guardar palabras.",
+      "noCollections": "Aún no tienes colecciones.",
+      "createOne": "Crea una",
+      "success": "¡Palabra guardada!",
+      "duplicate": "Ya está en esta colección.",
+      "error": "Algo ha salido mal.",
+      "selectPlaceholder": "Selecciona una colección...",
+      "confirm": "Confirmar",
+      "newCollection": "+ Nueva colección",
+      "collectionNamePlaceholder": "Nombre de la colección...",
+      "create": "Crear",
+      "cancel": "Cancelar"
+    },
+    "translation": {
+      "heading": "Texto traducido"
+    },
+    "sentences": {
+      "heading": "Texto por frases",
+      "hint": "Haz clic para ver la traducción"
+    },
+    "back": "Volver"
+  },
+  "signup": {
+    "title": "Crea tu cuenta",
+    "subtitle": "Únete a nuestra comunidad de aprendizaje y empieza hoy mismo a mejorar tu comprensión lectora del chino.",
+    "benefits": {
+      "heading": "Por qué unirte",
+      "item1": "Accede a colecciones de lecturas en chino cuidadosamente seleccionadas",
+      "item2": "Lee textos en chino con funciones interactivas",
+      "item3": "Crea tarjetas de memoria y estudia de forma eficiente",
+      "item4": "Usa herramientas de IA para mejorar tu experiencia de aprendizaje",
+      "item5": "Aprende a tu propio ritmo"
+    },
+    "infoTitle": "Tus datos",
+    "form": {
+      "nameLabel": "Nombre completo",
+      "namePlaceholder": "Introduce tu nombre completo",
+      "nameRequired": "El nombre completo es obligatorio.",
+      "emailLabel": "Correo electrónico",
+      "emailPlaceholder": "Introduce tu correo electrónico",
+      "emailRequired": "El correo electrónico es obligatorio.",
+      "emailInvalid": "Introduce una dirección de correo electrónico válida.",
+      "passwordLabel": "Contraseña",
+      "passwordPlaceholder": "Crea una contraseña segura (mín. 6 caracteres)",
+      "passwordRequired": "La contraseña es obligatoria.",
+      "passwordMinlength": "La contraseña debe tener al menos 6 caracteres.",
+      "languageLabel": "Idioma preferido",
+      "languageEnglish": "Inglés",
+      "languageSpanish": "Español"
+    },
+    "submit": "Crear mi cuenta",
+    "back": "Volver",
+    "successMessage": "¡Tu cuenta se ha creado correctamente!",
+    "errorGeneric": "Se ha producido un error inesperado."
+  },
+  "error": {
+    "title": "¡Vaya! Algo ha salido mal",
+    "backHome": "Volver al inicio",
+    "defaultMessage": "Se ha producido un error inesperado.",
+    "seo": {
+      "title": "Error | Página no encontrada o no disponible",
+      "description": "La página que buscas no se encuentra o no está disponible temporalmente. Vuelve a ChineseReads para seguir aprendiendo chino a través de la lectura."
+    }
+  },
+  "success": {
+    "title": "¡Todo listo!",
+    "backHome": "Volver al inicio",
+    "defaultMessage": "La acción se ha completado correctamente.",
+    "seo": {
+      "title": "Éxito | Tu acceso Premium está activo",
+      "description": "Tu suscripción ChineseReads Premium ya está activa. Empieza a aprender chino a través de la lectura con traducciones instantáneas, herramientas de IA y estadísticas personalizadas."
+    }
+  },
+  "cookieBanner": {
+    "text": "Usamos cookies para analizar el tráfico y mejorar tu experiencia. Puedes aceptar o rechazar las cookies no esenciales. Para más información, consulta nuestra",
+    "privacyPolicy": "Política de Privacidad",
+    "reject": "Rechazar",
+    "accept": "Aceptar cookies"
+  },
+  "privacyPolicy": {
+    "title": "Política de Privacidad",
+    "lastUpdated": "Última actualización: julio de 2026",
+    "s1": {
+      "title": "1. Quiénes somos",
+      "body": "es una aplicación web para aprender chino mandarín mediante textos graduados y herramientas de vocabulario. Este servicio se ofrece como un proyecto personal."
+    },
+    "s2": {
+      "title": "2. Qué datos recopilamos",
+      "intro": "Cuando te registras, recopilamos los siguientes datos personales:",
+      "email": "Dirección de correo electrónico",
+      "name": "Nombre",
+      "language": "Idioma preferido",
+      "password": "Contraseña (almacenada cifrada con BCrypt: nunca guardamos contraseñas en texto plano)",
+      "analytics": "También recopilamos datos de uso anónimos a través de Google Analytics (solo con tu consentimiento), incluidas las páginas visitadas, el tiempo en el sitio y la información general del dispositivo o navegador. Las direcciones IP se anonimizan antes de enviarse a Google."
+    },
+    "s3": {
+      "title": "3. Cómo usamos tus datos",
+      "item1": "Para proporcionar y mantener el servicio ChineseReads.",
+      "item2": "Para gestionar tu cuenta y personalizar tu experiencia.",
+      "item3": "Para analizar los patrones de uso y mejorar la aplicación (solo con consentimiento).",
+      "note": "No vendemos, alquilamos ni compartimos tus datos personales con terceros con fines de marketing."
+    },
+    "s4": {
+      "title": "4. Cookies",
+      "intro": "Usamos los siguientes tipos de cookies:",
+      "essentialLabel": "Cookies esenciales",
+      "essentialBody": "necesarias para la autenticación (token JWT almacenado en una cookie HttpOnly). No se pueden desactivar, ya que el servicio no puede funcionar sin ellas.",
+      "analyticsLabel": "Cookies analíticas",
+      "analyticsBody": "utilizadas por Google Analytics para recopilar datos de tráfico anónimos. Solo se activan después de que des tu consentimiento explícito.",
+      "withdraw": "Puedes retirar tu consentimiento en cualquier momento borrando las cookies de tu navegador o contactando con nosotros en la dirección de correo electrónico que aparece más abajo."
+    },
+    "s5": {
+      "title": "5. Servicios de terceros",
+      "intro": "ChineseReads utiliza los siguientes servicios de terceros:",
+      "privacyPolicyLabel": "Política de privacidad",
+      "ga": "para el análisis de tráfico anónimo.",
+      "deepseek": "para generar textos de aprendizaje en chino. Solo se envía el contenido de texto, ningún dato personal.",
+      "vision": "para extraer texto de las imágenes subidas. Las imágenes se procesan y no se almacenan.",
+      "tts": "para generar la pronunciación en audio de textos, palabras y frases en chino. Solo se envía el texto en chino que se va a leer en voz alta, ningún dato personal. El audio se genera bajo demanda y no se almacena."
+    },
+    "s6": {
+      "title": "6. Conservación de los datos",
+      "body": "Los datos de la cuenta se conservan mientras tu cuenta esté activa. Puedes solicitar la eliminación de tu cuenta y de todos los datos asociados en cualquier momento contactando con nosotros. Los datos analíticos se conservan durante 26 meses, según la configuración predeterminada de Google Analytics."
+    },
+    "s7": {
+      "title": "7. Tus derechos (RGPD)",
+      "intro": "En virtud del Reglamento General de Protección de Datos (RGPD), tienes derecho a:",
+      "item1": "Acceder a tus datos personales",
+      "item2": "Rectificar datos inexactos",
+      "item3": "Solicitar la eliminación de tus datos",
+      "item4": "Oponerte al tratamiento",
+      "item5": "Portabilidad de los datos",
+      "item6": "Retirar el consentimiento en cualquier momento",
+      "contact": "Para ejercer estos derechos, contacta con nosotros en:"
+    },
+    "s8": {
+      "title": "8. Contacto",
+      "body": "Si tienes alguna pregunta sobre esta política de privacidad, contacta con nosotros en:"
+    }
+  },
+  "founder": {
+    "adminView": "Vista de administrador: solo tú puedes ver estos controles",
+    "editPage": "Editar página",
+    "done": "Hecho",
+    "loading": "Cargando…",
+    "emptyAdmin1": "Esta página está vacía. Pulsa",
+    "emptyAdmin2": "para añadir tu información.",
+    "comingSoon": "Próximamente.",
+    "photoAlt": "Foto de perfil",
+    "uploadPhoto": "Foto",
+    "removePhoto": "Quitar foto",
+    "ph": {
+      "name": "Nombre completo",
+      "role": "Puesto / titular (p. ej. Ingeniero de Software)",
+      "location": "Ubicación",
+      "tagline": "Lema breve",
+      "linkLabel": "Etiqueta",
+      "linkIcon": "Icono (p. ej. bi-github)",
+      "linkUrl": "https://…  o  mailto:…",
+      "summary": "Escribe un breve resumen profesional…",
+      "sectionTitle": "Título de la sección",
+      "itemHeading": "Título (p. ej. puesto / titulación / habilidad)",
+      "itemSubheading": "Subtítulo (empresa / universidad)",
+      "itemPeriod": "Periodo (p. ej. 2025 — Actualidad)",
+      "itemLocation": "Ubicación",
+      "itemDescription": "Descripción",
+      "itemLinkUrl": "URL del enlace (opcional)",
+      "itemLinkLabel": "Etiqueta del enlace"
+    },
+    "saveHeader": "Guardar cabecera",
+    "linksHeading": "Enlaces",
+    "addLink": "Añadir enlace",
+    "aboutHeading": "Sobre mí",
+    "saveAbout": "Guardar sobre mí",
+    "logo": "Logo",
+    "removeLogoShort": "quitar",
+    "save": "Guardar",
+    "delete": "Eliminar",
+    "addEntry": "Añadir entrada",
+    "addSection": "Añadir sección",
+    "openLink": "Abrir",
+    "ctaTitle": "Pongámonos en contacto",
+    "ctaSubtitle": "¿Te interesa colaborar o quieres saber más sobre mi trabajo?",
+    "feedback": {
+      "loadError": "No se ha podido cargar el perfil.",
+      "photoUpdated": "Foto actualizada.",
+      "photoUploadError": "No se ha podido subir la foto.",
+      "photoRemoved": "Foto eliminada.",
+      "photoRemoveError": "No se ha podido eliminar la foto.",
+      "logoUpdated": "Logo actualizado.",
+      "logoUploadError": "No se ha podido subir el logo.",
+      "logoRemoved": "Logo eliminado.",
+      "logoRemoveError": "No se ha podido eliminar el logo.",
+      "profileSaved": "Perfil guardado.",
+      "profileSaveError": "No se ha podido guardar el perfil.",
+      "linkAdded": "Enlace añadido.",
+      "linkAddError": "No se ha podido añadir el enlace.",
+      "linkSaved": "Enlace guardado.",
+      "linkSaveError": "No se ha podido guardar el enlace.",
+      "linkRemoved": "Enlace eliminado.",
+      "linkRemoveError": "No se ha podido eliminar el enlace.",
+      "sectionAdded": "Sección añadida.",
+      "sectionAddError": "No se ha podido añadir la sección.",
+      "sectionSaved": "Sección guardada.",
+      "sectionSaveError": "No se ha podido guardar la sección.",
+      "sectionRemoved": "Sección eliminada.",
+      "sectionRemoveError": "No se ha podido eliminar la sección.",
+      "entryAdded": "Entrada añadida.",
+      "entryAddError": "No se ha podido añadir la entrada.",
+      "entrySaved": "Entrada guardada.",
+      "entrySaveError": "No se ha podido guardar la entrada.",
+      "entryRemoved": "Entrada eliminada.",
+      "entryRemoveError": "No se ha podido eliminar la entrada."
+    },
+    "defaults": {
+      "newLink": "Nuevo enlace",
+      "newSection": "Nueva sección",
+      "newEntry": "Nueva entrada"
+    }
+  },
+  "profile": {
+    "role": {
+      "admin": "Administrador",
+      "student": "Estudiante"
+    },
+    "languages": {
+      "en": "Inglés",
+      "es": "Español"
+    },
+    "view": {
+      "accountDetails": "Detalles de la cuenta",
+      "name": "Nombre",
+      "email": "Correo electrónico",
+      "language": "Idioma",
+      "collections": "Colecciones"
+    },
+    "actions": {
+      "editProfile": {
+        "title": "Editar perfil",
+        "subtitle": "Actualiza tu nombre e idioma"
+      },
+      "changePassword": {
+        "title": "Cambiar contraseña",
+        "subtitle": "Actualiza la contraseña de tu cuenta"
+      },
+      "deleteAccount": {
+        "title": "Eliminar cuenta",
+        "subtitle": "Elimina permanentemente tu cuenta y todos tus datos"
+      }
+    },
+    "editProfile": {
+      "title": "Editar perfil",
+      "fullNameLabel": "Nombre completo",
+      "fullNamePlaceholder": "Tu nombre completo",
+      "languageLabel": "Idioma preferido",
+      "success": "¡Perfil actualizado correctamente!",
+      "saving": "Guardando...",
+      "save": "Guardar cambios"
+    },
+    "changePassword": {
+      "title": "Cambiar contraseña",
+      "currentLabel": "Contraseña actual",
+      "currentPlaceholder": "Introduce tu contraseña actual",
+      "newLabel": "Nueva contraseña",
+      "newPlaceholder": "Al menos 4 caracteres",
+      "confirmLabel": "Confirma la nueva contraseña",
+      "confirmPlaceholder": "Repite la nueva contraseña",
+      "mismatch": "Las contraseñas no coinciden",
+      "success": "¡Contraseña cambiada correctamente!",
+      "checking": "Comprobando...",
+      "saving": "Guardando...",
+      "submit": "Cambiar contraseña"
+    },
+    "deleteAccount": {
+      "title": "Eliminar cuenta",
+      "warningTitle": "Esta acción es permanente y no se puede deshacer.",
+      "warningText": "Tu cuenta, tus colecciones y todas tus tarjetas se eliminarán permanentemente. Se cerrará tu sesión de inmediato.",
+      "typePrefix": "Escribe",
+      "typeSuffix": "para confirmar",
+      "deleting": "Eliminando...",
+      "submit": "Eliminar mi cuenta"
+    },
+    "errors": {
+      "nameEmpty": "El nombre no puede estar vacío.",
+      "updateFailed": "Error al actualizar el perfil. Inténtalo de nuevo.",
+      "currentPasswordEmpty": "Introduce tu contraseña actual.",
+      "newPasswordTooShort": "La nueva contraseña debe tener al menos 6 caracteres.",
+      "newPasswordsMismatch": "Las nuevas contraseñas no coinciden.",
+      "newPasswordSameAsCurrent": "La nueva contraseña debe ser diferente de la actual.",
+      "changePasswordFailed": "Error al cambiar la contraseña. Inténtalo de nuevo.",
+      "currentPasswordIncorrect": "La contraseña actual es incorrecta.",
+      "typeDeleteToConfirm": "Escribe DELETE para confirmar.",
+      "deleteFailed": "Error al eliminar tu cuenta. Inténtalo de nuevo."
+    }
+  },
+  "collections": {
+    "seeText": "Ver texto",
+    "listen": {
+      "word": "Escuchar esta palabra"
+    },
+    "deleteModal": {
+      "title": "Eliminar colección",
+      "textPrefix": "¿Seguro que quieres eliminar",
+      "textSuffix": "? Esto también eliminará todas sus tarjetas."
+    },
+    "renameModal": {
+      "title": "Renombrar colección",
+      "placeholder": "Nuevo nombre...",
+      "saving": "Guardando..."
+    },
+    "addModal": {
+      "title": "Nueva colección",
+      "placeholder": "Nombre de la colección...",
+      "create": "Crear"
+    },
+    "study": {
+      "sessionComplete": "Sesión completada",
+      "wordsKnown": "palabras conocidas",
+      "known": "Conocidas",
+      "toReview": "Por repasar",
+      "studyAgain": "Estudiar de nuevo",
+      "backToCollections": "Volver a las colecciones",
+      "whatDoesItMean": "¿Qué significa esto?",
+      "whatIsTheCharacter": "¿Cuál es el carácter?",
+      "revealAnswer": "Mostrar respuesta",
+      "restart": "Reiniciar",
+      "dontKnow": "No lo sé",
+      "gotIt": "Lo sé"
+    },
+    "exam": {
+      "complete": "Examen completado",
+      "repeat": "Repetir examen",
+      "new": "Nuevo examen",
+      "badge": "Examen",
+      "correct": "¡Correcto!",
+      "incorrect": "Incorrecto — {{answer}}",
+      "next": "Siguiente",
+      "seeResults": "Ver resultados",
+      "promptChinese": "¿Cuál es el carácter correcto para «{{word}}»?",
+      "promptPinyin": "¿Cuál es el pinyin correcto para «{{word}}»?",
+      "promptTranslation": "¿Qué significa «{{word}}» ({{pinyin}})?",
+      "gradePerfect": "¡Perfecto!",
+      "gradeGreat": "¡Muy bien!",
+      "gradeNotBad": "¡No está mal!",
+      "gradeKeepPracticing": "¡Sigue practicando!",
+      "gradeKeepStudying": "¡Sigue estudiando!"
+    },
+    "detail": {
+      "word": "palabra",
+      "words": "palabras",
+      "empty": "Aún no hay palabras. ¡Ve a un texto y guarda algunas!"
+    },
+    "list": {
+      "title": "Mis colecciones",
+      "newCollection": "Nueva colección",
+      "empty": "Aún no tienes colecciones. ¡Empieza a leer y guarda palabras!",
+      "selectHint": "Selecciona una o más colecciones y elige Estudiar o Examen.",
+      "study": "Estudiar",
+      "exam": "Examen",
+      "noWordsError": "Las colecciones seleccionadas aún no tienen palabras. ¡Añade algunas primero!",
+      "minWordsError": "Necesitas al menos 4 palabras en las colecciones seleccionadas para hacer un examen."
+    }
+  },
+  "myTools": {
+    "title": "Mis herramientas",
+    "subtitle": "Convierte cualquier texto en chino o una foto en tu propio lector privado, con pinyin, traducciones y audio.",
+    "create": {
+      "photoLabel": "¿Tienes una foto? Extrae primero el texto",
+      "reading": "Leyendo…",
+      "extract": "Extraer texto",
+      "chineseTextLabel": "Texto en chino",
+      "pastePlaceholder": "Pega aquí texto en chino, o extráelo de una foto más arriba.",
+      "charLimitHint": "Hasta 1500 caracteres. Se conservan tus saltos de línea (diálogos, conversaciones…).",
+      "processing": "Procesando…",
+      "createReader": "Crear lector",
+      "processingHint": "Segmentando, traduciendo y generando audio; esto puede tardar unos segundos."
+    },
+    "list": {
+      "title": "Tus textos",
+      "empty": "Aún no has creado ningún texto. Pega algo de texto o extráelo de una foto más arriba para empezar.",
+      "untitled": "Texto sin título",
+      "words": "palabras",
+      "deleteConfirm": "¿Eliminar?",
+      "yes": "Sí",
+      "no": "No"
+    },
+    "messages": {
+      "loadFailed": "No se pudieron cargar tus textos.",
+      "chooseImage": "Elige primero una imagen.",
+      "extracted": "Texto extraído. Revísalo y corrígelo abajo, y luego crea tu lector.",
+      "readImageFailed": "No se pudo leer la imagen. Prueba con otra foto.",
+      "pasteText": "Pega algo de texto en chino, o extráelo primero de una foto.",
+      "processFailed": "No se pudo procesar tu texto. Inténtalo de nuevo.",
+      "deleteFailed": "No se pudo eliminar el texto. Inténtalo de nuevo.",
+      "usageLimit": "Has alcanzado tu límite de uso. Inténtalo más tarde.",
+      "invalidInput": "Proporciona un texto en chino o una imagen válidos."
+    }
+  },
+  "myTextReader": {
+    "deleteText": "Eliminar texto",
+    "private": "Privado",
+    "backToTools": "Volver a Mis herramientas",
+    "deleteModal": {
+      "title": "Eliminar texto",
+      "confirmPrefix": "¿Eliminar",
+      "confirmSuffix": "? Esta acción no se puede deshacer."
+    },
+    "listen": {
+      "full": "Escuchar el texto completo",
+      "word": "Escuchar esta palabra",
+      "sentence": "Escuchar esta frase"
+    },
+    "options": {
+      "showTranslation": "Ver texto traducido",
+      "showSentences": "Ver el texto desglosado por frases",
+      "showPinyin": "Mostrar pinyin"
+    },
+    "words": {
+      "heading": "Texto desglosado por palabras",
+      "hint": "Haz clic en una palabra para ver su traducción."
+    },
+    "translation": {
+      "heading": "Texto traducido"
+    },
+    "sentences": {
+      "heading": "Texto por frases",
+      "hint": "Haz clic para ver la traducción"
+    }
+  },
+  "uploadText": {
+    "title": "Subir nuevo texto",
+    "subtitle": "Rellena todos los campos, valida el texto y súbelo.",
+    "backToAdmin": "Volver a Herramientas de administración",
+    "basicInfo": "Información básica",
+    "success": {
+      "title": "¡Texto subido correctamente!",
+      "subtitle": "El texto ya está disponible en la aplicación.",
+      "goToTexts": "Ir a los textos",
+      "uploadAnother": "Subir otro",
+      "backToMenu": "Volver al menú"
+    },
+    "fields": {
+      "titleEnglish": "Título (inglés)",
+      "titleSpanish": "Título (español)",
+      "level": "Nivel",
+      "date": "Fecha"
+    },
+    "chinese": {
+      "title": "Texto en chino",
+      "hint": "Cada frase debe terminar con un punto chino (。) o un punto normal (.). El número de frases debe coincidir con el de las traducciones."
+    },
+    "translations": {
+      "title": "Traducciones",
+      "english": "Traducción al inglés",
+      "spanish": "Traducción al español"
+    },
+    "descriptions": {
+      "title": "Descripciones",
+      "english": "Descripción en inglés",
+      "spanish": "Descripción en español"
+    },
+    "image": {
+      "title": "Imagen",
+      "uploadPrompt": "Haz clic para subir una imagen (obligatorio)"
+    },
+    "validate": {
+      "button": "Validar texto",
+      "validating": "Validando...",
+      "allFound": "Las {{count}} palabras se han encontrado en el diccionario. ¡Listo para subir!"
+    },
+    "missing": {
+      "countOne": "Falta {{count}} palabra en el diccionario",
+      "countMany": "Faltan {{count}} palabras en el diccionario",
+      "savedCount": "({{saved}}/{{total}} guardadas)",
+      "savedBadge": "Guardada",
+      "add": "Añadir",
+      "allSaved": "¡Todas las palabras guardadas! Revalidando..."
+    },
+    "word": {
+      "english": "Inglés",
+      "spanish": "Español"
+    },
+    "upload": {
+      "button": "Subir texto",
+      "uploading": "Subiendo..."
+    },
+    "errors": {
+      "fillRequired": "Rellena todos los campos obligatorios antes de validar.",
+      "imageRequiredValidate": "Se requiere una imagen. Sube una antes de validar.",
+      "sentenceMismatch": "El número de frases (puntos) del texto en chino, la traducción al inglés y la traducción al español no coincide. Revísalas.",
+      "validateFailed": "Error al validar el texto. Inténtalo de nuevo.",
+      "wordFieldsRequired": "Todos los campos son obligatorios.",
+      "wordExists": "La palabra ya existe.",
+      "wordSaveFailed": "Error al guardar la palabra.",
+      "titleExists": "Ya existe un texto con este título.",
+      "uploadFailed": "Error al subir el texto. Inténtalo de nuevo."
+    }
+  },
+  "aiTools": {
+    "title": "Herramientas de IA",
+    "subtitle": "Deja que la IA genere o extraiga textos en chino automáticamente.",
+    "loading": "La IA está trabajando... esto puede tardar unos segundos.",
+    "tryAgain": "Reintentar",
+    "success": {
+      "title": "¡Texto subido correctamente!",
+      "subtitle": "El texto ya está disponible en la aplicación.",
+      "goToTexts": "Ir a los textos",
+      "useAgain": "Usar la IA de nuevo"
+    },
+    "choose": {
+      "generate": {
+        "title": "Generar texto",
+        "desc": "La IA generará un texto en chino del nivel que elijas, con traducciones y descripciones.",
+        "button": "Generar"
+      },
+      "ocr": {
+        "title": "Extraer de una imagen",
+        "desc": "Sube una imagen con texto en chino. El OCR lo extraerá y la IA lo traducirá automáticamente.",
+        "button": "Subir imagen"
+      }
+    },
+    "generate": {
+      "heading": "Generar texto con IA",
+      "levelLabel": "Nivel HSK",
+      "topicLabel": "Tema o indicaciones",
+      "topicPlaceholder": "p. ej. Un texto sobre comida y cocina. Incluye vocabulario sobre verduras y utensilios de cocina. La historia debe tratar sobre un estudiante que aprende a cocinar por primera vez.",
+      "topicHint": "Opcional. Describe de qué debe tratar el texto o cualquier indicación específica para la IA.",
+      "button": "Generar con IA"
+    },
+    "ocr": {
+      "heading": "Extraer texto de una imagen",
+      "hint": "Sube una imagen que contenga texto en chino. El servicio de OCR lo extraerá y la IA generará las traducciones automáticamente.",
+      "uploadPrompt": "Haz clic para subir una imagen",
+      "button": "Procesar con OCR + IA"
+    },
+    "review": {
+      "heading": "Revisar y subir",
+      "hint": "La IA ha rellenado los campos de abajo. Revísalo todo con atención antes de subirlo.",
+      "hintStrong": "Debes añadir una imagen manualmente.",
+      "basicInfo": "Información básica"
+    },
+    "fields": {
+      "titleEnglish": "Título (inglés)",
+      "titleSpanish": "Título (español)",
+      "level": "Nivel",
+      "date": "Fecha",
+      "chineseText": "Texto en chino",
+      "translations": "Traducciones",
+      "descriptions": "Descripciones",
+      "english": "Inglés",
+      "spanish": "Español",
+      "image": "Imagen",
+      "imagePrompt": "Haz clic para subir una imagen (obligatorio)"
+    },
+    "missing": {
+      "countOne": "Falta {{count}} palabra en el diccionario",
+      "countMany": "Faltan {{count}} palabras en el diccionario",
+      "savedCount": "({{saved}}/{{total}} guardadas)",
+      "savedBadge": "Guardada",
+      "add": "Añadir"
+    },
+    "word": {
+      "english": "Inglés",
+      "spanish": "Español"
+    },
+    "warn": {
+      "saveWords": "Guarda todas las palabras que faltan antes de subir.",
+      "uploadImage": "Sube una imagen antes de enviar."
+    },
+    "upload": {
+      "button": "Subir texto",
+      "uploading": "Subiendo..."
+    },
+    "errors": {
+      "fillAll": "Rellena todos los campos antes de subir.",
+      "imageRequired": "Se requiere una imagen. Sube una antes de enviar.",
+      "sentenceMismatch": "El número de frases no coincide entre el texto en chino y las traducciones. Revísalas.",
+      "saveWords": "Guarda todas las palabras que faltan antes de subir.",
+      "aiConnection": "Error al conectar con el servicio de IA. Asegúrate de que está en funcionamiento.",
+      "ocrFailed": "Error al procesar la imagen. Asegúrate de que el servicio de OCR está en funcionamiento.",
+      "wordFieldsRequired": "Todos los campos son obligatorios.",
+      "wordExists": "La palabra ya existe.",
+      "wordSaveFailed": "Error al guardar la palabra.",
+      "titleExists": "Ya existe un texto con este título.",
+      "uploadFailed": "Error al subir el texto. Inténtalo de nuevo."
+    }
+  },
+  "adminTools": {
+    "title": "Herramientas de administración",
+    "subtitle": "Todo lo que necesitas para gestionar el contenido de la aplicación.",
+    "cards": {
+      "manual": {
+        "title": "Subir texto manualmente",
+        "desc": "Crea un nuevo texto rellenando tú mismo todos los campos y validándolo."
+      },
+      "ai": {
+        "title": "Subir texto con IA",
+        "desc": "Deja que la IA genere un texto en chino con traducciones y descripciones del nivel que elijas."
+      },
+      "ocr": {
+        "title": "Extraer texto de una imagen",
+        "desc": "Sube una foto de texto en chino y deja que el OCR + IA la conviertan en un texto listo para revisar."
+      },
+      "words": {
+        "title": "Gestionar palabra del diccionario",
+        "desc": "Busca una palabra para editarla o eliminarla, o añade una palabra completamente nueva al diccionario."
+      },
+      "users": {
+        "title": "Gestionar usuarios",
+        "desc": "Lista y busca usuarios, consulta su actividad y colecciones, y bloquéalos, edítalos o elimínalos."
+      }
+    }
+  },
+  "adminUsers": {
+    "title": "Gestionar usuarios",
+    "backToAdmin": "Volver a Herramientas de administración",
+    "neverLoggedIn": "Nunca ha iniciado sesión",
+    "badges": {
+      "admin": "ADMIN",
+      "blocked": "BLOQUEADO",
+      "you": "TÚ"
+    },
+    "stats": {
+      "collections": "Colecciones",
+      "flashcards": "Tarjetas"
+    },
+    "list": {
+      "hint": "Busca por correo electrónico o nombre y haz clic en un usuario para ver su perfil y gestionarlo.",
+      "searchPlaceholder": "Buscar por correo electrónico o nombre…",
+      "search": "Buscar",
+      "clear": "Limpiar",
+      "empty": "No se han encontrado usuarios.",
+      "loadMore": "Cargar más"
+    },
+    "detail": {
+      "backToList": "Volver a la lista",
+      "language": "Idioma",
+      "registered": "Registrado",
+      "lastAccess": "Último acceso",
+      "status": "Estado",
+      "statusBlocked": "Bloqueado",
+      "statusActive": "Activo",
+      "collectionsTitle": "Colecciones",
+      "cardOne": "{{count}} tarjeta",
+      "cardMany": "{{count}} tarjetas"
+    },
+    "edit": {
+      "title": "Editar usuario",
+      "name": "Nombre",
+      "language": "Idioma",
+      "save": "Guardar",
+      "cancel": "Cancelar"
+    },
+    "delete": {
+      "confirm": "¿Eliminar permanentemente a este usuario y todos sus datos? Esta acción no se puede deshacer.",
+      "yes": "Sí, eliminar",
+      "cancel": "Cancelar"
+    },
+    "actions": {
+      "edit": "Editar",
+      "block": "Bloquear",
+      "unblock": "Desbloquear",
+      "makeAdmin": "Hacer administrador",
+      "removeAdmin": "Quitar administrador",
+      "delete": "Eliminar"
+    },
+    "selfNote": "Esta es tu propia cuenta. Puedes editar tus datos, pero no puedes bloquearte, eliminarte ni cambiar tu propio rol de administrador aquí.",
+    "messages": {
+      "blocked": "Usuario bloqueado.",
+      "unblocked": "Usuario desbloqueado.",
+      "adminRemoved": "Rol de administrador retirado.",
+      "adminGranted": "El usuario ahora es administrador.",
+      "changesSaved": "Cambios guardados.",
+      "deleted": "El usuario \"{{email}}\" se ha eliminado permanentemente."
+    },
+    "errors": {
+      "loadUsers": "No se han podido cargar los usuarios. Inténtalo de nuevo.",
+      "userGone": "Este usuario ya no existe.",
+      "loadUser": "No se ha podido cargar el usuario. Inténtalo de nuevo.",
+      "updateUser": "No se ha podido actualizar el usuario. Inténtalo de nuevo.",
+      "nameEmpty": "El nombre no puede estar vacío.",
+      "saveChanges": "No se han podido guardar los cambios. Inténtalo de nuevo.",
+      "deleteUser": "No se ha podido eliminar el usuario. Inténtalo de nuevo."
+    }
+  },
+  "wordManager": {
+    "title": "Gestionar palabra del diccionario",
+    "backToAdmin": "Volver a Herramientas de administración",
+    "hint": "Busca una palabra por sus caracteres chinos. Si existe, puedes editarla o eliminarla; si no, puedes añadirla al diccionario.",
+    "search": "Buscar",
+    "editTitle": "Editar palabra",
+    "createTitle": "Añadir nueva palabra",
+    "badgeExisting": "En el diccionario",
+    "badgeNew": "Nueva",
+    "fields": {
+      "chinese": "Chino",
+      "english": "Inglés",
+      "spanish": "Español"
+    },
+    "saveChanges": "Guardar cambios",
+    "delete": "Eliminar",
+    "searchAnother": "Buscar otra",
+    "confirmDeletePre": "¿Eliminar \"",
+    "confirmDeletePost": "\" del diccionario?",
+    "deleteYes": "Sí, eliminar",
+    "cancel": "Cancelar",
+    "addWord": "Añadir palabra",
+    "messages": {
+      "added": "Palabra añadida al diccionario.",
+      "updated": "Cambios guardados correctamente.",
+      "deleted": "\"{{word}}\" se ha eliminado del diccionario."
+    },
+    "errors": {
+      "enterWord": "Introduce una palabra en chino para buscar.",
+      "notFound": "\"{{term}}\" todavía no está en el diccionario. Rellena los campos para añadirla.",
+      "unauthorized": "No tienes autorización para gestionar el diccionario.",
+      "searchFailed": "Error al buscar la palabra. Inténtalo de nuevo.",
+      "fieldsRequiredCreate": "Todos los campos son obligatorios para añadir una nueva palabra.",
+      "exists": "Esta palabra ya existe en el diccionario.",
+      "addFailed": "Error al añadir la palabra. Inténtalo de nuevo.",
+      "noIdUpdate": "No se puede actualizar una palabra sin identificador.",
+      "fieldsRequired": "Todos los campos son obligatorios.",
+      "goneUpdate": "La palabra ya no existe. Es posible que se haya eliminado.",
+      "saveFailed": "Error al guardar los cambios. Inténtalo de nuevo.",
+      "noIdDelete": "No se puede eliminar una palabra sin identificador.",
+      "inUse": "Esta palabra se usa en tarjetas existentes y no se puede eliminar.",
+      "goneDelete": "La palabra ya no existe.",
+      "deleteFailed": "Error al eliminar la palabra. Inténtalo de nuevo."
+    }
+  },
+  "speakButton": {
+    "listen": "Escuchar",
+    "audioUnavailable": "Audio no disponible — haz clic para reintentar"
+  }
+}

@@ -1,5 +1,6 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslocoModule } from '@jsverse/transloco';
 import { Subscription } from 'rxjs';
 import { AudioService, SpeakState } from '../../services/audio.service';
 
@@ -13,7 +14,7 @@ import { AudioService, SpeakState } from '../../services/audio.service';
 @Component({
   selector: 'app-speak-button',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslocoModule],
   templateUrl: './speak-button.component.html',
   styleUrl: './speak-button.component.scss'
 })
@@ -22,8 +23,8 @@ export class SpeakButtonComponent implements OnInit, OnDestroy {
   /** The Chinese text to synthesize and play. */
   @Input() text = '';
 
-  /** Accessible label / tooltip. */
-  @Input() ariaLabel = 'Listen';
+  /** Accessible label / tooltip. Falls back to the localized "Listen" when empty. */
+  @Input() ariaLabel = '';
 
   /** Visual size: 'sm' inline (words/sentences), 'md' default, 'lg' flashcards. */
   @Input() size: 'sm' | 'md' | 'lg' = 'md';

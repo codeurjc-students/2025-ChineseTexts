@@ -2,6 +2,7 @@ import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 
 import { LoginService } from '../../services/login.service';
 import {
@@ -22,7 +23,7 @@ import {
 @Component({
   selector: 'app-founder',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, FormsModule, RouterModule, TranslocoModule],
   templateUrl: './founder.component.html',
   styleUrl: './founder.component.scss'
 })
@@ -44,6 +45,7 @@ export class FounderComponent implements OnInit {
   constructor(
     private founderService: FounderService,
     public login: LoginService,
+    private transloco: TranslocoService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
@@ -72,7 +74,7 @@ export class FounderComponent implements OnInit {
     this.loading = true;
     this.founderService.getProfile().subscribe({
       next: (p) => { this.profile = this.normalize(p); this.loading = false; },
-      error: () => { this.loading = false; this.showError('Could not load the profile.'); }
+      error: () => { this.loading = false; this.showError(this.transloco.translate('founder.feedback.loadError')); }
     });
   }
 
@@ -101,16 +103,16 @@ export class FounderComponent implements OnInit {
     const file = (event.target as HTMLInputElement).files?.[0];
     if (!file || !this.profile) return;
     this.founderService.uploadPhoto(file).subscribe({
-      next: () => { this.profile!.hasPhoto = true; this.photoVersion++; this.showOk('Photo updated.'); },
-      error: () => this.showError('Could not upload the photo.')
+      next: () => { this.profile!.hasPhoto = true; this.photoVersion++; this.showOk(this.transloco.translate('founder.feedback.photoUpdated')); },
+      error: () => this.showError(this.transloco.translate('founder.feedback.photoUploadError'))
     });
   }
 
   removePhoto(): void {
     if (!this.profile) return;
     this.founderService.deletePhoto().subscribe({
-      next: () => { this.profile!.hasPhoto = false; this.showOk('Photo removed.'); },
-      error: () => this.showError('Could not remove the photo.')
+      next: () => { this.profile!.hasPhoto = false; this.showOk(this.transloco.translate('founder.feedback.photoRemoved')); },
+      error: () => this.showError(this.transloco.translate('founder.feedback.photoRemoveError'))
     });
   }
 
@@ -118,16 +120,16 @@ export class FounderComponent implements OnInit {
     const file = (event.target as HTMLInputElement).files?.[0];
     if (!file || !item.id) return;
     this.founderService.uploadItemLogo(item.id, file).subscribe({
-      next: () => { item.hasLogo = true; this.logoVersions[item.id!] = (this.logoVersions[item.id!] ?? 0) + 1; this.showOk('Logo updated.'); },
-      error: () => this.showError('Could not upload the logo.')
+      next: () => { item.hasLogo = true; this.logoVersions[item.id!] = (this.logoVersions[item.id!] ?? 0) + 1; this.showOk(this.transloco.translate('founder.feedback.logoUpdated')); },
+      error: () => this.showError(this.transloco.translate('founder.feedback.logoUploadError'))
     });
   }
 
   removeItemLogo(item: FounderItem): void {
     if (!item.id) return;
     this.founderService.deleteItemLogo(item.id).subscribe({
-      next: () => { item.hasLogo = false; this.showOk('Logo removed.'); },
-      error: () => this.showError('Could not remove the logo.')
+      next: () => { item.hasLogo = false; this.showOk(this.transloco.translate('founder.feedback.logoRemoved')); },
+      error: () => this.showError(this.transloco.translate('founder.feedback.logoRemoveError'))
     });
   }
 
@@ -135,82 +137,82 @@ export class FounderComponent implements OnInit {
   saveProfile(): void {
     if (!this.profile) return;
     this.founderService.updateProfile(this.profile).subscribe({
-      next: () => this.showOk('Profile saved.'),
-      error: () => this.showError('Could not save the profile.')
+      next: () => this.showOk(this.transloco.translate('founder.feedback.profileSaved')),
+      error: () => this.showError(this.transloco.translate('founder.feedback.profileSaveError'))
     });
   }
 
   // ---------- Enlaces / redes ----------
   addSocial(): void {
     if (!this.profile) return;
-    const draft: FounderSocial = { label: 'New link', icon: 'bi-link-45deg', url: '', displayOrder: this.profile.socials.length };
+    const draft: FounderSocial = { label: this.transloco.translate('founder.defaults.newLink'), icon: 'bi-link-45deg', url: '', displayOrder: this.profile.socials.length };
     this.founderService.addSocial(draft).subscribe({
-      next: (created) => { this.profile!.socials.push(created); this.showOk('Link added.'); },
-      error: () => this.showError('Could not add the link.')
+      next: (created) => { this.profile!.socials.push(created); this.showOk(this.transloco.translate('founder.feedback.linkAdded')); },
+      error: () => this.showError(this.transloco.translate('founder.feedback.linkAddError'))
     });
   }
 
   saveSocial(social: FounderSocial): void {
     this.founderService.updateSocial(social.id!, social).subscribe({
-      next: () => this.showOk('Link saved.'),
-      error: () => this.showError('Could not save the link.')
+      next: () => this.showOk(this.transloco.translate('founder.feedback.linkSaved')),
+      error: () => this.showError(this.transloco.translate('founder.feedback.linkSaveError'))
     });
   }
 
   deleteSocial(social: FounderSocial): void {
     this.founderService.deleteSocial(social.id!).subscribe({
-      next: () => { this.profile!.socials = this.profile!.socials.filter(s => s !== social); this.showOk('Link removed.'); },
-      error: () => this.showError('Could not remove the link.')
+      next: () => { this.profile!.socials = this.profile!.socials.filter(s => s !== social); this.showOk(this.transloco.translate('founder.feedback.linkRemoved')); },
+      error: () => this.showError(this.transloco.translate('founder.feedback.linkRemoveError'))
     });
   }
 
   // ---------- Secciones ----------
   addSection(): void {
     if (!this.profile) return;
-    const draft: FounderSection = { title: 'New section', type: 'CUSTOM', displayOrder: this.profile.sections.length, items: [] };
+    const draft: FounderSection = { title: this.transloco.translate('founder.defaults.newSection'), type: 'CUSTOM', displayOrder: this.profile.sections.length, items: [] };
     this.founderService.addSection(draft).subscribe({
-      next: (created) => { created.items = created.items ?? []; this.profile!.sections.push(created); this.showOk('Section added.'); },
-      error: () => this.showError('Could not add the section.')
+      next: (created) => { created.items = created.items ?? []; this.profile!.sections.push(created); this.showOk(this.transloco.translate('founder.feedback.sectionAdded')); },
+      error: () => this.showError(this.transloco.translate('founder.feedback.sectionAddError'))
     });
   }
 
   saveSection(section: FounderSection): void {
     this.founderService.updateSection(section.id!, section).subscribe({
-      next: () => this.showOk('Section saved.'),
-      error: () => this.showError('Could not save the section.')
+      next: () => this.showOk(this.transloco.translate('founder.feedback.sectionSaved')),
+      error: () => this.showError(this.transloco.translate('founder.feedback.sectionSaveError'))
     });
   }
 
   deleteSection(section: FounderSection): void {
     this.founderService.deleteSection(section.id!).subscribe({
-      next: () => { this.profile!.sections = this.profile!.sections.filter(s => s !== section); this.showOk('Section removed.'); },
-      error: () => this.showError('Could not remove the section.')
+      next: () => { this.profile!.sections = this.profile!.sections.filter(s => s !== section); this.showOk(this.transloco.translate('founder.feedback.sectionRemoved')); },
+      error: () => this.showError(this.transloco.translate('founder.feedback.sectionRemoveError'))
     });
   }
 
   // ---------- Ítems ----------
   addItem(section: FounderSection): void {
     const draft: FounderItem = {
-      heading: 'New entry', subheading: '', period: '', location: '',
+      heading: this.transloco.translate('founder.defaults.newEntry'), subheading: '', period: '', location: '',
       description: '', linkUrl: '', linkLabel: '', displayOrder: section.items.length, hasLogo: false
     };
     this.founderService.addItem(section.id!, draft).subscribe({
-      next: (created) => { section.items.push(created); this.showOk('Entry added.'); },
-      error: () => this.showError('Could not add the entry.')
+      next: (created) => { section.items.push(created); this.showOk(this.transloco.translate('founder.feedback.entryAdded')); },
+      error: () => this.showError(this.transloco.translate('founder.feedback.entryAddError'))
     });
   }
 
   saveItem(item: FounderItem): void {
     this.founderService.updateItem(item.id!, item).subscribe({
-      next: () => this.showOk('Entry saved.'),
-      error: () => this.showError('Could not save the entry.')
+      next: () => this.showOk(this.transloco.translate('founder.feedback.entrySaved')),
+      error: () => this.showError(this.transloco.translate('founder.feedback.entrySaveError'))
     });
   }
 
   deleteItem(section: FounderSection, item: FounderItem): void {
     this.founderService.deleteItem(item.id!).subscribe({
-      next: () => { section.items = section.items.filter(i => i !== item); this.showOk('Entry removed.'); },
-      error: () => this.showError('Could not remove the entry.')
+      next: () => { section.items = section.items.filter(i => i !== item); this.showOk(this.transloco.translate('founder.feedback.entryRemoved')); },
+      error: () => this.showError(this.transloco.translate('founder.feedback.entryRemoveError'))
     });
   }
 

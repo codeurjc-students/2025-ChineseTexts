@@ -1,10 +1,13 @@
 import { Injectable, Inject } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { Title, Meta } from '@angular/platform-browser';
+import { Lang, addLangPrefix } from '../i18n/locale.util';
 
 /**
  * Per-page SEO metadata. `path` is the absolute route path (e.g. '/texts'),
  * used to build the canonical + Open Graph URL. When omitted the site root is used.
+ * `path` is always the un-prefixed (English) path; the service adds the `/es`
+ * prefix when rendering the Spanish variant.
  */
 export interface SeoConfig {
   title: string;
@@ -24,13 +27,17 @@ const DEFAULT_KEYWORDS =
   'read chinese texts, learn chinese with graded texts, chinese graded readers, ' +
   'HSK reading practice, mandarin reading, chinese reading practice';
 
+const OG_LOCALE: Record<Lang, string> = { en: 'en_US', es: 'es_ES' };
+
 /**
  * Centralises all SEO tag management (title, description, keywords, canonical,
- * Open Graph and Twitter Card) in one reusable, SSR-safe place.
+ * Open Graph, Twitter Card, hreflang alternates and document language) in one
+ * reusable, SSR-safe place.
  *
  * It relies exclusively on Angular's Title/Meta services and the injected
- * DOCUMENT, all of which work during server-side rendering — so crawlers receive
- * fully-populated, route-specific tags in the initial HTML.
+ * DOCUMENT, all of which work during server-side rendering / prerendering — so
+ * crawlers receive fully-populated, route- and language-specific tags in the
+ * initial HTML.
  */
 @Injectable({ providedIn: 'root' })
 export class SeoService {
@@ -41,12 +48,16 @@ export class SeoService {
     @Inject(DOCUMENT) private doc: Document
   ) {}
 
-  update(config: SeoConfig): void {
+  update(config: SeoConfig, lang: Lang = 'en'): void {
     const title = config.title;
     const description = config.description;
-    const url = SITE_URL + this.normalizePath(config.path);
+    const enPath = this.normalizePath(config.path);       // canonical English path
+    const url = SITE_URL + addLangPrefix(enPath, lang);    // self-URL for this locale
     const image = config.image ?? DEFAULT_IMAGE;
     const robots = config.noindex ? 'noindex, nofollow' : 'index, follow';
+
+    // Document language (affects <html lang>) — important for accessibility & SEO.
+    this.doc.documentElement.lang = lang;
 
     this.titleService.setTitle(title);
 
@@ -62,6 +73,7 @@ export class SeoService {
     this.meta.updateTag({ property: 'og:description', content: description });
     this.meta.updateTag({ property: 'og:url', content: url });
     this.meta.updateTag({ property: 'og:image', content: image });
+    this.meta.updateTag({ property: 'og:locale', content: OG_LOCALE[lang] });
 
     // Twitter Card
     this.meta.updateTag({ name: 'twitter:card', content: 'summary_large_image' });
@@ -70,6 +82,8 @@ export class SeoService {
     this.meta.updateTag({ name: 'twitter:image', content: image });
 
     this.setCanonical(url);
+    this.setAlternates(enPath, config.noindex === true);
+    this.setJsonLdLanguage(lang);
   }
 
   /** Ensures a single <link rel="canonical"> pointing at the current URL. */
@@ -81,6 +95,58 @@ export class SeoService {
       this.doc.head.appendChild(link);
     }
     link.setAttribute('href', url);
+  }
+
+  /**
+   * Emits <link rel="alternate" hreflang="en|es|x-default"> so Google serves the
+   * right language variant. Only indexable pages get alternates; on noindex pages
+   * they are removed (a private page has no public language twin to advertise).
+   */
+  private setAlternates(enPath: string, noindex: boolean): void {
+    const alternates: Array<[string, string]> = [
+      ['en', SITE_URL + enPath],
+      ['es', SITE_URL + addLangPrefix(enPath, 'es')],
+      ['x-default', SITE_URL + enPath],
+    ];
+
+    for (const [hreflang, href] of alternates) {
+      const selector = `link[rel='alternate'][hreflang='${hreflang}']`;
+      let link = this.doc.querySelector(selector) as HTMLLinkElement | null;
+      if (noindex) {
+        if (link) link.remove();
+        continue;
+      }
+      if (!link) {
+        link = this.doc.createElement('link');
+        link.setAttribute('rel', 'alternate');
+        link.setAttribute('hreflang', hreflang);
+        this.doc.head.appendChild(link);
+      }
+      link.setAttribute('href', href);
+    }
+  }
+
+  /**
+   * Keeps the static JSON-LD `inLanguage` fields in sync with the active
+   * language. Wrapped in try/catch so a malformed script can never break rendering.
+   */
+  private setJsonLdLanguage(lang: Lang): void {
+    try {
+      const script = this.doc.querySelector('script[type="application/ld+json"]');
+      if (!script || !script.textContent) return;
+      const data = JSON.parse(script.textContent);
+      const nodes = Array.isArray(data['@graph']) ? data['@graph'] : [data];
+      let changed = false;
+      for (const node of nodes) {
+        if (node && typeof node === 'object' && 'inLanguage' in node) {
+          node.inLanguage = lang;
+          changed = true;
+        }
+      }
+      if (changed) script.textContent = JSON.stringify(data);
+    } catch {
+      // Leave the static JSON-LD untouched on any parse error.
+    }
   }
 
   private normalizePath(path?: string): string {

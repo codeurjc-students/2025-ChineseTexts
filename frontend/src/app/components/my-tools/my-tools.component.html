@@ -1,26 +1,26 @@
 <div class="my-tools container my-5">
 
-  <h1 class="page-title"><i class="bi bi-magic me-2"></i>My Tools</h1>
-  <p class="page-subtitle">Turn any Chinese text or a photo into your own private reader — with pinyin, translations and audio.</p>
+  <h1 class="page-title"><i class="bi bi-magic me-2"></i>{{ 'myTools.title' | transloco }}</h1>
+  <p class="page-subtitle">{{ 'myTools.subtitle' | transloco }}</p>
 
   <!-- ══════ Crear ══════ -->
   <div class="create-card">
 
     <!-- Extraer de una foto (OCR) -->
-    <label class="field-label"><i class="bi bi-camera me-1"></i>Have a photo? Extract the text first</label>
+    <label class="field-label"><i class="bi bi-camera me-1"></i>{{ 'myTools.create.photoLabel' | transloco }}</label>
     <div class="ocr-controls">
       <input class="file-input" type="file" accept="image/*" (change)="onFileSelected($event)">
       <button class="btn-secondary" (click)="extract()" [disabled]="extracting || !selectedFile">
         <span *ngIf="extracting" class="spinner-sm-dark"></span>
-        {{ extracting ? 'Reading…' : 'Extract text' }}
+        {{ (extracting ? 'myTools.create.reading' : 'myTools.create.extract') | transloco }}
       </button>
     </div>
 
     <!-- Texto editable -->
-    <label class="field-label mt-3"><i class="bi bi-pencil me-1"></i>Chinese text</label>
+    <label class="field-label mt-3"><i class="bi bi-pencil me-1"></i>{{ 'myTools.create.chineseTextLabel' | transloco }}</label>
     <textarea class="paste-area" [(ngModel)]="pasteText" rows="6" maxlength="1500"
-      placeholder="Paste Chinese text here, or extract it from a photo above."></textarea>
-    <p class="hint">Up to 1500 characters. Your line breaks (dialogues, conversations…) are preserved.</p>
+      placeholder="{{ 'myTools.create.pastePlaceholder' | transloco }}"></textarea>
+    <p class="hint">{{ 'myTools.create.charLimitHint' | transloco }}</p>
 
     <!-- Feedback -->
     <div class="alert-info mt-2" *ngIf="messageType === 'info'">
@@ -32,13 +32,13 @@
 
     <button class="btn-primary mt-3" (click)="create()" [disabled]="creating">
       <span *ngIf="creating" class="spinner-sm"></span>
-      {{ creating ? 'Processing…' : 'Create reader' }}
+      {{ (creating ? 'myTools.create.processing' : 'myTools.create.createReader') | transloco }}
     </button>
-    <p class="hint mt-2" *ngIf="creating">Segmenting, translating and generating audio — this can take a few seconds.</p>
+    <p class="hint mt-2" *ngIf="creating">{{ 'myTools.create.processingHint' | transloco }}</p>
   </div>
 
   <!-- ══════ Mis textos ══════ -->
-  <h2 class="section-title mt-5"><i class="bi bi-journal-bookmark me-2"></i>Your texts</h2>
+  <h2 class="section-title mt-5"><i class="bi bi-journal-bookmark me-2"></i>{{ 'myTools.list.title' | transloco }}</h2>
 
   <div class="text-center py-4" *ngIf="loadingList && texts.length === 0">
     <div class="spinner-red"></div>
@@ -46,26 +46,26 @@
 
   <div class="empty-state" *ngIf="!loadingList && texts.length === 0">
     <i class="bi bi-inbox"></i>
-    <p>You haven't created any texts yet. Paste some text or extract it from a photo above to start.</p>
+    <p>{{ 'myTools.list.empty' | transloco }}</p>
   </div>
 
   <div class="text-row" *ngFor="let t of texts" (click)="openText(t.id)">
     <div class="text-row-main">
-      <div class="text-row-title">{{ t.title || 'Untitled text' }}</div>
-      <div class="text-row-meta">{{ t.creationDate }} · {{ t.wordCount }} words</div>
+      <div class="text-row-title">{{ t.title || ('myTools.list.untitled' | transloco) }}</div>
+      <div class="text-row-meta">{{ t.creationDate }} · {{ t.wordCount }} {{ 'myTools.list.words' | transloco }}</div>
     </div>
 
     <div class="text-row-actions" *ngIf="confirmingDeleteId !== t.id">
       <i class="bi bi-chevron-right chevron"></i>
-      <button class="btn-icon-danger" (click)="askDelete($event, t.id)" title="Delete">
+      <button class="btn-icon-danger" (click)="askDelete($event, t.id)" title="{{ 'common.buttons.delete' | transloco }}">
         <i class="bi bi-trash"></i>
       </button>
     </div>
 
     <div class="confirm-inline" *ngIf="confirmingDeleteId === t.id" (click)="$event.stopPropagation()">
-      <span>Delete?</span>
-      <button class="btn-danger btn-xs" (click)="confirmDelete($event, t.id)">Yes</button>
-      <button class="btn-secondary btn-xs" (click)="cancelDelete($event)">No</button>
+      <span>{{ 'myTools.list.deleteConfirm' | transloco }}</span>
+      <button class="btn-danger btn-xs" (click)="confirmDelete($event, t.id)">{{ 'myTools.list.yes' | transloco }}</button>
+      <button class="btn-secondary btn-xs" (click)="cancelDelete($event)">{{ 'myTools.list.no' | transloco }}</button>
     </div>
   </div>
 

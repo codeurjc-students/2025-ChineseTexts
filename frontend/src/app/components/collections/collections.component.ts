@@ -2,9 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
+import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { CollectionsService, CollectionDTO, FlashcardDTO } from '../../services/collections.service';
 import { LoginService } from '../../services/login.service';
 import { SpeakButtonComponent } from '../speak-button/speak-button.component';
+import { LocalizeLinkPipe } from '../../i18n/localize-link.pipe';
+import { LocaleNavService } from '../../i18n/locale-nav.service';
 
 type AppMode = 'list' | 'detail' | 'study' | 'exam';
 type CardFace = 'chinese' | 'translation';
@@ -20,7 +23,7 @@ interface ExamQuestion {
 @Component({
   selector: 'app-collections',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, SpeakButtonComponent],
+  imports: [CommonModule, FormsModule, RouterModule, SpeakButtonComponent, TranslocoModule, LocalizeLinkPipe],
   templateUrl: './collections.component.html',
   styleUrl: './collections.component.scss'
 })
@@ -71,16 +74,18 @@ export class CollectionsComponent implements OnInit {
   constructor(
     private collectionsService: CollectionsService,
     private loginService: LoginService,
-    private router: Router
+    private router: Router,
+    private transloco: TranslocoService,
+    private localeNav: LocaleNavService
   ) {}
 
   ngOnInit(): void {
     this.loginService.reqIsLogged().subscribe({
       next: (user) => {
-        if (!user) this.router.navigate(['/']);
+        if (!user) this.localeNav.navigate(['/']);
         else this.loadCollections();
       },
-      error: () => this.router.navigate(['/'])
+      error: () => this.localeNav.navigate(['/'])
     });
   }
 
@@ -304,18 +309,18 @@ export class CollectionsComponent implements OnInit {
   }
 
   getQuestionPrompt(q: ExamQuestion): string {
-    if (q.questionType === 'chinese') return `What is the correct character for "${q.flashcard.word.english}"?`;
-    if (q.questionType === 'pinyin') return `What is the correct pinyin for "${q.flashcard.word.chinese}"?`;
-    return `What does "${q.flashcard.word.chinese}" (${q.flashcard.word.pinyin}) mean?`;
+    if (q.questionType === 'chinese') return this.transloco.translate('collections.exam.promptChinese', { word: q.flashcard.word.english });
+    if (q.questionType === 'pinyin') return this.transloco.translate('collections.exam.promptPinyin', { word: q.flashcard.word.chinese });
+    return this.transloco.translate('collections.exam.promptTranslation', { word: q.flashcard.word.chinese, pinyin: q.flashcard.word.pinyin });
   }
 
   get examGrade(): string {
     const pct = this.examScore / this.examQuestions.length;
-    if (pct === 1) return 'Perfect!';
-    if (pct >= 0.8) return 'Great job!';
-    if (pct >= 0.6) return 'Not bad!';
-    if (pct >= 0.4) return 'Keep practicing!';
-    return 'Keep studying!';
+    if (pct === 1) return this.transloco.translate('collections.exam.gradePerfect');
+    if (pct >= 0.8) return this.transloco.translate('collections.exam.gradeGreat');
+    if (pct >= 0.6) return this.transloco.translate('collections.exam.gradeNotBad');
+    if (pct >= 0.4) return this.transloco.translate('collections.exam.gradeKeepPracticing');
+    return this.transloco.translate('collections.exam.gradeKeepStudying');
   }
 
   private shuffle<T>(arr: T[]): T[] {

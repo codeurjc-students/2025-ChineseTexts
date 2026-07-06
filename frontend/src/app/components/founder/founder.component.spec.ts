@@ -6,6 +6,8 @@ import { provideHttpClientTesting, HttpTestingController } from '@angular/common
 import { FounderComponent } from './founder.component';
 import { FounderProfile } from '../../services/founder.service';
 
+import { translocoTesting } from "../../i18n/transloco-testing";
+
 describe('FounderComponent', () => {
   let component: FounderComponent;
   let fixture: ComponentFixture<FounderComponent>;
@@ -18,7 +20,7 @@ describe('FounderComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FounderComponent],
+      imports: [translocoTesting(), FounderComponent],
       providers: [provideRouter([]), provideHttpClient(), provideHttpClientTesting()]
     }).compileComponents();
 

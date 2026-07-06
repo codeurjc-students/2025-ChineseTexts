@@ -8,11 +8,14 @@ import { WordsService, Word } from '../../services/words.service';
 import { CollectionsService, CollectionDTO } from '../../services/collections.service';
 import { SpeakButtonComponent } from '../speak-button/speak-button.component';
 import { SeoService } from '../../services/seo.service';
+import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
+import { Lang } from '../../i18n/locale.util';
+import { LocaleNavService } from '../../i18n/locale-nav.service';
 
 @Component({
   selector: 'app-text',
   standalone: true,
-  imports: [CommonModule, FormsModule, SpeakButtonComponent],
+  imports: [CommonModule, FormsModule, SpeakButtonComponent, TranslocoModule],
   templateUrl: './text.component.html',
   styleUrl: './text.component.scss'
 })
@@ -59,7 +62,9 @@ export class TextComponent implements OnInit {
     private router: Router,
     private wordService: WordsService,
     private collectionsService: CollectionsService,
-    private seo: SeoService
+    private seo: SeoService,
+    private transloco: TranslocoService,
+    private localeNav: LocaleNavService
   ) {}
 
   get isAdmin(): boolean {
@@ -166,7 +171,7 @@ export class TextComponent implements OnInit {
   }
 
   goBack(): void {
-    this.router.navigate(['/texts']);
+    this.localeNav.navigate(['/texts']);
   }
 
   // ——— Carga de datos ———
@@ -189,10 +194,26 @@ export class TextComponent implements OnInit {
 
   /** Gives each text page a unique, content-rich title & description for SEO. */
   private updateSeo(): void {
-    const title = (this.text.titleEnglish || '').trim();
+    const lang = this.transloco.getActiveLang() as Lang;
     const level = this.text.level || 'HSK';
-    const summary = (this.text.englishDescription || '').trim();
 
+    if (lang === 'es') {
+      const title = (this.text.titleSpanish || '').trim();
+      const summary = (this.text.spanishDescription || '').trim();
+      this.seo.update({
+        title: title
+          ? `${title} — Texto de lectura en chino ${level} | ChineseReads`
+          : `Lee un texto en chino ${level} | ChineseReads`,
+        description: summary
+          || `Lee este texto en chino graduado de nivel ${level} con pinyin palabra por palabra, traducciones `
+             + `instantáneas, desglose de frases y pronunciación con audio natural en ChineseReads.`,
+        path: `/text/${this.text.id}`
+      }, 'es');
+      return;
+    }
+
+    const title = (this.text.titleEnglish || '').trim();
+    const summary = (this.text.englishDescription || '').trim();
     this.seo.update({
       title: title
         ? `${title} — ${level} Chinese Reading Text | ChineseReads`
@@ -201,7 +222,7 @@ export class TextComponent implements OnInit {
         || `Read this ${level} graded Chinese text with word-by-word pinyin, instant translations, `
            + `sentence breakdown and natural audio pronunciation on ChineseReads.`,
       path: `/text/${this.text.id}`
-    });
+    }, 'en');
   }
 
   private getSpanishText(id: number): void {
@@ -263,7 +284,7 @@ export class TextComponent implements OnInit {
 
   confirmDeleteText(): void {
     this.textService.deleteText(this.text.id).subscribe({
-      next: () => this.router.navigate(['/texts']),
+      next: () => this.localeNav.navigate(['/texts']),
       error: (err) => console.error('Error deleting text', err)
     });
   }

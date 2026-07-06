@@ -9,11 +9,11 @@
   <div class="modal-overlay" *ngIf="showDeleteModal" (click)="cancelDelete()">
     <div class="modal-box" (click)="$event.stopPropagation()">
       <div class="modal-icon modal-icon--warn"><i class="bi bi-trash"></i></div>
-      <h3 class="modal-title">Delete collection</h3>
-      <p class="modal-text">Are you sure you want to delete <strong>{{ deleteTarget?.title }}</strong>? This will also remove all its flashcards.</p>
+      <h3 class="modal-title">{{ 'collections.deleteModal.title' | transloco }}</h3>
+      <p class="modal-text">{{ 'collections.deleteModal.textPrefix' | transloco }} <strong>{{ deleteTarget?.title }}</strong>{{ 'collections.deleteModal.textSuffix' | transloco }}</p>
       <div class="modal-actions">
-        <button class="btn-secondary" (click)="cancelDelete()">Cancel</button>
-        <button class="btn-danger" (click)="confirmDelete()">Delete</button>
+        <button class="btn-secondary" (click)="cancelDelete()">{{ 'common.buttons.cancel' | transloco }}</button>
+        <button class="btn-danger" (click)="confirmDelete()">{{ 'common.buttons.delete' | transloco }}</button>
       </div>
     </div>
   </div>
@@ -22,21 +22,21 @@
   <div class="modal-overlay" *ngIf="showRenameModal" (click)="closeRenameModal()">
     <div class="modal-box" (click)="$event.stopPropagation()">
       <div class="modal-icon modal-icon--add"><i class="bi bi-pencil-square"></i></div>
-      <h3 class="modal-title">Rename collection</h3>
+      <h3 class="modal-title">{{ 'collections.renameModal.title' | transloco }}</h3>
       <input
         class="modal-input"
         type="text"
-        placeholder="New name..."
+        placeholder="{{ 'collections.renameModal.placeholder' | transloco }}"
         [(ngModel)]="renameTitle"
         (keydown.enter)="confirmRename()"
         autofocus
       >
       <div class="modal-actions">
-        <button class="btn-secondary" (click)="closeRenameModal()">Cancel</button>
+        <button class="btn-secondary" (click)="closeRenameModal()">{{ 'common.buttons.cancel' | transloco }}</button>
         <button class="btn-primary"
           [disabled]="!renameTitle.trim() || renaming"
           (click)="confirmRename()">
-          {{ renaming ? 'Saving...' : 'Save' }}
+          {{ (renaming ? 'collections.renameModal.saving' : 'common.buttons.save') | transloco }}
         </button>
       </div>
     </div>
@@ -46,19 +46,19 @@
   <div class="modal-overlay" *ngIf="showAddModal" (click)="closeAddModal()">
     <div class="modal-box" (click)="$event.stopPropagation()">
       <div class="modal-icon modal-icon--add"><i class="bi bi-collection-fill"></i></div>
-      <h3 class="modal-title">New collection</h3>
+      <h3 class="modal-title">{{ 'collections.addModal.title' | transloco }}</h3>
       <input
         class="modal-input"
         type="text"
-        placeholder="Collection name..."
+        placeholder="{{ 'collections.addModal.placeholder' | transloco }}"
         [(ngModel)]="newCollectionTitle"
         (keydown.enter)="confirmAddCollection()"
         autofocus
       >
       <div class="modal-actions">
-        <button class="btn-secondary" (click)="closeAddModal()">Cancel</button>
+        <button class="btn-secondary" (click)="closeAddModal()">{{ 'common.buttons.cancel' | transloco }}</button>
         <button class="btn-primary" [disabled]="!newCollectionTitle.trim() || addingCollection" (click)="confirmAddCollection()">
-          Create
+          {{ 'collections.addModal.create' | transloco }}
         </button>
       </div>
     </div>
@@ -68,18 +68,18 @@
   <div *ngIf="mode === 'study' && !loading" class="study-view">
 
     <div *ngIf="studyDone" class="result-screen">
-      <h2 class="result-title">Session complete</h2>
+      <h2 class="result-title">{{ 'collections.study.sessionComplete' | transloco }}</h2>
       <div class="result-ring">
         <span class="result-fraction">{{ studyCorrect }}<span class="result-total">/{{ studyCards.length }}</span></span>
       </div>
-      <p class="result-label">words known</p>
+      <p class="result-label">{{ 'collections.study.wordsKnown' | transloco }}</p>
       <div class="result-stats">
-        <div class="rstat rstat--ok"><span>{{ studyCorrect }}</span> Known</div>
-        <div class="rstat rstat--bad"><span>{{ studyIncorrect }}</span> To review</div>
+        <div class="rstat rstat--ok"><span>{{ studyCorrect }}</span> {{ 'collections.study.known' | transloco }}</div>
+        <div class="rstat rstat--bad"><span>{{ studyIncorrect }}</span> {{ 'collections.study.toReview' | transloco }}</div>
       </div>
       <div class="result-actions">
-        <button class="btn-primary" (click)="studyAgain()">Study again</button>
-        <button class="btn-secondary" (click)="backToList()">Back to collections</button>
+        <button class="btn-primary" (click)="studyAgain()">{{ 'collections.study.studyAgain' | transloco }}</button>
+        <button class="btn-secondary" (click)="backToList()">{{ 'collections.study.backToCollections' | transloco }}</button>
       </div>
     </div>
 
@@ -100,10 +100,10 @@
       </div>
 
       <div class="flashcard" *ngIf="studyFace === 'chinese'">
-        <div class="card-top-label">What does this mean?</div>
+        <div class="card-top-label">{{ 'collections.study.whatDoesItMean' | transloco }}</div>
         <div class="card-chinese-row">
           <div class="card-chinese">{{ currentStudyCard.word.chinese }}</div>
-          <app-speak-button [text]="currentStudyCard.word.chinese" size="lg" ariaLabel="Listen to this word"></app-speak-button>
+          <app-speak-button [text]="currentStudyCard.word.chinese" size="lg" [ariaLabel]="'collections.listen.word' | transloco"></app-speak-button>
         </div>
         <div class="card-pinyin" *ngIf="!studyRevealed">···</div>
         <div *ngIf="studyRevealed" class="card-reveal">
@@ -111,14 +111,14 @@
           <hr class="card-hr">
           <div class="card-tr"><span class="badge-lang">EN</span>{{ currentStudyCard.word.english }}</div>
           <div class="card-tr"><span class="badge-lang">ES</span>{{ currentStudyCard.word.spanish }}</div>
-          <a *ngIf="currentStudyCard.example?.id" [routerLink]="['/text', currentStudyCard.example.id]" class="card-ref">
-            See text <i class="bi bi-arrow-right"></i>
+          <a *ngIf="currentStudyCard.example?.id" [routerLink]="['/text', currentStudyCard.example.id] | localizeLink" class="card-ref">
+            {{ 'collections.seeText' | transloco }} <i class="bi bi-arrow-right"></i>
           </a>
         </div>
       </div>
 
       <div class="flashcard" *ngIf="studyFace === 'translation'">
-        <div class="card-top-label">What is the character?</div>
+        <div class="card-top-label">{{ 'collections.study.whatIsTheCharacter' | transloco }}</div>
         <div class="card-translation-big">
           <div>{{ currentStudyCard.word.english }}</div>
           <div class="card-tr-es">{{ currentStudyCard.word.spanish }}</div>
@@ -127,25 +127,25 @@
           <hr class="card-hr">
           <div class="card-chinese-row">
             <div class="card-chinese-reveal">{{ currentStudyCard.word.chinese }}</div>
-            <app-speak-button [text]="currentStudyCard.word.chinese" size="md" ariaLabel="Listen to this word"></app-speak-button>
+            <app-speak-button [text]="currentStudyCard.word.chinese" size="md" [ariaLabel]="'collections.listen.word' | transloco"></app-speak-button>
           </div>
           <div class="card-pinyin">{{ currentStudyCard.word.pinyin }}</div>
-          <a *ngIf="currentStudyCard.example?.id" [routerLink]="['/text', currentStudyCard.example.id]" class="card-ref">
-            See text <i class="bi bi-arrow-right"></i>
+          <a *ngIf="currentStudyCard.example?.id" [routerLink]="['/text', currentStudyCard.example.id] | localizeLink" class="card-ref">
+            {{ 'collections.seeText' | transloco }} <i class="bi bi-arrow-right"></i>
           </a>
         </div>
       </div>
 
       <div *ngIf="!studyRevealed" class="action-row">
         <button class="btn-flip" (click)="revealStudyCard()">
-          <i class="bi bi-arrow-repeat"></i> Reveal answer
+          <i class="bi bi-arrow-repeat"></i> {{ 'collections.study.revealAnswer' | transloco }}
         </button>
-        <button class="btn-ghost" (click)="studyAgain()">Restart</button>
+        <button class="btn-ghost" (click)="studyAgain()">{{ 'collections.study.restart' | transloco }}</button>
       </div>
 
       <div *ngIf="studyRevealed" class="answer-row">
-        <button class="btn-unknown" (click)="markUnknown()"><i class="bi bi-x-lg"></i> Don't know</button>
-        <button class="btn-known" (click)="markKnown()"><i class="bi bi-check-lg"></i> Got it</button>
+        <button class="btn-unknown" (click)="markUnknown()"><i class="bi bi-x-lg"></i> {{ 'collections.study.dontKnow' | transloco }}</button>
+        <button class="btn-known" (click)="markKnown()"><i class="bi bi-check-lg"></i> {{ 'collections.study.gotIt' | transloco }}</button>
       </div>
     </div>
   </div>
@@ -154,7 +154,7 @@
   <div *ngIf="mode === 'exam' && !loading" class="exam-view">
 
     <div *ngIf="examDone" class="result-screen">
-      <h2 class="result-title">Exam complete</h2>
+      <h2 class="result-title">{{ 'collections.exam.complete' | transloco }}</h2>
       <div class="result-ring"
            [class.ring--perfect]="examScore === examQuestions.length"
            [class.ring--good]="examScore / examQuestions.length >= 0.6"
@@ -172,8 +172,8 @@
         </div>
       </div>
       <div class="result-actions">
-        <button class="btn-primary" (click)="repeatExam()">Repeat exam</button>
-        <button class="btn-secondary" (click)="newExam()">New exam</button>
+        <button class="btn-primary" (click)="repeatExam()">{{ 'collections.exam.repeat' | transloco }}</button>
+        <button class="btn-secondary" (click)="newExam()">{{ 'collections.exam.new' | transloco }}</button>
       </div>
     </div>
 
@@ -186,7 +186,7 @@
           </div>
           <span class="progress-label">{{ examIndex + 1 }} / {{ examQuestions.length }}</span>
         </div>
-        <span class="exam-badge">Exam</span>
+        <span class="exam-badge">{{ 'collections.exam.badge' | transloco }}</span>
       </div>
 
       <div class="exam-question">
@@ -204,10 +204,10 @@
                [class.feedback--ok]="currentQuestion.selectedAnswer === currentQuestion.correctAnswer"
                [class.feedback--bad]="currentQuestion.selectedAnswer !== currentQuestion.correctAnswer">
             <i class="bi" [ngClass]="currentQuestion.selectedAnswer === currentQuestion.correctAnswer ? 'bi-check-circle-fill' : 'bi-x-circle-fill'"></i>
-            {{ currentQuestion.selectedAnswer === currentQuestion.correctAnswer ? 'Correct!' : 'Incorrect — ' + currentQuestion.correctAnswer }}
+            {{ currentQuestion.selectedAnswer === currentQuestion.correctAnswer ? ('collections.exam.correct' | transloco) : ('collections.exam.incorrect' | transloco:{ answer: currentQuestion.correctAnswer }) }}
           </div>
           <button class="btn-primary" (click)="nextExamQuestion()">
-            {{ examIndex < examQuestions.length - 1 ? 'Next' : 'See results' }}
+            {{ (examIndex < examQuestions.length - 1 ? 'collections.exam.next' : 'collections.exam.seeResults') | transloco }}
           </button>
         </div>
       </div>
@@ -223,23 +223,23 @@
         <button class="btn-icon" (click)="backToList()"><i class="bi bi-arrow-left"></i></button>
         <h2 class="page-title mb-0">{{ selectedCollection.title }}</h2>
       </div>
-      <p class="text-muted mt-1 mb-4">{{ flashcards.length }} word{{ flashcards.length !== 1 ? 's' : '' }}</p>
+      <p class="text-muted mt-1 mb-4">{{ flashcards.length }} {{ (flashcards.length === 1 ? 'collections.detail.word' : 'collections.detail.words') | transloco }}</p>
 
       <div *ngIf="flashcards.length === 0" class="empty-msg">
-        No words yet. Go to a text and save some!
+        {{ 'collections.detail.empty' | transloco }}
       </div>
 
       <div class="flashcard-list">
         <div *ngFor="let card of flashcards" class="flashcard-item">
           <div class="fi-chinese">{{ card.word.chinese }}</div>
-          <app-speak-button [text]="card.word.chinese" size="sm" ariaLabel="Listen to this word"></app-speak-button>
+          <app-speak-button [text]="card.word.chinese" size="sm" [ariaLabel]="'collections.listen.word' | transloco"></app-speak-button>
           <div class="fi-pinyin">{{ card.word.pinyin }}</div>
           <div class="fi-translations">
             <span class="badge-lang">EN</span>{{ card.word.english }}
             <span class="badge-lang ml">ES</span>{{ card.word.spanish }}
           </div>
-          <a *ngIf="card.example?.id" [routerLink]="['/text', card.example.id]" class="fi-text-link">
-            See text <i class="bi bi-arrow-right"></i>
+          <a *ngIf="card.example?.id" [routerLink]="['/text', card.example.id] | localizeLink" class="fi-text-link">
+            {{ 'collections.seeText' | transloco }} <i class="bi bi-arrow-right"></i>
           </a>
           <button class="btn-delete" (click)="deleteFlashcard(card, $event)">
             <i class="bi bi-trash"></i>
@@ -251,18 +251,18 @@
     <!-- LISTA DE COLECCIONES -->
     <div *ngIf="mode === 'list'">
       <div class="list-header">
-        <h1 class="page-title mb-0">My Collections</h1>
+        <h1 class="page-title mb-0">{{ 'collections.list.title' | transloco }}</h1>
         <button class="btn-add" (click)="openAddModal()">
-          <i class="bi bi-plus-lg"></i> New collection
+          <i class="bi bi-plus-lg"></i> {{ 'collections.list.newCollection' | transloco }}
         </button>
       </div>
 
       <div *ngIf="collections.length === 0" class="empty-msg">
-        No collections yet. Start reading and save words!
+        {{ 'collections.list.empty' | transloco }}
       </div>
 
       <p *ngIf="collections.length > 0" class="select-hint">
-        Select one or more collections, then choose Study or Exam.
+        {{ 'collections.list.selectHint' | transloco }}
       </p>
 
       <div class="collection-grid">
@@ -290,21 +290,21 @@
 
       <div *ngIf="collections.length > 0" class="action-buttons-row">
         <button class="btn-study" [disabled]="!canStartStudyOrExam" (click)="startStudy()">
-          <i class="bi bi-lightbulb"></i> Study
+          <i class="bi bi-lightbulb"></i> {{ 'collections.list.study' | transloco }}
         </button>
         <button class="btn-exam" [disabled]="!canStartStudyOrExam" (click)="startExam()">
-          <i class="bi bi-pencil-square"></i> Exam
+          <i class="bi bi-pencil-square"></i> {{ 'collections.list.exam' | transloco }}
         </button>
       </div>
 
       <div *ngIf="studyNoWordsError" class="exam-min-error">
         <i class="bi bi-exclamation-circle"></i>
-        The selected collections have no words yet. Add some words first!
+        {{ 'collections.list.noWordsError' | transloco }}
       </div>
 
       <div *ngIf="examMinWordsError" class="exam-min-error">
         <i class="bi bi-exclamation-circle"></i>
-        You need at least 4 words across your selected collections to take an exam.
+        {{ 'collections.list.minWordsError' | transloco }}
       </div>
     </div>
 

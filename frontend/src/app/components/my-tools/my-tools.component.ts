@@ -2,10 +2,11 @@ import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 
 import { LoginService } from '../../services/login.service';
 import { MyTextsService, UserTextSummary } from '../../services/my-texts.service';
-import { SeoService } from '../../services/seo.service';
+import { LocaleNavService } from '../../i18n/locale-nav.service';
 
 /**
  * "My Tools" — the user-facing counterpart of Admin Tools. A registered user turns
@@ -17,7 +18,7 @@ import { SeoService } from '../../services/seo.service';
 @Component({
   selector: 'app-my-tools',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslocoModule],
   templateUrl: './my-tools.component.html',
   styleUrl: './my-tools.component.scss'
 })
@@ -41,24 +42,21 @@ export class MyToolsComponent implements OnInit {
     private loginService: LoginService,
     private myTexts: MyTextsService,
     private router: Router,
-    private seo: SeoService
+    private transloco: TranslocoService,
+    private localeNav: LocaleNavService
   ) {}
 
   ngOnInit(): void {
-    this.seo.update({
-      title: 'My Tools | ChineseReads',
-      description: 'Turn any Chinese text or photo into your own private graded reader.',
-      path: '/my-tools',
-      noindex: true
-    });
+    // SEO for this private (noindex) page is applied globally by AppComponent
+    // via resolveSeo('/my-tools', lang), so no per-component override is needed.
     if (!isPlatformBrowser(this.platformId)) return;
 
     this.loginService.reqIsLogged().subscribe({
       next: (user) => {
-        if (!user) { this.router.navigate(['/']); return; }
+        if (!user) { this.localeNav.navigate(['/']); return; }
         this.loadTexts();
       },
-      error: () => this.router.navigate(['/'])
+      error: () => this.localeNav.navigate(['/'])
     });
   }
 
@@ -68,12 +66,12 @@ export class MyToolsComponent implements OnInit {
     this.loadingList = true;
     this.myTexts.list().subscribe({
       next: (list) => { this.texts = list; this.loadingList = false; },
-      error: () => { this.loadingList = false; this.showError('Could not load your texts.'); }
+      error: () => { this.loadingList = false; this.showError(this.transloco.translate('myTools.messages.loadFailed')); }
     });
   }
 
   openText(id: number): void {
-    this.router.navigate(['/my-text', id]);
+    this.localeNav.navigate(['/my-text', id]);
   }
 
   // ——— Extract from photo (OCR) ———
@@ -86,7 +84,7 @@ export class MyToolsComponent implements OnInit {
   extract(): void {
     this.clearFeedback();
     if (!this.selectedFile) {
-      this.showError('Please choose an image first.');
+      this.showError(this.transloco.translate('myTools.messages.chooseImage'));
       return;
     }
     this.extracting = true;
@@ -95,11 +93,11 @@ export class MyToolsComponent implements OnInit {
         this.extracting = false;
         this.pasteText = res.text || '';
         this.selectedFile = null;
-        this.showInfo('Text extracted. Review and fix it below, then create your reader.');
+        this.showInfo(this.transloco.translate('myTools.messages.extracted'));
       },
       error: (err) => {
         this.extracting = false;
-        this.handleError(err, 'Could not read the image. Please try another photo.');
+        this.handleError(err, this.transloco.translate('myTools.messages.readImageFailed'));
       }
     });
   }
@@ -109,7 +107,7 @@ export class MyToolsComponent implements OnInit {
   create(): void {
     this.clearFeedback();
     if (!this.pasteText.trim()) {
-      this.showError('Paste some Chinese text, or extract it from a photo first.');
+      this.showError(this.transloco.translate('myTools.messages.pasteText'));
       return;
     }
     this.creating = true;
@@ -117,11 +115,11 @@ export class MyToolsComponent implements OnInit {
       next: (created) => {
         this.creating = false;
         this.pasteText = '';
-        this.router.navigate(['/my-text', created.id]);
+        this.localeNav.navigate(['/my-text', created.id]);
       },
       error: (err) => {
         this.creating = false;
-        this.handleError(err, 'Could not process your text. Please try again.');
+        this.handleError(err, this.transloco.translate('myTools.messages.processFailed'));
       }
     });
   }
@@ -147,7 +145,7 @@ export class MyToolsComponent implements OnInit {
       },
       error: () => {
         this.confirmingDeleteId = null;
-        this.showError('Could not delete the text. Please try again.');
+        this.showError(this.transloco.translate('myTools.messages.deleteFailed'));
       }
     });
   }
@@ -156,9 +154,9 @@ export class MyToolsComponent implements OnInit {
 
   private handleError(err: any, fallback: string): void {
     if (err?.status === 429) {
-      this.showError(err.error?.message || 'You have reached your usage limit. Please try again later.');
+      this.showError(err.error?.message || this.transloco.translate('myTools.messages.usageLimit'));
     } else if (err?.status === 400) {
-      this.showError(err.error?.message || 'Please provide a valid Chinese text or image.');
+      this.showError(err.error?.message || this.transloco.translate('myTools.messages.invalidInput'));
     } else {
       this.showError(fallback);
     }

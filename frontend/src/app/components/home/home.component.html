@@ -2,29 +2,28 @@
 
   <!-- HERO -->
   <header class="text-center mb-5">
-    <h1 class="hero-title">Learn Chinese Through Reading</h1>
+    <h1 class="hero-title">{{ 'home.hero.title' | transloco }}</h1>
     <p class="hero-subtitle">
-      Improve your Chinese vocabulary and comprehension with short stories adapted to your HSK level.
-      Enjoy free instant translations and unlock advanced learning tools by registering.
+      {{ 'home.hero.subtitle' | transloco }}
     </p>
 
-    <button class="btn-main mt-3" [routerLink]="'/texts'">
-      Start Reading for Free
+    <button class="btn-main mt-3" [routerLink]="'/texts' | localizeLink">
+      {{ 'home.hero.cta' | transloco }}
     </button>
 
     <!-- DONATION SECTION (TOP) -->
     <div class="mt-4">
       <p class="small">
-        If you enjoy ChineseReads and want to support its development, consider following us on instagram.
+        {{ 'home.donation.top' | transloco }}
       </p>
-      <a href="https://www.instagram.com/chinesereadsapp" class="btn btn-outline-danger">Support the Project</a>
+      <a href="https://www.instagram.com/chinesereadsapp" class="btn btn-outline-danger">{{ 'home.donation.button' | transloco }}</a>
     </div>
   </header>
 
   <!-- BENEFITS SECTION -->
   <section aria-labelledby="why-works">
     <h2 id="why-works" class="text-center mb-4" style="color:#c0392b; font-weight:700;">
-      Why ChineseReads Works
+      {{ 'home.benefits.heading' | transloco }}
     </h2>
 
     <div class="row g-4">
@@ -33,9 +32,9 @@
       <article class="col-md-4">
         <div class="feature-box text-center">
           <div class="feature-icon"><i class="bi bi-book"></i></div>
-          <h3 class="fw-bold">Read Short Stories</h3>
+          <h3 class="fw-bold">{{ 'home.benefits.read.title' | transloco }}</h3>
           <p>
-            Learn Chinese naturally through engaging stories written and adapted for HSK1–HSK6 learners.
+            {{ 'home.benefits.read.text' | transloco }}
           </p>
         </div>
       </article>
@@ -45,11 +44,11 @@
         <div class="feature-box text-center">
           <div class="feature-icon"><i class="bi bi-translate"></i></div>
           <h3 class="fw-bold">
-            Instant Word Translation
-            <span class="premium-badge" style="background:#27ae60;">Free</span>
+            {{ 'home.benefits.translation.title' | transloco }}
+            <span class="premium-badge" style="background:#27ae60;">{{ 'home.badges.free' | transloco }}</span>
           </h3>
           <p>
-            Tap any word or sentence to see its pinyin and translation instantly. No limits, no paywall.
+            {{ 'home.benefits.translation.text' | transloco }}
           </p>
         </div>
       </article>
@@ -59,11 +58,11 @@
         <div class="feature-box text-center">
           <div class="feature-icon"><i class="bi bi-stars"></i></div>
           <h3 class="fw-bold">
-            AI-Powered Explanations
-            <span class="premium-badge">Coming Soon</span>
+            {{ 'home.benefits.ai.title' | transloco }}
+            <span class="premium-badge">{{ 'home.badges.comingSoon' | transloco }}</span>
           </h3>
           <p>
-            Snap a photo of any Chinese text and get an instant translation, with automatic word and sentence breakdowns. Available when you create a free account.
+            {{ 'home.benefits.ai.text' | transloco }}
           </p>
         </div>
       </article>
@@ -74,7 +73,7 @@
   <!-- REGISTER FEATURES SECTION -->
   <section aria-labelledby="extra-features">
     <h2 id="extra-features" class="text-center mt-5 mb-4" style="color:#c0392b; font-weight:700;">
-      Extra Features Available When You Register
+      {{ 'home.register.heading' | transloco }}
     </h2>
 
     <div class="row g-4">
@@ -84,11 +83,11 @@
         <div class="feature-box text-center">
           <div class="feature-icon"><i class="bi bi-bar-chart"></i></div>
           <h3 class="fw-bold">
-            Detailed Statistics
-            <span class="premium-badge">Coming Soon</span>
+            {{ 'home.register.statistics.title' | transloco }}
+            <span class="premium-badge">{{ 'home.badges.comingSoon' | transloco }}</span>
           </h3>
           <p>
-            Track your vocabulary growth, test performance, favorite texts, and overall progress.
+            {{ 'home.register.statistics.text' | transloco }}
           </p>
         </div>
       </article>
@@ -98,11 +97,11 @@
         <div class="feature-box text-center">
           <div class="feature-icon"><i class="bi bi-pencil-square"></i></div>
           <h3 class="fw-bold">
-            Personalized Tests
-            <span class="premium-badge">Register</span>
+            {{ 'home.register.tests.title' | transloco }}
+            <span class="premium-badge">{{ 'home.badges.register' | transloco }}</span>
           </h3>
           <p>
-            Practice with quizzes generated from the words and grammar points you struggle with the most.
+            {{ 'home.register.tests.text' | transloco }}
           </p>
         </div>
       </article>
@@ -112,11 +111,11 @@
         <div class="feature-box text-center">
           <div class="feature-icon"><i class="bi bi-lightbulb"></i></div>
           <h3 class="fw-bold">
-            Collections & Flashcards
-            <span class="premium-badge">Register</span>
+            {{ 'home.register.collections.title' | transloco }}
+            <span class="premium-badge">{{ 'home.badges.register' | transloco }}</span>
           </h3>
           <p>
-            Use AI tools to translate Chinese texts, analyze sentences, and break down grammar.
+            {{ 'home.register.collections.text' | transloco }}
           </p>
         </div>
       </article>
@@ -127,22 +126,20 @@
   <!-- FINAL SECTION -->
   <section class="text-center mt-5" aria-labelledby="start-journey">
     <h2 id="start-journey" style="color:#c0392b; font-weight:700;">
-      Start Your Chinese Journey Today
+      {{ 'home.final.heading' | transloco }}
     </h2>
     <p class="mt-3" style="font-size:1.1rem;">
-      Reading is one of the most effective ways to learn a language.
-      Join thousands of learners improving their Chinese every day.
+      {{ 'home.final.text' | transloco }}
     </p>
 
-    <button class="btn-main mt-3" [routerLink]="['/signup']">Create a Free Account</button>
+    <button class="btn-main mt-3" [routerLink]="['/signup'] | localizeLink">{{ 'home.final.cta' | transloco }}</button>
 
     <!-- DONATION SECTION (BOTTOM) -->
     <div class="mt-4">
       <p class="small">
-        ChineseReads is free and supported by users like you.  
-        If you want to help keep it running, you can support us here:
+        {{ 'home.donation.bottom' | transloco }}
       </p>
-      <a href="https://www.instagram.com/chinesereadsapp" class="btn btn-outline-danger">Support the Project</a>
+      <a href="https://www.instagram.com/chinesereadsapp" class="btn btn-outline-danger">{{ 'home.donation.button' | transloco }}</a>
     </div>
   </section>
 

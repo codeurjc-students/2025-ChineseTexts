@@ -4,13 +4,13 @@
   <div *ngIf="isAdmin" class="founder-adminbar">
     <div class="container d-flex align-items-center justify-content-between py-2">
       <span class="small text-muted">
-        <i class="bi bi-shield-lock me-1"></i>Admin view — only you can see these controls
+        <i class="bi bi-shield-lock me-1"></i>{{ 'founder.adminView' | transloco }}
       </span>
       <button class="btn btn-sm rounded-pill px-3"
               [class.btn-danger]="!editing" [class.btn-outline-secondary]="editing"
               (click)="toggleEdit()">
         <i class="bi me-1" [class.bi-pencil-square]="!editing" [class.bi-check2]="editing"></i>
-        {{ editing ? 'Done' : 'Edit page' }}
+        {{ editing ? ('founder.done' | transloco) : ('founder.editPage' | transloco) }}
       </button>
     </div>
   </div>
@@ -24,7 +24,7 @@
 
   <!-- ============ Cargando ============ -->
   <div *ngIf="loading" class="container py-5 text-center text-muted">
-    <div class="spinner-border text-danger" role="status"><span class="visually-hidden">Loading…</span></div>
+    <div class="spinner-border text-danger" role="status"><span class="visually-hidden">{{ 'founder.loading' | transloco }}</span></div>
   </div>
 
   <ng-container *ngIf="!loading && profile as p">
@@ -32,8 +32,8 @@
     <!-- ============ Estado vacío (solo admin, cuando no hay nada aún) ============ -->
     <div *ngIf="!editing && !hasAnyContent()" class="container py-5 text-center text-muted">
       <i class="bi bi-person-badge display-4 d-block mb-3"></i>
-      <p class="mb-0" *ngIf="isAdmin">This page is empty. Press <strong>Edit page</strong> to add your information.</p>
-      <p class="mb-0" *ngIf="!isAdmin">Coming soon.</p>
+      <p class="mb-0" *ngIf="isAdmin">{{ 'founder.emptyAdmin1' | transloco }} <strong>{{ 'founder.editPage' | transloco }}</strong> {{ 'founder.emptyAdmin2' | transloco }}</p>
+      <p class="mb-0" *ngIf="!isAdmin">{{ 'founder.comingSoon' | transloco }}</p>
     </div>
 
     <!-- ============ HERO ============ -->
@@ -43,15 +43,15 @@
 
           <!-- Foto / avatar -->
           <div class="col-12 col-md-auto text-center">
-            <img *ngIf="p.hasPhoto" [src]="photoUrl()" [alt]="p.name || 'Profile photo'" class="founder-photo shadow" />
+            <img *ngIf="p.hasPhoto" [src]="photoUrl()" [alt]="p.name || ('founder.photoAlt' | transloco)" class="founder-photo shadow" />
             <div *ngIf="!p.hasPhoto" class="founder-avatar shadow" aria-hidden="true">{{ initials }}</div>
 
             <div *ngIf="editing" class="mt-2 d-flex flex-column align-items-center gap-1">
               <label class="btn btn-sm btn-outline-danger rounded-pill px-3 mb-0">
-                <i class="bi bi-upload me-1"></i>Photo
+                <i class="bi bi-upload me-1"></i>{{ 'founder.uploadPhoto' | transloco }}
                 <input type="file" accept="image/*" hidden (change)="onPhotoSelected($event)" />
               </label>
-              <button *ngIf="p.hasPhoto" class="btn btn-sm btn-link text-muted p-0" (click)="removePhoto()">Remove photo</button>
+              <button *ngIf="p.hasPhoto" class="btn btn-sm btn-link text-muted p-0" (click)="removePhoto()">{{ 'founder.removePhoto' | transloco }}</button>
             </div>
           </div>
 
@@ -75,12 +75,12 @@
             <!-- Edición de cabecera -->
             <ng-container *ngIf="editing">
               <div class="founder-edit-grid">
-                <input class="form-control form-control-lg fw-bold" [(ngModel)]="p.name" placeholder="Full name" />
-                <input class="form-control" [(ngModel)]="p.role" placeholder="Role / headline (e.g. Software Engineer)" />
-                <input class="form-control" [(ngModel)]="p.location" placeholder="Location" />
-                <textarea class="form-control" rows="2" [(ngModel)]="p.tagline" placeholder="Short tagline"></textarea>
+                <input class="form-control form-control-lg fw-bold" [(ngModel)]="p.name" placeholder="{{ 'founder.ph.name' | transloco }}" />
+                <input class="form-control" [(ngModel)]="p.role" placeholder="{{ 'founder.ph.role' | transloco }}" />
+                <input class="form-control" [(ngModel)]="p.location" placeholder="{{ 'founder.ph.location' | transloco }}" />
+                <textarea class="form-control" rows="2" [(ngModel)]="p.tagline" placeholder="{{ 'founder.ph.tagline' | transloco }}"></textarea>
                 <button class="btn btn-danger rounded-pill px-4 align-self-start" (click)="saveProfile()">
-                  <i class="bi bi-save me-1"></i>Save header
+                  <i class="bi bi-save me-1"></i>{{ 'founder.saveHeader' | transloco }}
                 </button>
               </div>
             </ng-container>
@@ -93,29 +93,29 @@
 
       <!-- ============ Enlaces (edición) ============ -->
       <section *ngIf="editing" class="mb-5 mt-4">
-        <h2 class="founder-heading"><i class="bi bi-link-45deg me-2"></i>Links</h2>
+        <h2 class="founder-heading"><i class="bi bi-link-45deg me-2"></i>{{ 'founder.linksHeading' | transloco }}</h2>
         <div class="d-flex flex-column gap-2">
           <div *ngFor="let s of p.socials" class="founder-card d-flex flex-wrap gap-2 align-items-center">
-            <input class="form-control" style="max-width: 12rem;" [(ngModel)]="s.label" placeholder="Label" />
-            <input class="form-control" style="max-width: 12rem;" [(ngModel)]="s.icon" placeholder="Icon (e.g. bi-github)" />
-            <input class="form-control flex-grow-1" [(ngModel)]="s.url" placeholder="https://…  or  mailto:…" />
+            <input class="form-control" style="max-width: 12rem;" [(ngModel)]="s.label" placeholder="{{ 'founder.ph.linkLabel' | transloco }}" />
+            <input class="form-control" style="max-width: 12rem;" [(ngModel)]="s.icon" placeholder="{{ 'founder.ph.linkIcon' | transloco }}" />
+            <input class="form-control flex-grow-1" [(ngModel)]="s.url" placeholder="{{ 'founder.ph.linkUrl' | transloco }}" />
             <button class="btn btn-sm btn-danger rounded-pill px-3" (click)="saveSocial(s)"><i class="bi bi-save"></i></button>
             <button class="btn btn-sm btn-outline-danger rounded-pill px-3" (click)="deleteSocial(s)"><i class="bi bi-trash"></i></button>
           </div>
         </div>
         <button class="btn btn-outline-danger rounded-pill px-3 mt-2" (click)="addSocial()">
-          <i class="bi bi-plus-lg me-1"></i>Add link
+          <i class="bi bi-plus-lg me-1"></i>{{ 'founder.addLink' | transloco }}
         </button>
       </section>
 
       <!-- ============ ABOUT ============ -->
       <section class="mb-5" *ngIf="editing || p.summary">
-        <h2 class="founder-heading"><i class="bi bi-person-badge me-2"></i>About</h2>
+        <h2 class="founder-heading"><i class="bi bi-person-badge me-2"></i>{{ 'founder.aboutHeading' | transloco }}</h2>
         <p *ngIf="!editing" class="founder-summary">{{ p.summary }}</p>
         <div *ngIf="editing">
-          <textarea class="form-control" rows="5" [(ngModel)]="p.summary" placeholder="Write a short professional summary…"></textarea>
+          <textarea class="form-control" rows="5" [(ngModel)]="p.summary" placeholder="{{ 'founder.ph.summary' | transloco }}"></textarea>
           <button class="btn btn-danger rounded-pill px-4 mt-2" (click)="saveProfile()">
-            <i class="bi bi-save me-1"></i>Save about
+            <i class="bi bi-save me-1"></i>{{ 'founder.saveAbout' | transloco }}
           </button>
         </div>
       </section>
@@ -129,7 +129,7 @@
             <h2 class="founder-heading mb-0 flex-grow-1">{{ section.title }}</h2>
           </ng-container>
           <ng-container *ngIf="editing">
-            <input class="form-control fw-bold" style="max-width: 20rem;" [(ngModel)]="section.title" placeholder="Section title" />
+            <input class="form-control fw-bold" style="max-width: 20rem;" [(ngModel)]="section.title" placeholder="{{ 'founder.ph.sectionTitle' | transloco }}" />
             <select class="form-select" style="max-width: 10rem;" [(ngModel)]="section.type">
               <option *ngFor="let t of sectionTypes" [value]="t">{{ t }}</option>
             </select>
@@ -165,7 +165,7 @@
                   <p *ngIf="item.description" class="mb-2" style="white-space: pre-line;">{{ item.description }}</p>
                   <a *ngIf="item.linkUrl" [href]="item.linkUrl" target="_blank" rel="noopener noreferrer"
                      class="btn btn-sm btn-outline-danger rounded-pill px-3">
-                    <i class="bi bi-box-arrow-up-right me-1"></i>{{ item.linkLabel || 'Open' }}
+                    <i class="bi bi-box-arrow-up-right me-1"></i>{{ item.linkLabel || ('founder.openLink' | transloco) }}
                   </a>
                 </div>
               </div>
@@ -182,34 +182,34 @@
                 <img *ngIf="item.hasLogo" [src]="itemLogoUrl(item)" [alt]="item.heading" class="founder-logo mb-1" />
                 <div *ngIf="!item.hasLogo" class="founder-logo-placeholder mb-1"><i class="bi bi-image"></i></div>
                 <label class="btn btn-sm btn-outline-danger rounded-pill px-2 mb-0 w-100">
-                  Logo<input type="file" accept="image/*" hidden (change)="onItemLogoSelected(item, $event)" />
+                  {{ 'founder.logo' | transloco }}<input type="file" accept="image/*" hidden (change)="onItemLogoSelected(item, $event)" />
                 </label>
-                <button *ngIf="item.hasLogo" class="btn btn-sm btn-link text-muted p-0" (click)="removeItemLogo(item)">remove</button>
+                <button *ngIf="item.hasLogo" class="btn btn-sm btn-link text-muted p-0" (click)="removeItemLogo(item)">{{ 'founder.removeLogoShort' | transloco }}</button>
               </div>
               <!-- Campos -->
               <div class="flex-grow-1 founder-edit-grid">
-                <input class="form-control" [(ngModel)]="item.heading" placeholder="Heading (e.g. job title / degree / skill)" />
-                <input class="form-control" [(ngModel)]="item.subheading" placeholder="Subheading (company / university)" />
+                <input class="form-control" [(ngModel)]="item.heading" placeholder="{{ 'founder.ph.itemHeading' | transloco }}" />
+                <input class="form-control" [(ngModel)]="item.subheading" placeholder="{{ 'founder.ph.itemSubheading' | transloco }}" />
                 <div class="d-flex gap-2 flex-wrap">
-                  <input class="form-control" style="max-width: 14rem;" [(ngModel)]="item.period" placeholder="Period (e.g. 2025 — Present)" />
-                  <input class="form-control flex-grow-1" [(ngModel)]="item.location" placeholder="Location" />
+                  <input class="form-control" style="max-width: 14rem;" [(ngModel)]="item.period" placeholder="{{ 'founder.ph.itemPeriod' | transloco }}" />
+                  <input class="form-control flex-grow-1" [(ngModel)]="item.location" placeholder="{{ 'founder.ph.itemLocation' | transloco }}" />
                 </div>
-                <textarea class="form-control" rows="3" [(ngModel)]="item.description" placeholder="Description"></textarea>
+                <textarea class="form-control" rows="3" [(ngModel)]="item.description" placeholder="{{ 'founder.ph.itemDescription' | transloco }}"></textarea>
                 <div class="d-flex gap-2 flex-wrap">
-                  <input class="form-control flex-grow-1" [(ngModel)]="item.linkUrl" placeholder="Link URL (optional)" />
-                  <input class="form-control" style="max-width: 12rem;" [(ngModel)]="item.linkLabel" placeholder="Link label" />
+                  <input class="form-control flex-grow-1" [(ngModel)]="item.linkUrl" placeholder="{{ 'founder.ph.itemLinkUrl' | transloco }}" />
+                  <input class="form-control" style="max-width: 12rem;" [(ngModel)]="item.linkLabel" placeholder="{{ 'founder.ph.itemLinkLabel' | transloco }}" />
                 </div>
                 <div class="d-flex gap-2 flex-wrap">
-                  <button class="btn btn-sm btn-danger rounded-pill px-3" (click)="saveItem(item)"><i class="bi bi-save me-1"></i>Save</button>
+                  <button class="btn btn-sm btn-danger rounded-pill px-3" (click)="saveItem(item)"><i class="bi bi-save me-1"></i>{{ 'founder.save' | transloco }}</button>
                   <button class="btn btn-sm btn-outline-secondary rounded-pill px-2" (click)="moveItem(section, ii, -1)" [disabled]="ii === 0"><i class="bi bi-arrow-up"></i></button>
                   <button class="btn btn-sm btn-outline-secondary rounded-pill px-2" (click)="moveItem(section, ii, 1)" [disabled]="ii === section.items.length - 1"><i class="bi bi-arrow-down"></i></button>
-                  <button class="btn btn-sm btn-outline-danger rounded-pill px-3" (click)="deleteItem(section, item)"><i class="bi bi-trash me-1"></i>Delete</button>
+                  <button class="btn btn-sm btn-outline-danger rounded-pill px-3" (click)="deleteItem(section, item)"><i class="bi bi-trash me-1"></i>{{ 'founder.delete' | transloco }}</button>
                 </div>
               </div>
             </div>
           </div>
           <button class="btn btn-outline-danger rounded-pill px-3 align-self-start" (click)="addItem(section)">
-            <i class="bi bi-plus-lg me-1"></i>Add entry
+            <i class="bi bi-plus-lg me-1"></i>{{ 'founder.addEntry' | transloco }}
           </button>
         </div>
       </section>
@@ -217,14 +217,14 @@
       <!-- ============ Añadir sección (edición) ============ -->
       <div *ngIf="editing" class="text-center mb-5">
         <button class="btn btn-danger rounded-pill px-4" (click)="addSection()">
-          <i class="bi bi-plus-circle me-1"></i>Add section
+          <i class="bi bi-plus-circle me-1"></i>{{ 'founder.addSection' | transloco }}
         </button>
       </div>
 
       <!-- ============ Contacto (vista) ============ -->
       <section *ngIf="!editing && p.socials.length" class="founder-cta text-center p-4 p-md-5">
-        <h2 class="fw-bold mb-2">Let's get in touch</h2>
-        <p class="mb-4">Interested in working together or want to know more about my work?</p>
+        <h2 class="fw-bold mb-2">{{ 'founder.ctaTitle' | transloco }}</h2>
+        <p class="mb-4">{{ 'founder.ctaSubtitle' | transloco }}</p>
         <div class="d-flex flex-wrap gap-2 justify-content-center">
           <a *ngFor="let s of p.socials" [href]="s.url" target="_blank" rel="noopener noreferrer"
              class="btn btn-outline-danger rounded-pill px-3">

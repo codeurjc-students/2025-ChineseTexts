@@ -1,90 +1,90 @@
 <section class="signup container my-5">
 
   <header class="text-center mb-5">
-    <h1 class="title">Create Your Account</h1>
+    <h1 class="title">{{ 'signup.title' | transloco }}</h1>
     <p class="subtitle">
-      Join our learning community and start improving your Chinese reading skills today.
+      {{ 'signup.subtitle' | transloco }}
     </p>
   </header>
 
   <article class="benefits mb-5">
-    <h2 class="visually-hidden">Why Join Us</h2>
+    <h2 class="visually-hidden">{{ 'signup.benefits.heading' | transloco }}</h2>
     <ul>
-      <li><i class="bi bi-check-circle-fill"></i> Access curated Chinese reading collections</li>
-      <li><i class="bi bi-check-circle-fill"></i> Read Chinese texts with interactive features</li>
-      <li><i class="bi bi-check-circle-fill"></i> Create Flashcards and study efficiently</li>
-      <li><i class="bi bi-check-circle-fill"></i> Use AI tools to enhance your learning experience</li>
-      <li><i class="bi bi-check-circle-fill"></i> Learn at your own pace</li>
+      <li><i class="bi bi-check-circle-fill"></i> {{ 'signup.benefits.item1' | transloco }}</li>
+      <li><i class="bi bi-check-circle-fill"></i> {{ 'signup.benefits.item2' | transloco }}</li>
+      <li><i class="bi bi-check-circle-fill"></i> {{ 'signup.benefits.item3' | transloco }}</li>
+      <li><i class="bi bi-check-circle-fill"></i> {{ 'signup.benefits.item4' | transloco }}</li>
+      <li><i class="bi bi-check-circle-fill"></i> {{ 'signup.benefits.item5' | transloco }}</li>
     </ul>
   </article>
 
   <article class="card-box p-4 mb-5">
-    <h2 class="section-title">Your Information</h2>
+    <h2 class="section-title">{{ 'signup.infoTitle' | transloco }}</h2>
 
     <form [formGroup]="signupForm">
 
       <div class="form-group mb-3">
-        <label for="name">Full Name</label>
+        <label for="name">{{ 'signup.form.nameLabel' | transloco }}</label>
         <input
           id="name"
           type="text"
           class="form-control"
           [class.is-invalid]="signupForm.get('name')?.invalid && signupForm.get('name')?.touched"
           formControlName="name"
-          placeholder="Enter your full name"
+          placeholder="{{ 'signup.form.namePlaceholder' | transloco }}"
         >
         <div class="invalid-feedback"
              *ngIf="signupForm.get('name')?.invalid && signupForm.get('name')?.touched">
-          Full name is required.
+          {{ 'signup.form.nameRequired' | transloco }}
         </div>
       </div>
 
       <div class="form-group mb-3">
-        <label for="email">Email Address</label>
+        <label for="email">{{ 'signup.form.emailLabel' | transloco }}</label>
         <input
           id="email"
           type="email"
           class="form-control"
           [class.is-invalid]="signupForm.get('email')?.invalid && signupForm.get('email')?.touched"
           formControlName="email"
-          placeholder="Enter your email"
+          placeholder="{{ 'signup.form.emailPlaceholder' | transloco }}"
         >
         <div class="invalid-feedback" *ngIf="signupForm.get('email')?.touched">
-          <span *ngIf="signupForm.get('email')?.errors?.['required']">Email is required.</span>
+          <span *ngIf="signupForm.get('email')?.errors?.['required']">{{ 'signup.form.emailRequired' | transloco }}</span>
           <span *ngIf="signupForm.get('email')?.errors?.['email'] || signupForm.get('email')?.errors?.['invalidEmail']">
-            Please enter a valid email address.
+            {{ 'signup.form.emailInvalid' | transloco }}
           </span>
         </div>
       </div>
 
       <div class="form-group mb-3">
-        <label for="password">Password</label>
+        <label for="password">{{ 'signup.form.passwordLabel' | transloco }}</label>
         <input
           id="password"
           type="password"
           class="form-control"
           [class.is-invalid]="signupForm.get('password')?.invalid && signupForm.get('password')?.touched"
           formControlName="password"
-          placeholder="Create a secure password (min. 6 characters)"
+          placeholder="{{ 'signup.form.passwordPlaceholder' | transloco }}"
         >
         <div class="invalid-feedback"
              *ngIf="signupForm.get('password')?.touched">
-          <span *ngIf="signupForm.get('password')?.errors?.['required']">Password is required.</span>
+          <span *ngIf="signupForm.get('password')?.errors?.['required']">{{ 'signup.form.passwordRequired' | transloco }}</span>
           <span *ngIf="signupForm.get('password')?.errors?.['minlength']">
-            Password must be at least 6 characters.
+            {{ 'signup.form.passwordMinlength' | transloco }}
           </span>
         </div>
       </div>
 
       <div class="form-group mb-3">
-        <label for="language">Preferred Language</label>
+        <label for="language">{{ 'signup.form.languageLabel' | transloco }}</label>
         <select
           id="language"
           class="form-control"
           formControlName="language"
         >
-          <option value="en">English</option>
-          <option value="es">Spanish</option>
+          <option value="en">{{ 'signup.form.languageEnglish' | transloco }}</option>
+          <option value="es">{{ 'signup.form.languageSpanish' | transloco }}</option>
         </select>
       </div>
 
@@ -93,13 +93,13 @@
 
   <div class="text-center">
     <button class="btn-submit" (click)="submitSignup()">
-      Create My Account
+      {{ 'signup.submit' | transloco }}
     </button>
   </div>
 
   <div class="text-center mt-4">
     <button class="btn-back" (click)="goBack()">
-      Back
+      {{ 'signup.back' | transloco }}
     </button>
   </div>
 

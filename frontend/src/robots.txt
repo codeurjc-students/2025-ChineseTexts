@@ -5,7 +5,8 @@
 User-agent: *
 Allow: /
 
-# Private or transactional routes (no useful content for search engines)
+# Private or transactional routes (no useful content for search engines).
+# Listed for both languages: English at the root and Spanish under /es.
 Disallow: /profile
 Disallow: /collections
 Disallow: /admin-tools
@@ -13,5 +14,12 @@ Disallow: /ai-tools
 Disallow: /upload-text
 Disallow: /success
 Disallow: /error
+Disallow: /es/profile
+Disallow: /es/collections
+Disallow: /es/admin-tools
+Disallow: /es/ai-tools
+Disallow: /es/upload-text
+Disallow: /es/success
+Disallow: /es/error
 
 Sitemap: https://chinesereads.com/sitemap.xml

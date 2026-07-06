@@ -12,6 +12,8 @@ import { LoginService } from '../../services/login.service';
 @Component({ template: '' })
 class DummyComponent {}
 
+import { translocoTesting } from "../../i18n/transloco-testing";
+
 describe('SignupComponent', () => {
   let component: SignupComponent;
   let fixture: ComponentFixture<SignupComponent>;
@@ -31,7 +33,7 @@ describe('SignupComponent', () => {
     loginServiceSpy.reqIsLogged.and.returnValue(of(null));
 
     await TestBed.configureTestingModule({
-      imports: [SignupComponent],
+      imports: [translocoTesting(), SignupComponent],
       providers: [
         { provide: UserService, useValue: userServiceSpy },
         { provide: LoginService, useValue: loginServiceSpy },

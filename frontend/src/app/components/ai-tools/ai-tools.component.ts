@@ -1,12 +1,13 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 
 import { AiService, AiTextResult } from '../../services/ai.service';
 import { LoginService } from '../../services/login.service';
 import { TextsService } from '../../services/texts.service';
 import { WordsService } from '../../services/words.service';
+import { LocaleNavService } from '../../i18n/locale-nav.service';
 
 interface MissingWordForm {
   chinese: string;
@@ -24,7 +25,7 @@ type Status = 'idle' | 'loading' | 'ready' | 'uploading' | 'success' | 'error';
 @Component({
   selector: 'app-ai-tools',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslocoModule],
   templateUrl: './ai-tools.component.html',
   styleUrl: './ai-tools.component.scss'
 })
@@ -75,7 +76,8 @@ export class AiToolsComponent implements OnInit {
     private textsService: TextsService,
     private wordsService: WordsService,
     private loginService: LoginService,
-    private router: Router
+    private transloco: TranslocoService,
+    private localeNav: LocaleNavService
   ) {}
 
   ngOnInit(): void {
@@ -85,10 +87,10 @@ export class AiToolsComponent implements OnInit {
     this.loginService.reqIsLogged().subscribe({
       next: (user) => {
         if (!user || !user.roles.includes('ADMIN')) {
-          this.router.navigate(['/']);
+          this.localeNav.navigate(['/']);
         }
       },
-      error: () => this.router.navigate(['/'])
+      error: () => this.localeNav.navigate(['/'])
     });
   }
 
@@ -135,22 +137,22 @@ export class AiToolsComponent implements OnInit {
     this.validationError = '';
 
     if (!this.formComplete) {
-      this.validationError = 'Please fill in all fields before uploading.';
+      this.validationError = this.transloco.translate('aiTools.errors.fillAll');
       return false;
     }
 
     if (!this.imageFile) {
-      this.validationError = 'An image is required. Please upload one before submitting.';
+      this.validationError = this.transloco.translate('aiTools.errors.imageRequired');
       return false;
     }
 
     if (!this.sentenceCountMatch) {
-      this.validationError = 'The number of sentences does not match between the Chinese text and the translations. Please review them.';
+      this.validationError = this.transloco.translate('aiTools.errors.sentenceMismatch');
       return false;
     }
 
     if (!this.allMissingWordsSaved) {
-      this.validationError = 'Please save all missing words before uploading.';
+      this.validationError = this.transloco.translate('aiTools.errors.saveWords');
       return false;
     }
 
@@ -167,7 +169,7 @@ export class AiToolsComponent implements OnInit {
       next: (result) => this.applyAiResult(result),
       error: () => {
         this.status = 'error';
-        this.errorMessage = 'Error connecting to AI service. Make sure it is running.';
+        this.errorMessage = this.transloco.translate('aiTools.errors.aiConnection');
       }
     });
   }
@@ -192,7 +194,7 @@ export class AiToolsComponent implements OnInit {
       next: (result) => this.applyAiResult(result),
       error: () => {
         this.status = 'error';
-        this.errorMessage = 'Error processing image. Make sure the OCR service is running.';
+        this.errorMessage = this.transloco.translate('aiTools.errors.ocrFailed');
       }
     });
   }
@@ -234,7 +236,7 @@ export class AiToolsComponent implements OnInit {
 
   saveWord(form: MissingWordForm): void {
     if (!form.pinyin.trim() || !form.english.trim() || !form.spanish.trim()) {
-      form.error = 'All fields are required.';
+      form.error = this.transloco.translate('aiTools.errors.wordFieldsRequired');
       return;
     }
     form.saving = true;
@@ -249,7 +251,9 @@ export class AiToolsComponent implements OnInit {
       next: () => { form.saved = true; form.saving = false; },
       error: (err) => {
         form.saving = false;
-        form.error = err.status === 409 ? 'Word already exists.' : 'Error saving word.';
+        form.error = err.status === 409
+          ? this.transloco.translate('aiTools.errors.wordExists')
+          : this.transloco.translate('aiTools.errors.wordSaveFailed');
         if (err.status === 409) form.saved = true;
       }
     });
@@ -302,14 +306,14 @@ export class AiToolsComponent implements OnInit {
       error: (err) => {
         this.status = 'ready';
         this.validationError = err.status === 409
-          ? 'A text with this title already exists.'
-          : 'Error uploading text. Please try again.';
+          ? this.transloco.translate('aiTools.errors.titleExists')
+          : this.transloco.translate('aiTools.errors.uploadFailed');
       }
     });
   }
 
   goToTexts(): void {
-    this.router.navigate(['/texts']);
+    this.localeNav.navigate(['/texts']);
   }
 
   reset(): void {

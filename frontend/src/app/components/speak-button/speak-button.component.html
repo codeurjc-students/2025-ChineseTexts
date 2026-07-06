@@ -5,8 +5,8 @@
   [class.speak-btn--lg]="size === 'lg'"
   [class.is-playing]="state === 'playing'"
   [class.is-error]="state === 'error'"
-  [attr.aria-label]="ariaLabel"
-  [title]="state === 'error' ? 'Audio unavailable — click to retry' : ariaLabel"
+  [attr.aria-label]="ariaLabel || ('speakButton.listen' | transloco)"
+  [title]="state === 'error' ? ('speakButton.audioUnavailable' | transloco) : (ariaLabel || ('speakButton.listen' | transloco))"
   [disabled]="!text"
   (click)="toggle($event)"
 >

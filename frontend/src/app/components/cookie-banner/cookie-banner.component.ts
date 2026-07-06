@@ -2,11 +2,13 @@ import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { isPlatformBrowser } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { TranslocoModule } from '@jsverse/transloco';
+import { LocalizeLinkPipe } from '../../i18n/localize-link.pipe';
 
 @Component({
   selector: 'app-cookie-banner',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, TranslocoModule, LocalizeLinkPipe],
   templateUrl: './cookie-banner.component.html',
   styleUrl: './cookie-banner.component.scss'
 })

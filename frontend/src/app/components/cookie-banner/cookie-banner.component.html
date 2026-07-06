@@ -2,15 +2,13 @@
   <div class="cookie-content">
     <div class="cookie-text">
       <p>
-        We use cookies to analyze traffic and improve your experience.
-        You can accept or reject non-essential cookies.
-        For more information see our
-        <a routerLink="/privacy-policy">Privacy Policy</a>.
+        {{ 'cookieBanner.text' | transloco }}
+        <a [routerLink]="'/privacy-policy' | localizeLink">{{ 'cookieBanner.privacyPolicy' | transloco }}</a>.
       </p>
     </div>
     <div class="cookie-actions">
-      <button class="btn-reject" (click)="reject()">Reject</button>
-      <button class="btn-accept" (click)="accept()">Accept cookies</button>
+      <button class="btn-reject" (click)="reject()">{{ 'cookieBanner.reject' | transloco }}</button>
+      <button class="btn-accept" (click)="accept()">{{ 'cookieBanner.accept' | transloco }}</button>
     </div>
   </div>
 </div>

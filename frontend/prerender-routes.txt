@@ -5,3 +5,14 @@
 /texts/HSK5
 /texts/HSK6
 /founder
+/es
+/es/texts
+/es/signup
+/es/founder
+/es/privacy-policy
+/es/texts/HSK1
+/es/texts/HSK2
+/es/texts/HSK3
+/es/texts/HSK4
+/es/texts/HSK5
+/es/texts/HSK6

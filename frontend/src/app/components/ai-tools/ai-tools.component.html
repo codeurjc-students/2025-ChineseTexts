@@ -3,19 +3,19 @@
   <!-- ÉXITO -->
   <div *ngIf="status === 'success'" class="success-screen">
     <div class="success-icon"><i class="bi bi-check-circle-fill"></i></div>
-    <h2>Text uploaded successfully!</h2>
-    <p class="text-muted">The text is now available in the app.</p>
+    <h2>{{ 'aiTools.success.title' | transloco }}</h2>
+    <p class="text-muted">{{ 'aiTools.success.subtitle' | transloco }}</p>
     <div class="success-actions">
-      <button class="btn-primary" (click)="goToTexts()">Go to texts</button>
-      <button class="btn-secondary" (click)="goBack()">Use AI again</button>
+      <button class="btn-primary" (click)="goToTexts()">{{ 'aiTools.success.goToTexts' | transloco }}</button>
+      <button class="btn-secondary" (click)="goBack()">{{ 'aiTools.success.useAgain' | transloco }}</button>
     </div>
   </div>
 
   <div *ngIf="status !== 'success'">
 
     <ng-container *ngIf="!forcedMode">
-      <h1 class="page-title">AI Tools</h1>
-      <p class="page-subtitle">Let AI generate or extract Chinese texts automatically.</p>
+      <h1 class="page-title">{{ 'aiTools.title' | transloco }}</h1>
+      <p class="page-subtitle">{{ 'aiTools.subtitle' | transloco }}</p>
     </ng-container>
 
     <!-- ══════ ELEGIR MODO ══════ -->
@@ -23,16 +23,16 @@
 
       <div class="mode-card" (click)="selectMode('generate')">
         <div class="mode-icon"><i class="bi bi-stars"></i></div>
-        <h3 class="mode-title">Generate text</h3>
-        <p class="mode-desc">AI will generate a Chinese text at the level you choose, with translations and descriptions.</p>
-        <button class="btn-primary mt-3">Generate</button>
+        <h3 class="mode-title">{{ 'aiTools.choose.generate.title' | transloco }}</h3>
+        <p class="mode-desc">{{ 'aiTools.choose.generate.desc' | transloco }}</p>
+        <button class="btn-primary mt-3">{{ 'aiTools.choose.generate.button' | transloco }}</button>
       </div>
 
       <div class="mode-card" (click)="selectMode('ocr')">
         <div class="mode-icon"><i class="bi bi-camera"></i></div>
-        <h3 class="mode-title">Extract from image</h3>
-        <p class="mode-desc">Upload an image with Chinese text. OCR will extract it and AI will translate it automatically.</p>
-        <button class="btn-primary mt-3">Upload image</button>
+        <h3 class="mode-title">{{ 'aiTools.choose.ocr.title' | transloco }}</h3>
+        <p class="mode-desc">{{ 'aiTools.choose.ocr.desc' | transloco }}</p>
+        <button class="btn-primary mt-3">{{ 'aiTools.choose.ocr.button' | transloco }}</button>
       </div>
 
     </div>
@@ -41,31 +41,31 @@
     <div *ngIf="mode === 'generate' && status === 'idle'">
       <div class="section-header">
         <button class="btn-icon" (click)="goBack()"><i class="bi bi-arrow-left"></i></button>
-        <h2 class="section-title">Generate text with AI</h2>
+        <h2 class="section-title">{{ 'aiTools.generate.heading' | transloco }}</h2>
       </div>
 
       <div class="form-card">
         <div class="form-group">
-          <label>HSK Level <span class="required">*</span></label>
+          <label>{{ 'aiTools.generate.levelLabel' | transloco }} <span class="required">*</span></label>
           <select [(ngModel)]="level" class="form-input">
             <option *ngFor="let l of levels" [value]="l">{{ l }}</option>
           </select>
         </div>
 
         <div class="form-group mt-3">
-          <label>Topic or guidelines</label>
+          <label>{{ 'aiTools.generate.topicLabel' | transloco }}</label>
           <textarea
             [(ngModel)]="topic"
             class="form-textarea"
             rows="3"
-            placeholder="e.g. A text about food and cooking. Include vocabulary about vegetables and kitchen tools. The story should be about a student learning to cook for the first time."
+            placeholder="{{ 'aiTools.generate.topicPlaceholder' | transloco }}"
           ></textarea>
-          <span class="field-hint">Optional. Describe what the text should be about or any specific guidelines for the AI.</span>
+          <span class="field-hint">{{ 'aiTools.generate.topicHint' | transloco }}</span>
         </div>
 
         <div class="mt-4 text-center">
           <button class="btn-ai" (click)="generate()">
-            <i class="bi bi-stars"></i> Generate with AI
+            <i class="bi bi-stars"></i> {{ 'aiTools.generate.button' | transloco }}
           </button>
         </div>
       </div>
@@ -75,24 +75,24 @@
     <div *ngIf="mode === 'ocr' && status === 'idle'">
       <div class="section-header">
         <button class="btn-icon" (click)="goBack()"><i class="bi bi-arrow-left"></i></button>
-        <h2 class="section-title">Extract text from image</h2>
+        <h2 class="section-title">{{ 'aiTools.ocr.heading' | transloco }}</h2>
       </div>
 
       <div class="form-card">
-        <p class="section-hint">Upload an image containing Chinese text. The OCR service will extract it and AI will generate translations automatically.</p>
+        <p class="section-hint">{{ 'aiTools.ocr.hint' | transloco }}</p>
 
         <div class="image-upload-area" (click)="ocrInput.click()">
           <img *ngIf="ocrImagePreview" [src]="ocrImagePreview" class="image-preview">
           <div *ngIf="!ocrImagePreview" class="image-placeholder">
             <i class="bi bi-camera"></i>
-            <span>Click to upload image</span>
+            <span>{{ 'aiTools.ocr.uploadPrompt' | transloco }}</span>
           </div>
         </div>
         <input #ocrInput type="file" accept="image/*" (change)="onOcrImageChange($event)" style="display:none">
 
         <div class="mt-4 text-center">
           <button class="btn-ai" (click)="processOcr()" [disabled]="!ocrImageFile">
-            <i class="bi bi-camera"></i> Process with OCR + AI
+            <i class="bi bi-camera"></i> {{ 'aiTools.ocr.button' | transloco }}
           </button>
         </div>
       </div>
@@ -101,13 +101,13 @@
     <!-- ══════ LOADING ══════ -->
     <div *ngIf="status === 'loading'" class="loading-screen">
       <div class="spinner"></div>
-      <p class="loading-text">AI is working... this may take a few seconds.</p>
+      <p class="loading-text">{{ 'aiTools.loading' | transloco }}</p>
     </div>
 
     <!-- ══════ ERROR ══════ -->
     <div *ngIf="status === 'error'" class="alert-error mt-3">
       <i class="bi bi-exclamation-circle"></i> {{ errorMessage }}
-      <button class="btn-ghost ms-3" (click)="status = 'idle'">Try again</button>
+      <button class="btn-ghost ms-3" (click)="status = 'idle'">{{ 'aiTools.tryAgain' | transloco }}</button>
     </div>
 
     <!-- ══════ FORMULARIO CON RESULTADO ══════ -->
@@ -115,80 +115,80 @@
 
       <div class="section-header">
         <button class="btn-icon" (click)="reset()"><i class="bi bi-arrow-left"></i></button>
-        <h2 class="section-title">Review and upload</h2>
+        <h2 class="section-title">{{ 'aiTools.review.heading' | transloco }}</h2>
       </div>
 
       <p class="section-hint">
-        The AI has filled in the fields below. Review everything carefully before uploading.
-        <strong>You must add an image manually.</strong>
+        {{ 'aiTools.review.hint' | transloco }}
+        <strong>{{ 'aiTools.review.hintStrong' | transloco }}</strong>
       </p>
 
       <!-- Campos del texto -->
       <div class="form-card">
-        <h3 class="card-label">Basic info</h3>
+        <h3 class="card-label">{{ 'aiTools.review.basicInfo' | transloco }}</h3>
 
         <div class="form-row">
           <div class="form-group">
-            <label>Title (English)</label>
+            <label>{{ 'aiTools.fields.titleEnglish' | transloco }}</label>
             <input type="text" [(ngModel)]="titleEnglish" class="form-input">
           </div>
           <div class="form-group">
-            <label>Title (Spanish)</label>
+            <label>{{ 'aiTools.fields.titleSpanish' | transloco }}</label>
             <input type="text" [(ngModel)]="titleSpanish" class="form-input">
           </div>
         </div>
 
         <div class="form-row mt-3">
           <div class="form-group">
-            <label>Level</label>
+            <label>{{ 'aiTools.fields.level' | transloco }}</label>
             <select [(ngModel)]="level" class="form-input">
               <option *ngFor="let l of levels" [value]="l">{{ l }}</option>
             </select>
           </div>
           <div class="form-group">
-            <label>Date</label>
+            <label>{{ 'aiTools.fields.date' | transloco }}</label>
             <input type="date" [(ngModel)]="creationDate" class="form-input">
           </div>
         </div>
       </div>
 
       <div class="form-card mt-3">
-        <h3 class="card-label">Chinese text</h3>
+        <h3 class="card-label">{{ 'aiTools.fields.chineseText' | transloco }}</h3>
         <textarea [(ngModel)]="chineseText" class="form-textarea form-textarea--large" rows="4"></textarea>
       </div>
 
       <div class="form-card mt-3">
-        <h3 class="card-label">Translations</h3>
+        <h3 class="card-label">{{ 'aiTools.fields.translations' | transloco }}</h3>
         <div class="form-group">
-          <label>English</label>
+          <label>{{ 'aiTools.fields.english' | transloco }}</label>
           <textarea [(ngModel)]="englishTranslation" class="form-textarea" rows="3"></textarea>
         </div>
         <div class="form-group mt-3">
-          <label>Spanish</label>
+          <label>{{ 'aiTools.fields.spanish' | transloco }}</label>
           <textarea [(ngModel)]="spanishTranslation" class="form-textarea" rows="3"></textarea>
         </div>
       </div>
 
       <div class="form-card mt-3">
-        <h3 class="card-label">Descriptions</h3>
+        <h3 class="card-label">{{ 'aiTools.fields.descriptions' | transloco }}</h3>
         <div class="form-group">
-          <label>English</label>
+          <label>{{ 'aiTools.fields.english' | transloco }}</label>
           <textarea [(ngModel)]="englishDescription" class="form-textarea" rows="2"></textarea>
         </div>
         <div class="form-group mt-3">
-          <label>Spanish</label>
+          <label>{{ 'aiTools.fields.spanish' | transloco }}</label>
           <textarea [(ngModel)]="spanishDescription" class="form-textarea" rows="2"></textarea>
         </div>
       </div>
 
       <!-- Imagen -->
       <div class="form-card mt-3">
-        <h3 class="card-label">Image <span class="required">*</span></h3>
+        <h3 class="card-label">{{ 'aiTools.fields.image' | transloco }} <span class="required">*</span></h3>
         <div class="image-upload-area" (click)="imageInput.click()">
           <img *ngIf="imagePreview" [src]="imagePreview" class="image-preview">
           <div *ngIf="!imagePreview" class="image-placeholder">
             <i class="bi bi-image"></i>
-            <span>Click to upload an image (required)</span>
+            <span>{{ 'aiTools.fields.imagePrompt' | transloco }}</span>
           </div>
         </div>
         <input #imageInput type="file" accept="image/*" (change)="onImageChange($event)" style="display:none">
@@ -199,9 +199,9 @@
         <div class="missing-header" (click)="missingWordsOpen = !missingWordsOpen">
           <div class="missing-header-left">
             <i class="bi bi-exclamation-triangle-fill"></i>
-            <span>{{ missingWordForms.length }} word{{ missingWordForms.length !== 1 ? 's' : '' }} missing from dictionary</span>
+            <span>{{ (missingWordForms.length === 1 ? 'aiTools.missing.countOne' : 'aiTools.missing.countMany') | transloco:{ count: missingWordForms.length } }}</span>
             <span class="missing-saved" *ngIf="hasSomeSaved">
-              ({{ missingSavedCount }}/{{ missingWordForms.length }} saved)
+              {{ 'aiTools.missing.savedCount' | transloco:{ saved: missingSavedCount, total: missingWordForms.length } }}
             </span>
           </div>
           <i class="bi" [ngClass]="missingWordsOpen ? 'bi-chevron-up' : 'bi-chevron-down'"></i>
@@ -212,15 +212,15 @@
                [class.missing-word-item--saved]="form.saved">
             <div class="missing-word-top">
               <span class="missing-chinese">{{ form.chinese }}</span>
-              <span *ngIf="form.saved" class="saved-badge"><i class="bi bi-check"></i> Saved</span>
+              <span *ngIf="form.saved" class="saved-badge"><i class="bi bi-check"></i> {{ 'aiTools.missing.savedBadge' | transloco }}</span>
             </div>
             <div *ngIf="!form.saved" class="missing-word-fields">
               <input type="text" [(ngModel)]="form.pinyin" placeholder="Pinyin" class="mini-input">
-              <input type="text" [(ngModel)]="form.english" placeholder="English" class="mini-input">
-              <input type="text" [(ngModel)]="form.spanish" placeholder="Spanish" class="mini-input">
+              <input type="text" [(ngModel)]="form.english" placeholder="{{ 'aiTools.word.english' | transloco }}" class="mini-input">
+              <input type="text" [(ngModel)]="form.spanish" placeholder="{{ 'aiTools.word.spanish' | transloco }}" class="mini-input">
               <button class="btn-save-word" (click)="saveWord(form)" [disabled]="form.saving">
                 <span *ngIf="form.saving" class="spinner-sm"></span>
-                <span *ngIf="!form.saving"><i class="bi bi-plus"></i> Add</span>
+                <span *ngIf="!form.saving"><i class="bi bi-plus"></i> {{ 'aiTools.missing.add' | transloco }}</span>
               </button>
             </div>
             <div *ngIf="form.error" class="word-error">{{ form.error }}</div>
@@ -231,13 +231,13 @@
       <!-- Aviso palabras faltantes por guardar -->
       <div *ngIf="!allMissingWordsSaved" class="alert-warn mt-3">
         <i class="bi bi-exclamation-circle"></i>
-        Save all missing words before uploading.
+        {{ 'aiTools.warn.saveWords' | transloco }}
       </div>
 
       <!-- Aviso imagen faltante -->
       <div *ngIf="allMissingWordsSaved && !imageFile" class="alert-warn mt-3">
         <i class="bi bi-image"></i>
-        Please upload an image before submitting.
+        {{ 'aiTools.warn.uploadImage' | transloco }}
       </div>
 
       <!-- Error de validación -->
@@ -250,7 +250,7 @@
         <button class="btn-upload" (click)="upload()" [disabled]="!canUpload || status === 'uploading'">
           <span *ngIf="status === 'uploading'" class="spinner-sm"></span>
           <i class="bi bi-cloud-upload" *ngIf="status !== 'uploading'"></i>
-          {{ status === 'uploading' ? 'Uploading...' : 'Upload text' }}
+          {{ (status === 'uploading' ? 'aiTools.upload.uploading' : 'aiTools.upload.button') | transloco }}
         </button>
       </div>
 

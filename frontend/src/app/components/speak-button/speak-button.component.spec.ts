@@ -3,6 +3,8 @@ import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { SpeakButtonComponent } from './speak-button.component';
 import { AudioService } from '../../services/audio.service';
 
+import { translocoTesting } from "../../i18n/transloco-testing";
+
 describe('SpeakButtonComponent', () => {
   let component: SpeakButtonComponent;
   let fixture: ComponentFixture<SpeakButtonComponent>;
@@ -14,7 +16,7 @@ describe('SpeakButtonComponent', () => {
     });
 
     await TestBed.configureTestingModule({
-      imports: [SpeakButtonComponent],
+      imports: [translocoTesting(), SpeakButtonComponent],
       providers: [{ provide: AudioService, useValue: audioSpy }]
     }).compileComponents();
 

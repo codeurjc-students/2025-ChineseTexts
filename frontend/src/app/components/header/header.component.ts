@@ -4,12 +4,17 @@ import { Router, RouterModule } from '@angular/router';
 import { LoginService } from '../../services/login.service';
 import { FormsModule } from '@angular/forms';
 import { Observable } from 'rxjs';
+import { startWith } from 'rxjs/operators';
 import { isPlatformBrowser } from '@angular/common';
+import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
+import { LocalizeLinkPipe } from '../../i18n/localize-link.pipe';
+import { LocaleNavService } from '../../i18n/locale-nav.service';
+import { Lang, addLangPrefix, stripLangPrefix } from '../../i18n/locale.util';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [CommonModule, RouterModule, FormsModule, TranslocoModule, LocalizeLinkPipe],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss'
 })
@@ -23,13 +28,30 @@ export class HeaderComponent implements OnInit {
   loginAttempted = false;
   isLoggedIn$: Observable<boolean>;
   authReady = false;
+  /** Active UI language, for highlighting the correct flag. */
+  lang$: Observable<string>;
 
   constructor(
     public loginService: LoginService,
     private router: Router,
+    private transloco: TranslocoService,
+    private localeNav: LocaleNavService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {
     this.isLoggedIn$ = this.loginService.loggedIn$;
+    this.lang$ = this.transloco.langChanges$.pipe(startWith(this.transloco.getActiveLang()));
+  }
+
+  /**
+   * Switches the UI language: sets the active Transloco language and navigates to
+   * the SAME route under the target language's URL prefix, preserving the current
+   * path, params (e.g. /text/:id) and query string. SSR-safe (only runs on click).
+   */
+  public switchLang(target: Lang): void {
+    if (this.transloco.getActiveLang() === target) return;
+    const stripped = stripLangPrefix(this.router.url);
+    this.transloco.setActiveLang(target);
+    this.router.navigateByUrl(addLangPrefix(stripped, target));
   }
 
   ngOnInit(): void {
@@ -53,15 +75,15 @@ export class HeaderComponent implements OnInit {
     let valid = true;
 
     if (!this.loginEmail.trim()) {
-      this.emailError = 'Email is required.';
+      this.emailError = this.transloco.translate('header.login.emailRequired');
       valid = false;
     } else if (!this.isValidEmail(this.loginEmail)) {
-      this.emailError = 'Please enter a valid email address.';
+      this.emailError = this.transloco.translate('header.login.emailInvalid');
       valid = false;
     }
 
     if (!this.loginPassword.trim()) {
-      this.passwordError = 'Password is required.';
+      this.passwordError = this.transloco.translate('header.login.passwordRequired');
       valid = false;
     }
 
@@ -96,8 +118,8 @@ export class HeaderComponent implements OnInit {
         // A blocked account returns 403 with a specific message; anything else
         // is treated as invalid credentials.
         this.messageError = err?.status === 403
-          ? (err?.error?.message || 'Your account has been blocked.')
-          : 'Incorrect credentials. Please try again.';
+          ? (err?.error?.message || this.transloco.translate('header.login.blocked'))
+          : this.transloco.translate('header.login.incorrect');
       }
     });
   }
@@ -105,7 +127,7 @@ export class HeaderComponent implements OnInit {
   public logout(): void {
     this.loginService.logout().subscribe({
       next: () => {
-        this.router.navigate(['/']);
+        this.localeNav.navigate(['/']);
       },
       error: (error) => {
         console.error('Error en logout:', error);
