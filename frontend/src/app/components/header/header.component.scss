@@ -57,32 +57,11 @@
 }
 
 /* ------------------------------------------------------------------ */
-/* Espaciado del menú de cuenta (desktop)                             */
-/* Con etiquetas más largas (español: "Mis colecciones", "Administración")
-   el bloque de la derecha se veía muy separado y algunas etiquetas de dos
-   palabras podían partirse en dos líneas. En ≥lg (cuando el nav va en fila)
-   mantenemos cada etiqueta en una sola línea y usamos un único hueco
-   compacto y consistente entre elementos, en lugar de márgenes por item +
-   paddings acumulados. Los botones tipo píldora (Login/Signup/Logout)
-   conservan su padding propio. */
-@media (min-width: 992px) {
-  .navbar-nav .nav-link {
-    white-space: nowrap;
-  }
-
-  .navbar-nav.ms-auto {
-    align-items: center;
-    column-gap: 0.25rem;
-  }
-
-  .navbar-nav.ms-auto .nav-item {
-    margin-right: 0 !important; // sustituye el me-2 por el column-gap de arriba
-  }
-
-  .navbar-nav.ms-auto .nav-link:not(.btn) {
-    padding-left: 0.45rem;
-    padding-right: 0.45rem;
-  }
+/* Menú desplegable (hamburguesa en cualquier pantalla)               */
+/* El nav va siempre colapsado; al abrirlo, los elementos se apilan en
+   vertical con un poco de aire entre ellos para que se lean cómodos. */
+.navbar-collapse .nav-item {
+  margin-bottom: 2px;
 }
 
 .nav-link:hover {
