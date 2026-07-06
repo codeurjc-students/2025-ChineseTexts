@@ -38,6 +38,13 @@
   height: 20px;
   margin-left: 10px;
   cursor: pointer;
+  /* Force both flags to fill the exact same box regardless of their intrinsic
+     aspect ratio (Spain is 3:2, the UK flag is 2:1), so they render at identical
+     size and height side by side. */
+  object-fit: fill;
+  display: inline-block;
+  vertical-align: middle;
+  border-radius: 2px;
 }
 
 /* ----------------------------- */
