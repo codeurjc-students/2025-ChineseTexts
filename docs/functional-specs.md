@@ -15,6 +15,7 @@
 | Browse texts by level | ✅ | ✅ | ✅ |
 | Read text with word/sentence breakdown | ✅ | ✅ | ✅ |
 | Listen to text / word / sentence (audio) | ✅ | ✅ | ✅ |
+| Switch UI language (English / Spanish) | ✅ | ✅ | ✅ |
 | Register | ✅ | ✅ | ✅ |
 | Login / Logout | ❌ | ✅ | ✅ |
 | Edit profile | ❌ | ✅ | ✅ |

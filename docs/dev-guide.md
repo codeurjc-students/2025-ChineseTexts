@@ -7,6 +7,7 @@
 - [Tools](#tools)
 - [Architecture](#architecture)
 - [SEO](#seo)
+- [Internationalization (i18n)](#internationalization-i18n)
 - [Quality Control](quality-control.md)
 - [Development Process](#development-process)
 - [Running the Application](#running-the-application)
@@ -23,7 +24,7 @@ ChineseReads follows a **distributed MVC architecture** composed of multiple ind
 | Aspect | Description |
 |---|---|
 | **Type** | Web MVC + SPA frontend + REST API + AI Microservices |
-| **Technologies** | Java 21, Spring Boot 4, Angular 17, MySQL 8, Python 3.11, Flask, DeepSeek API, Google Cloud Vision, Google Cloud Text-to-Speech |
+| **Technologies** | Java 21, Spring Boot 4, Angular 17, Transloco (i18n), MySQL 8, Caffeine (cache), Python 3.11, Flask, DeepSeek API, Google Cloud Vision, Google Cloud Text-to-Speech |
 | **Tools** | IntelliJ IDEA, VS Code, Docker, Docker Compose, Caddy, GitHub, Postman |
 | **Quality Control** | Unit tests (JUnit + Mockito), Integration tests (H2), E2E tests (MockMvc), Frontend tests (Jasmine/Karma) |
 | **Deployment** | Docker Compose + Caddy (HTTPS automatic via Let's Encrypt), Azure VM |
@@ -38,7 +39,7 @@ Java 21 + Spring Boot 4. Exposes a REST API consumed by the Angular frontend. Ha
 Official site: https://spring.io/projects/spring-boot
 
 ### Frontend — Angular 17
-Standalone components architecture with SSR (Server Side Rendering) enabled via Angular Universal. Communicates with the backend exclusively via HTTP. SEO is a first-class requirement (see the [SEO](#seo) section below): a reusable `SeoService` sets per-route title, meta description, canonical, Open Graph and Twitter tags on every navigation — including during SSR — so crawlers receive page-specific metadata.  
+Standalone components architecture with SSR (Server Side Rendering) enabled via Angular Universal. Communicates with the backend exclusively via HTTP. SEO is a first-class requirement (see the [SEO](#seo) section below): a reusable `SeoService` sets per-route title, meta description, canonical, Open Graph and Twitter tags on every navigation — including during SSR — so crawlers receive page-specific metadata. The UI is bilingual (English / Spanish) via [Transloco](https://jsverse.github.io/transloco/) runtime i18n, served from distinct URLs (English at the root, Spanish under `/es`) so it stays SEO-safe (see [Internationalization](#internationalization-i18n)).  
 Official site: https://angular.io
 
 ### Database — MySQL 8
@@ -55,6 +56,7 @@ Official site: https://cloud.google.com/vision
 
 ### TTS Microservice — Google Cloud Text-to-Speech
 Python 3.11 + Flask microservice running on port 5002. Uses the Google Cloud Text-to-Speech API (WaveNet Mandarin voice `cmn-CN-Wavenet-A`) to synthesize natural audio for a full text, an individual word, a sentence, or a saved flashcard. The backend exposes it publicly at `/api/tts`, so anonymous readers can also listen. Free up to 1 million WaveNet characters/month.  
+Because the endpoint is public and paid per character, the backend protects it on three fronts (all configurable in `application.properties`): a **length cap** (`tts.max-chars`, rejects an oversized request with `413`), a **Caffeine cache** of the synthesized audio keyed by the exact text (`tts.cache.*`, so identical words/sentences/flashcards are never re-synthesized — the biggest ongoing saving), and a **per-IP rate limit** (`tts.rate-limit.per-minute`, returns `429` when exceeded; the client IP is read from `X-Forwarded-For` since the app runs behind Caddy).  
 Official site: https://cloud.google.com/text-to-speech
 
 ### Reverse Proxy — Caddy
@@ -129,9 +131,28 @@ All four static files (`robots.txt`, `sitemap.xml`, `manifest.webmanifest`, `fav
 
 ### Adding a new public page (checklist)
 
-1. Add the route in `app.routes.ts`.
-2. Add its metadata (title, description, `path`) to `STATIC_SEO` in `seo.config.ts`. Keep titles keyword-rich and under ~60 characters where possible.
-3. If it should be indexed, add its `<loc>` to `sitemap.xml`; if it is private/authenticated, set `noindex: true` and add a `Disallow` line to `robots.txt`.
+1. Add the route in `app.routes.ts` (a single `appRoutes` array is served both at the root and under the `/es` prefix, so one entry covers both languages — see [Internationalization](#internationalization-i18n)).
+2. Add its metadata (title, description, `path`) to `STATIC_SEO` in `seo.config.ts` **in both `en` and `es`**. Keep titles keyword-rich and under ~60 characters where possible.
+3. If it should be indexed, add its `<loc>` to `sitemap.xml` **for both the English and the `/es` URL, with `hreflang` alternates**, and add the route (and its `/es` twin) to `prerender-routes.txt`; if it is private/authenticated, set `noindex: true` and add a `Disallow` line to `robots.txt` (root and `/es`).
+
+---
+
+## Internationalization (i18n)
+
+The UI is available in **English and Spanish** (a flag switcher in the header). Only the interface chrome is translated — the DB text content already carries its own English/Spanish fields. i18n is implemented with **[Transloco](https://jsverse.github.io/transloco/)** (runtime, single build) and is designed so it never compromises SEO.
+
+| Piece | File | Purpose |
+|---|---|---|
+| **Translation dictionaries** | `src/assets/i18n/en.json`, `es.json` | All UI strings, namespaced per component. Keep both files in key parity. |
+| **Synchronous loader** | `src/app/transloco-loader.ts` | Statically imports both dictionaries so `setActiveLang` applies within the same tick — essential so the **prerender bakes each page in the right language**. |
+| **URL scheme** | `src/app/app.routes.ts` | English at the root (`/texts`), Spanish under `/es` (`/es/texts`). A single `appRoutes` array is mounted at both, so components are never duplicated. |
+| **Active language** | `src/app/app.component.ts` + `src/app/i18n/locale.util.ts` | The active language is derived **solely from the URL prefix** (never from `navigator`/`localStorage`), so server (prerender) and client always agree — no hydration mismatch. |
+| **Locale-aware links** | `src/app/i18n/localize-link.pipe.ts` (`\| localizeLink`), `locale-nav.service.ts` (`LocaleNavService`) | Keep navigation within the current language for `routerLink`s and imperative `router.navigate` calls. |
+| **Per-locale SEO** | `src/app/services/seo.service.ts`, `seo.config.ts` | `SeoService.update(config, lang)` emits `hreflang` alternates (`en`/`es`/`x-default`), `og:locale`, `<html lang>` and a self-referencing canonical; `seo.config.ts` is bilingual. `sitemap.xml` carries `hreflang` alternates and `/es` URLs; `prerender-routes.txt` prerenders the `/es` pages to static HTML. |
+
+**Design choices (why):** production serves **prerendered static HTML** (Caddy serves `dist/frontend/browser`; there is no live Node SSR), so each language must be baked into static HTML at build time — hence the synchronous loader. Transloco (runtime, one build, one Caddy mount) was chosen over Angular's compile-time `@angular/localize` (which would need one build per locale and Caddy changes). English stays at the root so existing indexed URLs never move (zero SEO regression); Spanish `/es` URLs are purely additive.
+
+**Adding or changing a UI string:** add the key to **both** `en.json` and `es.json` (keep parity) and reference it with `{{ 'namespace.key' | transloco }}` in templates or `transloco.translate('namespace.key')` in TypeScript. In tests, add `translocoTesting()` (from `src/app/i18n/transloco-testing.ts`) to the component's `TestBed` `imports`.
 
 ---
 
