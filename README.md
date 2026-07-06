@@ -1,6 +1,6 @@
 # ChineseReads
 
-ChineseReads is a web application designed to facilitate the learning of Mandarin Chinese through graded texts, spaced repetition, vocabulary collections, personalized exams, text-to-speech audio pronunciation, dictionary management, and AI-assisted utilities. Its purpose is to promote accessible language education for everyone.
+ChineseReads is a web application designed to facilitate the learning of Mandarin Chinese through graded texts, spaced repetition, vocabulary collections, personalized exams, text-to-speech audio pronunciation, dictionary management, and AI-assisted utilities. The interface is available in English and Spanish. Its purpose is to promote accessible language education for everyone.
 
 ---
 > ⚠️ The application is currently in active development. Core functionalities have been implemented and the app is deployed at [chinesereads.com](https://chinesereads.com). Some planned features described in the objectives are still pending implementation.
