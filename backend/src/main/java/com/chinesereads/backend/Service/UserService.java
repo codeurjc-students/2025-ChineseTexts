@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.chinesereads.backend.Model.Collection;
 import com.chinesereads.backend.Model.User;
 import com.chinesereads.backend.Repository.UserRepository;
+import com.chinesereads.backend.Repository.UserTextRepository;
 import com.chinesereads.backend.dto.AdminCollectionSummaryDTO;
 import com.chinesereads.backend.dto.AdminUserDTO;
 import com.chinesereads.backend.dto.AdminUserDetailDTO;
@@ -35,6 +36,9 @@ public class UserService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private UserTextRepository userTextRepository;
 
     public UserDTO save(UserDTO user) {
         if (userRepository.findByEmail(user.email()).isPresent()) {
@@ -120,6 +124,8 @@ public class UserService {
         int flashcardsCount = collections.stream()
                 .mapToInt(AdminCollectionSummaryDTO::flashcardsCount).sum();
 
+        int textsCount = (int) userTextRepository.countByOwner(user);
+
         return new AdminUserDetailDTO(
                 user.getId(),
                 user.getEmail(),
@@ -131,6 +137,7 @@ public class UserService {
                 user.getLastAccess(),
                 collections.size(),
                 flashcardsCount,
+                textsCount,
                 collections);
     }
 

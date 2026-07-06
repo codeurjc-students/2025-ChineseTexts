@@ -43,6 +43,7 @@ export interface AdminUserDetail {
   lastAccess: string | null;
   collectionsCount: number;
   flashcardsCount: number;
+  textsCount: number;
   collections: AdminCollectionSummary[];
 }
 

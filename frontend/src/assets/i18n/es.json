@@ -770,7 +770,8 @@
     },
     "stats": {
       "collections": "Colecciones",
-      "flashcards": "Tarjetas"
+      "flashcards": "Tarjetas",
+      "texts": "Textos"
     },
     "list": {
       "hint": "Busca por correo electrónico o nombre y haz clic en un usuario para ver su perfil y gestionarlo.",
