@@ -3,14 +3,13 @@
   <!-- MODAL BORRAR TEXTO -->
   <div class="popover-overlay" *ngIf="showDeleteTextModal" (click)="cancelDeleteText()">
     <div class="custom-popover" style="max-width:380px" (click)="$event.stopPropagation()">
-      <h3 style="font-size:1.1rem;font-weight:700;color:#222;margin-bottom:8px">Delete text</h3>
+      <h3 style="font-size:1.1rem;font-weight:700;color:#222;margin-bottom:8px">{{ 'text.delete.title' | transloco }}</h3>
       <p style="font-size:0.9rem;color:#666;margin-bottom:16px">
-        Are you sure you want to delete <strong>{{ text.titleEnglish }}</strong>?
-        This action cannot be undone.
+        {{ 'text.delete.confirmPrefix' | transloco }} <strong>{{ text.titleEnglish }}</strong>{{ 'text.delete.confirmSuffix' | transloco }}
       </p>
       <div style="display:flex;gap:10px">
-        <button class="btn-cancel" style="flex:1" (click)="cancelDeleteText()">Cancel</button>
-        <button class="btn-save" style="flex:1;background:#c0392b;margin-top: 0;" (click)="confirmDeleteText()">Delete</button>
+        <button class="btn-cancel" style="flex:1" (click)="cancelDeleteText()">{{ 'text.delete.cancel' | transloco }}</button>
+        <button class="btn-save" style="flex:1;background:#c0392b;margin-top: 0;" (click)="confirmDeleteText()">{{ 'text.delete.confirm' | transloco }}</button>
       </div>
     </div>
   </div>
@@ -19,7 +18,7 @@
   <div class="d-flex justify-content-between align-items-center mb-5">
     <h1 class="title">{{ text.titleEnglish }}</h1>
     <div class="d-flex align-items-center gap-2">
-      <button *ngIf="isAdmin" class="like-btn" title="Delete text"
+      <button *ngIf="isAdmin" class="like-btn" [title]="'text.deleteButtonTitle' | transloco"
         style="color:#c0392b;font-size:1.4rem"
         (click)="openDeleteTextModal()">
         <i class="bi bi-trash"></i>
@@ -35,7 +34,7 @@
     <!-- FECHA Y NIVEL -->
     <div class="d-flex justify-content-between mb-2 text-muted meta">
       <div>{{ text.creationDate }}</div>
-      <div><strong>Level:</strong> {{ text.level }}</div>
+      <div><strong>{{ 'text.meta.level' | transloco }}</strong> {{ text.level }}</div>
     </div>
 
     <!-- IMAGEN -->
@@ -47,27 +46,27 @@
 
     <!-- ESCUCHAR TEXTO COMPLETO -->
     <div class="listen-full">
-      <app-speak-button [text]="text.text" size="md" ariaLabel="Listen to the full text"></app-speak-button>
-      <span class="listen-full-label">Listen to the full text</span>
+      <app-speak-button [text]="text.text" size="md" [ariaLabel]="'text.audio.fullText' | transloco"></app-speak-button>
+      <span class="listen-full-label">{{ 'text.audio.fullText' | transloco }}</span>
     </div>
 
     <!-- OPCIONES -->
     <div class="form-check">
       <input class="form-check-input" type="checkbox" [(ngModel)]="showTranslation" id="chkTranslation">
-      <label class="form-check-label" for="chkTranslation">See translated text</label>
+      <label class="form-check-label" for="chkTranslation">{{ 'text.options.showTranslation' | transloco }}</label>
     </div>
     <div class="form-check">
       <input class="form-check-input" type="checkbox" [(ngModel)]="showSentences" id="chkSentences">
-      <label class="form-check-label" for="chkSentences">View text broken down by sentences</label>
+      <label class="form-check-label" for="chkSentences">{{ 'text.options.showSentences' | transloco }}</label>
     </div>
     <div class="form-check">
       <input class="form-check-input" type="checkbox" [(ngModel)]="showPinyin" id="chkPinyin">
-      <label class="form-check-label" for="chkPinyin">Show Pinyin</label>
+      <label class="form-check-label" for="chkPinyin">{{ 'text.options.showPinyin' | transloco }}</label>
     </div>
 
     <!-- TEXTO DESGLOSADO POR PALABRAS -->
-    <h5 class="mt-4 text-primary">Text broken down by words</h5>
-    <div class="text-muted my-2">Click on a word to see its translation.</div>
+    <h5 class="mt-4 text-primary">{{ 'text.words.heading' | transloco }}</h5>
+    <div class="text-muted my-2">{{ 'text.words.hint' | transloco }}</div>
 
     <div class="words-container">
       <div
@@ -90,7 +89,7 @@
         <button class="popover-close" (click)="closeWordPopover()">✕</button>
         <div class="popover-chinese-row">
           <div class="popover-chinese">{{ originalText[activeWordIndex] }}</div>
-          <app-speak-button [text]="originalText[activeWordIndex]" size="md" ariaLabel="Listen to this word"></app-speak-button>
+          <app-speak-button [text]="originalText[activeWordIndex]" size="md" [ariaLabel]="'text.audio.word' | transloco"></app-speak-button>
         </div>
         <div class="popover-pinyin">{{ wordsArray[activeWordIndex]?.pinyin || '—' }}</div>
         <hr class="my-1">
@@ -106,7 +105,7 @@
         <!-- Botón save o panel de guardado -->
         <div *ngIf="!showSavePanel">
           <button class="btn-save" (click)="addWord(originalText[activeWordIndex])">
-            <i class="bi bi-bookmark-plus"></i> Save
+            <i class="bi bi-bookmark-plus"></i> {{ 'text.save.button' | transloco }}
           </button>
         </div>
 
@@ -115,41 +114,41 @@
 
           <!-- No logueado -->
           <div *ngIf="saveStatus === 'not-logged'" class="save-message save-message--warn">
-            <i class="bi bi-lock"></i> You must be logged in to save words.
+            <i class="bi bi-lock"></i> {{ 'text.save.notLogged' | transloco }}
           </div>
 
           <!-- Sin colecciones -->
           <div *ngIf="saveStatus === 'no-collections' && !showNewCollectionInput" class="save-message save-message--warn">
-            <i class="bi bi-collection"></i> You have no collections yet.
-            <button class="btn-link-red" (click)="showNewCollectionInput = true">Create one</button>
+            <i class="bi bi-collection"></i> {{ 'text.save.noCollections' | transloco }}
+            <button class="btn-link-red" (click)="showNewCollectionInput = true">{{ 'text.save.createOne' | transloco }}</button>
           </div>
 
           <!-- Éxito -->
           <div *ngIf="saveStatus === 'success'" class="save-message save-message--ok">
-            <i class="bi bi-check-circle"></i> Word saved!
+            <i class="bi bi-check-circle"></i> {{ 'text.save.success' | transloco }}
           </div>
 
           <!-- Duplicado -->
           <div *ngIf="saveStatus === 'duplicate'" class="save-message save-message--warn">
-            <i class="bi bi-exclamation-circle"></i> Already in this collection.
+            <i class="bi bi-exclamation-circle"></i> {{ 'text.save.duplicate' | transloco }}
           </div>
 
           <!-- Error -->
           <div *ngIf="saveStatus === 'error'" class="save-message save-message--error">
-            <i class="bi bi-x-circle"></i> Something went wrong.
+            <i class="bi bi-x-circle"></i> {{ 'text.save.error' | transloco }}
           </div>
 
           <!-- Selector de colección -->
           <div *ngIf="collections.length > 0 && saveStatus !== 'not-logged' && saveStatus !== 'success'">
             <select class="collection-select" [(ngModel)]="selectedCollectionId">
-              <option [ngValue]="null" disabled>Select a collection...</option>
+              <option [ngValue]="null" disabled>{{ 'text.save.selectPlaceholder' | transloco }}</option>
               <option *ngFor="let col of collections" [ngValue]="col.id">{{ col.title }}</option>
             </select>
             <button class="btn-save mt-2" [disabled]="!selectedCollectionId" (click)="confirmSave()">
-              <i class="bi bi-bookmark-check"></i> Confirm
+              <i class="bi bi-bookmark-check"></i> {{ 'text.save.confirm' | transloco }}
             </button>
             <button class="btn-link-red mt-1" (click)="showNewCollectionInput = true">
-              + New collection
+              {{ 'text.save.newCollection' | transloco }}
             </button>
           </div>
 
@@ -158,15 +157,15 @@
             <input
               class="collection-input"
               type="text"
-              placeholder="Collection name..."
+              placeholder="{{ 'text.save.collectionNamePlaceholder' | transloco }}"
               [(ngModel)]="newCollectionTitle"
             >
             <button class="btn-save mt-2" (click)="createCollectionAndSave()">
-              <i class="bi bi-plus-circle"></i> Create
+              <i class="bi bi-plus-circle"></i> {{ 'text.save.create' | transloco }}
             </button>
           </div>
 
-          <button class="btn-cancel mt-2" (click)="resetSavePanel()">Cancel</button>
+          <button class="btn-cancel mt-2" (click)="resetSavePanel()">{{ 'text.save.cancel' | transloco }}</button>
         </div>
 
       </div>
@@ -174,20 +173,20 @@
 
     <!-- TRADUCCIÓN -->
     <div *ngIf="showTranslation" class="mt-4">
-      <h5 class="text-primary">Translated text</h5>
+      <h5 class="text-primary">{{ 'text.translation.heading' | transloco }}</h5>
       <p class="text-large mt-3">{{ text.englishTranslation }}</p>
     </div>
 
     <!-- FRASES -->
     <div *ngIf="showSentences" class="mt-4">
-      <h5 class="text-primary">Text by sentences</h5>
+      <h5 class="text-primary">{{ 'text.sentences.heading' | transloco }}</h5>
       <div
         *ngFor="let sentence of originalTextSeparatedBySentences; let i = index"
         class="sentence-row mt-2"
         (click)="onSentenceClick(i)"
       >
         <p class="text-large mb-0 sentence-chinese">{{ sentence }}</p>
-        <p class="text-muted sentence-hint">Click to see translation</p>
+        <p class="text-muted sentence-hint">{{ 'text.sentences.hint' | transloco }}</p>
       </div>
     </div>
 
@@ -197,7 +196,7 @@
         <button class="popover-close" (click)="closeSentenceModal()">✕</button>
         <div class="sentence-modal-head">
           <div class="sentence-modal-chinese">{{ originalTextSeparatedBySentences[activeSentenceIndex] }}</div>
-          <app-speak-button [text]="originalTextSeparatedBySentences[activeSentenceIndex]" size="md" ariaLabel="Listen to this sentence"></app-speak-button>
+          <app-speak-button [text]="originalTextSeparatedBySentences[activeSentenceIndex]" size="md" [ariaLabel]="'text.audio.sentence' | transloco"></app-speak-button>
         </div>
         <hr class="my-2">
         <div class="sentence-modal-row">
@@ -213,7 +212,7 @@
 
     <!-- BOTÓN VOLVER -->
     <div class="text-center mt-4">
-      <button class="btn-back" (click)="goBack()">Back</button>
+      <button class="btn-back" (click)="goBack()">{{ 'text.back' | transloco }}</button>
     </div>
 
   </div>

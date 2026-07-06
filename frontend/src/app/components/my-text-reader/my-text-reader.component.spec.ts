@@ -5,6 +5,8 @@ import { provideHttpClientTesting, HttpTestingController } from '@angular/common
 
 import { MyTextReaderComponent } from './my-text-reader.component';
 
+import { translocoTesting } from "../../i18n/transloco-testing";
+
 describe('MyTextReaderComponent', () => {
   let component: MyTextReaderComponent;
   let fixture: ComponentFixture<MyTextReaderComponent>;
@@ -12,7 +14,7 @@ describe('MyTextReaderComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MyTextReaderComponent],
+      imports: [translocoTesting(), MyTextReaderComponent],
       providers: [provideRouter([]), provideHttpClient(), provideHttpClientTesting()]
     }).compileComponents();
 

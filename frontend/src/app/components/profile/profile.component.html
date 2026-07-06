@@ -16,28 +16,28 @@
         <div>
           <h1 class="profile-name">{{ user.name }}</h1>
           <span class="profile-role" [class.role--admin]="user.roles.includes('ADMIN')">
-            {{ user.roles.includes('ADMIN') ? 'Admin' : 'Student' }}
+            {{ (user.roles.includes('ADMIN') ? 'profile.role.admin' : 'profile.role.student') | transloco }}
           </span>
         </div>
       </div>
 
       <div class="info-card">
-        <h2 class="card-section-title">Account details</h2>
+        <h2 class="card-section-title">{{ 'profile.view.accountDetails' | transloco }}</h2>
 
         <div class="info-row">
-          <span class="info-label"><i class="bi bi-person"></i> Name</span>
+          <span class="info-label"><i class="bi bi-person"></i> {{ 'profile.view.name' | transloco }}</span>
           <span class="info-value">{{ user.name }}</span>
         </div>
         <div class="info-row">
-          <span class="info-label"><i class="bi bi-envelope"></i> Email</span>
+          <span class="info-label"><i class="bi bi-envelope"></i> {{ 'profile.view.email' | transloco }}</span>
           <span class="info-value">{{ user.email }}</span>
         </div>
         <div class="info-row">
-          <span class="info-label"><i class="bi bi-translate"></i> Language</span>
+          <span class="info-label"><i class="bi bi-translate"></i> {{ 'profile.view.language' | transloco }}</span>
           <span class="info-value">{{ languageLabel }}</span>
         </div>
         <div class="info-row">
-          <span class="info-label"><i class="bi bi-collection"></i> Collections</span>
+          <span class="info-label"><i class="bi bi-collection"></i> {{ 'profile.view.collections' | transloco }}</span>
           <span class="info-value">{{ user.collections?.length ?? 0 }}</span>
         </div>
       </div>
@@ -46,8 +46,8 @@
         <div class="action-card" (click)="openEditProfile()">
           <i class="bi bi-pencil-square"></i>
           <div>
-            <div class="action-card-title">Edit profile</div>
-            <div class="action-card-sub">Update your name and language</div>
+            <div class="action-card-title">{{ 'profile.actions.editProfile.title' | transloco }}</div>
+            <div class="action-card-sub">{{ 'profile.actions.editProfile.subtitle' | transloco }}</div>
           </div>
           <i class="bi bi-chevron-right ms-auto"></i>
         </div>
@@ -55,8 +55,8 @@
         <div class="action-card" (click)="openEditPassword()">
           <i class="bi bi-lock"></i>
           <div>
-            <div class="action-card-title">Change password</div>
-            <div class="action-card-sub">Update your account password</div>
+            <div class="action-card-title">{{ 'profile.actions.changePassword.title' | transloco }}</div>
+            <div class="action-card-sub">{{ 'profile.actions.changePassword.subtitle' | transloco }}</div>
           </div>
           <i class="bi bi-chevron-right ms-auto"></i>
         </div>
@@ -64,8 +64,8 @@
         <div class="action-card action-card--danger" (click)="openDeleteAccount()">
           <i class="bi bi-trash"></i>
           <div>
-            <div class="action-card-title">Delete account</div>
-            <div class="action-card-sub">Permanently delete your account and all your data</div>
+            <div class="action-card-title">{{ 'profile.actions.deleteAccount.title' | transloco }}</div>
+            <div class="action-card-sub">{{ 'profile.actions.deleteAccount.subtitle' | transloco }}</div>
           </div>
           <i class="bi bi-chevron-right ms-auto"></i>
         </div>
@@ -78,21 +78,21 @@
 
       <div class="section-header">
         <button class="btn-icon" (click)="cancel()"><i class="bi bi-arrow-left"></i></button>
-        <h2 class="section-title">Edit profile</h2>
+        <h2 class="section-title">{{ 'profile.editProfile.title' | transloco }}</h2>
       </div>
 
       <div class="form-card">
 
         <div class="form-group">
-          <label>Full name <span class="required">*</span></label>
+          <label>{{ 'profile.editProfile.fullNameLabel' | transloco }} <span class="required">*</span></label>
           <input type="text" [(ngModel)]="editName" class="form-input"
-            placeholder="Your full name">
+            placeholder="{{ 'profile.editProfile.fullNamePlaceholder' | transloco }}">
         </div>
 
         <div class="form-group mt-3">
-          <label>Preferred language <span class="required">*</span></label>
+          <label>{{ 'profile.editProfile.languageLabel' | transloco }} <span class="required">*</span></label>
           <select [(ngModel)]="editLanguage" class="form-input">
-            <option *ngFor="let l of languages" [value]="l.value">{{ l.label }}</option>
+            <option *ngFor="let l of languages" [value]="l.value">{{ ('profile.languages.' + l.value) | transloco }}</option>
           </select>
         </div>
 
@@ -101,15 +101,15 @@
         </div>
 
         <div *ngIf="profileStatus === 'success'" class="alert-success mt-3">
-          <i class="bi bi-check-circle-fill"></i> Profile updated successfully!
+          <i class="bi bi-check-circle-fill"></i> {{ 'profile.editProfile.success' | transloco }}
         </div>
 
         <div class="form-actions mt-4">
-          <button class="btn-secondary" (click)="cancel()">Cancel</button>
+          <button class="btn-secondary" (click)="cancel()">{{ 'common.buttons.cancel' | transloco }}</button>
           <button class="btn-primary" (click)="saveProfile()"
             [disabled]="profileStatus === 'saving'">
             <span *ngIf="profileStatus === 'saving'" class="spinner-sm"></span>
-            {{ profileStatus === 'saving' ? 'Saving...' : 'Save changes' }}
+            {{ (profileStatus === 'saving' ? 'profile.editProfile.saving' : 'profile.editProfile.save') | transloco }}
           </button>
         </div>
 
@@ -121,30 +121,30 @@
 
       <div class="section-header">
         <button class="btn-icon" (click)="cancel()"><i class="bi bi-arrow-left"></i></button>
-        <h2 class="section-title">Change password</h2>
+        <h2 class="section-title">{{ 'profile.changePassword.title' | transloco }}</h2>
       </div>
 
       <div class="form-card">
 
         <div class="form-group">
-          <label>Current password <span class="required">*</span></label>
+          <label>{{ 'profile.changePassword.currentLabel' | transloco }} <span class="required">*</span></label>
           <input type="password" [(ngModel)]="currentPassword" class="form-input"
-            placeholder="Enter your current password">
+            placeholder="{{ 'profile.changePassword.currentPlaceholder' | transloco }}">
         </div>
 
         <div class="form-group mt-3">
-          <label>New password <span class="required">*</span></label>
+          <label>{{ 'profile.changePassword.newLabel' | transloco }} <span class="required">*</span></label>
           <input type="password" [(ngModel)]="newPassword" class="form-input"
-            placeholder="At least 4 characters">
+            placeholder="{{ 'profile.changePassword.newPlaceholder' | transloco }}">
         </div>
 
         <div class="form-group mt-3">
-          <label>Confirm new password <span class="required">*</span></label>
+          <label>{{ 'profile.changePassword.confirmLabel' | transloco }} <span class="required">*</span></label>
           <input type="password" [(ngModel)]="confirmPassword" class="form-input"
-            placeholder="Repeat new password">
+            placeholder="{{ 'profile.changePassword.confirmPlaceholder' | transloco }}">
           <span class="field-hint"
             *ngIf="confirmPassword && newPassword !== confirmPassword">
-            Passwords do not match
+            {{ 'profile.changePassword.mismatch' | transloco }}
           </span>
         </div>
 
@@ -153,17 +153,17 @@
         </div>
 
         <div *ngIf="passwordStatus === 'success'" class="alert-success mt-3">
-          <i class="bi bi-check-circle-fill"></i> Password changed successfully!
+          <i class="bi bi-check-circle-fill"></i> {{ 'profile.changePassword.success' | transloco }}
         </div>
 
         <div class="form-actions mt-4">
-          <button class="btn-secondary" (click)="cancel()">Cancel</button>
+          <button class="btn-secondary" (click)="cancel()">{{ 'common.buttons.cancel' | transloco }}</button>
           <button class="btn-primary" (click)="savePassword()"
             [disabled]="passwordStatus === 'checking' || passwordStatus === 'saving'">
             <span *ngIf="passwordStatus === 'checking' || passwordStatus === 'saving'"
               class="spinner-sm"></span>
-            {{ passwordStatus === 'checking' ? 'Checking...' :
-               passwordStatus === 'saving' ? 'Saving...' : 'Change password' }}
+            {{ (passwordStatus === 'checking' ? 'profile.changePassword.checking' :
+               passwordStatus === 'saving' ? 'profile.changePassword.saving' : 'profile.changePassword.submit') | transloco }}
           </button>
         </div>
 
@@ -175,7 +175,7 @@
 
       <div class="section-header">
         <button class="btn-icon" (click)="cancel()"><i class="bi bi-arrow-left"></i></button>
-        <h2 class="section-title">Delete account</h2>
+        <h2 class="section-title">{{ 'profile.deleteAccount.title' | transloco }}</h2>
       </div>
 
       <div class="form-card">
@@ -183,16 +183,15 @@
         <div class="danger-warning">
           <i class="bi bi-exclamation-triangle-fill"></i>
           <div>
-            <strong>This action is permanent and cannot be undone.</strong>
+            <strong>{{ 'profile.deleteAccount.warningTitle' | transloco }}</strong>
             <p class="mb-0 mt-1">
-              Your account, your collections and all your flashcards will be permanently
-              deleted. You will be logged out immediately.
+              {{ 'profile.deleteAccount.warningText' | transloco }}
             </p>
           </div>
         </div>
 
         <div class="form-group mt-4">
-          <label>Type <strong>DELETE</strong> to confirm</label>
+          <label>{{ 'profile.deleteAccount.typePrefix' | transloco }} <strong>DELETE</strong> {{ 'profile.deleteAccount.typeSuffix' | transloco }}</label>
           <input type="text" [(ngModel)]="deleteConfirmText" class="form-input"
             placeholder="DELETE" autocomplete="off">
         </div>
@@ -203,11 +202,11 @@
 
         <div class="form-actions mt-4">
           <button class="btn-secondary" (click)="cancel()"
-            [disabled]="deleteStatus === 'deleting'">Cancel</button>
+            [disabled]="deleteStatus === 'deleting'">{{ 'common.buttons.cancel' | transloco }}</button>
           <button class="btn-danger" (click)="confirmDeleteAccount()"
             [disabled]="!deleteConfirmValid || deleteStatus === 'deleting'">
             <span *ngIf="deleteStatus === 'deleting'" class="spinner-sm"></span>
-            {{ deleteStatus === 'deleting' ? 'Deleting...' : 'Delete my account' }}
+            {{ (deleteStatus === 'deleting' ? 'profile.deleteAccount.deleting' : 'profile.deleteAccount.submit') | transloco }}
           </button>
         </div>
 

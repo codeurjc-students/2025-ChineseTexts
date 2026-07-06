@@ -6,6 +6,8 @@ import { ProfileComponent } from './profile.component';
 import { LoginService } from '../../services/login.service';
 import { UserService, UserDTO } from '../../services/users.service';
 
+import { translocoTesting } from "../../i18n/transloco-testing";
+
 describe('ProfileComponent', () => {
   let component: ProfileComponent;
   let fixture: ComponentFixture<ProfileComponent>;
@@ -27,7 +29,7 @@ describe('ProfileComponent', () => {
     loginServiceSpy.reqIsLogged.and.returnValue(of(mockUser));
 
     await TestBed.configureTestingModule({
-      imports: [ProfileComponent, RouterTestingModule],
+      imports: [translocoTesting(), ProfileComponent, RouterTestingModule],
       providers: [
         { provide: LoginService, useValue: loginServiceSpy },
         { provide: UserService, useValue: userServiceSpy }

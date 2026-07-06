@@ -7,6 +7,8 @@ import { of } from 'rxjs';
 import { AdminToolsComponent } from './admin-tools.component';
 import { LoginService } from '../../services/login.service';
 
+import { translocoTesting } from "../../i18n/transloco-testing";
+
 describe('AdminToolsComponent', () => {
   let component: AdminToolsComponent;
   let fixture: ComponentFixture<AdminToolsComponent>;
@@ -23,7 +25,7 @@ describe('AdminToolsComponent', () => {
     loginServiceSpy.reqIsLogged.and.returnValue(of(mockAdminUser));
 
     await TestBed.configureTestingModule({
-      imports: [AdminToolsComponent],
+      imports: [translocoTesting(), AdminToolsComponent],
       providers: [
         { provide: LoginService, useValue: loginServiceSpy },
         provideHttpClient(),

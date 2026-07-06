@@ -1,112 +1,103 @@
 <div class="container my-5 privacy-policy">
 
-  <h1>Privacy Policy</h1>
-  <p class="last-updated">Last updated: July 2026</p>
+  <h1>{{ 'privacyPolicy.title' | transloco }}</h1>
+  <p class="last-updated">{{ 'privacyPolicy.lastUpdated' | transloco }}</p>
 
   <section>
-    <h2>1. Who we are</h2>
+    <h2>{{ 'privacyPolicy.s1.title' | transloco }}</h2>
     <p>
-      ChineseReads (<strong>chinesereads.com</strong>) is a web application for learning Mandarin Chinese
-      through graded texts and vocabulary tools. This service is operated as a personal project.
+      ChineseReads (<strong>chinesereads.com</strong>) {{ 'privacyPolicy.s1.body' | transloco }}
     </p>
   </section>
 
   <section>
-    <h2>2. What data we collect</h2>
-    <p>We collect the following personal data when you register:</p>
+    <h2>{{ 'privacyPolicy.s2.title' | transloco }}</h2>
+    <p>{{ 'privacyPolicy.s2.intro' | transloco }}</p>
     <ul>
-      <li>Email address</li>
-      <li>Name</li>
-      <li>Preferred language</li>
-      <li>Password (stored encrypted using BCrypt — we never store plain passwords)</li>
+      <li>{{ 'privacyPolicy.s2.email' | transloco }}</li>
+      <li>{{ 'privacyPolicy.s2.name' | transloco }}</li>
+      <li>{{ 'privacyPolicy.s2.language' | transloco }}</li>
+      <li>{{ 'privacyPolicy.s2.password' | transloco }}</li>
     </ul>
     <p>
-      We also collect anonymous usage data through Google Analytics (only with your consent),
-      including pages visited, time on site, and general device/browser information.
-      IP addresses are anonymized before being sent to Google.
+      {{ 'privacyPolicy.s2.analytics' | transloco }}
     </p>
   </section>
 
   <section>
-    <h2>3. How we use your data</h2>
+    <h2>{{ 'privacyPolicy.s3.title' | transloco }}</h2>
     <ul>
-      <li>To provide and maintain the ChineseReads service.</li>
-      <li>To manage your account and personalize your experience.</li>
-      <li>To analyze usage patterns and improve the application (only with consent).</li>
+      <li>{{ 'privacyPolicy.s3.item1' | transloco }}</li>
+      <li>{{ 'privacyPolicy.s3.item2' | transloco }}</li>
+      <li>{{ 'privacyPolicy.s3.item3' | transloco }}</li>
     </ul>
-    <p>We do not sell, rent, or share your personal data with third parties for marketing purposes.</p>
+    <p>{{ 'privacyPolicy.s3.note' | transloco }}</p>
   </section>
 
   <section>
-    <h2>4. Cookies</h2>
-    <p>We use the following types of cookies:</p>
+    <h2>{{ 'privacyPolicy.s4.title' | transloco }}</h2>
+    <p>{{ 'privacyPolicy.s4.intro' | transloco }}</p>
     <ul>
       <li>
-        <strong>Essential cookies</strong> — necessary for authentication (JWT token stored in HttpOnly cookie).
-        These cannot be disabled as the service cannot function without them.
+        <strong>{{ 'privacyPolicy.s4.essentialLabel' | transloco }}</strong> — {{ 'privacyPolicy.s4.essentialBody' | transloco }}
       </li>
       <li>
-        <strong>Analytics cookies</strong> — used by Google Analytics to collect anonymous traffic data.
-        These are only set after you give your explicit consent.
+        <strong>{{ 'privacyPolicy.s4.analyticsLabel' | transloco }}</strong> — {{ 'privacyPolicy.s4.analyticsBody' | transloco }}
       </li>
     </ul>
     <p>
-      You can withdraw your consent at any time by clearing your browser cookies or
-      contacting us at the email address below.
+      {{ 'privacyPolicy.s4.withdraw' | transloco }}
     </p>
   </section>
 
   <section>
-    <h2>5. Third-party services</h2>
-    <p>ChineseReads uses the following third-party services:</p>
+    <h2>{{ 'privacyPolicy.s5.title' | transloco }}</h2>
+    <p>{{ 'privacyPolicy.s5.intro' | transloco }}</p>
     <ul>
       <li>
-        <strong>Google Analytics</strong> — for anonymous traffic analysis.
-        Privacy policy: <a href="https://policies.google.com/privacy" target="_blank">policies.google.com/privacy</a>
+        <strong>Google Analytics</strong> — {{ 'privacyPolicy.s5.ga' | transloco }}
+        {{ 'privacyPolicy.s5.privacyPolicyLabel' | transloco }}: <a href="https://policies.google.com/privacy" target="_blank">policies.google.com/privacy</a>
       </li>
       <li>
-        <strong>DeepSeek API</strong> — to generate Chinese learning texts. Only text content is sent, no personal data.
-        Privacy policy: <a href="https://www.deepseek.com/privacy" target="_blank">deepseek.com/privacy</a>
+        <strong>DeepSeek API</strong> — {{ 'privacyPolicy.s5.deepseek' | transloco }}
+        {{ 'privacyPolicy.s5.privacyPolicyLabel' | transloco }}: <a href="https://www.deepseek.com/privacy" target="_blank">deepseek.com/privacy</a>
       </li>
       <li>
-        <strong>Google Cloud Vision</strong> — to extract text from uploaded images. Images are processed and not stored.
-        Privacy policy: <a href="https://cloud.google.com/terms/cloud-privacy-notice" target="_blank">cloud.google.com</a>
+        <strong>Google Cloud Vision</strong> — {{ 'privacyPolicy.s5.vision' | transloco }}
+        {{ 'privacyPolicy.s5.privacyPolicyLabel' | transloco }}: <a href="https://cloud.google.com/terms/cloud-privacy-notice" target="_blank">cloud.google.com</a>
       </li>
       <li>
-        <strong>Google Cloud Text-to-Speech</strong> — to generate audio pronunciation of Chinese text, words and sentences.
-        Only the Chinese text to be read aloud is sent, no personal data. Audio is generated on demand and not stored.
-        Privacy policy: <a href="https://cloud.google.com/terms/cloud-privacy-notice" target="_blank">cloud.google.com</a>
+        <strong>Google Cloud Text-to-Speech</strong> — {{ 'privacyPolicy.s5.tts' | transloco }}
+        {{ 'privacyPolicy.s5.privacyPolicyLabel' | transloco }}: <a href="https://cloud.google.com/terms/cloud-privacy-notice" target="_blank">cloud.google.com</a>
       </li>
     </ul>
   </section>
 
   <section>
-    <h2>6. Data retention</h2>
+    <h2>{{ 'privacyPolicy.s6.title' | transloco }}</h2>
     <p>
-      Account data is retained as long as your account is active. You can request deletion of your account
-      and all associated data at any time by contacting us.
-      Analytics data is retained for 26 months as per Google Analytics default settings.
+      {{ 'privacyPolicy.s6.body' | transloco }}
     </p>
   </section>
 
   <section>
-    <h2>7. Your rights (GDPR)</h2>
-    <p>Under the General Data Protection Regulation (GDPR), you have the right to:</p>
+    <h2>{{ 'privacyPolicy.s7.title' | transloco }}</h2>
+    <p>{{ 'privacyPolicy.s7.intro' | transloco }}</p>
     <ul>
-      <li>Access your personal data</li>
-      <li>Correct inaccurate data</li>
-      <li>Request deletion of your data</li>
-      <li>Object to processing</li>
-      <li>Data portability</li>
-      <li>Withdraw consent at any time</li>
+      <li>{{ 'privacyPolicy.s7.item1' | transloco }}</li>
+      <li>{{ 'privacyPolicy.s7.item2' | transloco }}</li>
+      <li>{{ 'privacyPolicy.s7.item3' | transloco }}</li>
+      <li>{{ 'privacyPolicy.s7.item4' | transloco }}</li>
+      <li>{{ 'privacyPolicy.s7.item5' | transloco }}</li>
+      <li>{{ 'privacyPolicy.s7.item6' | transloco }}</li>
     </ul>
-    <p>To exercise these rights, contact us at: <strong>victorgarciallorente20&#64;gmail.com</strong></p>
+    <p>{{ 'privacyPolicy.s7.contact' | transloco }} <strong>victorgarciallorente20&#64;gmail.com</strong></p>
   </section>
 
   <section>
-    <h2>8. Contact</h2>
+    <h2>{{ 'privacyPolicy.s8.title' | transloco }}</h2>
     <p>
-      If you have any questions about this privacy policy, please contact us at:
+      {{ 'privacyPolicy.s8.body' | transloco }}
       <strong>victorgarciallorente20&#64;gmail.com</strong>
     </p>
   </section>

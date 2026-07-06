@@ -1,11 +1,12 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 
 import { TextsService, ValidationResult } from '../../services/texts.service';
 import { WordsService, Word } from '../../services/words.service';
 import { LoginService } from '../../services/login.service';
+import { LocaleNavService } from '../../i18n/locale-nav.service';
 
 interface MissingWordForm {
   chinese: string;
@@ -20,7 +21,7 @@ interface MissingWordForm {
 @Component({
   selector: 'app-upload-text',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslocoModule],
   templateUrl: './upload-text.component.html',
   styleUrl: './upload-text.component.scss'
 })
@@ -56,17 +57,18 @@ export class UploadTextComponent implements OnInit {
     private textsService: TextsService,
     private wordsService: WordsService,
     private loginService: LoginService,
-    private router: Router
+    private transloco: TranslocoService,
+    private localeNav: LocaleNavService
   ) {}
 
   ngOnInit(): void {
     this.loginService.reqIsLogged().subscribe({
       next: (user) => {
         if (!user || !user.roles.includes('ADMIN')) {
-          this.router.navigate(['/']);
+          this.localeNav.navigate(['/']);
         }
       },
-      error: () => this.router.navigate(['/'])
+      error: () => this.localeNav.navigate(['/'])
     });
   }
 
@@ -115,14 +117,14 @@ export class UploadTextComponent implements OnInit {
 
     if (!this.formComplete) {
       this.errorMessage = this.imageFile
-        ? 'Please fill in all required fields before validating.'
-        : 'An image is required. Please upload one before validating.';
+        ? this.transloco.translate('uploadText.errors.fillRequired')
+        : this.transloco.translate('uploadText.errors.imageRequiredValidate');
       this.status = 'error';
       return;
     }
 
     if (!this.sentenceCountMatch) {
-      this.errorMessage = 'The number of sentences (periods) in the Chinese text, English translation and Spanish translation do not match. Please review them.';
+      this.errorMessage = this.transloco.translate('uploadText.errors.sentenceMismatch');
       this.status = 'error';
       return;
     }
@@ -146,14 +148,14 @@ export class UploadTextComponent implements OnInit {
       },
       error: () => {
         this.status = 'error';
-        this.errorMessage = 'Error validating text. Please try again.';
+        this.errorMessage = this.transloco.translate('uploadText.errors.validateFailed');
       }
     });
   }
 
   saveWord(form: MissingWordForm): void {
     if (!form.pinyin.trim() || !form.english.trim() || !form.spanish.trim()) {
-      form.error = 'All fields are required.';
+      form.error = this.transloco.translate('uploadText.errors.wordFieldsRequired');
       return;
     }
     form.saving = true;
@@ -174,7 +176,9 @@ export class UploadTextComponent implements OnInit {
       },
       error: (err) => {
         form.saving = false;
-        form.error = err.status === 409 ? 'Word already exists.' : 'Error saving word.';
+        form.error = err.status === 409
+          ? this.transloco.translate('uploadText.errors.wordExists')
+          : this.transloco.translate('uploadText.errors.wordSaveFailed');
         if (err.status === 409) {
           form.saved = true;
           if (this.allMissingWordsSaved) this.validate();
@@ -217,14 +221,14 @@ export class UploadTextComponent implements OnInit {
       error: (err) => {
         this.status = 'error';
         this.errorMessage = err.status === 409
-          ? 'A text with this title already exists.'
-          : 'Error uploading text. Please try again.';
+          ? this.transloco.translate('uploadText.errors.titleExists')
+          : this.transloco.translate('uploadText.errors.uploadFailed');
       }
     });
   }
 
   goToTexts(): void {
-    this.router.navigate(['/texts']);
+    this.localeNav.navigate(['/texts']);
   }
 
   back(): void {

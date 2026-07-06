@@ -6,6 +6,8 @@ import { CollectionsComponent } from './collections.component';
 import { CollectionsService, CollectionDTO, FlashcardDTO } from '../../services/collections.service';
 import { LoginService } from '../../services/login.service';
 
+import { translocoTesting } from "../../i18n/transloco-testing";
+
 describe('CollectionsComponent', () => {
   let component: CollectionsComponent;
   let fixture: ComponentFixture<CollectionsComponent>;
@@ -38,7 +40,7 @@ describe('CollectionsComponent', () => {
     collectionsServiceSpy.getUserCollections.and.returnValue(of(mockCollections));
 
     await TestBed.configureTestingModule({
-      imports: [CollectionsComponent, RouterTestingModule],
+      imports: [translocoTesting(), CollectionsComponent, RouterTestingModule],
       providers: [
         { provide: CollectionsService, useValue: collectionsServiceSpy },
         { provide: LoginService, useValue: loginServiceSpy }

@@ -2,10 +2,12 @@ import { TestBed } from '@angular/core/testing';
 import { CookieBannerComponent } from './cookie-banner.component';
 import { provideRouter } from '@angular/router';
 
+import { translocoTesting } from "../../i18n/transloco-testing";
+
 describe('CookieBannerComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CookieBannerComponent],
+      imports: [translocoTesting(), CookieBannerComponent],
       providers: [provideRouter([])]
     }).compileComponents();
   });

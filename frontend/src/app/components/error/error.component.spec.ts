@@ -4,10 +4,12 @@ import { provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 
+import { translocoTesting } from "../../i18n/transloco-testing";
+
 describe('ErrorComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ErrorComponent],
+      imports: [translocoTesting(), ErrorComponent],
       providers: [
         provideRouter([]),
         provideHttpClient(),

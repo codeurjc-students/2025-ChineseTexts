@@ -1,26 +1,26 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
   <div class="container">
 
-    <a class="navbar-brand d-flex align-items-center" [routerLink]="['/']"
+    <a class="navbar-brand d-flex align-items-center" [routerLink]="['/'] | localizeLink"
        style="font-weight: 700; font-size: 1.8rem; color: #c0392b;">
-      <i class="bi bi-book-half me-2" style="font-size: 1.8rem;"></i> Home
+      <i class="bi bi-book-half me-2" style="font-size: 1.8rem;"></i> {{ 'header.brand' | transloco }}
     </a>
 
     <button class="navbar-toggler border-0" type="button"
       data-bs-toggle="collapse" data-bs-target="#navbarNav"
-      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      aria-controls="navbarNav" aria-expanded="false" [attr.aria-label]="'header.nav.toggle' | transloco">
       <span class="navbar-toggler-icon"></span>
     </button>
 
     <div class="collapse navbar-collapse" id="navbarNav">
 
       <ul class="navbar-nav me-auto mb-2 mb-lg-0 fs-5">
-        <li class="nav-item"><a class="nav-link text-dark fw-semibold" [routerLink]="['/texts', 'HSK1']">HSK1</a></li>
-        <li class="nav-item"><a class="nav-link text-dark fw-semibold" [routerLink]="['/texts', 'HSK2']">HSK2</a></li>
-        <li class="nav-item"><a class="nav-link text-dark fw-semibold" [routerLink]="['/texts', 'HSK3']">HSK3</a></li>
-        <li class="nav-item"><a class="nav-link text-dark fw-semibold" [routerLink]="['/texts', 'HSK4']">HSK4</a></li>
-        <li class="nav-item"><a class="nav-link text-dark fw-semibold" [routerLink]="['/texts', 'HSK5']">HSK5</a></li>
-        <li class="nav-item"><a class="nav-link text-dark fw-semibold" [routerLink]="['/texts', 'HSK6']">HSK6</a></li>
+        <li class="nav-item"><a class="nav-link text-dark fw-semibold" [routerLink]="['/texts', 'HSK1'] | localizeLink">HSK1</a></li>
+        <li class="nav-item"><a class="nav-link text-dark fw-semibold" [routerLink]="['/texts', 'HSK2'] | localizeLink">HSK2</a></li>
+        <li class="nav-item"><a class="nav-link text-dark fw-semibold" [routerLink]="['/texts', 'HSK3'] | localizeLink">HSK3</a></li>
+        <li class="nav-item"><a class="nav-link text-dark fw-semibold" [routerLink]="['/texts', 'HSK4'] | localizeLink">HSK4</a></li>
+        <li class="nav-item"><a class="nav-link text-dark fw-semibold" [routerLink]="['/texts', 'HSK5'] | localizeLink">HSK5</a></li>
+        <li class="nav-item"><a class="nav-link text-dark fw-semibold" [routerLink]="['/texts', 'HSK6'] | localizeLink">HSK6</a></li>
       </ul>
 
       <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
@@ -28,46 +28,46 @@
         <ng-container *ngIf="authReady; else loadingNav">
 
           <li *ngIf="isLoggedIn$ | async" class="nav-item me-2">
-            <a class="nav-link fw-semibold text-dark" [routerLink]="['/collections']">
-              <i class="bi bi-collection me-1"></i> My Collections
+            <a class="nav-link fw-semibold text-dark" [routerLink]="['/collections'] | localizeLink">
+              <i class="bi bi-collection me-1"></i> {{ 'header.nav.myCollections' | transloco }}
             </a>
           </li>
 
           <li *ngIf="isLoggedIn$ | async" class="nav-item me-2">
-            <a class="nav-link fw-semibold text-dark" [routerLink]="['/my-tools']">
-              <i class="bi bi-magic me-1"></i> My Tools
+            <a class="nav-link fw-semibold text-dark" [routerLink]="['/my-tools'] | localizeLink">
+              <i class="bi bi-magic me-1"></i> {{ 'header.nav.myTools' | transloco }}
             </a>
           </li>
 
           <li *ngIf="loginService.isRoleAdmin()" class="nav-item me-2">
-            <a class="nav-link fw-semibold text-dark" [routerLink]="['/admin-tools']">
-              <i class="bi bi-stars me-1"></i> Admin Tools
+            <a class="nav-link fw-semibold text-dark" [routerLink]="['/admin-tools'] | localizeLink">
+              <i class="bi bi-stars me-1"></i> {{ 'header.nav.adminTools' | transloco }}
             </a>
           </li>
 
           <li *ngIf="!(isLoggedIn$ | async)" class="nav-item me-2">
             <a class="nav-link btn btn-outline-danger rounded-pill px-3 py-1 fw-bold"
               href="#" data-bs-toggle="modal" data-bs-target="#loginModal">
-              <i class="bi bi-box-arrow-in-right me-1"></i> Login
+              <i class="bi bi-box-arrow-in-right me-1"></i> {{ 'header.nav.login' | transloco }}
             </a>
           </li>
 
           <li *ngIf="!(isLoggedIn$ | async)" class="nav-item me-2">
             <a class="nav-link btn btn-danger rounded-pill px-3 py-1 fw-bold"
-              [routerLink]="['/signup']">
-              <i class="bi bi-person-fill me-1"></i> Signup
+              [routerLink]="['/signup'] | localizeLink">
+              <i class="bi bi-person-fill me-1"></i> {{ 'header.nav.signup' | transloco }}
             </a>
           </li>
 
           <li *ngIf="isLoggedIn$ | async" class="nav-item me-2">
-            <a class="nav-link fw-semibold text-dark" [routerLink]="['/profile']">
-              <i class="bi bi-person-circle me-1"></i> Profile
+            <a class="nav-link fw-semibold text-dark" [routerLink]="['/profile'] | localizeLink">
+              <i class="bi bi-person-circle me-1"></i> {{ 'header.nav.profile' | transloco }}
             </a>
           </li>
 
           <li *ngIf="isLoggedIn$ | async" class="nav-item">
             <a class="nav-link btn btn-danger rounded-pill px-3 py-1 fw-bold" (click)="logout()">
-              <i class="bi bi-box-arrow-right me-1"></i> Logout
+              <i class="bi bi-box-arrow-right me-1"></i> {{ 'header.nav.logout' | transloco }}
             </a>
           </li>
 
@@ -79,8 +79,10 @@
       </ul>
 
       <div class="d-flex ms-3">
-        <img src="https://img.freepik.com/free-vector/illustration-spain-flag_53876-18168.jpg" class="flag-button" alt="Español" />
-        <img src="https://img.freepik.com/free-vector/illustration-uk-flag_53876-18166.jpg" class="flag-button" alt="English" />
+        <img src="assets/flags/es.svg" class="flag-button" [class.active]="(lang$ | async) === 'es'"
+             role="button" (click)="switchLang('es')" [attr.aria-label]="'header.lang.spanish' | transloco" alt="Español" />
+        <img src="assets/flags/gb.svg" class="flag-button" [class.active]="(lang$ | async) === 'en'"
+             role="button" (click)="switchLang('en')" [attr.aria-label]="'header.lang.english' | transloco" alt="English" />
       </div>
 
     </div>
@@ -93,14 +95,14 @@
     <div class="modal-content login-form-container bg-light rounded-3 shadow-lg">
 
       <div class="modal-header border-0 pb-0">
-        <h4 class="modal-title w-100 text-center mb-0">Login</h4>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <h4 class="modal-title w-100 text-center mb-0">{{ 'header.nav.login' | transloco }}</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" [attr.aria-label]="'common.buttons.close' | transloco"></button>
       </div>
 
       <div class="modal-body pt-3">
 
         <div class="mb-3">
-          <label for="loginEmail" class="form-label">Email</label>
+          <label for="loginEmail" class="form-label">{{ 'header.login.emailLabel' | transloco }}</label>
           <input
             [(ngModel)]="loginEmail"
             name="loginEmail"
@@ -108,7 +110,7 @@
             class="form-control"
             [class.is-invalid]="loginAttempted && emailError"
             id="loginEmail"
-            placeholder="Enter your email"
+            placeholder="{{ 'header.login.emailPlaceholder' | transloco }}"
             (keydown.enter)="login()"
           />
           <div class="invalid-feedback" *ngIf="loginAttempted && emailError">
@@ -117,7 +119,7 @@
         </div>
 
         <div class="mb-3">
-          <label for="loginPassword" class="form-label">Password</label>
+          <label for="loginPassword" class="form-label">{{ 'header.login.passwordLabel' | transloco }}</label>
           <input
             [(ngModel)]="loginPassword"
             name="loginPassword"
@@ -125,7 +127,7 @@
             class="form-control"
             [class.is-invalid]="loginAttempted && passwordError"
             id="loginPassword"
-            placeholder="Enter your password"
+            placeholder="{{ 'header.login.passwordPlaceholder' | transloco }}"
             (keydown.enter)="login()"
           />
           <div class="invalid-feedback" *ngIf="loginAttempted && passwordError">
@@ -138,10 +140,10 @@
         </div>
 
         <div class="d-grid gap-2">
-          <button type="button" class="btn btn-danger" (click)="login()">Login</button>
+          <button type="button" class="btn btn-danger" (click)="login()">{{ 'header.nav.login' | transloco }}</button>
           <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal"
             (click)="loginAttempted = false; emailError = ''; passwordError = ''; messageError = ''">
-            Cancel
+            {{ 'common.buttons.cancel' | transloco }}
           </button>
         </div>
 

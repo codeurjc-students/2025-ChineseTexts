@@ -1,6 +1,7 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 
 import { LoginService } from '../../services/login.service';
 import {
@@ -25,7 +26,7 @@ const PAGE_SIZE = 20;
 @Component({
   selector: 'app-admin-users',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslocoModule],
   templateUrl: './admin-users.component.html',
   styleUrl: './admin-users.component.scss'
 })
@@ -56,7 +57,8 @@ export class AdminUsersComponent implements OnInit {
 
   constructor(
     private userService: UserService,
-    private loginService: LoginService
+    private loginService: LoginService,
+    private transloco: TranslocoService
   ) {}
 
   ngOnInit(): void {
@@ -80,7 +82,7 @@ export class AdminUsersComponent implements OnInit {
       },
       error: () => {
         this.listLoading = false;
-        this.showError('Could not load users. Please try again.');
+        this.showError(this.transloco.translate('adminUsers.errors.loadUsers'));
       }
     });
   }
@@ -118,8 +120,8 @@ export class AdminUsersComponent implements OnInit {
         this.detailLoading = false;
         this.detail = null;
         this.showError(err.status === 404
-          ? 'This user no longer exists.'
-          : 'Could not load the user. Please try again.');
+          ? this.transloco.translate('adminUsers.errors.userGone')
+          : this.transloco.translate('adminUsers.errors.loadUser'));
       }
     });
   }
@@ -154,11 +156,11 @@ export class AdminUsersComponent implements OnInit {
       next: (updated) => {
         this.detailLoading = false;
         if (this.detail) this.detail.blocked = updated.blocked;
-        this.showSuccess(next ? 'User blocked.' : 'User unblocked.');
+        this.showSuccess(this.transloco.translate(next ? 'adminUsers.messages.blocked' : 'adminUsers.messages.unblocked'));
       },
       error: (err) => {
         this.detailLoading = false;
-        this.showError(err.error?.message || 'Could not update the user. Please try again.');
+        this.showError(err.error?.message || this.transloco.translate('adminUsers.errors.updateUser'));
       }
     });
   }
@@ -168,7 +170,7 @@ export class AdminUsersComponent implements OnInit {
   toggleAdmin(): void {
     if (!this.detail || this.isSelf) return;
     const roles = this.isTargetAdmin ? ['USER'] : ['USER', 'ADMIN'];
-    this.saveRoles(roles, this.isTargetAdmin ? 'Admin role removed.' : 'User is now an admin.');
+    this.saveRoles(roles, this.transloco.translate(this.isTargetAdmin ? 'adminUsers.messages.adminRemoved' : 'adminUsers.messages.adminGranted'));
   }
 
   private saveRoles(roles: string[], successMsg: string): void {
@@ -183,7 +185,7 @@ export class AdminUsersComponent implements OnInit {
       },
       error: (err) => {
         this.detailLoading = false;
-        this.showError(err.error?.message || 'Could not update the user. Please try again.');
+        this.showError(err.error?.message || this.transloco.translate('adminUsers.errors.updateUser'));
       }
     });
   }
@@ -205,7 +207,7 @@ export class AdminUsersComponent implements OnInit {
   saveEdit(): void {
     if (!this.detail) return;
     if (!this.editName.trim()) {
-      this.showError('Name cannot be empty.');
+      this.showError(this.transloco.translate('adminUsers.errors.nameEmpty'));
       return;
     }
     this.clearFeedback();
@@ -218,11 +220,11 @@ export class AdminUsersComponent implements OnInit {
         this.detailLoading = false;
         this.detail = d;
         this.editing = false;
-        this.showSuccess('Changes saved.');
+        this.showSuccess(this.transloco.translate('adminUsers.messages.changesSaved'));
       },
       error: (err) => {
         this.detailLoading = false;
-        this.showError(err.error?.message || 'Could not save changes. Please try again.');
+        this.showError(err.error?.message || this.transloco.translate('adminUsers.errors.saveChanges'));
       }
     });
   }
@@ -249,11 +251,11 @@ export class AdminUsersComponent implements OnInit {
       next: () => {
         this.detailLoading = false;
         this.backToList();
-        this.showSuccess(`User "${removed}" was permanently deleted.`);
+        this.showSuccess(this.transloco.translate('adminUsers.messages.deleted', { email: removed }));
       },
       error: (err) => {
         this.detailLoading = false;
-        this.showError(err.error?.message || 'Could not delete the user. Please try again.');
+        this.showError(err.error?.message || this.transloco.translate('adminUsers.errors.deleteUser'));
       }
     });
   }

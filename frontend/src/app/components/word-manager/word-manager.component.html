@@ -1,15 +1,14 @@
 <div class="word-manager">
 
   <div class="section-header">
-    <button class="btn-icon" (click)="goBack()" title="Back to Admin Tools">
+    <button class="btn-icon" (click)="goBack()" [attr.title]="'wordManager.backToAdmin' | transloco">
       <i class="bi bi-arrow-left"></i>
     </button>
-    <h2 class="section-title">Manage dictionary word</h2>
+    <h2 class="section-title">{{ 'wordManager.title' | transloco }}</h2>
   </div>
 
   <p class="section-hint">
-    Search a word by its Chinese characters. If it exists you can edit or delete it;
-    if it does not, you can add it to the dictionary.
+    {{ 'wordManager.hint' | transloco }}
   </p>
 
   <!-- ══════ BUSCADOR ══════ -->
@@ -20,7 +19,7 @@
       <button class="btn-primary" (click)="search()" [disabled]="loading">
         <span *ngIf="loading && mode === 'search'" class="spinner-sm"></span>
         <i class="bi bi-search" *ngIf="!(loading && mode === 'search')"></i>
-        Search
+        {{ 'wordManager.search' | transloco }}
       </button>
     </div>
   </div>
@@ -37,17 +36,17 @@
 
     <div class="card-header-row">
       <h3 class="card-label">
-        {{ mode === 'edit' ? 'Edit word' : 'Add new word' }}
+        {{ (mode === 'edit' ? 'wordManager.editTitle' : 'wordManager.createTitle') | transloco }}
       </h3>
       <span class="mode-badge" [ngClass]="mode === 'edit' ? 'mode-badge--edit' : 'mode-badge--new'">
-        {{ mode === 'edit' ? 'In dictionary' : 'New' }}
+        {{ (mode === 'edit' ? 'wordManager.badgeExisting' : 'wordManager.badgeNew') | transloco }}
       </span>
     </div>
 
     <div class="chinese-display">{{ word.chinese || '—' }}</div>
 
     <div class="form-group mt-3">
-      <label>Chinese <span class="required">*</span></label>
+      <label>{{ 'wordManager.fields.chinese' | transloco }} <span class="required">*</span></label>
       <!-- The Chinese characters are the word identity: fixed when editing, set from the
            search when creating. -->
       <input type="text" [(ngModel)]="word.chinese" class="form-input"
@@ -60,13 +59,13 @@
         <input type="text" [(ngModel)]="word.pinyin" class="form-input" placeholder="e.g. nǐ hǎo">
       </div>
       <div class="form-group">
-        <label>English <span class="required">*</span></label>
+        <label>{{ 'wordManager.fields.english' | transloco }} <span class="required">*</span></label>
         <input type="text" [(ngModel)]="word.english" class="form-input" placeholder="e.g. hello">
       </div>
     </div>
 
     <div class="form-group mt-3">
-      <label>Spanish <span class="required">*</span></label>
+      <label>{{ 'wordManager.fields.spanish' | transloco }} <span class="required">*</span></label>
       <input type="text" [(ngModel)]="word.spanish" class="form-input" placeholder="e.g. hola">
     </div>
 
@@ -75,23 +74,23 @@
       <button class="btn-primary" (click)="update()" [disabled]="loading || !fieldsComplete()">
         <span *ngIf="loading" class="spinner-sm"></span>
         <i class="bi bi-save" *ngIf="!loading"></i>
-        Save changes
+        {{ 'wordManager.saveChanges' | transloco }}
       </button>
       <button class="btn-danger" (click)="askDelete()" [disabled]="loading">
-        <i class="bi bi-trash"></i> Delete
+        <i class="bi bi-trash"></i> {{ 'wordManager.delete' | transloco }}
       </button>
       <button class="btn-secondary" (click)="newSearch()" [disabled]="loading">
-        Search another
+        {{ 'wordManager.searchAnother' | transloco }}
       </button>
     </div>
 
     <!-- Confirmación de borrado -->
     <div *ngIf="confirmingDelete" class="confirm-box mt-3">
       <span><i class="bi bi-exclamation-triangle-fill"></i>
-        Delete "<strong>{{ word.chinese }}</strong>" from the dictionary?</span>
+        {{ 'wordManager.confirmDeletePre' | transloco }}<strong>{{ word.chinese }}</strong>{{ 'wordManager.confirmDeletePost' | transloco }}</span>
       <div class="confirm-actions">
-        <button class="btn-danger btn-sm" (click)="confirmDelete()">Yes, delete</button>
-        <button class="btn-secondary btn-sm" (click)="cancelDelete()">Cancel</button>
+        <button class="btn-danger btn-sm" (click)="confirmDelete()">{{ 'wordManager.deleteYes' | transloco }}</button>
+        <button class="btn-secondary btn-sm" (click)="cancelDelete()">{{ 'wordManager.cancel' | transloco }}</button>
       </div>
     </div>
 
@@ -100,10 +99,10 @@
       <button class="btn-primary" (click)="create()" [disabled]="loading || !fieldsComplete()">
         <span *ngIf="loading" class="spinner-sm"></span>
         <i class="bi bi-plus-lg" *ngIf="!loading"></i>
-        Add word
+        {{ 'wordManager.addWord' | transloco }}
       </button>
       <button class="btn-secondary" (click)="newSearch()" [disabled]="loading">
-        Cancel
+        {{ 'wordManager.cancel' | transloco }}
       </button>
     </div>
 

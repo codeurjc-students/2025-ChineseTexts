@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 
 import { HeaderComponent } from './header.component';
 import { LoginService } from '../../services/login.service';
+import { translocoTesting } from '../../i18n/transloco-testing';
 
 describe('HeaderComponent', () => {
   let component: HeaderComponent;
@@ -24,7 +25,7 @@ describe('HeaderComponent', () => {
     loginServiceSpy.isRoleUser.and.returnValue(false);
 
     await TestBed.configureTestingModule({
-      imports: [HeaderComponent],
+      imports: [HeaderComponent, translocoTesting()],
       providers: [
         { provide: LoginService, useValue: loginServiceSpy },
         provideHttpClient(),

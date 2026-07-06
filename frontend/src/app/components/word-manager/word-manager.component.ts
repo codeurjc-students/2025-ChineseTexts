@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 
 import { WordsService, Word } from '../../services/words.service';
 
@@ -18,7 +19,7 @@ type Mode = 'search' | 'edit' | 'create';
 @Component({
   selector: 'app-word-manager',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslocoModule],
   templateUrl: './word-manager.component.html',
   styleUrl: './word-manager.component.scss'
 })
@@ -39,7 +40,10 @@ export class WordManagerComponent {
   message = '';
   messageType: 'success' | 'error' | '' = '';
 
-  constructor(private wordsService: WordsService) {}
+  constructor(
+    private wordsService: WordsService,
+    private transloco: TranslocoService
+  ) {}
 
   private emptyWord(chinese = ''): Word {
     return { chinese, pinyin: '', english: '', spanish: '' };
@@ -68,7 +72,7 @@ export class WordManagerComponent {
     this.clearFeedback();
 
     if (!term) {
-      this.showError('Please enter a Chinese word to search.');
+      this.showError(this.transloco.translate('wordManager.errors.enterWord'));
       return;
     }
 
@@ -85,11 +89,11 @@ export class WordManagerComponent {
           // Word does not exist yet: offer to create it with the searched characters.
           this.word = this.emptyWord(term);
           this.mode = 'create';
-          this.showError(`"${term}" is not in the dictionary yet. Fill in the fields to add it.`);
+          this.showError(this.transloco.translate('wordManager.errors.notFound', { term }));
         } else if (err.status === 401 || err.status === 403) {
-          this.showError('You are not authorized to manage the dictionary.');
+          this.showError(this.transloco.translate('wordManager.errors.unauthorized'));
         } else {
-          this.showError('Error searching for the word. Please try again.');
+          this.showError(this.transloco.translate('wordManager.errors.searchFailed'));
         }
       }
     });
@@ -100,7 +104,7 @@ export class WordManagerComponent {
   create(): void {
     this.clearFeedback();
     if (!this.fieldsComplete()) {
-      this.showError('All fields are required to add a new word.');
+      this.showError(this.transloco.translate('wordManager.errors.fieldsRequiredCreate'));
       return;
     }
 
@@ -110,13 +114,13 @@ export class WordManagerComponent {
         this.loading = false;
         this.word = { ...saved };
         this.mode = 'edit';
-        this.showSuccess('Word added to the dictionary.');
+        this.showSuccess(this.transloco.translate('wordManager.messages.added'));
       },
       error: (err) => {
         this.loading = false;
         this.showError(err.status === 409
-          ? 'This word already exists in the dictionary.'
-          : 'Error adding the word. Please try again.');
+          ? this.transloco.translate('wordManager.errors.exists')
+          : this.transloco.translate('wordManager.errors.addFailed'));
       }
     });
   }
@@ -126,11 +130,11 @@ export class WordManagerComponent {
   update(): void {
     this.clearFeedback();
     if (this.word.id == null) {
-      this.showError('Cannot update a word without an identifier.');
+      this.showError(this.transloco.translate('wordManager.errors.noIdUpdate'));
       return;
     }
     if (!this.fieldsComplete()) {
-      this.showError('All fields are required.');
+      this.showError(this.transloco.translate('wordManager.errors.fieldsRequired'));
       return;
     }
 
@@ -139,13 +143,13 @@ export class WordManagerComponent {
       next: (updated) => {
         this.loading = false;
         this.word = { ...updated };
-        this.showSuccess('Changes saved successfully.');
+        this.showSuccess(this.transloco.translate('wordManager.messages.updated'));
       },
       error: (err) => {
         this.loading = false;
         this.showError(err.status === 404
-          ? 'The word no longer exists. It may have been deleted.'
-          : 'Error saving changes. Please try again.');
+          ? this.transloco.translate('wordManager.errors.goneUpdate')
+          : this.transloco.translate('wordManager.errors.saveFailed'));
       }
     });
   }
@@ -164,7 +168,7 @@ export class WordManagerComponent {
 
   confirmDelete(): void {
     if (this.word.id == null) {
-      this.showError('Cannot delete a word without an identifier.');
+      this.showError(this.transloco.translate('wordManager.errors.noIdDelete'));
       return;
     }
     this.loading = true;
@@ -175,15 +179,15 @@ export class WordManagerComponent {
       next: () => {
         this.loading = false;
         this.resetToSearch();
-        this.showSuccess(`"${removed}" was deleted from the dictionary.`);
+        this.showSuccess(this.transloco.translate('wordManager.messages.deleted', { word: removed }));
       },
       error: (err) => {
         this.loading = false;
         this.showError(err.status === 409
-          ? 'This word is used in existing flashcards and cannot be deleted.'
+          ? this.transloco.translate('wordManager.errors.inUse')
           : err.status === 404
-            ? 'The word no longer exists.'
-            : 'Error deleting the word. Please try again.');
+            ? this.transloco.translate('wordManager.errors.goneDelete')
+            : this.transloco.translate('wordManager.errors.deleteFailed'));
       }
     });
   }

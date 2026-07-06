@@ -6,6 +6,8 @@ import { provideHttpClientTesting, HttpTestingController } from '@angular/common
 import { AdminUsersComponent } from './admin-users.component';
 import { AdminUserSummary, AdminUserDetail } from '../../services/users.service';
 
+import { translocoTesting } from "../../i18n/transloco-testing";
+
 describe('AdminUsersComponent', () => {
   let component: AdminUsersComponent;
   let fixture: ComponentFixture<AdminUsersComponent>;
@@ -24,7 +26,7 @@ describe('AdminUsersComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AdminUsersComponent],
+      imports: [translocoTesting(), AdminUsersComponent],
       providers: [provideRouter([]), provideHttpClient(), provideHttpClientTesting()]
     }).compileComponents();
 

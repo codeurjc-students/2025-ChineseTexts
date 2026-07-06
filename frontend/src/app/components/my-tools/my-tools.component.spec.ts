@@ -5,6 +5,8 @@ import { provideHttpClientTesting, HttpTestingController } from '@angular/common
 
 import { MyToolsComponent } from './my-tools.component';
 
+import { translocoTesting } from "../../i18n/transloco-testing";
+
 describe('MyToolsComponent', () => {
   let component: MyToolsComponent;
   let fixture: ComponentFixture<MyToolsComponent>;
@@ -12,7 +14,7 @@ describe('MyToolsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MyToolsComponent],
+      imports: [translocoTesting(), MyToolsComponent],
       providers: [provideRouter([]), provideHttpClient(), provideHttpClientTesting()]
     }).compileComponents();
 

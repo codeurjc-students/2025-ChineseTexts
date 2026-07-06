@@ -10,6 +10,8 @@ import { TextsService, ValidationResult } from '../../services/texts.service';
 import { WordsService, Word } from '../../services/words.service';
 import { LoginService } from '../../services/login.service';
 
+import { translocoTesting } from "../../i18n/transloco-testing";
+
 describe('UploadTextComponent', () => {
   let component: UploadTextComponent;
   let fixture: ComponentFixture<UploadTextComponent>;
@@ -39,7 +41,7 @@ describe('UploadTextComponent', () => {
     loginServiceSpy.reqIsLogged.and.returnValue(of(mockAdminUser));
 
     await TestBed.configureTestingModule({
-      imports: [UploadTextComponent],
+      imports: [translocoTesting(), UploadTextComponent],
       providers: [
         { provide: TextsService, useValue: textsServiceSpy },
         { provide: WordsService, useValue: wordsServiceSpy },

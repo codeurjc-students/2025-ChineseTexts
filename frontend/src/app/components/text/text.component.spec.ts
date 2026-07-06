@@ -10,6 +10,8 @@ import { LoginService } from '../../services/login.service';
 import { WordsService, Word } from '../../services/words.service';
 import { CollectionsService } from '../../services/collections.service';
 
+import { translocoTesting } from "../../i18n/transloco-testing";
+
 describe('TextComponent', () => {
   let component: TextComponent;
   let fixture: ComponentFixture<TextComponent>;
@@ -66,7 +68,7 @@ describe('TextComponent', () => {
     wordsServiceSpy.getTextWords.and.returnValue(of(mockWords));
 
     await TestBed.configureTestingModule({
-      imports: [TextComponent],
+      imports: [translocoTesting(), TextComponent],
       providers: [
         { provide: TextsService, useValue: textsServiceSpy },
         { provide: LoginService, useValue: loginServiceSpy },

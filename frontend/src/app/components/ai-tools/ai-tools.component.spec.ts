@@ -10,6 +10,8 @@ import { LoginService } from '../../services/login.service';
 import { TextsService } from '../../services/texts.service';
 import { WordsService } from '../../services/words.service';
 
+import { translocoTesting } from "../../i18n/transloco-testing";
+
 describe('AiToolsComponent', () => {
   let component: AiToolsComponent;
   let fixture: ComponentFixture<AiToolsComponent>;
@@ -31,7 +33,7 @@ describe('AiToolsComponent', () => {
     const wordsServiceSpy = jasmine.createSpyObj('WordsService', ['saveWord']);
 
     await TestBed.configureTestingModule({
-      imports: [AiToolsComponent],
+      imports: [translocoTesting(), AiToolsComponent],
       providers: [
         { provide: AiService, useValue: aiServiceSpy },
         { provide: LoginService, useValue: loginServiceSpy },

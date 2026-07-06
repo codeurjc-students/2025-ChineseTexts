@@ -6,11 +6,13 @@ import { UserService, UserDTO } from '../../services/users.service';
 import { LoginService } from '../../services/login.service';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
+import { LocaleNavService } from '../../i18n/locale-nav.service';
 
 @Component({
   selector: 'app-signup',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, TranslocoModule],
   templateUrl: './signup.component.html',
   styleUrls: ['./signup.component.scss']
 })
@@ -24,7 +26,9 @@ export class SignupComponent implements OnInit, OnDestroy {
     private location: Location,
     private userService: UserService,
     private loginService: LoginService,
-    private router: Router
+    private router: Router,
+    private transloco: TranslocoService,
+    private localeNav: LocaleNavService
   ) {
     this.signupForm = this.fb.group({
       name: ['', Validators.required],
@@ -36,12 +40,12 @@ export class SignupComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     if (this.loginService.isLogged()) {
-      this.router.navigate(['/']);
+      this.localeNav.navigate(['/']);
       return;
     }
 
     this.loginSub = this.loginService.loggedIn$.subscribe(isLogged => {
-      if (isLogged) this.router.navigate(['/']);
+      if (isLogged) this.localeNav.navigate(['/']);
     });
   }
 
@@ -68,13 +72,13 @@ export class SignupComponent implements OnInit, OnDestroy {
 
     this.userService.register(userDTO).subscribe({
       next: (response: UserDTO) => {
-        this.router.navigate(['/success'], {
-          queryParams: { msg: 'Your account has been created successfully!' }
+        this.localeNav.navigate(['/success'], {
+          queryParams: { msg: this.transloco.translate('signup.successMessage') }
         });
       },
       error: (err: any) => {
-        const msg = err.error?.message || err.error || 'An unexpected error occurred.';
-        this.router.navigate(['/error'], { queryParams: { msg } });
+        const msg = err.error?.message || err.error || this.transloco.translate('signup.errorGeneric');
+        this.localeNav.navigate(['/error'], { queryParams: { msg } });
       }
     });
   }

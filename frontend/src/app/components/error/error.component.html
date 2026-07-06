@@ -7,7 +7,7 @@
     </div>
 
     <h1 class="mb-3 title">
-      Oops! Something Went Wrong
+      {{ 'error.title' | transloco }}
     </h1>
 
     <p class="subtitle mb-4">
@@ -15,7 +15,7 @@
     </p>
 
     <button class="btn-main mt-2" (click)="goHome()">
-      Back to Home
+      {{ 'error.backHome' | transloco }}
     </button>
 
   </div>

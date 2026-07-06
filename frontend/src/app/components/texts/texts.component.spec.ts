@@ -8,6 +8,8 @@ import { TextsComponent } from './texts.component';
 import { TextsService, TextItem } from '../../services/texts.service';
 import { LoginService } from '../../services/login.service';
 
+import { translocoTesting } from "../../i18n/transloco-testing";
+
 describe('TextsComponent', () => {
   let component: TextsComponent;
   let fixture: ComponentFixture<TextsComponent>;
@@ -45,7 +47,7 @@ describe('TextsComponent', () => {
     loginServiceSpy.reqIsLogged.and.returnValue(of(null));
 
     await TestBed.configureTestingModule({
-      imports: [TextsComponent],
+      imports: [translocoTesting(), TextsComponent],
       providers: [
         { provide: TextsService, useValue: textsServiceSpy },
         { provide: LoginService, useValue: loginServiceSpy },

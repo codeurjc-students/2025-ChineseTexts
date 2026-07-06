@@ -2,16 +2,18 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 
 import { LoginService } from '../../services/login.service';
 import { UserService, UserDTO } from '../../services/users.service';
+import { LocaleNavService } from '../../i18n/locale-nav.service';
 
 type ProfileSection = 'view' | 'editProfile' | 'editPassword' | 'deleteAccount';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslocoModule],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss'
 })
@@ -46,24 +48,27 @@ export class ProfileComponent implements OnInit {
   constructor(
     private loginService: LoginService,
     private userService: UserService,
-    private router: Router
+    private router: Router,
+    private transloco: TranslocoService,
+    private localeNav: LocaleNavService
   ) {}
 
   ngOnInit(): void {
     this.loginService.reqIsLogged().subscribe({
       next: (user) => {
         if (!user) {
-          this.router.navigate(['/']);
+          this.localeNav.navigate(['/']);
         } else {
           this.user = user;
         }
       },
-      error: () => this.router.navigate(['/'])
+      error: () => this.localeNav.navigate(['/'])
     });
   }
 
   get languageLabel(): string {
-    return this.languages.find(l => l.value === this.user?.language)?.label ?? '';
+    const lang = this.languages.find(l => l.value === this.user?.language);
+    return lang ? this.transloco.translate('profile.languages.' + lang.value) : '';
   }
 
   // ——— Editar perfil ———
@@ -85,7 +90,7 @@ export class ProfileComponent implements OnInit {
     this.profileStatus = 'idle';
 
     if (!this.editName.trim()) {
-      this.profileError = 'Name cannot be empty.';
+      this.profileError = this.transloco.translate('profile.errors.nameEmpty');
       this.profileStatus = 'error';
       return;
     }
@@ -104,7 +109,7 @@ export class ProfileComponent implements OnInit {
       },
       error: () => {
         this.profileStatus = 'error';
-        this.profileError = 'Error updating profile. Please try again.';
+        this.profileError = this.transloco.translate('profile.errors.updateFailed');
       }
     });
   }
@@ -131,25 +136,25 @@ export class ProfileComponent implements OnInit {
     this.passwordStatus = 'idle';
 
     if (!this.currentPassword.trim()) {
-      this.passwordError = 'Please enter your current password.';
+      this.passwordError = this.transloco.translate('profile.errors.currentPasswordEmpty');
       this.passwordStatus = 'error';
       return;
     }
 
     if (this.newPassword.length < 6) {
-      this.passwordError = 'New password must be at least 6 characters.';
+      this.passwordError = this.transloco.translate('profile.errors.newPasswordTooShort');
       this.passwordStatus = 'error';
       return;
     }
 
     if (this.newPassword !== this.confirmPassword) {
-      this.passwordError = 'New passwords do not match.';
+      this.passwordError = this.transloco.translate('profile.errors.newPasswordsMismatch');
       this.passwordStatus = 'error';
       return;
     }
 
     if (this.newPassword === this.currentPassword) {
-      this.passwordError = 'New password must be different from the current one.';
+      this.passwordError = this.transloco.translate('profile.errors.newPasswordSameAsCurrent');
       this.passwordStatus = 'error';
       return;
     }
@@ -166,13 +171,13 @@ export class ProfileComponent implements OnInit {
           },
           error: () => {
             this.passwordStatus = 'error';
-            this.passwordError = 'Error changing password. Please try again.';
+            this.passwordError = this.transloco.translate('profile.errors.changePasswordFailed');
           }
         });
       },
       error: () => {
         this.passwordStatus = 'error';
-        this.passwordError = 'Current password is incorrect.';
+        this.passwordError = this.transloco.translate('profile.errors.currentPasswordIncorrect');
       }
     });
   }
@@ -192,7 +197,7 @@ export class ProfileComponent implements OnInit {
 
   confirmDeleteAccount(): void {
     if (!this.deleteConfirmValid) {
-      this.deleteError = 'Please type DELETE to confirm.';
+      this.deleteError = this.transloco.translate('profile.errors.typeDeleteToConfirm');
       this.deleteStatus = 'error';
       return;
     }
@@ -203,13 +208,13 @@ export class ProfileComponent implements OnInit {
       next: () => {
         // Clear the (now orphaned) session and go home.
         this.loginService.logout().subscribe({
-          next: () => this.router.navigate(['/']),
-          error: () => this.router.navigate(['/'])
+          next: () => this.localeNav.navigate(['/']),
+          error: () => this.localeNav.navigate(['/'])
         });
       },
       error: () => {
         this.deleteStatus = 'error';
-        this.deleteError = 'Error deleting your account. Please try again.';
+        this.deleteError = this.transloco.translate('profile.errors.deleteFailed');
       }
     });
   }
