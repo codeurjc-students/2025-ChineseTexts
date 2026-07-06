@@ -23,7 +23,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.chinesereads.backend.Model.User;
 import com.chinesereads.backend.Repository.UserRepository;
+import com.chinesereads.backend.Repository.UserTextRepository;
 import com.chinesereads.backend.Service.UserService;
+import com.chinesereads.backend.dto.AdminUserDetailDTO;
 import com.chinesereads.backend.dto.UserDTO;
 import com.chinesereads.backend.dto.UserMapper;
 import com.chinesereads.backend.dto.UserMapperImpl;
@@ -31,6 +33,7 @@ import com.chinesereads.backend.dto.UserMapperImpl;
 public class UserServiceTest {
 
     private UserRepository userRepository;
+    private UserTextRepository userTextRepository;
     private UserService userService;
     private UserMapper userMapper;
     private PasswordEncoder passwordEncoder;
@@ -38,12 +41,14 @@ public class UserServiceTest {
     @BeforeEach
     public void setUp() {
         userRepository = mock(UserRepository.class);
+        userTextRepository = mock(UserTextRepository.class);
         userMapper = new UserMapperImpl();
         passwordEncoder = new BCryptPasswordEncoder();
         userService = new UserService();
 
         // Inyectamos dependencias manualmente via reflection
         injectField(userService, "userRepository", userRepository);
+        injectField(userService, "userTextRepository", userTextRepository);
         injectField(userService, "userMapper", userMapper);
         injectField(userService, "passwordEncoder", passwordEncoder);
     }
@@ -56,6 +61,19 @@ public class UserServiceTest {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Test
+    @DisplayName("Admin user detail includes the user's private text count")
+    public void testGetUserDetailIncludesTextCount() {
+        User user = new User("u@test.com", "U", "encoded", "es", "USER");
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(userTextRepository.countByOwner(user)).thenReturn(3L);
+
+        AdminUserDetailDTO detail = userService.getUserDetail(1L);
+
+        assertEquals(3, detail.textsCount());
+        verify(userTextRepository, times(1)).countByOwner(user);
     }
 
     // Test unitario 1: Cuando se registra un usuario con un email nuevo, se guarda correctamente

@@ -6,8 +6,7 @@ import java.util.List;
 
 /**
  * Full user profile for the admin detail page: identity, status, activity dates
- * and derived statistics (collection / flashcard counts). Designed to be
- * extended later (e.g. OCR / text-generation usage counters from Task 3).
+ * and derived statistics (collection / flashcard / private-text counts).
  */
 public record AdminUserDetailDTO(
         Long id,
@@ -20,5 +19,6 @@ public record AdminUserDetailDTO(
         LocalDateTime lastAccess,
         int collectionsCount,
         int flashcardsCount,
+        int textsCount,
         List<AdminCollectionSummaryDTO> collections) {
 }

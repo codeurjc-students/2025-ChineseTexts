@@ -770,7 +770,8 @@
     },
     "stats": {
       "collections": "Collections",
-      "flashcards": "Flashcards"
+      "flashcards": "Flashcards",
+      "texts": "Texts"
     },
     "list": {
       "hint": "Search by email or name, then click a user to see their profile and manage them.",
