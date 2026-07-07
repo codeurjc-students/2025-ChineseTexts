@@ -82,8 +82,8 @@ export class SignupComponent implements OnInit, OnDestroy {
         });
       },
       error: (err: any) => {
-        // The backend returns a stable error "code"; render it in the active
-        // language instead of the backend's raw English "message".
+        // Prefer the backend's stable error "code"; fall back to the HTTP STATUS, which
+        // survives even where the JSON error body is replaced by a generic one in prod.
         const codeMap: Record<string, string> = {
           EMAIL_IN_USE: 'signup.errors.emailInUse',
           INVALID_EMAIL: 'signup.errors.invalidEmail',
@@ -91,8 +91,9 @@ export class SignupComponent implements OnInit, OnDestroy {
           PASSWORD_TOO_SHORT: 'signup.errors.passwordTooShort',
           TERMS_NOT_ACCEPTED: 'signup.errors.termsNotAccepted'
         };
-        const key = codeMap[err.error?.code] || 'signup.errorGeneric';
-        const msg = this.transloco.translate(key);
+        let key = codeMap[err.error?.code];
+        if (!key && err?.status === 409) key = 'signup.errors.emailInUse';
+        const msg = this.transloco.translate(key || 'signup.errorGeneric');
         this.localeNav.navigate(['/error'], { queryParams: { msg } });
       }
     });
