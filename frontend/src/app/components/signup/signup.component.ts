@@ -70,7 +70,9 @@ export class SignupComponent implements OnInit, OnDestroy {
       collections: [],
       roles: ['USER'],
       password: this.signupForm.value.password,
-      newPassword: null
+      newPassword: null,
+      // Consent is validated server-side too; sent from the required checkbox.
+      termsAccepted: this.signupForm.value.acceptTerms
     };
 
     this.userService.register(userDTO).subscribe({
@@ -86,7 +88,8 @@ export class SignupComponent implements OnInit, OnDestroy {
           EMAIL_IN_USE: 'signup.errors.emailInUse',
           INVALID_EMAIL: 'signup.errors.invalidEmail',
           NAME_REQUIRED: 'signup.errors.nameRequired',
-          PASSWORD_TOO_SHORT: 'signup.errors.passwordTooShort'
+          PASSWORD_TOO_SHORT: 'signup.errors.passwordTooShort',
+          TERMS_NOT_ACCEPTED: 'signup.errors.termsNotAccepted'
         };
         const key = codeMap[err.error?.code] || 'signup.errorGeneric';
         const msg = this.transloco.translate(key);

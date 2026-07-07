@@ -11,6 +11,8 @@ export interface UserDTO {
   roles: string[];
   password: string;
   newPassword: string | null;
+  /** GDPR: whether the user accepted the terms of use on signup (validated server-side). */
+  termsAccepted?: boolean;
 }
 
 /** One row of the admin user list. */

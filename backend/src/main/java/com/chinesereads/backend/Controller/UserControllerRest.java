@@ -61,6 +61,13 @@ public class UserControllerRest {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(Map.of("code", "PASSWORD_TOO_SHORT", "message", "Password must be at least 4 characters"));
         }
+        // GDPR: consent is enforced HERE, not just by the client checkbox. A stale cached
+        // page (or any direct API call) that omits it is rejected, so we never create an
+        // account — nor record a false proof of consent — without genuine acceptance.
+        if (!userDTO.termsAccepted()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("code", "TERMS_NOT_ACCEPTED", "message", "You must accept the terms of use"));
+        }
 
         UserDTO newUser = userService.save(userDTO);
         if (newUser == null) {

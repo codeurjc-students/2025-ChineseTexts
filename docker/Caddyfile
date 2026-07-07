@@ -8,6 +8,19 @@ chinesereads.com, www.chinesereads.com {
 
     handle {
         root * /srv
+
+        # Ficheros de build con hash en el nombre (main-XXXX.js, styles-XXXX.css…):
+        # su nombre cambia si cambia el contenido, así que se pueden cachear "para
+        # siempre" con total seguridad.
+        @immutable path_regexp \-[A-Za-z0-9]{6,}\.(js|css|woff2)$
+        header @immutable Cache-Control "public, max-age=31536000, immutable"
+
+        # HTML (páginas prerenderizadas, index.html raíz y rutas del SPA): se revalida
+        # SIEMPRE, para que tras un despliegue el navegador coja la versión nueva sin
+        # tener que recargar a mano (evita arrastrar una página/bundle cacheado viejo).
+        @html not path_regexp \.(js|css|woff2|woff|ttf|otf|png|jpe?g|gif|svg|ico|webp|json|xml|txt|map|webmanifest|wasm)$
+        header @html Cache-Control "no-cache"
+
         # Sirve el HTML prerenderizado por ruta ({path}/index.html) antes de caer
         # al index.html raíz. Sin la parte "{path}/index.html", rutas como /texts
         # o /signup servían la home y perdían su SEO (título/meta/Open Graph propios).

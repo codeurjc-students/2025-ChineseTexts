@@ -58,8 +58,35 @@ export class MyTextReaderComponent implements OnInit {
   get displayTranslation(): string {
     if (!this.reader) return '';
     const es = this.transloco.getActiveLang() === 'es';
+    const sents = this.reader.sentences;
+    if (sents && sents.length) {
+      // Rebuild the block from the 1:1 aligned sentence translations: one sentence per
+      // line (readable), each ending with the terminal punctuation of its Chinese
+      // sentence — the AI sometimes drops the final '.', '?' or '!'. Purely
+      // presentational: no data is changed and old behaviour is preserved via the fallback.
+      const lines = sents
+        .map(s => this.punctuate(((es ? s.spanish : s.english) || (es ? s.english : s.spanish) || '').trim(), s.chinese))
+        .filter(t => t);
+      if (lines.length) return lines.join('\n');
+    }
+    // Old texts without aligned sentences: use the stored translation as-is.
     return (es ? this.reader.spanishTranslation : this.reader.englishTranslation)
       || this.reader.englishTranslation || this.reader.spanishTranslation || '';
+  }
+
+  /**
+   * Ensures a sentence translation ends with sentence-final punctuation, borrowing the
+   * terminator (?, !, .) from its source Chinese sentence when the translation lacks one.
+   */
+  private punctuate(translation: string, chinese: string): string {
+    if (!translation) return '';
+    if (/[.!?…。！？;；:]$/.test(translation)) return translation;
+    const last = (chinese || '').trim().slice(-1);
+    const map: Record<string, string> = {
+      '？': '?', '?': '?', '！': '!', '!': '!',
+      '。': '.', '．': '.', '.': '.', '…': '…', '；': ';', ';': ';'
+    };
+    return translation + (map[last] || '.');
   }
 
   ngOnInit(): void {
