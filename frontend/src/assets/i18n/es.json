@@ -208,7 +208,8 @@
       "emailInUse": "Este correo electrónico ya está registrado. Prueba a iniciar sesión.",
       "invalidEmail": "Introduce una dirección de correo electrónico válida.",
       "nameRequired": "El nombre completo es obligatorio.",
-      "passwordTooShort": "La contraseña es demasiado corta. Usa al menos 6 caracteres."
+      "passwordTooShort": "La contraseña es demasiado corta. Usa al menos 6 caracteres.",
+      "termsNotAccepted": "Debes aceptar los términos de uso para crear una cuenta."
     }
   },
   "termsOfUse": {

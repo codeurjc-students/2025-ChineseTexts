@@ -208,7 +208,8 @@
       "emailInUse": "This email is already registered. Try logging in instead.",
       "invalidEmail": "Please enter a valid email address.",
       "nameRequired": "Full name is required.",
-      "passwordTooShort": "Your password is too short. Please use at least 6 characters."
+      "passwordTooShort": "Your password is too short. Please use at least 6 characters.",
+      "termsNotAccepted": "You must accept the Terms of Use to create an account."
     }
   },
   "termsOfUse": {
