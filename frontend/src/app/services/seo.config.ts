@@ -85,6 +85,23 @@ const STATIC_SEO: Record<string, LocalizedSeo> = {
     }
   },
 
+  '/terms-of-use': {
+    en: {
+      title: 'Terms of Use | ChineseReads',
+      description:
+        'The terms and conditions for using ChineseReads: your account, acceptable use, ' +
+        'intellectual property and the limits of our service.',
+      path: '/terms-of-use'
+    },
+    es: {
+      title: 'Términos de uso | ChineseReads',
+      description:
+        'Las condiciones de uso de ChineseReads: tu cuenta, uso aceptable, propiedad ' +
+        'intelectual y los límites de nuestro servicio.',
+      path: '/terms-of-use'
+    }
+  },
+
   '/founder': {
     en: {
       title: 'José Víctor García Llorente — Software Engineer & Creator of ChineseReads',

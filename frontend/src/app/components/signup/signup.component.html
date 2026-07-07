@@ -88,6 +88,26 @@
         </select>
       </div>
 
+      <div class="form-group mb-3">
+        <div class="form-check">
+          <input
+            id="acceptTerms"
+            type="checkbox"
+            class="form-check-input"
+            [class.is-invalid]="signupForm.get('acceptTerms')?.invalid && signupForm.get('acceptTerms')?.touched"
+            formControlName="acceptTerms"
+          >
+          <label class="form-check-label" for="acceptTerms">
+            {{ 'signup.form.acceptTermsPrefix' | transloco }}
+            <a [routerLink]="'/terms-of-use' | localizeLink" target="_blank" rel="noopener">{{ 'signup.form.acceptTermsLink' | transloco }}</a>{{ 'signup.form.acceptTermsSuffix' | transloco }}
+          </label>
+          <div class="invalid-feedback"
+               *ngIf="signupForm.get('acceptTerms')?.invalid && signupForm.get('acceptTerms')?.touched">
+            {{ 'signup.form.acceptTermsRequired' | transloco }}
+          </div>
+        </div>
+      </div>
+
     </form>
   </article>
 

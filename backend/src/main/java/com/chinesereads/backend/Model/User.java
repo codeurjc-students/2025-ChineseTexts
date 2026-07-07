@@ -37,6 +37,10 @@ public class User {
     private int monthlyTextCount = 0;
     private LocalDate usagePeriodStart;
 
+    // Prueba de consentimiento (RGPD): momento en que el usuario aceptó los términos
+    // de uso al registrarse. Null en cuentas anteriores a esta funcionalidad.
+    private LocalDateTime termsAcceptedAt;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Collection> collections = new ArrayList<>();
 
@@ -164,5 +168,13 @@ public class User {
 
     public void setUserTexts(List<UserText> userTexts) {
         this.userTexts = userTexts;
+    }
+
+    public LocalDateTime getTermsAcceptedAt() {
+        return termsAcceptedAt;
+    }
+
+    public void setTermsAcceptedAt(LocalDateTime termsAcceptedAt) {
+        this.termsAcceptedAt = termsAcceptedAt;
     }
 }

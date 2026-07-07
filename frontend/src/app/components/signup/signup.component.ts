@@ -4,15 +4,16 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angula
 import { Location } from '@angular/common';
 import { UserService, UserDTO } from '../../services/users.service';
 import { LoginService } from '../../services/login.service';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { LocaleNavService } from '../../i18n/locale-nav.service';
+import { LocalizeLinkPipe } from '../../i18n/localize-link.pipe';
 
 @Component({
   selector: 'app-signup',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, TranslocoModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, TranslocoModule, LocalizeLinkPipe],
   templateUrl: './signup.component.html',
   styleUrls: ['./signup.component.scss']
 })
@@ -34,7 +35,9 @@ export class SignupComponent implements OnInit, OnDestroy {
       name: ['', Validators.required],
       email: ['', [Validators.required, Validators.email, this.strictEmailValidator]],
       password: ['', [Validators.required, Validators.minLength(6)]],
-      language: ['en', Validators.required]
+      language: ['en', Validators.required],
+      // GDPR: must actively accept the terms of use to register (unchecked by default).
+      acceptTerms: [false, Validators.requiredTrue]
     });
   }
 
