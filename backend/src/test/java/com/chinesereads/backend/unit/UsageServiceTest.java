@@ -95,4 +95,25 @@ public class UsageServiceTest {
 
         assertThrows(UsageLimitException.class, () -> usageService.reserveGeneration(user));
     }
+
+    @Test
+    @DisplayName("Admins are exempt from the monthly limit and don't spend monthly quota")
+    public void testAdminExemptFromMonthlyLimit() {
+        User admin = new User("a@a.com", "A", "pass", "en", "USER", "ADMIN");
+        admin.setMonthlyTextCount(99); // far over the limit of 2
+        admin.setUsagePeriodStart(LocalDate.now().withDayOfMonth(1));
+
+        assertDoesNotThrow(() -> usageService.reserveGeneration(admin));
+        assertEquals(99, admin.getMonthlyTextCount()); // unchanged: no monthly quota spent
+    }
+
+    @Test
+    @DisplayName("Admins are still bound by the global daily kill-switch")
+    public void testAdminStillBoundByGlobalDaily() {
+        User admin = new User("a@a.com", "A", "pass", "en", "USER", "ADMIN");
+        when(appUsageRepository.findByDay(any()))
+                .thenReturn(Optional.of(new AppUsage(LocalDate.now(), 3))); // daily limit is 3
+
+        assertThrows(UsageLimitException.class, () -> usageService.reserveGeneration(admin));
+    }
 }

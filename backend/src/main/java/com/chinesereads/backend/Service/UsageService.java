@@ -46,30 +46,37 @@ public class UsageService {
     @Transactional
     public void reserveGeneration(User user) {
         LocalDate today = LocalDate.now();
+        boolean isAdmin = user.getRoles() != null && user.getRoles().contains("ADMIN");
 
-        // ——— Per-user monthly quota ———
-        LocalDate monthStart = today.withDayOfMonth(1);
-        if (user.getUsagePeriodStart() == null || !user.getUsagePeriodStart().equals(monthStart)) {
-            user.setUsagePeriodStart(monthStart);
-            user.setMonthlyTextCount(0);
-        }
-        if (user.getMonthlyTextCount() >= userMonthlyLimit) {
-            throw new UsageLimitException(
-                    "You've reached your monthly limit of " + userMonthlyLimit
-                            + " text creations. It resets at the start of next month.");
+        // ——— Per-user monthly quota (admins are exempt so the owner can test/demo
+        // the product freely; the global kill-switch below still applies to everyone) ———
+        if (!isAdmin) {
+            LocalDate monthStart = today.withDayOfMonth(1);
+            if (user.getUsagePeriodStart() == null || !user.getUsagePeriodStart().equals(monthStart)) {
+                user.setUsagePeriodStart(monthStart);
+                user.setMonthlyTextCount(0);
+            }
+            if (user.getMonthlyTextCount() >= userMonthlyLimit) {
+                throw new UsageLimitException(
+                        "You've reached your monthly limit of " + userMonthlyLimit
+                                + " text creations. It resets at the start of next month.");
+            }
         }
 
-        // ——— Global daily kill-switch ———
+        // ——— Global daily kill-switch (applies to EVERYONE, admins included, as a
+        // hard cost fuse) ———
         AppUsage usage = appUsageRepository.findByDay(today).orElseGet(() -> new AppUsage(today, 0));
         if (usage.getCount() >= globalDailyLimit) {
             throw new UsageLimitException(
                     "Text creation is temporarily unavailable for today. Please try again tomorrow.");
         }
 
-        // ——— Consume one unit from each counter ———
-        user.setMonthlyTextCount(user.getMonthlyTextCount() + 1);
+        // ——— Consume one unit from each counter (admins don't spend monthly quota) ———
+        if (!isAdmin) {
+            user.setMonthlyTextCount(user.getMonthlyTextCount() + 1);
+            userRepository.save(user);
+        }
         usage.setCount(usage.getCount() + 1);
-        userRepository.save(user);
         appUsageRepository.save(usage);
     }
 
