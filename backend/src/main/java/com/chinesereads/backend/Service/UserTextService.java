@@ -301,11 +301,19 @@ public class UserTextService {
             }
         }
 
-        for (Map<String, String> m : aiService.getWordDefinitions(missing)) {
-            String chinese = m.get("chinese");
-            if (chinese != null && !chinese.isBlank()) {
-                defs.put(chinese, new String[] { nz(m.get("pinyin")), nz(m.get("english")), nz(m.get("spanish")) });
+        // Ask the AI for the words not in the dictionary. LLMs occasionally omit some
+        // items from a batch, leaving characters with no pinyin/translation, so retry
+        // once with only the words still missing to fill the gaps — cheap, since the
+        // retry covers just the leftovers and only runs when something is actually missing.
+        List<String> pending = missing;
+        for (int attempt = 0; attempt < 2 && !pending.isEmpty(); attempt++) {
+            for (Map<String, String> m : aiService.getWordDefinitions(pending)) {
+                String chinese = m.get("chinese");
+                if (chinese != null && !chinese.isBlank()) {
+                    defs.put(chinese, new String[] { nz(m.get("pinyin")), nz(m.get("english")), nz(m.get("spanish")) });
+                }
             }
+            pending = pending.stream().filter(w -> !defs.containsKey(w)).toList();
         }
         return defs;
     }
