@@ -198,4 +198,22 @@
     <priority>0.3</priority>
   </url>
 
+  <!-- Terms of use -->
+  <url>
+    <loc>https://chinesereads.com/terms-of-use</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://chinesereads.com/terms-of-use"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://chinesereads.com/es/terms-of-use"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chinesereads.com/terms-of-use"/>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://chinesereads.com/es/terms-of-use</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://chinesereads.com/terms-of-use"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://chinesereads.com/es/terms-of-use"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chinesereads.com/terms-of-use"/>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+
 </urlset>

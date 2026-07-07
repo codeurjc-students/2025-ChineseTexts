@@ -45,23 +45,27 @@ public class UserControllerRest {
         String email = userDTO.email();
         String name = userDTO.name();
         String password = userDTO.password();
+        // Each error carries a stable, machine-readable "code" alongside the English
+        // "message". The UI language lives entirely in the frontend (Transloco), so the
+        // client renders these codes in the active language — this is especially needed
+        // for signup, an anonymous flow where the backend has no user language to rely on.
         if (email == null || !email.matches("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$")) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(Map.of("message", "A valid email is required"));
+                    .body(Map.of("code", "INVALID_EMAIL", "message", "A valid email is required"));
         }
         if (name == null || name.isBlank()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(Map.of("message", "Name is required"));
+                    .body(Map.of("code", "NAME_REQUIRED", "message", "Name is required"));
         }
         if (password == null || password.length() < 4) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(Map.of("message", "Password must be at least 4 characters"));
+                    .body(Map.of("code", "PASSWORD_TOO_SHORT", "message", "Password must be at least 4 characters"));
         }
 
         UserDTO newUser = userService.save(userDTO);
         if (newUser == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(Map.of("message", "Email already in use"));
+                    .body(Map.of("code", "EMAIL_IN_USE", "message", "Email already in use"));
         }
         URI location = fromCurrentRequest().path("/{id}").buildAndExpand(newUser.id()).toUri();
         return ResponseEntity.created(location).body(newUser);

@@ -5,11 +5,13 @@
 /texts/HSK5
 /texts/HSK6
 /founder
+/terms-of-use
 /es
 /es/texts
 /es/signup
 /es/founder
 /es/privacy-policy
+/es/terms-of-use
 /es/texts/HSK1
 /es/texts/HSK2
 /es/texts/HSK3

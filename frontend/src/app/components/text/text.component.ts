@@ -71,6 +71,20 @@ export class TextComponent implements OnInit {
     return this.loginService.isRoleAdmin();
   }
 
+  /** Text title in the active UI language (falls back to the other language). */
+  get displayTitle(): string {
+    const es = this.transloco.getActiveLang() === 'es';
+    return (es ? this.text.titleSpanish : this.text.titleEnglish)
+      || this.text.titleEnglish || this.text.titleSpanish || '';
+  }
+
+  /** Full translation of the text in the active UI language (falls back). */
+  get displayTranslation(): string {
+    const es = this.transloco.getActiveLang() === 'es';
+    return (es ? this.text.spanishTranslation : this.text.englishTranslation)
+      || this.text.englishTranslation || this.text.spanishTranslation || '';
+  }
+
   ngOnInit(): void {
     this.loginService.reqIsLogged().subscribe(); // solo para actualizar el estado del usuario
     this.init(); // carga el texto independientemente

@@ -47,6 +47,9 @@ public class UserService {
             User newUser = userMapper.toDomain(user);
             newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
             newUser.setRegistrationDate(LocalDate.now());
+            // Record proof of consent (GDPR): the signup form requires accepting the
+            // terms of use, so reaching registration means consent was given now.
+            newUser.setTermsAcceptedAt(LocalDateTime.now());
             return userMapper.toDTO(userRepository.save(newUser));
         }
     }

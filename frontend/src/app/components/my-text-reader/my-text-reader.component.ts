@@ -2,7 +2,7 @@ import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { TranslocoModule } from '@jsverse/transloco';
+import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 
 import { MyTextsService, UserTextReader, UserTextWord } from '../../services/my-texts.service';
 import { LoginService } from '../../services/login.service';
@@ -50,8 +50,17 @@ export class MyTextReaderComponent implements OnInit {
     private loginService: LoginService,
     private route: ActivatedRoute,
     private router: Router,
-    private localeNav: LocaleNavService
+    private localeNav: LocaleNavService,
+    private transloco: TranslocoService
   ) {}
+
+  /** Full translation in the active UI language (falls back to the other language). */
+  get displayTranslation(): string {
+    if (!this.reader) return '';
+    const es = this.transloco.getActiveLang() === 'es';
+    return (es ? this.reader.spanishTranslation : this.reader.englishTranslation)
+      || this.reader.englishTranslation || this.reader.spanishTranslation || '';
+  }
 
   ngOnInit(): void {
     // SEO for this private (noindex) page is applied globally by AppComponent

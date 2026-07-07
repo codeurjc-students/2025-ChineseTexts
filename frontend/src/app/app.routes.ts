@@ -11,6 +11,7 @@ import { ProfileComponent } from './components/profile/profile.component';
 import { AiToolsComponent } from './components/ai-tools/ai-tools.component';
 import { AdminToolsComponent } from './components/admin-tools/admin-tools.component';
 import { PrivacyPolicyComponent } from './components/privacy-policy/privacy-policy.component';
+import { TermsOfUseComponent } from './components/terms-of-use/terms-of-use.component';
 import { FounderComponent } from './components/founder/founder.component';
 import { MyToolsComponent } from './components/my-tools/my-tools.component';
 import { MyTextReaderComponent } from './components/my-text-reader/my-text-reader.component';
@@ -36,6 +37,7 @@ const appRoutes: Routes = [
   { path: 'my-tools', component: MyToolsComponent },
   { path: 'my-text/:id', component: MyTextReaderComponent },
   { path: 'privacy-policy', component: PrivacyPolicyComponent },
+  { path: 'terms-of-use', component: TermsOfUseComponent },
   { path: 'founder', component: FounderComponent },
 ];
 

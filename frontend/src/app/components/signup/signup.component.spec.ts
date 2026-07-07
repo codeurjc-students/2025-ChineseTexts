@@ -71,7 +71,8 @@ describe('SignupComponent', () => {
       name: 'Test User',
       email: 'test@test.com',
       password: 'password123',
-      language: 'en'
+      language: 'en',
+      acceptTerms: true
     });
     expect(component.signupForm.valid).toBeTrue();
   });
@@ -109,7 +110,7 @@ describe('SignupComponent', () => {
 
     component.signupForm.setValue({
       name: 'Test User', email: 'test@test.com',
-      password: 'password123', language: 'en'
+      password: 'password123', language: 'en', acceptTerms: true
     });
     component.submitSignup();
 
@@ -132,7 +133,7 @@ describe('SignupComponent', () => {
 
     component.signupForm.setValue({
       name: 'Test', email: 'test@test.com',
-      password: 'pass123', language: 'en'
+      password: 'pass123', language: 'en', acceptTerms: true
     });
     component.submitSignup();
 
@@ -147,7 +148,7 @@ describe('SignupComponent', () => {
 
     component.signupForm.setValue({
       name: 'Test', email: 'existing@test.com',
-      password: 'pass123', language: 'en'
+      password: 'pass123', language: 'en', acceptTerms: true
     });
     component.submitSignup();
 

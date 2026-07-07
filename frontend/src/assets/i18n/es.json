@@ -194,12 +194,76 @@
       "passwordMinlength": "La contraseña debe tener al menos 6 caracteres.",
       "languageLabel": "Idioma preferido",
       "languageEnglish": "Inglés",
-      "languageSpanish": "Español"
+      "languageSpanish": "Español",
+      "acceptTermsPrefix": "He leído y acepto los",
+      "acceptTermsLink": "términos de uso",
+      "acceptTermsSuffix": ".",
+      "acceptTermsRequired": "Debes aceptar los términos de uso para crear una cuenta."
     },
     "submit": "Crear mi cuenta",
     "back": "Volver",
     "successMessage": "¡Tu cuenta se ha creado correctamente!",
-    "errorGeneric": "Se ha producido un error inesperado."
+    "errorGeneric": "Se ha producido un error inesperado.",
+    "errors": {
+      "emailInUse": "Este correo electrónico ya está registrado. Prueba a iniciar sesión.",
+      "invalidEmail": "Introduce una dirección de correo electrónico válida.",
+      "nameRequired": "El nombre completo es obligatorio.",
+      "passwordTooShort": "La contraseña es demasiado corta. Usa al menos 6 caracteres."
+    }
+  },
+  "termsOfUse": {
+    "title": "Términos de uso",
+    "lastUpdated": "Última actualización: julio de 2026",
+    "s1": {
+      "title": "1. Aceptación de estos términos",
+      "body": "es una aplicación web gratuita para aprender a leer chino mediante textos graduados. Al crear una cuenta o usar el sitio, aceptas estos términos de uso. Si no estás de acuerdo con ellos, no uses ChineseReads."
+    },
+    "s2": {
+      "title": "2. El servicio",
+      "intro": "ChineseReads te permite:",
+      "item1": "Leer textos graduados HSK con pinyin palabra por palabra, traducciones y audio natural.",
+      "item2": "Guardar palabras en colecciones de vocabulario personales y estudiarlas como tarjetas.",
+      "item3": "Crear tus propios textos a partir de texto escrito o de imágenes (OCR).",
+      "item4": "Escuchar textos, frases y palabras con audio de síntesis de voz."
+    },
+    "s3": {
+      "title": "3. Tu cuenta",
+      "body": "Eres responsable de mantener tu contraseña a salvo y de toda la actividad realizada con tu cuenta. Proporciona información veraz al registrarte. Debes tener la edad suficiente para consentir el tratamiento de tus datos personales en tu país (en la UE, por lo general 16 años, o la edad que fije tu Estado miembro)."
+    },
+    "s4": {
+      "title": "4. Uso aceptable",
+      "intro": "Te comprometes a no:",
+      "item1": "Usar el servicio con fines ilícitos o incumpliendo estos términos.",
+      "item2": "Subir contenido ilegal o que vulnere los derechos de terceros.",
+      "item3": "Intentar romper, sobrecargar o acceder sin autorización al servicio o a su infraestructura.",
+      "item4": "Abusar de las funciones de IA, OCR o audio, por ejemplo mediante peticiones automatizadas o masivas.",
+      "item5": "Revender o redistribuir el servicio sin permiso."
+    },
+    "s5": {
+      "title": "5. Tu contenido",
+      "body": "Los textos e imágenes que subes siguen siendo tuyos. Se mantienen privados en tu cuenta y concedes a ChineseReads únicamente el permiso necesario para procesarlos y mostrártelos de vuelta, incluido su envío a los proveedores externos de IA, OCR y voz que figuran en la Política de privacidad. Eres responsable de tener derecho a subir todo lo que envíes."
+    },
+    "s6": {
+      "title": "6. Propiedad intelectual",
+      "body": "El nombre ChineseReads, su diseño, su código y los textos graduados seleccionados pertenecen a su creador y están protegidos por la ley. Solo puedes usarlos para tu aprendizaje de idiomas personal y no comercial."
+    },
+    "s7": {
+      "title": "7. Servicios de terceros y privacidad",
+      "body": "ChineseReads se apoya en proveedores externos para la generación con IA, el OCR y el audio, y trata tus datos personales tal y como se describe en nuestra",
+      "privacyLink": "Política de privacidad"
+    },
+    "s8": {
+      "title": "8. Disponibilidad y servicio \"tal cual\"",
+      "body": "ChineseReads se ofrece de forma gratuita y \"tal cual\", sin garantías de ningún tipo. Las funciones, los límites de uso y la disponibilidad pueden cambiar o interrumpirse en cualquier momento. Las traducciones y descripciones generadas por IA pueden contener errores y no deben considerarse una traducción profesional."
+    },
+    "s9": {
+      "title": "9. Limitación de responsabilidad",
+      "body": "En la medida permitida por la ley, el creador de ChineseReads no se hace responsable de daños indirectos o incidentales derivados del uso del servicio. Podemos suspender o eliminar las cuentas que incumplan estos términos. Puedes eliminar tu propia cuenta en cualquier momento desde tu perfil."
+    },
+    "s10": {
+      "title": "10. Cambios y contacto",
+      "body": "Podemos actualizar estos términos; la fecha de \"última actualización\" de arriba cambiará y el uso continuado del servicio implica que aceptas la nueva versión. Si tienes dudas sobre estos términos, contacta con nosotros en:"
+    }
   },
   "error": {
     "title": "¡Vaya! Algo ha salido mal",
