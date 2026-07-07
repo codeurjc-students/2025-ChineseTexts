@@ -5,7 +5,7 @@
     <div class="custom-popover" style="max-width:380px" (click)="$event.stopPropagation()">
       <h3 style="font-size:1.1rem;font-weight:700;color:#222;margin-bottom:8px">{{ 'text.delete.title' | transloco }}</h3>
       <p style="font-size:0.9rem;color:#666;margin-bottom:16px">
-        {{ 'text.delete.confirmPrefix' | transloco }} <strong>{{ text.titleEnglish }}</strong>{{ 'text.delete.confirmSuffix' | transloco }}
+        {{ 'text.delete.confirmPrefix' | transloco }} <strong>{{ displayTitle }}</strong>{{ 'text.delete.confirmSuffix' | transloco }}
       </p>
       <div style="display:flex;gap:10px">
         <button class="btn-cancel" style="flex:1" (click)="cancelDeleteText()">{{ 'text.delete.cancel' | transloco }}</button>
@@ -16,7 +16,7 @@
 
   <!-- TÍTULO + BOTONES -->
   <div class="d-flex justify-content-between align-items-center mb-5">
-    <h1 class="title">{{ text.titleEnglish }}</h1>
+    <h1 class="title">{{ displayTitle }}</h1>
     <div class="d-flex align-items-center gap-2">
       <button *ngIf="isAdmin" class="like-btn" [title]="'text.deleteButtonTitle' | transloco"
         style="color:#c0392b;font-size:1.4rem"
@@ -40,7 +40,7 @@
     <!-- IMAGEN -->
     <img
       [src]="'api/texts/' + text.id + '/image'"
-      alt="{{ text.titleEnglish }}"
+      alt="{{ displayTitle }}"
       class="img-fluid rounded mb-3 preview-img"
     >
 
@@ -174,7 +174,7 @@
     <!-- TRADUCCIÓN -->
     <div *ngIf="showTranslation" class="mt-4">
       <h5 class="text-primary">{{ 'text.translation.heading' | transloco }}</h5>
-      <p class="text-large mt-3">{{ text.englishTranslation }}</p>
+      <p class="text-large mt-3">{{ displayTranslation }}</p>
     </div>
 
     <!-- FRASES -->

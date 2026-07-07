@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { TextsService, TextItem } from '../../services/texts.service';
 import { LoginService } from '../../services/login.service';
-import { TranslocoModule } from '@jsverse/transloco';
+import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { LocalizeLinkPipe } from '../../i18n/localize-link.pipe';
 
 @Component({
@@ -27,11 +27,24 @@ export class TextsComponent implements OnInit {
   constructor(
     private textsService: TextsService,
     private route: ActivatedRoute,
-    private loginService: LoginService
+    private loginService: LoginService,
+    private transloco: TranslocoService
   ) {}
 
   get isAdmin(): boolean {
     return this.loginService.isRoleAdmin();
+  }
+
+  /** Card title in the active UI language (falls back to the other language). */
+  displayTitle(t: TextItem): string {
+    const es = this.transloco.getActiveLang() === 'es';
+    return (es ? t.titleSpanish : t.titleEnglish) || t.titleEnglish || t.titleSpanish || '';
+  }
+
+  /** Card description in the active UI language (falls back to the other language). */
+  displayDescription(t: TextItem): string {
+    const es = this.transloco.getActiveLang() === 'es';
+    return (es ? t.spanishDescription : t.englishDescription) || t.englishDescription || t.spanishDescription || '';
   }
 
   ngOnInit(): void {

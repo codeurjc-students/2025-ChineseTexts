@@ -131,7 +131,7 @@ public class Text {
     }
 
     public void setSpanishDescription(String spanishDescription){
-        this.spanishDescription = englishTranslation;
+        this.spanishDescription = spanishDescription;
     }
 
     public void setLevel(String level){

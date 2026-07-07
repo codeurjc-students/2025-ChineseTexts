@@ -42,16 +42,16 @@
       </div>
     </div>
 
-    <h3 class="text-dark fw-semibold mb-3">{{ t.titleEnglish }}</h3>
+    <h3 class="text-dark fw-semibold mb-3">{{ displayTitle(t) }}</h3>
 
     <img
       [src]="'/api/texts/' + t.id + '/image'"
-      [alt]="t.titleEnglish"
+      [alt]="displayTitle(t)"
       class="img-fluid rounded mb-3"
       style="max-height: 250px; object-fit: cover;"
     >
 
-    <p>{{ t.englishDescription }}</p>
+    <p>{{ displayDescription(t) }}</p>
   </div>
 
   <div class="text-center mt-5" *ngIf="hasMore">
