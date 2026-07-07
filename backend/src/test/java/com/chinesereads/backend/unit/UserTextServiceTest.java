@@ -1,13 +1,24 @@
 package com.chinesereads.backend.unit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import com.chinesereads.backend.Repository.WordRepository;
+import com.chinesereads.backend.Service.AiService;
 import com.chinesereads.backend.Service.UserTextService;
 
 /**
@@ -64,5 +75,41 @@ public class UserTextServiceTest {
     @DisplayName("Empty input yields no sentences")
     public void testEmpty() {
         assertEquals(List.of(), buildSentences(List.of()));
+    }
+
+    @Test
+    @DisplayName("Words the AI omits from a batch are retried so no character is left without a definition")
+    @SuppressWarnings("unchecked")
+    public void testDefinitionRetryFillsGaps() throws Exception {
+        WordRepository wordRepository = mock(WordRepository.class);
+        AiService aiService = mock(AiService.class);
+        // Nothing is in the global dictionary, so both words go to the AI.
+        when(wordRepository.findByChinese(anyString())).thenReturn(Optional.empty());
+        // First batch omits 世界; the retry returns it.
+        when(aiService.getWordDefinitions(any()))
+            .thenReturn(List.of(Map.of("chinese", "你好", "pinyin", "nǐ hǎo", "english", "hello", "spanish", "hola")))
+            .thenReturn(List.of(Map.of("chinese", "世界", "pinyin", "shì jiè", "english", "world", "spanish", "mundo")));
+
+        UserTextService service = new UserTextService();
+        injectField(service, "wordRepository", wordRepository);
+        injectField(service, "aiService", aiService);
+
+        Method m = UserTextService.class.getDeclaredMethod("resolveDefinitions", List.class);
+        m.setAccessible(true);
+        Map<String, String[]> defs = (Map<String, String[]>) m.invoke(service, List.of("你好", "世界"));
+
+        assertEquals("hello", defs.get("你好")[1]);
+        assertEquals("world", defs.get("世界")[1]); // filled by the retry
+        verify(aiService, times(2)).getWordDefinitions(any());
+    }
+
+    private void injectField(Object target, String fieldName, Object value) {
+        try {
+            Field field = target.getClass().getDeclaredField(fieldName);
+            field.setAccessible(true);
+            field.set(target, value);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }
