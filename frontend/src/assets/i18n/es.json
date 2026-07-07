@@ -199,7 +199,13 @@
     "submit": "Crear mi cuenta",
     "back": "Volver",
     "successMessage": "¡Tu cuenta se ha creado correctamente!",
-    "errorGeneric": "Se ha producido un error inesperado."
+    "errorGeneric": "Se ha producido un error inesperado.",
+    "errors": {
+      "emailInUse": "Este correo electrónico ya está registrado. Prueba a iniciar sesión.",
+      "invalidEmail": "Introduce una dirección de correo electrónico válida.",
+      "nameRequired": "El nombre completo es obligatorio.",
+      "passwordTooShort": "La contraseña es demasiado corta. Usa al menos 6 caracteres."
+    }
   },
   "error": {
     "title": "¡Vaya! Algo ha salido mal",

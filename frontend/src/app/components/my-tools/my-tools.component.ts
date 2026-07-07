@@ -153,10 +153,12 @@ export class MyToolsComponent implements OnInit {
   // ——— Helpers ———
 
   private handleError(err: any, fallback: string): void {
+    // Localize by HTTP status. We never surface the backend's raw English
+    // "message"; the status alone identifies which localized message to show.
     if (err?.status === 429) {
-      this.showError(err.error?.message || this.transloco.translate('myTools.messages.usageLimit'));
+      this.showError(this.transloco.translate('myTools.messages.usageLimit'));
     } else if (err?.status === 400) {
-      this.showError(err.error?.message || this.transloco.translate('myTools.messages.invalidInput'));
+      this.showError(this.transloco.translate('myTools.messages.invalidInput'));
     } else {
       this.showError(fallback);
     }

@@ -199,7 +199,13 @@
     "submit": "Create My Account",
     "back": "Back",
     "successMessage": "Your account has been created successfully!",
-    "errorGeneric": "An unexpected error occurred."
+    "errorGeneric": "An unexpected error occurred.",
+    "errors": {
+      "emailInUse": "This email is already registered. Try logging in instead.",
+      "invalidEmail": "Please enter a valid email address.",
+      "nameRequired": "Full name is required.",
+      "passwordTooShort": "Your password is too short. Please use at least 6 characters."
+    }
   },
   "error": {
     "title": "Oops! Something Went Wrong",

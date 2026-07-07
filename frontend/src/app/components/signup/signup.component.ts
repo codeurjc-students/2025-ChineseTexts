@@ -77,7 +77,16 @@ export class SignupComponent implements OnInit, OnDestroy {
         });
       },
       error: (err: any) => {
-        const msg = err.error?.message || err.error || this.transloco.translate('signup.errorGeneric');
+        // The backend returns a stable error "code"; render it in the active
+        // language instead of the backend's raw English "message".
+        const codeMap: Record<string, string> = {
+          EMAIL_IN_USE: 'signup.errors.emailInUse',
+          INVALID_EMAIL: 'signup.errors.invalidEmail',
+          NAME_REQUIRED: 'signup.errors.nameRequired',
+          PASSWORD_TOO_SHORT: 'signup.errors.passwordTooShort'
+        };
+        const key = codeMap[err.error?.code] || 'signup.errorGeneric';
+        const msg = this.transloco.translate(key);
         this.localeNav.navigate(['/error'], { queryParams: { msg } });
       }
     });

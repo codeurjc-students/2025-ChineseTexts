@@ -158,9 +158,9 @@ export class AdminUsersComponent implements OnInit {
         if (this.detail) this.detail.blocked = updated.blocked;
         this.showSuccess(this.transloco.translate(next ? 'adminUsers.messages.blocked' : 'adminUsers.messages.unblocked'));
       },
-      error: (err) => {
+      error: () => {
         this.detailLoading = false;
-        this.showError(err.error?.message || this.transloco.translate('adminUsers.errors.updateUser'));
+        this.showError(this.transloco.translate('adminUsers.errors.updateUser'));
       }
     });
   }
@@ -183,9 +183,9 @@ export class AdminUsersComponent implements OnInit {
         this.detail = d;
         this.showSuccess(successMsg);
       },
-      error: (err) => {
+      error: () => {
         this.detailLoading = false;
-        this.showError(err.error?.message || this.transloco.translate('adminUsers.errors.updateUser'));
+        this.showError(this.transloco.translate('adminUsers.errors.updateUser'));
       }
     });
   }
@@ -222,9 +222,9 @@ export class AdminUsersComponent implements OnInit {
         this.editing = false;
         this.showSuccess(this.transloco.translate('adminUsers.messages.changesSaved'));
       },
-      error: (err) => {
+      error: () => {
         this.detailLoading = false;
-        this.showError(err.error?.message || this.transloco.translate('adminUsers.errors.saveChanges'));
+        this.showError(this.transloco.translate('adminUsers.errors.saveChanges'));
       }
     });
   }
@@ -253,9 +253,9 @@ export class AdminUsersComponent implements OnInit {
         this.backToList();
         this.showSuccess(this.transloco.translate('adminUsers.messages.deleted', { email: removed }));
       },
-      error: (err) => {
+      error: () => {
         this.detailLoading = false;
-        this.showError(err.error?.message || this.transloco.translate('adminUsers.errors.deleteUser'));
+        this.showError(this.transloco.translate('adminUsers.errors.deleteUser'));
       }
     });
   }
