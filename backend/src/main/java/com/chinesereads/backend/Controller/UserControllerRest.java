@@ -71,7 +71,10 @@ public class UserControllerRest {
 
         UserDTO newUser = userService.save(userDTO);
         if (newUser == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            // 409 Conflict: an email-already-registered clash. The distinct STATUS lets the
+            // client show the specific localized message even in environments where the
+            // JSON error body is replaced by a generic one (as happens behind the proxy).
+            return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(Map.of("code", "EMAIL_IN_USE", "message", "Email already in use"));
         }
         URI location = fromCurrentRequest().path("/{id}").buildAndExpand(newUser.id()).toUri();
