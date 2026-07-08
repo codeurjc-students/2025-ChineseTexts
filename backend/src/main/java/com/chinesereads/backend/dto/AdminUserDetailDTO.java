@@ -17,6 +17,7 @@ public record AdminUserDetailDTO(
         boolean blocked,
         LocalDate registrationDate,
         LocalDateTime lastAccess,
+        LocalDateTime premiumUntil,
         int collectionsCount,
         int flashcardsCount,
         int textsCount,

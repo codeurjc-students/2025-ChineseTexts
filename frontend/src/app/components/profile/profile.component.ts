@@ -71,6 +71,12 @@ export class ProfileComponent implements OnInit {
     return lang ? this.transloco.translate('profile.languages.' + lang.value) : '';
   }
 
+  /** True while the user's PREMIUM subscription is active (not yet expired). */
+  get isPremium(): boolean {
+    const until = this.user?.premiumUntil;
+    return !!until && new Date(until).getTime() > Date.now();
+  }
+
   // ——— Editar perfil ———
 
   openEditProfile(): void {

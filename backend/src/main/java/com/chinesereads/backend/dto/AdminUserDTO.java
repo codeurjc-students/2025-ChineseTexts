@@ -16,5 +16,6 @@ public record AdminUserDTO(
         List<String> roles,
         boolean blocked,
         LocalDate registrationDate,
-        LocalDateTime lastAccess) {
+        LocalDateTime lastAccess,
+        LocalDateTime premiumUntil) {
 }

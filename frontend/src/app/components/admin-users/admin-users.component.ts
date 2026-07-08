@@ -51,6 +51,8 @@ export class AdminUsersComponent implements OnInit {
   editName = '';
   editLanguage = '';
   confirmingDelete = false;
+  editingPremium = false;
+  premiumInput = ''; // datetime-local value (YYYY-MM-DDTHH:mm)
 
   message = '';
   messageType: 'success' | 'error' | '' = '';
@@ -109,6 +111,7 @@ export class AdminUsersComponent implements OnInit {
     this.clearFeedback();
     this.editing = false;
     this.confirmingDelete = false;
+    this.editingPremium = false;
     this.detailLoading = true;
     this.view = 'detail';
     this.userService.getUserDetail(id).subscribe({
@@ -131,6 +134,7 @@ export class AdminUsersComponent implements OnInit {
     this.detail = null;
     this.editing = false;
     this.confirmingDelete = false;
+    this.editingPremium = false;
     this.clearFeedback();
     // Refresh the list so any change (block/delete/role) is reflected.
     this.loadUsers(true);
@@ -143,6 +147,16 @@ export class AdminUsersComponent implements OnInit {
 
   get isTargetAdmin(): boolean {
     return !!this.detail?.roles.includes('ADMIN');
+  }
+
+  /** True when the shown user currently has an active (non-expired) PREMIUM subscription. */
+  get isTargetPremium(): boolean {
+    return this.isActivePremium(this.detail?.premiumUntil);
+  }
+
+  /** Whether an ISO premiumUntil string represents an active (future) subscription. */
+  isActivePremium(premiumUntil?: string | null): boolean {
+    return !!premiumUntil && new Date(premiumUntil).getTime() > Date.now();
   }
 
   // ——— Block / unblock ———
@@ -188,6 +202,66 @@ export class AdminUsersComponent implements OnInit {
         this.showError(this.transloco.translate('adminUsers.errors.updateUser'));
       }
     });
+  }
+
+  // ——— Premium subscription ———
+
+  /** Opens the grant form, pre-filling the datetime with the current expiry or +30 days. */
+  startPremiumEdit(): void {
+    if (!this.detail) return;
+    this.clearFeedback();
+    const base = this.isTargetPremium && this.detail.premiumUntil
+      ? new Date(this.detail.premiumUntil)
+      : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // default: 30 days from now
+    this.premiumInput = this.toDatetimeLocal(base);
+    this.editingPremium = true;
+  }
+
+  cancelPremiumEdit(): void {
+    this.editingPremium = false;
+  }
+
+  grantPremium(): void {
+    if (!this.detail) return;
+    if (!this.premiumInput) {
+      this.showError(this.transloco.translate('adminUsers.errors.premiumDateEmpty'));
+      return;
+    }
+    if (new Date(this.premiumInput).getTime() <= Date.now()) {
+      this.showError(this.transloco.translate('adminUsers.errors.premiumDatePast'));
+      return;
+    }
+    this.savePremium(this.premiumInput,
+      this.transloco.translate('adminUsers.messages.premiumGranted'));
+  }
+
+  revokePremium(): void {
+    this.savePremium(null, this.transloco.translate('adminUsers.messages.premiumRevoked'));
+  }
+
+  private savePremium(premiumUntil: string | null, successMsg: string): void {
+    if (!this.detail) return;
+    this.clearFeedback();
+    this.detailLoading = true;
+    this.userService.setUserPremium(this.detail.id, premiumUntil).subscribe({
+      next: (d) => {
+        this.detailLoading = false;
+        this.detail = d;
+        this.editingPremium = false;
+        this.showSuccess(successMsg);
+      },
+      error: () => {
+        this.detailLoading = false;
+        this.showError(this.transloco.translate('adminUsers.errors.updatePremium'));
+      }
+    });
+  }
+
+  /** Formats a Date as a `YYYY-MM-DDTHH:mm` string for a native datetime-local input. */
+  private toDatetimeLocal(d: Date): string {
+    const pad = (n: number) => `${n}`.padStart(2, '0');
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`
+      + `T${pad(d.getHours())}:${pad(d.getMinutes())}`;
   }
 
   // ——— Edit name / language ———

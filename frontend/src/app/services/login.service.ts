@@ -101,4 +101,10 @@ export class LoginService {
   public isRoleAdmin(): boolean {
     return this.currentUser()?.roles.includes("ADMIN") ?? false;
   }
+
+  /** True while the user's PREMIUM subscription is active (not yet expired). */
+  public isPremiumActive(): boolean {
+    const until = this.currentUser()?.premiumUntil;
+    return !!until && new Date(until).getTime() > Date.now();
+  }
 }

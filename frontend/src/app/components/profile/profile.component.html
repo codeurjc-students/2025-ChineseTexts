@@ -40,6 +40,13 @@
           <span class="info-label"><i class="bi bi-collection"></i> {{ 'profile.view.collections' | transloco }}</span>
           <span class="info-value">{{ user.collections?.length ?? 0 }}</span>
         </div>
+        <div class="info-row">
+          <span class="info-label"><i class="bi bi-star"></i> {{ 'profile.view.plan' | transloco }}</span>
+          <span class="info-value" *ngIf="isPremium">
+            {{ 'profile.view.planPremium' | transloco }} · {{ 'profile.view.premiumUntil' | transloco }} {{ user.premiumUntil | date:'longDate' }}
+          </span>
+          <span class="info-value" *ngIf="!isPremium">{{ 'profile.view.planFree' | transloco }}</span>
+        </div>
       </div>
 
       <div class="action-cards">

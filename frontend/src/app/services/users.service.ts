@@ -13,6 +13,8 @@ export interface UserDTO {
   newPassword: string | null;
   /** GDPR: whether the user accepted the terms of use on signup (validated server-side). */
   termsAccepted?: boolean;
+  /** Read-only: ISO datetime when PREMIUM expires (null/absent = free plan). */
+  premiumUntil?: string | null;
 }
 
 /** One row of the admin user list. */
@@ -25,6 +27,7 @@ export interface AdminUserSummary {
   blocked: boolean;
   registrationDate: string | null;
   lastAccess: string | null;
+  premiumUntil?: string | null;
 }
 
 export interface AdminCollectionSummary {
@@ -43,6 +46,7 @@ export interface AdminUserDetail {
   blocked: boolean;
   registrationDate: string | null;
   lastAccess: string | null;
+  premiumUntil?: string | null;
   collectionsCount: number;
   flashcardsCount: number;
   textsCount: number;
@@ -100,6 +104,15 @@ export class UserService {
   setUserBlocked(id: number, blocked: boolean): Observable<AdminUserSummary> {
     return this.http.patch<AdminUserSummary>(`${this.apiUrl}/${id}/blocked`,
       { blocked }, { withCredentials: true });
+  }
+
+  /**
+   * Grants/extends (ISO datetime) or revokes (null) a user's PREMIUM subscription.
+   * Returns the refreshed user detail.
+   */
+  setUserPremium(id: number, premiumUntil: string | null): Observable<AdminUserDetail> {
+    return this.http.patch<AdminUserDetail>(`${this.apiUrl}/${id}/premium`,
+      { premiumUntil }, { withCredentials: true });
   }
 
   deleteUser(id: number): Observable<void> {
