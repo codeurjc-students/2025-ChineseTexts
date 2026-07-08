@@ -87,6 +87,14 @@
 			<version>29.2.0</version>
 		</dependency>
 
+		<!-- Jackson: parse Stripe webhook payloads from raw JSON. Already present at
+		     runtime (Spring's JSON support); declared explicitly so app code can import
+		     it at compile time. Version managed by the Spring Boot BOM. -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+		</dependency>
+
 		<!-- Caching (Caffeine) — used to cache synthesized TTS audio by text so the
 		     paid Google Cloud TTS API is not called again for identical input. -->
 		<dependency>
