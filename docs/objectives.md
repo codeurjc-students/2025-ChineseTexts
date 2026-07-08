@@ -26,15 +26,20 @@ The main goal of ChineseReads is to provide a structured and accessible platform
 | F16 | Admin: delete texts | ✅ |
 | F17 | Listen to texts, words, sentences and flashcards (text-to-speech audio) | ✅ |
 | F18 | Admin: manage dictionary words (add, edit, delete) | ✅ |
+| F19 | Admin: manage users — search, block/unblock, delete, edit name/language/roles | ✅ |
+| F20 | Buy a PREMIUM subscription (Stripe Checkout, monthly / yearly) | ✅ |
+| F21 | Manage / cancel the subscription (Stripe Billing Portal) | ✅ |
+| F22 | Admin: grant / revoke PREMIUM to a user until a chosen date & time | ✅ |
+| F23 | Tiered monthly usage limits (free vs premium) with a global daily cost fuse | ✅ |
+| F24 | Terms of Use page + required consent at signup (GDPR) | ✅ |
 
 ### Pending Functionalities
 
 | # | Functionality |
 |---|---|
-| P01 | Payment gateway for premium registration |
-| P02 | Personalized statistics |
-| P03 | Modify another user's password (admin) |
-| P04 | Ban/delete users (admin) |
+| P01 | Personalized statistics |
+| P02 | Modify another user's password (admin) |
+| P03 | AI "ask about words / context" feature (planned as PREMIUM-only) |
 
 ---
 
@@ -54,3 +59,4 @@ The main goal of ChineseReads is to provide a structured and accessible platform
 | T10 | Secure credential management (.env, secrets) | ✅ |
 | T11 | CI/CD pipeline | 🔄 Planned |
 | T12 | Text-to-speech synthesis (Google Cloud Text-to-Speech) | ✅ |
+| T13 | Payment gateway integration (Stripe subscriptions + signature-verified webhooks) | ✅ |
