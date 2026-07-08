@@ -984,8 +984,8 @@
       "manage": "Gestionar suscripción"
     },
     "plans": {
-      "monthly": { "name": "Mensual", "price": "4,99 €", "period": "/mes", "cta": "Hazte Premium" },
-      "yearly": { "name": "Anual", "price": "39,99 €", "period": "/año", "cta": "Hazte Premium", "badge": "Mejor precio" }
+      "monthly": { "name": "Mensual", "price": "3,99 €", "period": "/mes", "cta": "Hazte Premium" },
+      "yearly": { "name": "Anual", "price": "33,50 €", "period": "/año", "cta": "Hazte Premium", "badge": "Mejor precio" }
     },
     "benefits": {
       "title": "Qué incluye",
