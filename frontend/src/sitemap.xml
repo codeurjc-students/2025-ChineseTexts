@@ -216,4 +216,22 @@
     <priority>0.3</priority>
   </url>
 
+  <!-- Premium plan -->
+  <url>
+    <loc>https://chinesereads.com/premium</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://chinesereads.com/premium"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://chinesereads.com/es/premium"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chinesereads.com/premium"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://chinesereads.com/es/premium</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://chinesereads.com/premium"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://chinesereads.com/es/premium"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chinesereads.com/premium"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
 </urlset>

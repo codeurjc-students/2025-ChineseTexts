@@ -1,0 +1,69 @@
+<ng-container *transloco="let t">
+  <div class="premium-page">
+
+    <header class="premium-hero">
+      <span class="premium-kicker"><i class="bi bi-star-fill"></i> {{ t('premium.kicker') }}</span>
+      <h1 class="premium-title">{{ t('premium.title') }}</h1>
+      <p class="premium-subtitle">{{ t('premium.subtitle') }}</p>
+    </header>
+
+    <div class="alert-error mb-3" *ngIf="errored">
+      <i class="bi bi-exclamation-triangle"></i> {{ t('premium.errorGeneric') }}
+    </div>
+
+    <!-- Already premium: manage panel -->
+    <div class="premium-current" *ngIf="isPremium">
+      <i class="bi bi-patch-check-fill"></i>
+      <h2>{{ t('premium.current.title') }}</h2>
+      <p>{{ t('premium.current.activeUntil') }} <strong>{{ premiumUntil | date:'longDate' }}</strong></p>
+      <button class="btn-primary" (click)="manage()" [disabled]="loading === 'portal'">
+        <span *ngIf="loading !== 'portal'">{{ t('premium.current.manage') }}</span>
+        <span *ngIf="loading === 'portal'" class="spinner-sm"></span>
+      </button>
+    </div>
+
+    <!-- Not premium: plan cards -->
+    <div class="premium-plans" *ngIf="!isPremium">
+
+      <div class="plan-card">
+        <h3 class="plan-name">{{ t('premium.plans.monthly.name') }}</h3>
+        <div class="plan-price">{{ t('premium.plans.monthly.price') }}<span class="plan-period">{{ t('premium.plans.monthly.period') }}</span></div>
+        <button class="btn-primary plan-cta" (click)="subscribe('monthly')" [disabled]="loading === 'monthly'">
+          <span *ngIf="loading !== 'monthly'">{{ t('premium.plans.monthly.cta') }}</span>
+          <span *ngIf="loading === 'monthly'" class="spinner-sm"></span>
+        </button>
+      </div>
+
+      <div class="plan-card plan-card--featured">
+        <span class="plan-badge">{{ t('premium.plans.yearly.badge') }}</span>
+        <h3 class="plan-name">{{ t('premium.plans.yearly.name') }}</h3>
+        <div class="plan-price">{{ t('premium.plans.yearly.price') }}<span class="plan-period">{{ t('premium.plans.yearly.period') }}</span></div>
+        <button class="btn-primary plan-cta" (click)="subscribe('yearly')" [disabled]="loading === 'yearly'">
+          <span *ngIf="loading !== 'yearly'">{{ t('premium.plans.yearly.cta') }}</span>
+          <span *ngIf="loading === 'yearly'" class="spinner-sm"></span>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Benefits -->
+    <div class="premium-benefits">
+      <h2 class="benefits-title">{{ t('premium.benefits.title') }}</h2>
+      <ul>
+        <li><i class="bi bi-check-circle-fill"></i> {{ t('premium.benefits.item1') }}</li>
+        <li><i class="bi bi-check-circle-fill"></i> {{ t('premium.benefits.item2') }}</li>
+        <li><i class="bi bi-check-circle-fill"></i> {{ t('premium.benefits.item3') }}</li>
+        <li><i class="bi bi-check-circle-fill"></i> {{ t('premium.benefits.item4') }}</li>
+      </ul>
+    </div>
+
+    <p class="premium-secure">
+      <i class="bi bi-lock-fill"></i> {{ t('premium.secureNote') }}
+    </p>
+
+    <p class="premium-login-hint" *ngIf="!isLogged">
+      <i class="bi bi-info-circle"></i> {{ t('premium.loginHint') }}
+    </p>
+
+  </div>
+</ng-container>

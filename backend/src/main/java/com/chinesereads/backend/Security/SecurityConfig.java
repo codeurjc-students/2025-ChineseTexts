@@ -96,6 +96,10 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/api/founder/**").hasAnyRole("ADMIN")
                 .requestMatchers(HttpMethod.PUT, "/api/founder/**").hasAnyRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/api/founder/**").hasAnyRole("ADMIN")
+                // Stripe: the webhook is called by Stripe (unauthenticated; verified by
+                // signature) so it must be public — it MUST precede the authed matcher below.
+                .requestMatchers(HttpMethod.POST, "/api/premium/webhook").permitAll()
+                .requestMatchers("/api/premium/**").hasAnyRole("USER", "ADMIN")
                 .anyRequest().permitAll()
             );
 

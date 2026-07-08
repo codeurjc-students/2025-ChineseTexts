@@ -80,6 +80,13 @@
 			<version>1.0.2</version>
 		</dependency>
 
+		<!-- Stripe: subscription checkout + webhooks for the PREMIUM plan. -->
+		<dependency>
+			<groupId>com.stripe</groupId>
+			<artifactId>stripe-java</artifactId>
+			<version>29.2.0</version>
+		</dependency>
+
 		<!-- Caching (Caffeine) — used to cache synthesized TTS audio by text so the
 		     paid Google Cloud TTS API is not called again for identical input. -->
 		<dependency>

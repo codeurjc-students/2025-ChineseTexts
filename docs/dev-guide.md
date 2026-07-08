@@ -282,8 +282,18 @@ Runs all Jasmine/Karma component tests. Opens a Chrome browser and shows test re
 
 ### Required secret files (not committed to Git)
 
-**`docker/.env`:**\
-```DEEPSEEK_API_KEY=sk-your-deepseek-key-here```
+**`docker/.env`:**
+```
+DEEPSEEK_API_KEY=sk-your-deepseek-key-here
+
+# Stripe (PREMIUM subscription). Leave unset to run without billing.
+# From the Stripe dashboard (use the test keys until going live):
+STRIPE_SECRET_KEY=sk_test_...
+STRIPE_WEBHOOK_SECRET=whsec_...        # from the webhook endpoint you register at /api/premium/webhook
+STRIPE_PRICE_MONTHLY=price_...         # recurring monthly Price ID
+STRIPE_PRICE_YEARLY=price_...          # recurring yearly Price ID
+APP_PUBLIC_URL=https://chinesereads.com  # origin used for Checkout return URLs
+```
 
 **`ocr-service/credentials.json`:**
 ```json

@@ -119,7 +119,26 @@ const STATIC_SEO: Record<string, LocalizedSeo> = {
     }
   },
 
+  // Premium plan — public marketing page, indexable.
+  '/premium': {
+    en: {
+      title: 'ChineseReads Premium — Unlock Unlimited Chinese Reading Tools',
+      description:
+        'Upgrade to ChineseReads Premium for a higher monthly limit on private graded readers, ' +
+        'expanded audio and upcoming AI features. Keep learning Chinese without limits.',
+      path: '/premium'
+    },
+    es: {
+      title: 'ChineseReads Premium — Desbloquea las herramientas de lectura sin límites',
+      description:
+        'Hazte Premium en ChineseReads para un límite mensual más alto de lecturas graduadas privadas, ' +
+        'audio ampliado y próximas funciones de IA. Sigue aprendiendo chino sin límites.',
+      path: '/premium'
+    }
+  },
+
   // Authenticated / transactional pages — kept out of the search index.
+  '/premium/success': localizedPrivate('Welcome to Premium', 'Your ChineseReads Premium subscription is active.', 'Bienvenido a Premium', 'Tu suscripción Premium de ChineseReads está activa.', '/premium/success'),
   '/collections': localizedPrivate('My Collections', 'Your saved Chinese vocabulary collections and flashcards.', 'Mis colecciones', 'Tus colecciones de vocabulario chino y tarjetas guardadas.', '/collections'),
   '/profile':     localizedPrivate('My Profile', 'Manage your ChineseReads account.', 'Mi perfil', 'Gestiona tu cuenta de ChineseReads.', '/profile'),
   '/admin-tools': localizedPrivate('Admin Tools', 'Content management tools for administrators.', 'Herramientas de administración', 'Herramientas de gestión de contenido para administradores.', '/admin-tools'),
