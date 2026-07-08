@@ -8,6 +8,7 @@
 - [Architecture](#architecture)
 - [SEO](#seo)
 - [Internationalization (i18n)](#internationalization-i18n)
+- [Payments & Premium (Stripe)](#payments--premium-stripe)
 - [Quality Control](quality-control.md)
 - [Development Process](#development-process)
 - [Running the Application](#running-the-application)
@@ -24,7 +25,7 @@ ChineseReads follows a **distributed MVC architecture** composed of multiple ind
 | Aspect | Description |
 |---|---|
 | **Type** | Web MVC + SPA frontend + REST API + AI Microservices |
-| **Technologies** | Java 21, Spring Boot 4, Angular 17, Transloco (i18n), MySQL 8, Caffeine (cache), Python 3.11, Flask, DeepSeek API, Google Cloud Vision, Google Cloud Text-to-Speech |
+| **Technologies** | Java 21, Spring Boot 4, Angular 17, Transloco (i18n), MySQL 8, Caffeine (cache), Python 3.11, Flask, DeepSeek API, Google Cloud Vision, Google Cloud Text-to-Speech, Stripe (payments) |
 | **Tools** | IntelliJ IDEA, VS Code, Docker, Docker Compose, Caddy, GitHub, Postman |
 | **Quality Control** | Unit tests (JUnit + Mockito), Integration tests (H2), E2E tests (MockMvc), Frontend tests (Jasmine/Karma) |
 | **Deployment** | Docker Compose + Caddy (HTTPS automatic via Let's Encrypt), Azure VM |
@@ -35,7 +36,7 @@ ChineseReads follows a **distributed MVC architecture** composed of multiple ind
 ## Technologies
 
 ### Backend — Spring Boot
-Java 21 + Spring Boot 4. Exposes a REST API consumed by the Angular frontend. Handles authentication via JWT stored in HttpOnly cookies, text management, dictionary word management (admin CRUD), vocabulary collections, flashcards, and user management.  
+Java 21 + Spring Boot 4. Exposes a REST API consumed by the Angular frontend. Handles authentication via JWT stored in HttpOnly cookies, text management, dictionary word management (admin CRUD), vocabulary collections, flashcards, user management, and PREMIUM subscriptions via Stripe (see [Payments & Premium](#payments--premium-stripe)).  
 Official site: https://spring.io/projects/spring-boot
 
 ### Frontend — Angular 17
@@ -58,6 +59,10 @@ Official site: https://cloud.google.com/vision
 Python 3.11 + Flask microservice running on port 5002. Uses the Google Cloud Text-to-Speech API (WaveNet Mandarin voice `cmn-CN-Wavenet-A`) to synthesize natural audio for a full text, an individual word, a sentence, or a saved flashcard. The backend exposes it publicly at `/api/tts`, so anonymous readers can also listen. Free up to 1 million WaveNet characters/month.  
 Because the endpoint is public and paid per character, the backend protects it on three fronts (all configurable in `application.properties`): a **length cap** (`tts.max-chars`, rejects an oversized request with `413`), a **Caffeine cache** of the synthesized audio keyed by the exact text (`tts.cache.*`, so identical words/sentences/flashcards are never re-synthesized — the biggest ongoing saving), and a **per-IP rate limit** (`tts.rate-limit.per-minute`, returns `429` when exceeded; the client IP is read from `X-Forwarded-For` since the app runs behind Caddy).  
 Official site: https://cloud.google.com/text-to-speech
+
+### Payments — Stripe
+Recurring subscriptions for the **PREMIUM** plan, integrated in the backend via the Stripe Java SDK (`com.stripe:stripe-java`). Payment happens on **Stripe Checkout's hosted page** (redirect flow), so the app never handles card data (no PCI scope). When Stripe confirms a payment it calls a **signature-verified webhook** (`POST /api/premium/webhook`) that sets the user's premium expiry. A **Billing Portal** session lets users manage or cancel. All Stripe credentials are injected from the environment and empty by default, so the app boots and runs normally with billing disabled. See the [Payments & Premium (Stripe)](#payments--premium-stripe) section for the full flow and configuration.  
+Official site: https://stripe.com
 
 ### Reverse Proxy — Caddy
 Serves the Angular static files, proxies `/api/*` requests to the Spring Boot backend, and manages HTTPS certificates automatically via Let's Encrypt.  
@@ -153,6 +158,59 @@ The UI is available in **English and Spanish** (a flag switcher in the header). 
 **Design choices (why):** production serves **prerendered static HTML** (Caddy serves `dist/frontend/browser`; there is no live Node SSR), so each language must be baked into static HTML at build time — hence the synchronous loader. Transloco (runtime, one build, one Caddy mount) was chosen over Angular's compile-time `@angular/localize` (which would need one build per locale and Caddy changes). English stays at the root so existing indexed URLs never move (zero SEO regression); Spanish `/es` URLs are purely additive.
 
 **Adding or changing a UI string:** add the key to **both** `en.json` and `es.json` (keep parity) and reference it with `{{ 'namespace.key' | transloco }}` in templates or `transloco.translate('namespace.key')` in TypeScript. In tests, add `translocoTesting()` (from `src/app/i18n/transloco-testing.ts`) to the component's `TestBed` `imports`.
+
+---
+
+## Payments & Premium (Stripe)
+
+ChineseReads follows a **freemium** model: every reading/learning tool stays usable for free, and a paid **PREMIUM** plan raises the limits on the parts that cost money (AI text generation, and — planned — expanded audio and an AI "ask about words/context" feature). Premium is sold as a **recurring subscription** (monthly / yearly) through Stripe.
+
+### Premium status — single source of truth
+
+A user is premium while `User.premiumUntil` (a nullable `LocalDateTime`) is in the future (`User.isPremiumActive()`). This one timestamp is the **only** source of truth — deliberately not a static role, which would not expire on its own and would drift with the stateless JWT. `premiumUntil` is set from **two** paths that share the same field:
+
+- **Admin grant** — an admin can grant/extend/revoke premium *until a chosen date & time* from the users panel (`PATCH /api/users/{id}/premium`). Useful for demos, support and comps, and needs no Stripe.
+- **Stripe** — a self-service subscription payment sets it via the webhook (below).
+
+### Plans & limits
+
+The concrete guard today is the **monthly text-generation quota**; premium simply gets a higher ceiling (nobody loses access). All limits live in `application.properties`.
+
+| Limit | Free | Premium | Admin | Property |
+|---|---|---|---|---|
+| Own-text generations / month | 30 | 100 | unlimited (exempt) | `usage.user.monthly-limit` / `usage.premium.monthly-limit` |
+| Global generations / day (cost fuse, everyone) | 200 | 200 | 200 | `usage.global.daily-limit` |
+| Max chars per generated text | 1500 | 1500 | 1500 | `usage.text.max-chars` |
+| Audio (TTS) | public · 1600 chars · 60/min per IP · cached | same | same | `tts.*` |
+
+`UsageService.reserveGeneration` (called by `POST /api/my-texts`) charges the user's monthly quota **and** the global daily fuse; `reserveOcr` (the OCR extract step) charges the daily fuse only. Admins are exempt from the monthly quota but still bound by the daily fuse.
+
+### How the Stripe integration works
+
+| Piece | File | Purpose |
+|---|---|---|
+| **Service** | `backend/.../Service/StripeService.java` | Creates the subscription Checkout session and the Billing Portal session; verifies and applies webhook events. Credential-gated by `isConfigured()`. |
+| **Controller** | `backend/.../Controller/PremiumController.java` | `POST /api/premium/checkout` and `/portal` (authenticated) return a Stripe-hosted URL to redirect to; `POST /api/premium/webhook` (public, signature-verified) receives events. |
+| **Security** | `backend/.../Security/SecurityConfig.java` | The webhook is `permitAll` (Stripe is unauthenticated; verified by signature); the rest of `/api/premium/**` requires `USER`/`ADMIN`. |
+| **User fields** | `backend/.../Model/User.java` | `premiumUntil`, plus `stripeCustomerId` / `stripeSubscriptionId` to reconcile webhook events. Added automatically on deploy (`ddl-auto=update`, nullable). |
+| **Frontend service** | `frontend/.../services/premium.service.ts` | `checkout(plan)` / `portal()` → the app just redirects to the returned URL. |
+| **Pricing page** | `frontend/.../components/premium/` | Public, bilingual, prerendered `/premium` marketing page with monthly/yearly plans (and a per-month equivalent for the annual plan). |
+| **Success page** | `frontend/.../components/premium-success/` | Post-checkout `/premium/success`; refreshes the cached user so the new `premiumUntil` shows immediately. |
+| **Plan awareness** | `frontend/.../services/login.service.ts` (`isPremiumActive()`), header & profile | An "upgrade / manage" link and the plan shown on the profile. |
+
+### Payment flow
+
+1. The user clicks **Get Premium** → `POST /api/premium/checkout {plan}` → the backend ensures a Stripe **Customer** (stored on the user), builds a **Checkout Session** (`mode=subscription`, `client_reference_id = userId`, success/cancel URLs from `app.public-url`, the plan's `price_…`) and returns its URL.
+2. The frontend redirects to Stripe's hosted page; the user pays.
+3. Stripe redirects to `/premium/success` **and** — the authoritative path — calls the **webhook** (`checkout.session.completed`, `customer.subscription.created/updated`). `StripeService.handleWebhook` verifies the signature, then sets `premiumUntil` from the subscription's `current_period_end` on the matching user (found by `client_reference_id`, else subscription/customer id). Renewals push `premiumUntil` forward; `customer.subscription.deleted` lets it lapse.
+
+> **Webhook robustness:** the account's Stripe API version can be newer than the pinned SDK, so the handler parses the event from the **raw JSON** (`id`, `customer`, `subscription`, `status`, `current_period_end` are stable field names) rather than the SDK's typed deserializer. This is why `jackson-databind` is a direct backend dependency.
+
+### Configuration
+
+Five environment variables, injected via `docker-compose.yml` and mapped in `application.properties` (`stripe.*`, `app.public-url`) — all empty by default so the app runs with billing disabled. They live only in `docker/.env` on the server (never committed): `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `STRIPE_PRICE_MONTHLY`, `STRIPE_PRICE_YEARLY`, `APP_PUBLIC_URL`. See [Deployment → Required secret files](#deployment).
+
+**Test vs live:** Stripe fully separates *test* (test cards, no real money) and *live*. To go live, recreate the products/prices, secret key, webhook and Customer Portal config in **live mode** and swap those four Stripe values in `docker/.env` — **the code never changes**.
 
 ---
 
