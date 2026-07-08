@@ -88,16 +88,7 @@ public class StripeService {
             throw new IllegalArgumentException("No Stripe price configured for plan: " + plan);
         }
 
-        String customerId = user.getStripeCustomerId();
-        if (customerId == null || customerId.isBlank()) {
-            Customer customer = Customer.create(CustomerCreateParams.builder()
-                    .setEmail(user.getEmail())
-                    .setName(user.getName())
-                    .build());
-            customerId = customer.getId();
-            user.setStripeCustomerId(customerId);
-            userRepository.save(user);
-        }
+        String customerId = resolveOrCreateCustomer(user);
 
         SessionCreateParams params = SessionCreateParams.builder()
                 .setMode(SessionCreateParams.Mode.SUBSCRIPTION)
@@ -117,12 +108,44 @@ public class StripeService {
     }
 
     /**
+     * Returns a valid Stripe customer id for the user, creating a new one if needed.
+     * A customer id stored under a different API mode (e.g. a test-mode customer after
+     * switching to live keys) or a deleted customer no longer exists under the current
+     * key, so it is treated as missing and replaced — otherwise Checkout would fail with
+     * "no such customer".
+     */
+    private String resolveOrCreateCustomer(User user) throws StripeException {
+        String customerId = user.getStripeCustomerId();
+        if (customerId != null && !customerId.isBlank() && customerExists(customerId)) {
+            return customerId;
+        }
+        Customer customer = Customer.create(CustomerCreateParams.builder()
+                .setEmail(user.getEmail())
+                .setName(user.getName())
+                .build());
+        user.setStripeCustomerId(customer.getId());
+        userRepository.save(user);
+        return customer.getId();
+    }
+
+    /** True if the customer exists under the current API key and is not deleted. */
+    private boolean customerExists(String customerId) {
+        try {
+            Customer customer = Customer.retrieve(customerId);
+            return customer.getDeleted() == null || !customer.getDeleted();
+        } catch (StripeException e) {
+            return false; // unknown/invalid under the current key
+        }
+    }
+
+    /**
      * Creates a Stripe Billing Portal session so the user can manage or cancel their
-     * subscription. Returns {@code null} if the user has no Stripe customer yet.
+     * subscription. Returns {@code null} if the user has no valid Stripe customer.
      */
     public String createPortalSession(User user) throws StripeException {
         ensureApiKey();
-        if (user.getStripeCustomerId() == null || user.getStripeCustomerId().isBlank()) {
+        if (user.getStripeCustomerId() == null || user.getStripeCustomerId().isBlank()
+                || !customerExists(user.getStripeCustomerId())) {
             return null;
         }
         com.stripe.model.billingportal.Session portal = com.stripe.model.billingportal.Session.create(
