@@ -218,7 +218,7 @@
     "lastUpdated": "Last updated: July 2026",
     "s1": {
       "title": "1. Acceptance of these terms",
-      "body": "is a free web application for learning to read Chinese through graded texts. By creating an account or using the site, you agree to these Terms of Use. If you do not agree with them, please do not use ChineseReads."
+      "body": "is a web application for learning to read Chinese through graded texts. Its core features are free to use; an optional paid PREMIUM subscription unlocks higher usage limits. By creating an account or using the site, you agree to these Terms of Use. If you do not agree with them, please do not use ChineseReads."
     },
     "s2": {
       "title": "2. The service",
@@ -254,16 +254,27 @@
       "body": "ChineseReads relies on third-party providers for AI generation, OCR and audio, and processes your personal data as described in our",
       "privacyLink": "Privacy Policy"
     },
+    "payments": {
+      "title": "8. Subscriptions and payments",
+      "intro": "ChineseReads offers optional paid PREMIUM subscription plans that raise your usage limits. If you subscribe, the following terms apply:",
+      "item1": "Plans are billed on a recurring basis (monthly or yearly) at the prices shown on the pricing page, in euros. Any applicable taxes are shown or added at checkout.",
+      "item2": "Payments are handled by Stripe, our payment provider. ChineseReads never receives or stores your full card details — they are processed directly by Stripe. See the Privacy Policy for how payment data is handled.",
+      "item3": "Subscriptions renew automatically at the end of each billing period, charged to your payment method on file, until you cancel.",
+      "item4": "You can cancel at any time from the billing portal (\"Manage subscription\"). Your premium access stays active until the end of the period already paid and is simply not renewed afterwards.",
+      "item5": "Consumers in the EU/EEA normally have a 14-day right of withdrawal for online purchases. Because premium features are digital content made available to you immediately, by subscribing you expressly request immediate access and acknowledge that you lose this right of withdrawal once your premium access has started.",
+      "item6": "Except where the law requires otherwise, payments for a period that has already started are non-refundable. If you believe you were charged in error, contact us at the address below.",
+      "item7": "We may change the plans, their prices or their limits. Changes apply to future billing periods and, where legally required, you will be notified in advance."
+    },
     "s8": {
-      "title": "8. Availability and \"as is\" service",
-      "body": "ChineseReads is offered free of charge and \"as is\", without warranties of any kind. Features, usage limits and availability may change or be interrupted at any time. AI-generated translations and descriptions may contain errors and should not be relied upon as professional translation."
+      "title": "9. Availability and changes to the service",
+      "body": "The service is provided \"as is\", without warranties of any kind beyond those that cannot be excluded by law. Free and premium features, usage limits and availability may change or be interrupted at any time (paid subscriptions are governed by the section above). AI-generated translations and descriptions may contain errors and should not be relied upon as professional translation."
     },
     "s9": {
-      "title": "9. Limitation of liability",
+      "title": "10. Limitation of liability",
       "body": "To the extent permitted by law, the creator of ChineseReads is not liable for any indirect or incidental damages arising from your use of the service. We may suspend or delete accounts that break these terms. You can delete your own account at any time from your profile."
     },
     "s10": {
-      "title": "10. Changes and contact",
+      "title": "11. Changes and contact",
       "body": "We may update these terms; the \"last updated\" date above will change, and continued use of the service means you accept the new version. If you have questions about these terms, contact us at:"
     }
   },
@@ -305,6 +316,7 @@
       "name": "Name",
       "language": "Preferred language",
       "password": "Password (stored encrypted using BCrypt — we never store plain passwords)",
+      "payment": "If you subscribe to PREMIUM: billing identifiers that link your account to your subscription (a Stripe customer ID and subscription ID). Your card details are entered directly on Stripe and are never stored by ChineseReads.",
       "analytics": "We also collect anonymous usage data through Google Analytics (only with your consent), including pages visited, time on site, and general device/browser information. IP addresses are anonymized before being sent to Google."
     },
     "s3": {
@@ -327,6 +339,7 @@
       "title": "5. Third-party services",
       "intro": "ChineseReads uses the following third-party services:",
       "privacyPolicyLabel": "Privacy policy",
+      "stripe": "to process subscription payments securely. Your card and payment details are handled by Stripe as the payment processor; ChineseReads does not receive or store full card numbers.",
       "ga": "for anonymous traffic analysis.",
       "deepseek": "to generate Chinese learning texts. Only text content is sent, no personal data.",
       "vision": "to extract text from uploaded images. Images are processed and not stored.",
@@ -334,7 +347,7 @@
     },
     "s6": {
       "title": "6. Data retention",
-      "body": "Account data is retained as long as your account is active. You can request deletion of your account and all associated data at any time by contacting us. Analytics data is retained for 26 months as per Google Analytics default settings."
+      "body": "Account data is retained as long as your account is active. You can request deletion of your account and all associated data at any time by contacting us. Analytics data is retained for 26 months as per Google Analytics default settings. Records related to payments and subscriptions may be kept for longer where necessary to comply with tax, accounting and anti-fraud obligations."
     },
     "s7": {
       "title": "7. Your rights (GDPR)",
@@ -995,6 +1008,7 @@
       "item4": "Support the project and help it keep growing"
     },
     "secureNote": "Secure payment powered by Stripe. Cancel anytime.",
+    "finePrint": "Subscriptions renew automatically until cancelled; you can cancel anytime. Prices are in euros; applicable taxes are shown at checkout. Payments are processed by Stripe.",
     "loginHint": "You'll be asked to sign in or create a free account before subscribing."
   },
   "premiumSuccess": {
