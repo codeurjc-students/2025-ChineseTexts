@@ -13,11 +13,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.chinesereads.backend.Model.User;
 import com.chinesereads.backend.Repository.UserRepository;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Customer;
 import com.stripe.model.Event;
-import com.stripe.model.StripeObject;
 import com.stripe.model.Subscription;
 import com.stripe.model.checkout.Session;
 import com.stripe.net.Webhook;
@@ -39,6 +40,7 @@ import com.stripe.param.checkout.SessionCreateParams;
 public class StripeService {
 
     private static final Logger log = LoggerFactory.getLogger(StripeService.class);
+    private static final ObjectMapper MAPPER = new ObjectMapper();
 
     @Value("${stripe.secret-key:}")
     private String secretKey;
@@ -142,35 +144,45 @@ public class StripeService {
     public void handleWebhook(String payload, String signatureHeader) throws StripeException {
         ensureApiKey();
         Event event = Webhook.constructEvent(payload, signatureHeader, webhookSecret);
-        StripeObject object = event.getDataObjectDeserializer().getObject().orElse(null);
 
-        switch (event.getType()) {
+        // Read the event's data.object from the RAW JSON rather than the SDK's typed
+        // deserializer: the field names we need (id, customer, subscription, status,
+        // current_period_end) are stable across Stripe API versions, so this keeps the
+        // webhook working even when the account's API version is newer than the SDK's.
+        JsonNode data;
+        try {
+            data = MAPPER.readTree(event.getDataObjectDeserializer().getRawJson());
+        } catch (Exception e) {
+            log.warn("Could not parse Stripe event data for {}", event.getType(), e);
+            return;
+        }
+        dispatchEvent(event.getType(), data);
+    }
+
+    /** Applies one parsed event to the matching user. Exposed for testing. */
+    public void dispatchEvent(String type, JsonNode data) throws StripeException {
+        switch (type) {
             // First payment: grant premium and record the Stripe ids.
             case "checkout.session.completed" -> {
-                if (object instanceof Session session) {
-                    applySubscription(session.getClientReferenceId(), session.getCustomer(),
-                            session.getSubscription(), periodEndOf(session.getSubscription()));
-                }
+                String subscriptionId = text(data, "subscription");
+                applySubscription(text(data, "client_reference_id"), text(data, "customer"),
+                        subscriptionId, periodEndOf(subscriptionId));
             }
-            // Renewals AND status changes deliver the Subscription object directly (its
-            // period end advances on each successful renewal).
+            // Renewals AND status changes carry the subscription object (its period end
+            // advances on each successful renewal) — read the period end straight from
+            // the payload, no extra API call.
             case "customer.subscription.updated", "customer.subscription.created" -> {
-                if (object instanceof Subscription subscription) {
-                    String status = subscription.getStatus();
-                    if ("active".equals(status) || "trialing".equals(status)) {
-                        applySubscription(null, subscription.getCustomer(), subscription.getId(),
-                                periodEndOf(subscription));
-                    } else if ("canceled".equals(status) || "unpaid".equals(status)) {
-                        revokeSubscription(subscription.getId());
-                    }
+                String status = text(data, "status");
+                String subscriptionId = text(data, "id");
+                if ("active".equals(status) || "trialing".equals(status)) {
+                    applySubscription(null, text(data, "customer"), subscriptionId,
+                            periodEndFromJson(data));
+                } else if ("canceled".equals(status) || "unpaid".equals(status)) {
+                    revokeSubscription(subscriptionId);
                 }
             }
-            case "customer.subscription.deleted" -> {
-                if (object instanceof Subscription subscription) {
-                    revokeSubscription(subscription.getId());
-                }
-            }
-            default -> log.debug("Ignoring Stripe event type {}", event.getType());
+            case "customer.subscription.deleted" -> revokeSubscription(text(data, "id"));
+            default -> log.debug("Ignoring Stripe event type {}", type);
         }
     }
 
@@ -179,20 +191,38 @@ public class StripeService {
         if (subscriptionId == null || subscriptionId.isBlank()) {
             return null;
         }
-        return periodEndOf(Subscription.retrieve(subscriptionId));
-    }
-
-    /**
-     * Reads the current period end (epoch seconds) from a subscription. In the current
-     * Stripe API this lives on the subscription item, not the subscription itself.
-     */
-    private Long periodEndOf(Subscription subscription) {
-        if (subscription == null || subscription.getItems() == null
-                || subscription.getItems().getData() == null
+        Subscription subscription = Subscription.retrieve(subscriptionId);
+        if (subscription.getItems() == null || subscription.getItems().getData() == null
                 || subscription.getItems().getData().isEmpty()) {
             return null;
         }
         return subscription.getItems().getData().get(0).getCurrentPeriodEnd();
+    }
+
+    /**
+     * Reads the subscription's current period end (epoch seconds) from the raw event
+     * JSON. Tries the top-level field first (older API) then the subscription item
+     * (current API), so it works regardless of the account's Stripe API version.
+     */
+    private Long periodEndFromJson(JsonNode subscription) {
+        JsonNode top = subscription.get("current_period_end");
+        if (top != null && top.isNumber()) {
+            return top.asLong();
+        }
+        JsonNode items = subscription.path("items").path("data");
+        if (items.isArray() && items.size() > 0) {
+            JsonNode cpe = items.get(0).get("current_period_end");
+            if (cpe != null && cpe.isNumber()) {
+                return cpe.asLong();
+            }
+        }
+        return null;
+    }
+
+    /** Null-safe string field read from a JSON node. */
+    private static String text(JsonNode node, String field) {
+        JsonNode value = node.get(field);
+        return (value == null || value.isNull()) ? null : value.asText();
     }
 
     // ——— Pure state mutations (unit-tested without the Stripe SDK) ———

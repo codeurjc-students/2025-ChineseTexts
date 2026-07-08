@@ -22,6 +22,8 @@ import org.junit.jupiter.api.Test;
 import com.chinesereads.backend.Model.User;
 import com.chinesereads.backend.Repository.UserRepository;
 import com.chinesereads.backend.Service.StripeService;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Tests the subscription-to-user reconciliation logic in isolation from the Stripe SDK.
@@ -103,6 +105,42 @@ public class StripeServiceTest {
 
         assertNull(user.getStripeSubscriptionId());
         assertTrue(user.isPremiumActive()); // premiumUntil untouched — runs out naturally
+        verify(userRepository).save(user);
+    }
+
+    @Test
+    @DisplayName("A subscription.updated event grants premium from the payload's period end")
+    public void testDispatchSubscriptionUpdated() throws Exception {
+        User user = new User("d@d.com", "D", "pass", "en", "USER");
+        user.setStripeCustomerId("cus_9");
+        when(userRepository.findByStripeCustomerId("cus_9")).thenReturn(Optional.of(user));
+
+        long periodEnd = futureEpoch();
+        // Period end lives on the subscription item in the current Stripe API.
+        String json = "{\"id\":\"sub_9\",\"customer\":\"cus_9\",\"status\":\"active\","
+                + "\"items\":{\"data\":[{\"current_period_end\":" + periodEnd + "}]}}";
+        JsonNode data = new ObjectMapper().readTree(json);
+
+        stripeService.dispatchEvent("customer.subscription.updated", data);
+
+        assertEquals("sub_9", user.getStripeSubscriptionId());
+        assertTrue(user.isPremiumActive());
+        verify(userRepository).save(user);
+    }
+
+    @Test
+    @DisplayName("A subscription.deleted event detaches the subscription")
+    public void testDispatchSubscriptionDeleted() throws Exception {
+        User user = new User("e@e.com", "E", "pass", "en", "USER");
+        user.setStripeSubscriptionId("sub_10");
+        user.setPremiumUntil(LocalDateTime.now().plusDays(5));
+        when(userRepository.findByStripeSubscriptionId("sub_10")).thenReturn(Optional.of(user));
+
+        JsonNode data = new ObjectMapper().readTree("{\"id\":\"sub_10\",\"status\":\"canceled\"}");
+
+        stripeService.dispatchEvent("customer.subscription.deleted", data);
+
+        assertNull(user.getStripeSubscriptionId());
         verify(userRepository).save(user);
     }
 
