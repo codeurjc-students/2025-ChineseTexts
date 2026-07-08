@@ -110,6 +110,18 @@
   margin-top: auto; // pin to the bottom so both cards' buttons line up
 }
 
+// Button style (btn-primary is defined per-component in this app, not globally,
+// so the premium page must declare its own copy to match the app's look).
+.btn-primary {
+  background: #c0392b; color: white; border: none;
+  border-radius: 10px; padding: 10px 24px;
+  font-size: 0.95rem; cursor: pointer; transition: background 0.15s;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  text-decoration: none;
+  &:hover:not(:disabled) { background: #e74c3c; }
+  &:disabled { background: #e0a09a; cursor: not-allowed; }
+}
+
 /* Current premium panel */
 .premium-current {
   text-align: center;

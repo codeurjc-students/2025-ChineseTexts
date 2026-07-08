@@ -28,6 +28,23 @@
   flex-wrap: wrap;
 }
 
+// Button styles (btn-primary/secondary are per-component in this app, not global).
+.btn-primary,
+.btn-secondary {
+  border-radius: 10px; padding: 10px 24px;
+  font-size: 0.95rem; cursor: pointer; transition: background 0.15s;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  text-decoration: none;
+}
+.btn-primary {
+  background: #c0392b; color: white; border: none;
+  &:hover { background: #e74c3c; }
+}
+.btn-secondary {
+  background: white; color: #c0392b; border: 1.5px solid #c0392b;
+  &:hover { background: #fdecea; }
+}
+
 @media (prefers-color-scheme: dark) {
   .premium-success p { color: #cfcfcf; }
 }
