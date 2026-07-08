@@ -77,6 +77,11 @@ export class ProfileComponent implements OnInit {
     return !!until && new Date(until).getTime() > Date.now();
   }
 
+  /** Opens the premium plan page (upgrade or manage subscription). */
+  goToPremium(): void {
+    this.localeNav.navigate(['/premium']);
+  }
+
   // ——— Editar perfil ———
 
   openEditProfile(): void {

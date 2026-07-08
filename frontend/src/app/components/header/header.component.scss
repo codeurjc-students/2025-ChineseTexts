@@ -93,3 +93,11 @@
 .navbar-collapse {
   transition: height 0.3s ease;
 }
+
+/* Enlace de upsell a Premium (dorado) */
+.premium-link {
+  color: #c9a227 !important;
+}
+.premium-link:hover {
+  color: #a9861a !important;
+}

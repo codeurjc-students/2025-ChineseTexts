@@ -1,0 +1,11 @@
+<ng-container *transloco="let t">
+  <div class="premium-success">
+    <i class="bi bi-patch-check-fill"></i>
+    <h1>{{ t('premiumSuccess.title') }}</h1>
+    <p>{{ t('premiumSuccess.body') }}</p>
+    <div class="success-actions">
+      <a class="btn-primary" [routerLink]="'/my-tools' | localizeLink">{{ t('premiumSuccess.startCreating') }}</a>
+      <a class="btn-secondary" [routerLink]="'/profile' | localizeLink">{{ t('premiumSuccess.viewProfile') }}</a>
+    </div>
+  </div>
+</ng-container>

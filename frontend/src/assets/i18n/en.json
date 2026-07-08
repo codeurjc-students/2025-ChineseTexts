@@ -16,6 +16,7 @@
       "myCollections": "My Collections",
       "myTools": "My Tools",
       "adminTools": "Admin Tools",
+      "premium": "Premium",
       "login": "Login",
       "signup": "Signup",
       "profile": "Profile",
@@ -449,7 +450,9 @@
       "plan": "Plan",
       "planFree": "Free",
       "planPremium": "Premium",
-      "premiumUntil": "until"
+      "premiumUntil": "until",
+      "upgrade": "Upgrade to Premium",
+      "managePlan": "Manage subscription"
     },
     "actions": {
       "editProfile": {
@@ -969,5 +972,35 @@
   "speakButton": {
     "listen": "Listen",
     "audioUnavailable": "Audio unavailable — click to retry"
+  },
+  "premium": {
+    "kicker": "ChineseReads Premium",
+    "title": "Learn Chinese without limits",
+    "subtitle": "Go Premium for a higher monthly limit on your private graded readers, expanded audio and early access to upcoming AI features.",
+    "errorGeneric": "Something went wrong. Please try again.",
+    "current": {
+      "title": "You're Premium",
+      "activeUntil": "Your plan is active until",
+      "manage": "Manage subscription"
+    },
+    "plans": {
+      "monthly": { "name": "Monthly", "price": "€4.99", "period": "/month", "cta": "Get Premium" },
+      "yearly": { "name": "Yearly", "price": "€39.99", "period": "/year", "cta": "Get Premium", "badge": "Best value" }
+    },
+    "benefits": {
+      "title": "What's included",
+      "item1": "A much higher monthly limit for creating your own graded readers",
+      "item2": "Expanded audio pronunciation",
+      "item3": "Early access to upcoming AI features (ask about words and context)",
+      "item4": "Support the project and help it keep growing"
+    },
+    "secureNote": "Secure payment powered by Stripe. Cancel anytime.",
+    "loginHint": "You'll be asked to sign in or create a free account before subscribing."
+  },
+  "premiumSuccess": {
+    "title": "Welcome to Premium!",
+    "body": "Your subscription is active. Enjoy your higher limits and premium features.",
+    "startCreating": "Start creating",
+    "viewProfile": "View profile"
   }
 }

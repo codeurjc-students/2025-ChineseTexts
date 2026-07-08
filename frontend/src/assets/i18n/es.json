@@ -16,6 +16,7 @@
       "myCollections": "Mis colecciones",
       "myTools": "Mis herramientas",
       "adminTools": "Administración",
+      "premium": "Premium",
       "login": "Iniciar sesión",
       "signup": "Registrarse",
       "profile": "Perfil",
@@ -449,7 +450,9 @@
       "plan": "Plan",
       "planFree": "Gratuito",
       "planPremium": "Premium",
-      "premiumUntil": "hasta"
+      "premiumUntil": "hasta",
+      "upgrade": "Hazte Premium",
+      "managePlan": "Gestionar suscripción"
     },
     "actions": {
       "editProfile": {
@@ -969,5 +972,35 @@
   "speakButton": {
     "listen": "Escuchar",
     "audioUnavailable": "Audio no disponible — haz clic para reintentar"
+  },
+  "premium": {
+    "kicker": "ChineseReads Premium",
+    "title": "Aprende chino sin límites",
+    "subtitle": "Hazte Premium para un límite mensual más alto en tus lecturas graduadas privadas, audio ampliado y acceso anticipado a las próximas funciones de IA.",
+    "errorGeneric": "Algo ha salido mal. Inténtalo de nuevo.",
+    "current": {
+      "title": "Eres Premium",
+      "activeUntil": "Tu plan está activo hasta el",
+      "manage": "Gestionar suscripción"
+    },
+    "plans": {
+      "monthly": { "name": "Mensual", "price": "4,99 €", "period": "/mes", "cta": "Hazte Premium" },
+      "yearly": { "name": "Anual", "price": "39,99 €", "period": "/año", "cta": "Hazte Premium", "badge": "Mejor precio" }
+    },
+    "benefits": {
+      "title": "Qué incluye",
+      "item1": "Un límite mensual mucho más alto para crear tus propias lecturas graduadas",
+      "item2": "Audio de pronunciación ampliado",
+      "item3": "Acceso anticipado a las próximas funciones de IA (preguntar sobre palabras y contexto)",
+      "item4": "Apoya el proyecto y ayúdalo a seguir creciendo"
+    },
+    "secureNote": "Pago seguro con Stripe. Cancela cuando quieras.",
+    "loginHint": "Se te pedirá iniciar sesión o crear una cuenta gratuita antes de suscribirte."
+  },
+  "premiumSuccess": {
+    "title": "¡Bienvenido a Premium!",
+    "body": "Tu suscripción está activa. Disfruta de tus límites ampliados y funciones premium.",
+    "startCreating": "Empezar a crear",
+    "viewProfile": "Ver perfil"
   }
 }

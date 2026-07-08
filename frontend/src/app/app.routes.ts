@@ -15,6 +15,8 @@ import { TermsOfUseComponent } from './components/terms-of-use/terms-of-use.comp
 import { FounderComponent } from './components/founder/founder.component';
 import { MyToolsComponent } from './components/my-tools/my-tools.component';
 import { MyTextReaderComponent } from './components/my-text-reader/my-text-reader.component';
+import { PremiumComponent } from './components/premium/premium.component';
+import { PremiumSuccessComponent } from './components/premium-success/premium-success.component';
 
 /**
  * The application's routes, defined once. English is served from the root and
@@ -39,6 +41,8 @@ const appRoutes: Routes = [
   { path: 'privacy-policy', component: PrivacyPolicyComponent },
   { path: 'terms-of-use', component: TermsOfUseComponent },
   { path: 'founder', component: FounderComponent },
+  { path: 'premium', component: PremiumComponent },
+  { path: 'premium/success', component: PremiumSuccessComponent },
 ];
 
 export const routes: Routes = [

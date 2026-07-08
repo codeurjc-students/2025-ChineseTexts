@@ -47,6 +47,15 @@
           </span>
           <span class="info-value" *ngIf="!isPremium">{{ 'profile.view.planFree' | transloco }}</span>
         </div>
+        <div class="info-row">
+          <span class="info-label"></span>
+          <span class="info-value">
+            <button class="btn-link-plan" (click)="goToPremium()">
+              <i class="bi bi-star-fill"></i>
+              {{ (isPremium ? 'profile.view.managePlan' : 'profile.view.upgrade') | transloco }}
+            </button>
+          </span>
+        </div>
       </div>
 
       <div class="action-cards">

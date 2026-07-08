@@ -6,12 +6,14 @@
 /texts/HSK6
 /founder
 /terms-of-use
+/premium
 /es
 /es/texts
 /es/signup
 /es/founder
 /es/privacy-policy
 /es/terms-of-use
+/es/premium
 /es/texts/HSK1
 /es/texts/HSK2
 /es/texts/HSK3

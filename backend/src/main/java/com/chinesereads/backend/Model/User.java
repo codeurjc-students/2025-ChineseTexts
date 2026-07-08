@@ -42,11 +42,15 @@ public class User {
     private LocalDateTime termsAcceptedAt;
 
     // Suscripción PREMIUM caducable: el usuario disfruta del plan premium mientras
-    // premiumUntil sea una fecha/hora futura. Null (o pasada) = plan gratuito. Un
-    // administrador la concede o revoca; en el futuro también la fijará la pasarela
-    // de pago. Es la ÚNICA fuente de verdad del estado premium (no un rol estático,
-    // que no "caducaría" solo).
+    // premiumUntil sea una fecha/hora futura. Null (o pasada) = plan gratuito. Lo fija
+    // un administrador o la pasarela de pago (Stripe). Es la ÚNICA fuente de verdad del
+    // estado premium (no un rol estático, que no "caducaría" solo).
     private LocalDateTime premiumUntil;
+
+    // Identificadores de Stripe para reconciliar los webhooks con este usuario y para
+    // abrir el portal de gestión de la suscripción. Null hasta el primer pago.
+    private String stripeCustomerId;
+    private String stripeSubscriptionId;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Collection> collections = new ArrayList<>();
@@ -196,5 +200,21 @@ public class User {
     /** True while the PREMIUM subscription is active (grant not yet expired). */
     public boolean isPremiumActive() {
         return premiumUntil != null && premiumUntil.isAfter(LocalDateTime.now());
+    }
+
+    public String getStripeCustomerId() {
+        return stripeCustomerId;
+    }
+
+    public void setStripeCustomerId(String stripeCustomerId) {
+        this.stripeCustomerId = stripeCustomerId;
+    }
+
+    public String getStripeSubscriptionId() {
+        return stripeSubscriptionId;
+    }
+
+    public void setStripeSubscriptionId(String stripeSubscriptionId) {
+        this.stripeSubscriptionId = stripeSubscriptionId;
     }
 }
