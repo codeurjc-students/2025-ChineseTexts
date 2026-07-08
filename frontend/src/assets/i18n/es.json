@@ -985,7 +985,7 @@
     },
     "plans": {
       "monthly": { "name": "Mensual", "price": "3,99 €", "period": "/mes", "cta": "Hazte Premium" },
-      "yearly": { "name": "Anual", "price": "33,50 €", "period": "/año", "cta": "Hazte Premium", "badge": "Mejor precio" }
+      "yearly": { "name": "Anual", "price": "33,50 €", "period": "/año", "equivalent": "≈ 2,79 €/mes · ahorra 30 %", "cta": "Hazte Premium", "badge": "Mejor precio" }
     },
     "benefits": {
       "title": "Qué incluye",

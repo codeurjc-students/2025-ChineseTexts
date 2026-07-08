@@ -38,6 +38,7 @@
         <span class="plan-badge">{{ t('premium.plans.yearly.badge') }}</span>
         <h3 class="plan-name">{{ t('premium.plans.yearly.name') }}</h3>
         <div class="plan-price">{{ t('premium.plans.yearly.price') }}<span class="plan-period">{{ t('premium.plans.yearly.period') }}</span></div>
+        <div class="plan-equivalent">{{ t('premium.plans.yearly.equivalent') }}</div>
         <button class="btn-primary plan-cta" (click)="subscribe('yearly')" [disabled]="loading === 'yearly'">
           <span *ngIf="loading !== 'yearly'">{{ t('premium.plans.yearly.cta') }}</span>
           <span *ngIf="loading === 'yearly'" class="spinner-sm"></span>
