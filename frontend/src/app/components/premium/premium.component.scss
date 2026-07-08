@@ -53,6 +53,10 @@
   padding: 2rem 1.5rem;
   text-align: center;
   background: #fff;
+  // Column layout so the CTA can be pinned to the bottom, keeping both cards'
+  // buttons aligned even though the yearly card has an extra "per month" line.
+  display: flex;
+  flex-direction: column;
 }
 
 .plan-card--featured {
@@ -84,7 +88,14 @@
 .plan-price {
   font-size: 2rem;
   font-weight: 800;
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.35rem;
+}
+
+.plan-equivalent {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #2e9e5b;
+  margin-bottom: 1.15rem;
 }
 
 .plan-period {
@@ -96,6 +107,7 @@
 
 .plan-cta {
   width: 100%;
+  margin-top: auto; // pin to the bottom so both cards' buttons line up
 }
 
 /* Current premium panel */
