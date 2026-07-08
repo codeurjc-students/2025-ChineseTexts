@@ -2,6 +2,8 @@ package com.chinesereads.backend.Controller;
 
 import java.net.URI;
 import java.security.Principal;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -199,6 +201,34 @@ public class UserControllerRest {
         } catch (IllegalStateException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(Map.of("message", e.getMessage()));
+        }
+    }
+
+    /**
+     * Grants/extends or revokes PREMIUM for a user. Body: {"premiumUntil": ISO-local-datetime}
+     * to grant until that moment, or a null/blank value to revoke (back to free plan).
+     */
+    @PatchMapping("/{id}/premium")
+    public ResponseEntity<?> setPremium(@PathVariable long id,
+            @RequestBody Map<String, String> body) {
+        if (!body.containsKey("premiumUntil")) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("code", "PREMIUM_DATE_MISSING", "message", "Missing 'premiumUntil' field"));
+        }
+        String raw = body.get("premiumUntil");
+        LocalDateTime premiumUntil;
+        try {
+            // Null/blank revokes premium; otherwise parse the admin-chosen expiry.
+            premiumUntil = (raw == null || raw.isBlank()) ? null : LocalDateTime.parse(raw);
+        } catch (DateTimeParseException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("code", "PREMIUM_DATE_INVALID", "message", "Invalid date/time"));
+        }
+        try {
+            return ResponseEntity.ok(userService.setPremium(id, premiumUntil));
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("message", "User not found"));
         }
     }
 

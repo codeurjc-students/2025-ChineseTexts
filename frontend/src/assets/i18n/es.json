@@ -445,7 +445,11 @@
       "name": "Nombre",
       "email": "Correo electrónico",
       "language": "Idioma",
-      "collections": "Colecciones"
+      "collections": "Colecciones",
+      "plan": "Plan",
+      "planFree": "Gratuito",
+      "planPremium": "Premium",
+      "premiumUntil": "hasta"
     },
     "actions": {
       "editProfile": {
@@ -830,6 +834,7 @@
     "neverLoggedIn": "Nunca ha iniciado sesión",
     "badges": {
       "admin": "ADMIN",
+      "premium": "PREMIUM",
       "blocked": "BLOQUEADO",
       "you": "TÚ"
     },
@@ -854,6 +859,9 @@
       "status": "Estado",
       "statusBlocked": "Bloqueado",
       "statusActive": "Activo",
+      "plan": "Plan",
+      "planFree": "Gratuito",
+      "premiumUntil": "Premium hasta",
       "collectionsTitle": "Colecciones",
       "cardOne": "{{count}} tarjeta",
       "cardMany": "{{count}} tarjetas"
@@ -876,7 +884,18 @@
       "unblock": "Desbloquear",
       "makeAdmin": "Hacer administrador",
       "removeAdmin": "Quitar administrador",
+      "makePremium": "Hacer premium",
+      "managePremium": "Gestionar premium",
       "delete": "Eliminar"
+    },
+    "premium": {
+      "title": "Suscripción premium",
+      "hint": "Concede acceso premium hasta la fecha y hora elegidas. Los usuarios premium tienen un límite mensual de generación más alto.",
+      "until": "Premium hasta",
+      "grant": "Conceder premium",
+      "update": "Actualizar caducidad",
+      "revoke": "Revocar premium",
+      "cancel": "Cancelar"
     },
     "selfNote": "Esta es tu propia cuenta. Puedes editar tus datos, pero no puedes bloquearte, eliminarte ni cambiar tu propio rol de administrador aquí.",
     "messages": {
@@ -884,6 +903,8 @@
       "unblocked": "Usuario desbloqueado.",
       "adminRemoved": "Rol de administrador retirado.",
       "adminGranted": "El usuario ahora es administrador.",
+      "premiumGranted": "Acceso premium concedido.",
+      "premiumRevoked": "Acceso premium revocado.",
       "changesSaved": "Cambios guardados.",
       "deleted": "El usuario \"{{email}}\" se ha eliminado permanentemente."
     },
@@ -893,6 +914,9 @@
       "loadUser": "No se ha podido cargar el usuario. Inténtalo de nuevo.",
       "updateUser": "No se ha podido actualizar el usuario. Inténtalo de nuevo.",
       "nameEmpty": "El nombre no puede estar vacío.",
+      "premiumDateEmpty": "Elige una fecha y hora de caducidad.",
+      "premiumDatePast": "La caducidad debe ser en el futuro.",
+      "updatePremium": "No se ha podido actualizar la suscripción. Inténtalo de nuevo.",
       "saveChanges": "No se han podido guardar los cambios. Inténtalo de nuevo.",
       "deleteUser": "No se ha podido eliminar el usuario. Inténtalo de nuevo."
     }

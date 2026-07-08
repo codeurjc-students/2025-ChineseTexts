@@ -8,6 +8,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -36,6 +37,7 @@ public class UsageServiceTest {
         injectField(usageService, "userRepository", userRepository);
         injectField(usageService, "appUsageRepository", appUsageRepository);
         injectField(usageService, "userMonthlyLimit", 2);
+        injectField(usageService, "premiumMonthlyLimit", 5);
         injectField(usageService, "globalDailyLimit", 3);
 
         // By default there is no usage recorded for today.
@@ -115,5 +117,34 @@ public class UsageServiceTest {
                 .thenReturn(Optional.of(new AppUsage(LocalDate.now(), 3))); // daily limit is 3
 
         assertThrows(UsageLimitException.class, () -> usageService.reserveGeneration(admin));
+    }
+
+    @Test
+    @DisplayName("Premium users get the higher monthly ceiling and still spend their quota")
+    public void testPremiumGetsHigherLimit() {
+        User premium = userWithUsage(2, LocalDate.now().withDayOfMonth(1)); // at the FREE limit of 2
+        premium.setPremiumUntil(LocalDateTime.now().plusDays(30)); // active subscription
+
+        // Free users would be blocked at 2, but premium's ceiling is 5.
+        assertDoesNotThrow(() -> usageService.reserveGeneration(premium));
+        assertEquals(3, premium.getMonthlyTextCount()); // premium still consumes quota
+    }
+
+    @Test
+    @DisplayName("Premium users are blocked once they reach the premium ceiling")
+    public void testPremiumLimitReached() {
+        User premium = userWithUsage(5, LocalDate.now().withDayOfMonth(1)); // premium limit is 5
+        premium.setPremiumUntil(LocalDateTime.now().plusDays(30));
+
+        assertThrows(UsageLimitException.class, () -> usageService.reserveGeneration(premium));
+    }
+
+    @Test
+    @DisplayName("An expired premium grant falls back to the free plan limit")
+    public void testExpiredPremiumUsesFreeLimit() {
+        User expired = userWithUsage(2, LocalDate.now().withDayOfMonth(1)); // at the free limit
+        expired.setPremiumUntil(LocalDateTime.now().minusDays(1)); // subscription already expired
+
+        assertThrows(UsageLimitException.class, () -> usageService.reserveGeneration(expired));
     }
 }

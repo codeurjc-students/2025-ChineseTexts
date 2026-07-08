@@ -41,6 +41,13 @@ public class User {
     // de uso al registrarse. Null en cuentas anteriores a esta funcionalidad.
     private LocalDateTime termsAcceptedAt;
 
+    // Suscripción PREMIUM caducable: el usuario disfruta del plan premium mientras
+    // premiumUntil sea una fecha/hora futura. Null (o pasada) = plan gratuito. Un
+    // administrador la concede o revoca; en el futuro también la fijará la pasarela
+    // de pago. Es la ÚNICA fuente de verdad del estado premium (no un rol estático,
+    // que no "caducaría" solo).
+    private LocalDateTime premiumUntil;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Collection> collections = new ArrayList<>();
 
@@ -176,5 +183,18 @@ public class User {
 
     public void setTermsAcceptedAt(LocalDateTime termsAcceptedAt) {
         this.termsAcceptedAt = termsAcceptedAt;
+    }
+
+    public LocalDateTime getPremiumUntil() {
+        return premiumUntil;
+    }
+
+    public void setPremiumUntil(LocalDateTime premiumUntil) {
+        this.premiumUntil = premiumUntil;
+    }
+
+    /** True while the PREMIUM subscription is active (grant not yet expired). */
+    public boolean isPremiumActive() {
+        return premiumUntil != null && premiumUntil.isAfter(LocalDateTime.now());
     }
 }

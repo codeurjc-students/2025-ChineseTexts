@@ -445,7 +445,11 @@
       "name": "Name",
       "email": "Email",
       "language": "Language",
-      "collections": "Collections"
+      "collections": "Collections",
+      "plan": "Plan",
+      "planFree": "Free",
+      "planPremium": "Premium",
+      "premiumUntil": "until"
     },
     "actions": {
       "editProfile": {
@@ -830,6 +834,7 @@
     "neverLoggedIn": "Never logged in",
     "badges": {
       "admin": "ADMIN",
+      "premium": "PREMIUM",
       "blocked": "BLOCKED",
       "you": "YOU"
     },
@@ -854,6 +859,9 @@
       "status": "Status",
       "statusBlocked": "Blocked",
       "statusActive": "Active",
+      "plan": "Plan",
+      "planFree": "Free",
+      "premiumUntil": "Premium until",
       "collectionsTitle": "Collections",
       "cardOne": "{{count}} card",
       "cardMany": "{{count}} cards"
@@ -876,7 +884,18 @@
       "unblock": "Unblock",
       "makeAdmin": "Make admin",
       "removeAdmin": "Remove admin",
+      "makePremium": "Make premium",
+      "managePremium": "Manage premium",
       "delete": "Delete"
+    },
+    "premium": {
+      "title": "Premium subscription",
+      "hint": "Grant premium access until the chosen date and time. Premium users get a higher monthly generation limit.",
+      "until": "Premium until",
+      "grant": "Grant premium",
+      "update": "Update expiry",
+      "revoke": "Revoke premium",
+      "cancel": "Cancel"
     },
     "selfNote": "This is your own account. You can edit your details, but you can't block, delete or change your own admin role here.",
     "messages": {
@@ -884,6 +903,8 @@
       "unblocked": "User unblocked.",
       "adminRemoved": "Admin role removed.",
       "adminGranted": "User is now an admin.",
+      "premiumGranted": "Premium access granted.",
+      "premiumRevoked": "Premium access revoked.",
       "changesSaved": "Changes saved.",
       "deleted": "User \"{{email}}\" was permanently deleted."
     },
@@ -893,6 +914,9 @@
       "loadUser": "Could not load the user. Please try again.",
       "updateUser": "Could not update the user. Please try again.",
       "nameEmpty": "Name cannot be empty.",
+      "premiumDateEmpty": "Please choose an expiry date and time.",
+      "premiumDatePast": "The expiry must be in the future.",
+      "updatePremium": "Could not update the subscription. Please try again.",
       "saveChanges": "Could not save changes. Please try again.",
       "deleteUser": "Could not delete the user. Please try again."
     }

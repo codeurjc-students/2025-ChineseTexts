@@ -27,6 +27,11 @@ public class UsageService {
     @Value("${usage.user.monthly-limit:30}")
     private int userMonthlyLimit;
 
+    // Cupo mensual ampliado para usuarios PREMIUM. Nunca es menor que el gratuito,
+    // así que activar premium sólo puede subir el límite: nadie pierde acceso.
+    @Value("${usage.premium.monthly-limit:100}")
+    private int premiumMonthlyLimit;
+
     @Value("${usage.global.daily-limit:200}")
     private int globalDailyLimit;
 
@@ -47,6 +52,9 @@ public class UsageService {
     public void reserveGeneration(User user) {
         LocalDate today = LocalDate.now();
         boolean isAdmin = user.getRoles() != null && user.getRoles().contains("ADMIN");
+        // Tier of the monthly quota: PREMIUM subscribers get a higher ceiling than the
+        // free plan. Admins are handled separately (fully exempt) below.
+        int monthlyLimit = user.isPremiumActive() ? premiumMonthlyLimit : userMonthlyLimit;
 
         // ——— Per-user monthly quota (admins are exempt so the owner can test/demo
         // the product freely; the global kill-switch below still applies to everyone) ———
@@ -56,9 +64,9 @@ public class UsageService {
                 user.setUsagePeriodStart(monthStart);
                 user.setMonthlyTextCount(0);
             }
-            if (user.getMonthlyTextCount() >= userMonthlyLimit) {
+            if (user.getMonthlyTextCount() >= monthlyLimit) {
                 throw new UsageLimitException(
-                        "You've reached your monthly limit of " + userMonthlyLimit
+                        "You've reached your monthly limit of " + monthlyLimit
                                 + " text creations. It resets at the start of next month.");
             }
         }

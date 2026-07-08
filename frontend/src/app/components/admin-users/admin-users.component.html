@@ -49,6 +49,7 @@
       </div>
       <div class="user-row-side">
         <span class="badge badge-admin" *ngIf="u.roles.includes('ADMIN')">{{ 'adminUsers.badges.admin' | transloco }}</span>
+        <span class="badge badge-premium" *ngIf="isActivePremium(u.premiumUntil)">{{ 'adminUsers.badges.premium' | transloco }}</span>
         <span class="badge badge-blocked" *ngIf="u.blocked">{{ 'adminUsers.badges.blocked' | transloco }}</span>
         <span class="user-lastaccess">
           <i class="bi bi-clock-history"></i>
@@ -88,6 +89,7 @@
           <div class="detail-email">{{ detail.email }}</div>
           <div class="detail-badges">
             <span class="badge badge-admin" *ngIf="isTargetAdmin">{{ 'adminUsers.badges.admin' | transloco }}</span>
+            <span class="badge badge-premium" *ngIf="isTargetPremium">{{ 'adminUsers.badges.premium' | transloco }}</span>
             <span class="badge badge-blocked" *ngIf="detail.blocked">{{ 'adminUsers.badges.blocked' | transloco }}</span>
             <span class="badge badge-self" *ngIf="isSelf">{{ 'adminUsers.badges.you' | transloco }}</span>
           </div>
@@ -111,6 +113,13 @@
         <div class="detail-field">
           <span class="field-label">{{ 'adminUsers.detail.status' | transloco }}</span>
           <span class="field-value">{{ (detail.blocked ? 'adminUsers.detail.statusBlocked' : 'adminUsers.detail.statusActive') | transloco }}</span>
+        </div>
+        <div class="detail-field">
+          <span class="field-label">{{ 'adminUsers.detail.plan' | transloco }}</span>
+          <span class="field-value" *ngIf="isTargetPremium">
+            {{ 'adminUsers.detail.premiumUntil' | transloco }} {{ detail.premiumUntil | date:'medium' }}
+          </span>
+          <span class="field-value" *ngIf="!isTargetPremium">{{ 'adminUsers.detail.planFree' | transloco }}</span>
         </div>
       </div>
 
@@ -158,6 +167,25 @@
         </div>
       </div>
 
+      <!-- Concesión / revocación de PREMIUM -->
+      <div class="edit-form" *ngIf="editingPremium">
+        <h4 class="block-title">{{ 'adminUsers.premium.title' | transloco }}</h4>
+        <p class="section-hint">{{ 'adminUsers.premium.hint' | transloco }}</p>
+        <div class="form-group">
+          <label>{{ 'adminUsers.premium.until' | transloco }}</label>
+          <input class="form-input" type="datetime-local" [(ngModel)]="premiumInput" />
+        </div>
+        <div class="action-row mt-3">
+          <button class="btn-primary btn-sm" (click)="grantPremium()" [disabled]="detailLoading">
+            {{ (isTargetPremium ? 'adminUsers.premium.update' : 'adminUsers.premium.grant') | transloco }}
+          </button>
+          <button class="btn-danger btn-sm" *ngIf="isTargetPremium" (click)="revokePremium()" [disabled]="detailLoading">
+            {{ 'adminUsers.premium.revoke' | transloco }}
+          </button>
+          <button class="btn-secondary btn-sm" (click)="cancelPremiumEdit()">{{ 'adminUsers.premium.cancel' | transloco }}</button>
+        </div>
+      </div>
+
       <!-- Confirmación de borrado -->
       <div class="confirm-box mt-3" *ngIf="confirmingDelete">
         <span><i class="bi bi-exclamation-triangle"></i>
@@ -169,7 +197,7 @@
       </div>
 
       <!-- Acciones -->
-      <div class="action-row mt-4" *ngIf="!editing && !confirmingDelete">
+      <div class="action-row mt-4" *ngIf="!editing && !confirmingDelete && !editingPremium">
         <button class="btn-secondary" (click)="startEdit()" [disabled]="detailLoading">
           <i class="bi bi-pencil"></i> {{ 'adminUsers.actions.edit' | transloco }}
         </button>
@@ -182,6 +210,10 @@
           <button class="btn-secondary" (click)="toggleAdmin()" [disabled]="detailLoading">
             <i class="bi bi-shield"></i>
             {{ (isTargetAdmin ? 'adminUsers.actions.removeAdmin' : 'adminUsers.actions.makeAdmin') | transloco }}
+          </button>
+          <button class="btn-secondary" (click)="startPremiumEdit()" [disabled]="detailLoading">
+            <i class="bi bi-star"></i>
+            {{ (isTargetPremium ? 'adminUsers.actions.managePremium' : 'adminUsers.actions.makePremium') | transloco }}
           </button>
           <button class="btn-danger" (click)="askDelete()" [disabled]="detailLoading">
             <i class="bi bi-trash"></i> {{ 'adminUsers.actions.delete' | transloco }}

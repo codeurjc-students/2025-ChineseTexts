@@ -138,6 +138,7 @@ public class UserService {
                 user.isBlocked(),
                 user.getRegistrationDate(),
                 user.getLastAccess(),
+                user.getPremiumUntil(),
                 collections.size(),
                 flashcardsCount,
                 textsCount,
@@ -153,6 +154,20 @@ public class UserService {
         }
         user.setBlocked(blocked);
         return toAdminUserDTO(userRepository.save(user));
+    }
+
+    /**
+     * Grants, extends or revokes a user's PREMIUM subscription from the admin panel.
+     * {@code premiumUntil} is the expiry moment chosen by the admin; {@code null}
+     * revokes premium (back to the free plan). This is the single source of truth for
+     * premium status, so no role is touched here.
+     */
+    @Transactional
+    public AdminUserDetailDTO setPremium(long id, LocalDateTime premiumUntil) {
+        User user = userRepository.findById(id).orElseThrow();
+        user.setPremiumUntil(premiumUntil);
+        userRepository.save(user);
+        return getUserDetail(id);
     }
 
     /**
@@ -199,6 +214,7 @@ public class UserService {
                 user.getRoles(),
                 user.isBlocked(),
                 user.getRegistrationDate(),
-                user.getLastAccess());
+                user.getLastAccess(),
+                user.getPremiumUntil());
     }
 }
