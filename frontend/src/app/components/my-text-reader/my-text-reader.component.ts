@@ -9,6 +9,7 @@ import { LoginService } from '../../services/login.service';
 import { SpeakButtonComponent } from '../speak-button/speak-button.component';
 import { WordChatComponent } from '../word-chat/word-chat.component';
 import { LocaleNavService } from '../../i18n/locale-nav.service';
+import { ToastService } from '../../services/toast.service';
 
 /**
  * Read-only reader for one of the user's PRIVATE texts. Mirrors the public text
@@ -59,7 +60,8 @@ export class MyTextReaderComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private localeNav: LocaleNavService,
-    private transloco: TranslocoService
+    private transloco: TranslocoService,
+    private toast: ToastService
   ) {}
 
   /** Full translation in the active UI language (falls back to the other language). */
@@ -153,11 +155,15 @@ export class MyTextReaderComponent implements OnInit {
     this.activeWordIndex = null;
   }
 
-  /** Opens the AI chat about the active word. Anonymous users are sent to sign up. */
+  /** Opens the AI chat about the active word. Anonymous users get a sign-up notice. */
   openWordChat(): void {
     if (this.activeWordIndex === null || !this.reader) return;
     if (!this.loginService.isLogged()) {
-      this.localeNav.navigate(['/signup']);
+      this.toast.show(
+        this.transloco.translate('notice.loginToChat'),
+        this.transloco.translate('notice.signUp'),
+        () => this.localeNav.navigate(['/signup'])
+      );
       return;
     }
     this.chatWord = this.originalText[this.activeWordIndex] || '';

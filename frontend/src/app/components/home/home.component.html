@@ -155,7 +155,7 @@
           <div class="plan-box-price">
             {{ 'premium.plans.monthly.price' | transloco }}<span class="plan-box-period">{{ 'premium.plans.monthly.period' | transloco }}</span>
           </div>
-          <div class="plan-box-coffee">{{ 'home.plans.coffee' | transloco }}</div>
+          <p class="plan-box-yearly">{{ 'home.plans.premium.yearlyNote' | transloco }}</p>
           <ul class="plan-box-list">
             <li><i class="bi bi-check-circle-fill"></i> {{ 'home.plans.premium.item1' | transloco }}</li>
             <li><i class="bi bi-check-circle-fill"></i> {{ 'home.plans.premium.item2' | transloco }}</li>
@@ -163,8 +163,7 @@
             <li><i class="bi bi-check-circle-fill"></i> {{ 'home.plans.premium.item4' | transloco }}</li>
             <li><i class="bi bi-check-circle-fill"></i> {{ 'home.plans.premium.item5' | transloco }}</li>
           </ul>
-          <button class="btn-main w-100" [routerLink]="'/premium' | localizeLink">{{ 'home.plans.premium.cta' | transloco }}</button>
-          <p class="plan-box-yearly">{{ 'home.plans.premium.yearlyNote' | transloco }}</p>
+          <button class="btn-premium w-100" (click)="goPremium()">{{ 'home.plans.premium.cta' | transloco }}</button>
         </div>
       </article>
 

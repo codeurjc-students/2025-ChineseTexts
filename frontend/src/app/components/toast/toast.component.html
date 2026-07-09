@@ -1,0 +1,7 @@
+<div class="toast-wrap" *ngIf="current" role="status" aria-live="polite">
+  <div class="toast-box">
+    <span class="toast-text">{{ current.text }}</span>
+    <button *ngIf="current.actionLabel" class="toast-action" (click)="runAction()">{{ current.actionLabel }}</button>
+    <button class="toast-close" (click)="dismiss()" aria-label="Close">✕</button>
+  </div>
+</div>

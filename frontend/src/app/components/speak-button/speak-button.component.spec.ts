@@ -4,6 +4,7 @@ import { SpeakButtonComponent } from './speak-button.component';
 import { AudioService } from '../../services/audio.service';
 import { LoginService } from '../../services/login.service';
 import { LocaleNavService } from '../../i18n/locale-nav.service';
+import { ToastService } from '../../services/toast.service';
 
 import { translocoTesting } from "../../i18n/transloco-testing";
 
@@ -13,6 +14,7 @@ describe('SpeakButtonComponent', () => {
   let audioSpy: jasmine.SpyObj<AudioService>;
   let loginSpy: jasmine.SpyObj<LoginService>;
   let navSpy: jasmine.SpyObj<LocaleNavService>;
+  let toastSpy: jasmine.SpyObj<ToastService>;
 
   beforeEach(async () => {
     audioSpy = jasmine.createSpyObj('AudioService', ['speak', 'stop'], {
@@ -21,13 +23,15 @@ describe('SpeakButtonComponent', () => {
     loginSpy = jasmine.createSpyObj('LoginService', ['isLogged']);
     loginSpy.isLogged.and.returnValue(true); // logged in by default
     navSpy = jasmine.createSpyObj('LocaleNavService', ['navigate']);
+    toastSpy = jasmine.createSpyObj('ToastService', ['show']);
 
     await TestBed.configureTestingModule({
       imports: [translocoTesting(), SpeakButtonComponent],
       providers: [
         { provide: AudioService, useValue: audioSpy },
         { provide: LoginService, useValue: loginSpy },
-        { provide: LocaleNavService, useValue: navSpy }
+        { provide: LocaleNavService, useValue: navSpy },
+        { provide: ToastService, useValue: toastSpy }
       ]
     }).compileComponents();
 
@@ -50,12 +54,13 @@ describe('SpeakButtonComponent', () => {
     expect(component.state).toBe('loading');
   });
 
-  it('should send anonymous users to sign up instead of playing', () => {
+  it('should show a sign-up notice for anonymous users instead of playing', () => {
     loginSpy.isLogged.and.returnValue(false);
     component.state = 'idle';
     component.toggle(new Event('click'));
-    expect(navSpy.navigate).toHaveBeenCalledWith(['/signup']);
+    expect(toastSpy.show).toHaveBeenCalled();
     expect(audioSpy.speak).not.toHaveBeenCalled();
+    expect(navSpy.navigate).not.toHaveBeenCalled();
   });
 
   it('should send users who hit the audio limit to the premium page', () => {

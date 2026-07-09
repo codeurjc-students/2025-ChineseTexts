@@ -9,6 +9,12 @@
       "loading": "Cargando…"
     }
   },
+  "notice": {
+    "loginToListen": "Debes iniciar sesión para escuchar textos, palabras y frases.",
+    "loginToChat": "Debes iniciar sesión para usar el tutor IA.",
+    "signUpForPremium": "Crea primero una cuenta gratis para hacerte Premium.",
+    "signUp": "Crear cuenta gratis"
+  },
   "header": {
     "brand": "Inicio",
     "nav": {
@@ -111,8 +117,7 @@
         "item5": "Cancela cuando quieras — sin compromiso",
         "cta": "Hazte Premium",
         "yearlyNote": "o ahorra un 30 % con el plan anual"
-      },
-      "coffee": "menos que un café ☕"
+      }
     }
   },
   "footer": {
