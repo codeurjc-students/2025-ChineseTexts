@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 
-import { ToastMessage, ToastService } from '../../services/toast.service';
+import { ToastAction, ToastMessage, ToastService } from '../../services/toast.service';
 
 /**
  * Renders the current app toast (see ToastService). Auto-dismisses after a few
@@ -40,8 +40,8 @@ export class ToastComponent implements OnInit, OnDestroy {
     this.timer = setTimeout(() => this.dismiss(), 6000);
   }
 
-  runAction(): void {
-    this.current?.action?.();
+  runAction(action: ToastAction): void {
+    action.run();
     this.dismiss();
   }
 

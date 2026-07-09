@@ -13,7 +13,8 @@
     "loginToListen": "You must be logged in to listen to texts, words and sentences.",
     "loginToChat": "You must be logged in to use the AI tutor.",
     "signUpForPremium": "Create a free account first to go Premium.",
-    "signUp": "Create free account"
+    "signUp": "Create free account",
+    "logIn": "Log in"
   },
   "header": {
     "brand": "Home",
@@ -51,9 +52,23 @@
       "cta": "Start Reading for Free"
     },
     "donation": {
-      "top": "If you enjoy ChineseReads and want to support its development, consider following us on instagram.",
       "bottom": "ChineseReads is developed independently. If you'd like to follow along and help it grow, find us on Instagram:",
       "button": "Support the Project"
+    },
+    "howItWorks": {
+      "heading": "How it works",
+      "step1": {
+        "title": "Pick a text",
+        "text": "Choose a graded reader for your HSK level — or create your own from a photo or pasted text."
+      },
+      "step2": {
+        "title": "Read with support",
+        "text": "Tap any word for pinyin and translation, and listen to natural audio for words, sentences or the whole text."
+      },
+      "step3": {
+        "title": "Ask the AI tutor",
+        "text": "Not sure about a word? Ask the AI tutor to explain it in context and keep the conversation going."
+      }
     },
     "badges": {
       "free": "Free",

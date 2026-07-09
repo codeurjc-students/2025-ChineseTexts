@@ -12,7 +12,7 @@ import { SeoService } from '../../services/seo.service';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { Lang } from '../../i18n/locale.util';
 import { LocaleNavService } from '../../i18n/locale-nav.service';
-import { ToastService } from '../../services/toast.service';
+import { AuthUiService } from '../../services/auth-ui.service';
 
 @Component({
   selector: 'app-text',
@@ -75,7 +75,7 @@ export class TextComponent implements OnInit {
     private seo: SeoService,
     private transloco: TranslocoService,
     private localeNav: LocaleNavService,
-    private toast: ToastService
+    private authUi: AuthUiService
   ) {}
 
   get isAdmin(): boolean {
@@ -114,11 +114,7 @@ export class TextComponent implements OnInit {
   openWordChat(): void {
     if (this.activeWordIndex === null) return;
     if (!this.loginService.isLogged()) {
-      this.toast.show(
-        this.transloco.translate('notice.loginToChat'),
-        this.transloco.translate('notice.signUp'),
-        () => this.localeNav.navigate(['/signup'])
-      );
+      this.authUi.promptAuth('notice.loginToChat');
       return;
     }
     this.chatWord = this.originalText[this.activeWordIndex] || '';

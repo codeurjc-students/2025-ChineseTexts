@@ -10,15 +10,37 @@
     <button class="btn-main mt-3" [routerLink]="'/texts' | localizeLink">
       {{ 'home.hero.cta' | transloco }}
     </button>
-
-    <!-- DONATION SECTION (TOP) -->
-    <div class="mt-4">
-      <p class="small">
-        {{ 'home.donation.top' | transloco }}
-      </p>
-      <a href="https://www.instagram.com/chinesereadsapp" class="btn btn-outline-danger">{{ 'home.donation.button' | transloco }}</a>
-    </div>
   </header>
+
+  <!-- HOW IT WORKS SECTION -->
+  <section aria-labelledby="how-it-works" class="mb-5">
+    <h2 id="how-it-works" class="text-center mb-4" style="color:#c0392b; font-weight:700;">
+      {{ 'home.howItWorks.heading' | transloco }}
+    </h2>
+    <div class="row g-4">
+      <article class="col-md-4">
+        <div class="step-box text-center">
+          <div class="step-number">1</div>
+          <h3 class="fw-bold">{{ 'home.howItWorks.step1.title' | transloco }}</h3>
+          <p>{{ 'home.howItWorks.step1.text' | transloco }}</p>
+        </div>
+      </article>
+      <article class="col-md-4">
+        <div class="step-box text-center">
+          <div class="step-number">2</div>
+          <h3 class="fw-bold">{{ 'home.howItWorks.step2.title' | transloco }}</h3>
+          <p>{{ 'home.howItWorks.step2.text' | transloco }}</p>
+        </div>
+      </article>
+      <article class="col-md-4">
+        <div class="step-box text-center">
+          <div class="step-number">3</div>
+          <h3 class="fw-bold">{{ 'home.howItWorks.step3.title' | transloco }}</h3>
+          <p>{{ 'home.howItWorks.step3.text' | transloco }}</p>
+        </div>
+      </article>
+    </div>
+  </section>
 
   <!-- BENEFITS SECTION -->
   <section aria-labelledby="why-works">

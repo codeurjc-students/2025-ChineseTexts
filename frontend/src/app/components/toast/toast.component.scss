@@ -23,18 +23,31 @@
 
 .toast-text { line-height: 1.4; }
 
-.toast-action {
+.toast-actions {
+  display: flex;
+  gap: 8px;
   flex-shrink: 0;
+}
+
+.toast-action {
   background: #27ae60;
   color: #fff;
-  border: none;
+  border: 1px solid #27ae60;
   border-radius: 6px;
   padding: 7px 14px;
   font-size: 0.9rem;
   font-weight: 600;
   cursor: pointer;
   white-space: nowrap;
-  &:hover { background: #2ecc71; }
+  &:hover { background: #2ecc71; border-color: #2ecc71; }
+
+  // Secondary actions (e.g. "Log in") render as a subtle ghost button.
+  &:not(:first-child) {
+    background: transparent;
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.5);
+    &:hover { background: rgba(255, 255, 255, 0.12); border-color: #fff; }
+  }
 }
 
 .toast-close {

@@ -9,6 +9,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { LocalizeLinkPipe } from '../../i18n/localize-link.pipe';
 import { LocaleNavService } from '../../i18n/locale-nav.service';
+import { AuthUiService } from '../../services/auth-ui.service';
 import { Lang, addLangPrefix, stripLangPrefix } from '../../i18n/locale.util';
 
 @Component({
@@ -36,6 +37,7 @@ export class HeaderComponent implements OnInit {
     private router: Router,
     private transloco: TranslocoService,
     private localeNav: LocaleNavService,
+    private authUi: AuthUiService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {
     this.isLoggedIn$ = this.loginService.loggedIn$;
@@ -60,9 +62,20 @@ export class HeaderComponent implements OnInit {
       this.loginService.loggedIn$.subscribe(() => {
         this.authReady = true;
       });
+      // A "Log in" action elsewhere (e.g. a toast) opens this header's login modal.
+      this.authUi.openLogin$.subscribe(() => this.openLoginModal());
     } else {
       // En SSR no mostramos nada condicionado al login
       this.authReady = false;
+    }
+  }
+
+  /** Opens the Bootstrap login modal programmatically (browser only). */
+  private openLoginModal(): void {
+    const el = document.getElementById('loginModal');
+    const bs = (window as any).bootstrap;
+    if (el && bs?.Modal) {
+      bs.Modal.getOrCreateInstance(el).show();
     }
   }
 
