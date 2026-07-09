@@ -9,6 +9,12 @@
       "loading": "Loading…"
     }
   },
+  "notice": {
+    "loginToListen": "You must be logged in to listen to texts, words and sentences.",
+    "loginToChat": "You must be logged in to use the AI tutor.",
+    "signUpForPremium": "Create a free account first to go Premium.",
+    "signUp": "Create free account"
+  },
   "header": {
     "brand": "Home",
     "nav": {
@@ -111,8 +117,7 @@
         "item5": "Cancel anytime — no commitment",
         "cta": "Go Premium",
         "yearlyNote": "or save 30% with yearly billing"
-      },
-      "coffee": "less than a coffee ☕"
+      }
     }
   },
   "footer": {

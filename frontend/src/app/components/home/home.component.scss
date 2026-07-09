@@ -70,9 +70,11 @@ body {
   flex-direction: column;
   text-align: center;
 
+  // Premium: gold/amber accent so it clearly stands out from the free plan.
   &--featured {
-    border: 2px solid #27ae60;
-    box-shadow: 0 6px 18px rgba(39,174,96,0.18);
+    border: 2px solid #e0a800;
+    background: #fffdf3;
+    box-shadow: 0 8px 24px rgba(224,168,0,0.25);
   }
 }
 
@@ -81,8 +83,8 @@ body {
   top: -13px;
   left: 50%;
   transform: translateX(-50%);
-  background: #27ae60;
-  color: #fff;
+  background: #e0a800;
+  color: #4a3800;
   padding: 4px 14px;
   border-radius: 20px;
   font-size: 0.8rem;
@@ -108,10 +110,11 @@ body {
   color: #777;
 }
 
-.plan-box-coffee {
-  color: #27ae60;
-  font-size: 0.95rem;
-  margin-bottom: 6px;
+.plan-box-yearly {
+  margin: 4px 0 0;
+  font-size: 0.9rem;
+  color: #b8860b;
+  font-weight: 600;
 }
 
 .plan-box-list {
@@ -119,7 +122,7 @@ body {
   padding: 0;
   margin: 18px 0 22px;
   text-align: left;
-  flex-grow: 1;
+  flex-grow: 1;   // fills the card so the CTA sits at the bottom → buttons align
 
   li {
     margin-bottom: 10px;
@@ -130,10 +133,18 @@ body {
     margin-right: 8px;
   }
 }
+.plan-box--featured .plan-box-list i { color: #e0a800; }
 
-.plan-box-yearly {
-  margin-top: 12px;
-  margin-bottom: 0;
-  font-size: 0.9rem;
-  color: #777;
+// Gold CTA for the premium plan; dark text keeps it readable on gold.
+.btn-premium {
+  background: #e0a800;
+  color: #4a3800;
+  border: none;
+  border-radius: 6px;
+  padding: 12px 28px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  cursor: pointer;
+
+  &:hover { background: #f0b90b; }
 }
