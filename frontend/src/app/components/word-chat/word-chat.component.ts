@@ -75,7 +75,7 @@ export class WordChatComponent implements OnInit {
       history: this.messages
     }).subscribe({
       next: (res) => {
-        this.messages.push({ role: 'assistant', content: res.reply });
+        this.messages.push({ role: 'assistant', content: this.stripMarkdown(res.reply) });
         this.unlimited = res.unlimited;
         this.remaining = res.unlimited ? null : res.remaining;
         this.loading = false;
@@ -91,6 +91,22 @@ export class WordChatComponent implements OnInit {
         else this.errored = true;
       }
     });
+  }
+
+  /**
+   * Strips Markdown markers so the reply reads as plain, natural text. The AI is asked
+   * not to use Markdown, but this is a safety net so the user never sees stray **, __,
+   * `#` or bullet symbols if the model slips.
+   */
+  private stripMarkdown(text: string): string {
+    return (text || '')
+      .replace(/\*\*(.*?)\*\*/g, '$1')   // **bold**
+      .replace(/__(.*?)__/g, '$1')       // __bold__
+      .replace(/\*(.*?)\*/g, '$1')       // *italic*
+      .replace(/`([^`]*)`/g, '$1')       // `code`
+      .replace(/^\s{0,3}#{1,6}\s+/gm, '') // # headings
+      .replace(/^\s*[-*+]\s+/gm, '• ')   // bullet markers → •
+      .trim();
   }
 
   goPremium(): void {

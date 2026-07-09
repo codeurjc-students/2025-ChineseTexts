@@ -5,7 +5,7 @@ import { Subscription } from 'rxjs';
 import { AudioService, AudioType, SpeakState } from '../../services/audio.service';
 import { LoginService } from '../../services/login.service';
 import { LocaleNavService } from '../../i18n/locale-nav.service';
-import { ToastService } from '../../services/toast.service';
+import { AuthUiService } from '../../services/auth-ui.service';
 
 /**
  * Reusable speaker button. Plays the given Chinese `text` through AudioService
@@ -49,7 +49,7 @@ export class SpeakButtonComponent implements OnInit, OnDestroy {
     private loginService: LoginService,
     private localeNav: LocaleNavService,
     private transloco: TranslocoService,
-    private toast: ToastService
+    private authUi: AuthUiService
   ) {}
 
   ngOnInit(): void {
@@ -70,14 +70,10 @@ export class SpeakButtonComponent implements OnInit, OnDestroy {
   toggle(event: Event): void {
     event.stopPropagation();           // never trigger the parent (word/sentence click)
 
-    // Registered-only: show a notice with a sign-up action instead of yanking the
-    // reader off the page. This is the registration funnel, kept non-intrusive.
+    // Registered-only: show a notice (Sign up / Log in) instead of yanking the reader
+    // off the page. Non-intrusive funnel.
     if (!this.isLogged) {
-      this.toast.show(
-        this.transloco.translate('notice.loginToListen'),
-        this.transloco.translate('notice.signUp'),
-        () => this.localeNav.navigate(['/signup'])
-      );
+      this.authUi.promptAuth('notice.loginToListen');
       return;
     }
     // Monthly audio quota spent: guide the user to the premium page.

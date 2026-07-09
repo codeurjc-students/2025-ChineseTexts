@@ -4,7 +4,7 @@ import { SpeakButtonComponent } from './speak-button.component';
 import { AudioService } from '../../services/audio.service';
 import { LoginService } from '../../services/login.service';
 import { LocaleNavService } from '../../i18n/locale-nav.service';
-import { ToastService } from '../../services/toast.service';
+import { AuthUiService } from '../../services/auth-ui.service';
 
 import { translocoTesting } from "../../i18n/transloco-testing";
 
@@ -14,7 +14,7 @@ describe('SpeakButtonComponent', () => {
   let audioSpy: jasmine.SpyObj<AudioService>;
   let loginSpy: jasmine.SpyObj<LoginService>;
   let navSpy: jasmine.SpyObj<LocaleNavService>;
-  let toastSpy: jasmine.SpyObj<ToastService>;
+  let authUiSpy: jasmine.SpyObj<AuthUiService>;
 
   beforeEach(async () => {
     audioSpy = jasmine.createSpyObj('AudioService', ['speak', 'stop'], {
@@ -23,7 +23,7 @@ describe('SpeakButtonComponent', () => {
     loginSpy = jasmine.createSpyObj('LoginService', ['isLogged']);
     loginSpy.isLogged.and.returnValue(true); // logged in by default
     navSpy = jasmine.createSpyObj('LocaleNavService', ['navigate']);
-    toastSpy = jasmine.createSpyObj('ToastService', ['show']);
+    authUiSpy = jasmine.createSpyObj('AuthUiService', ['promptAuth']);
 
     await TestBed.configureTestingModule({
       imports: [translocoTesting(), SpeakButtonComponent],
@@ -31,7 +31,7 @@ describe('SpeakButtonComponent', () => {
         { provide: AudioService, useValue: audioSpy },
         { provide: LoginService, useValue: loginSpy },
         { provide: LocaleNavService, useValue: navSpy },
-        { provide: ToastService, useValue: toastSpy }
+        { provide: AuthUiService, useValue: authUiSpy }
       ]
     }).compileComponents();
 
@@ -54,11 +54,11 @@ describe('SpeakButtonComponent', () => {
     expect(component.state).toBe('loading');
   });
 
-  it('should show a sign-up notice for anonymous users instead of playing', () => {
+  it('should show a sign-in notice for anonymous users instead of playing', () => {
     loginSpy.isLogged.and.returnValue(false);
     component.state = 'idle';
     component.toggle(new Event('click'));
-    expect(toastSpy.show).toHaveBeenCalled();
+    expect(authUiSpy.promptAuth).toHaveBeenCalled();
     expect(audioSpy.speak).not.toHaveBeenCalled();
     expect(navSpy.navigate).not.toHaveBeenCalled();
   });

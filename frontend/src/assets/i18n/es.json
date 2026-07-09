@@ -13,7 +13,8 @@
     "loginToListen": "Debes iniciar sesión para escuchar textos, palabras y frases.",
     "loginToChat": "Debes iniciar sesión para usar el tutor IA.",
     "signUpForPremium": "Crea primero una cuenta gratis para hacerte Premium.",
-    "signUp": "Crear cuenta gratis"
+    "signUp": "Crear cuenta gratis",
+    "logIn": "Iniciar sesión"
   },
   "header": {
     "brand": "Inicio",
@@ -51,9 +52,23 @@
       "cta": "Empieza a leer gratis"
     },
     "donation": {
-      "top": "Si te gusta ChineseReads y quieres apoyar su desarrollo, plantéate seguirnos en Instagram.",
       "bottom": "ChineseReads se desarrolla de forma independiente. Si quieres seguirlo de cerca y ayudarlo a crecer, encuéntranos en Instagram:",
       "button": "Apoya el proyecto"
+    },
+    "howItWorks": {
+      "heading": "Cómo funciona",
+      "step1": {
+        "title": "Elige un texto",
+        "text": "Escoge una lectura graduada de tu nivel HSK, o crea la tuya desde una foto o pegando texto."
+      },
+      "step2": {
+        "title": "Lee con apoyo",
+        "text": "Toca cualquier palabra para ver pinyin y traducción, y escucha audio natural de palabras, frases o el texto completo."
+      },
+      "step3": {
+        "title": "Pregunta al tutor IA",
+        "text": "¿Dudas con una palabra? Pídele al tutor IA que te la explique en contexto y sigue la conversación."
+      }
     },
     "badges": {
       "free": "Gratis",
