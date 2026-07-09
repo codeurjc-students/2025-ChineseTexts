@@ -1,5 +1,5 @@
 import { ApplicationConfig, inject, PLATFORM_ID } from '@angular/core';
-import { provideRouter } from '@angular/router';
+import { provideRouter, withInMemoryScrolling } from '@angular/router';
 import { routes } from './app.routes';
 import { provideClientHydration } from '@angular/platform-browser';
 import { provideHttpClient, withFetch, withInterceptors, HttpInterceptorFn } from '@angular/common/http';
@@ -19,7 +19,13 @@ const ssrBaseUrlInterceptor: HttpInterceptorFn = (req, next) => {
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideRouter(routes),
+    // Scroll to the top on every forward navigation (so pages like /signup always
+    // start at their title, not wherever the previous page was scrolled), and restore
+    // the saved position on browser back/forward.
+    provideRouter(routes, withInMemoryScrolling({
+      scrollPositionRestoration: 'enabled',
+      anchorScrolling: 'enabled',
+    })),
     provideClientHydration(),
     provideHttpClient(
       withFetch(),
