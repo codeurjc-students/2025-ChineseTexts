@@ -46,7 +46,7 @@
     },
     "donation": {
       "top": "Si te gusta ChineseReads y quieres apoyar su desarrollo, plantéate seguirnos en Instagram.",
-      "bottom": "ChineseReads es un proyecto indie. Si quieres seguirlo de cerca y ayudarlo a crecer, encuéntranos en Instagram:",
+      "bottom": "ChineseReads se desarrolla de forma independiente. Si quieres seguirlo de cerca y ayudarlo a crecer, encuéntranos en Instagram:",
       "button": "Apoya el proyecto"
     },
     "badges": {
@@ -1049,7 +1049,7 @@
       "item1": "Lecturas graduadas privadas ilimitadas, sin tope mensual (el plan gratis permite 10 al mes)",
       "item2": "Audio ilimitado — narración completa de cualquier texto, frase y palabra",
       "item3": "Tutor IA ilimitado — pregunta sobre cualquier palabra o frase en contexto (plan gratis: 10 mensajes/mes)",
-      "item4": "Apoya un proyecto indie y ayúdalo a seguir creciendo"
+      "item4": "Apoya un proyecto de desarrollo independiente y ayúdalo a crecer"
     },
     "secureNote": "Pago seguro con Stripe. Cancela cuando quieras.",
     "finePrint": "Las suscripciones se renuevan automáticamente hasta que las canceles; puedes cancelar cuando quieras. Precios en euros; los impuestos aplicables se muestran en el pago. Los pagos los procesa Stripe.",
