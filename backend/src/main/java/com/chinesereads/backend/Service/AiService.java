@@ -54,6 +54,34 @@ public class AiService {
         return buildAiResult(chineseText);
     }
 
+    /**
+     * Contextual word chat: forwards the word, its context (sentence, full text and
+     * translation), the optional HSK level, the user's language and the running message
+     * history to the AI service, and returns the assistant's reply. The AI service holds
+     * the guardrail system prompt; the conversation itself is stateless here (the caller
+     * passes the whole history each turn).
+     */
+    public String chatAboutWord(String word, String sentence, String text, String translation,
+            String level, String language, List<Map<String, String>> history) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("word", word);
+        body.put("sentence", sentence);
+        body.put("text", text);
+        body.put("translation", translation);
+        body.put("level", level);
+        body.put("language", language);
+        body.put("history", history);
+
+        Map<String, Object> response = restTemplate.exchange(
+                aiServiceUrl + "/chatWord",
+                HttpMethod.POST,
+                new HttpEntity<>(body),
+                new ParameterizedTypeReference<Map<String, Object>>() {}
+        ).getBody();
+
+        return response != null ? (String) response.get("reply") : null;
+    }
+
     public Map<String, Object> processOcrAndGenerate(MultipartFile image) throws Exception {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);

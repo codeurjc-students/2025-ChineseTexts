@@ -52,6 +52,12 @@ public class User {
     private int monthlyPhraseAudioCount = 0;
     private LocalDate audioUsagePeriodStart;
 
+    // Contador mensual del chat IA contextual (de pago: llama a DeepSeek). Sólo tras
+    // registro; el plan gratuito tiene un cupo escaso y premium/admin son ilimitados.
+    // Se reinicia al cambiar el mes (ver chatUsagePeriodStart).
+    private int monthlyChatCount = 0;
+    private LocalDate chatUsagePeriodStart;
+
     // Prueba de consentimiento (RGPD): momento en que el usuario aceptó los términos
     // de uso al registrarse. Null en cuentas anteriores a esta funcionalidad.
     private LocalDateTime termsAcceptedAt;
@@ -226,6 +232,22 @@ public class User {
 
     public void setAudioUsagePeriodStart(LocalDate audioUsagePeriodStart) {
         this.audioUsagePeriodStart = audioUsagePeriodStart;
+    }
+
+    public int getMonthlyChatCount() {
+        return monthlyChatCount;
+    }
+
+    public void setMonthlyChatCount(int monthlyChatCount) {
+        this.monthlyChatCount = monthlyChatCount;
+    }
+
+    public LocalDate getChatUsagePeriodStart() {
+        return chatUsagePeriodStart;
+    }
+
+    public void setChatUsagePeriodStart(LocalDate chatUsagePeriodStart) {
+        this.chatUsagePeriodStart = chatUsagePeriodStart;
     }
 
     public List<UserText> getUserTexts() {

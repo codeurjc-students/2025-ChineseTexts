@@ -106,6 +106,10 @@ public class SecurityConfig {
                 // Audio (TTS) calls the paid Google TTS API, so it is registered-only:
                 // anonymous visitors must sign up to listen (per-user quota in AudioUsageService).
                 .requestMatchers("/api/tts/**").hasAnyRole("USER", "ADMIN")
+
+                // AI contextual word chat calls the paid AI service, so it is
+                // registered-only (per-user quota in ChatUsageService).
+                .requestMatchers("/api/chat/**").hasAnyRole("USER", "ADMIN")
                 .anyRequest().permitAll()
             );
 

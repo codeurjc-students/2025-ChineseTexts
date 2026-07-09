@@ -83,6 +83,23 @@ body {
 
     &:hover { background: #e74c3c; }
   }
+
+  .btn-ai-explain {
+    display: block;
+    width: 100%;
+    margin-top: 8px;
+    background: #27ae60;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    text-align: center;
+    transition: background 0.15s;
+
+    &:hover { background: #2ecc71; }
+  }
 }
 
 // ——— Modal frase ———

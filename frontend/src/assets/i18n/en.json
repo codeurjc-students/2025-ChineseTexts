@@ -1017,6 +1017,18 @@
     "registerToListen": "Create a free account to listen",
     "limitReached": "Monthly audio limit reached — go Premium for unlimited audio"
   },
+  "wordChat": {
+    "explainButton": "Explain with AI",
+    "registerToUse": "Create a free account to use the AI tutor",
+    "title": "Ask about",
+    "openerPrompt": "Explain this word in the context of the text: what it means here, how it's pronounced, and how it's used.",
+    "placeholder": "Ask a follow-up about this word…",
+    "send": "Send",
+    "remaining": "{{remaining}} free AI messages left this month",
+    "limitReached": "You've used your free AI messages this month. Go Premium for unlimited AI tutoring.",
+    "goPremium": "Go Premium",
+    "error": "Something went wrong. Please try again."
+  },
   "premium": {
     "kicker": "ChineseReads Premium",
     "title": "Learn Chinese without limits",

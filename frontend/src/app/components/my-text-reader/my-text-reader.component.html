@@ -89,6 +89,9 @@
             <span class="popover-label">ES</span>
             {{ wordsArray[activeWordIndex]?.spanish || '—' }}
           </div>
+          <button class="btn-ai-explain" (click)="openWordChat()">
+            <i class="bi bi-stars"></i> {{ 'wordChat.explainButton' | transloco }}
+          </button>
         </div>
       </div>
 
@@ -136,3 +139,9 @@
     </div>
   </div>
 </div>
+
+<!-- AI contextual word chat -->
+<app-word-chat *ngIf="showChat"
+  [word]="chatWord" [sentence]="chatSentence" [text]="chatText"
+  [translation]="chatTranslation" level=""
+  (closed)="showChat = false"></app-word-chat>

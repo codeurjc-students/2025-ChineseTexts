@@ -1017,6 +1017,18 @@
     "registerToListen": "Crea una cuenta gratis para escuchar",
     "limitReached": "Límite mensual de audio alcanzado — hazte Premium para audio ilimitado"
   },
+  "wordChat": {
+    "explainButton": "Explícamelo con IA",
+    "registerToUse": "Crea una cuenta gratis para usar el tutor IA",
+    "title": "Pregunta sobre",
+    "openerPrompt": "Explícame esta palabra en el contexto del texto: qué significa aquí, cómo se pronuncia y cómo se usa.",
+    "placeholder": "Pregunta algo más sobre esta palabra…",
+    "send": "Enviar",
+    "remaining": "Te quedan {{remaining}} mensajes de IA gratis este mes",
+    "limitReached": "Has agotado tus mensajes de IA gratis este mes. Hazte Premium para tutoría IA ilimitada.",
+    "goPremium": "Hazte Premium",
+    "error": "Algo ha ido mal. Inténtalo de nuevo."
+  },
   "premium": {
     "kicker": "ChineseReads Premium",
     "title": "Aprende chino sin límites",
