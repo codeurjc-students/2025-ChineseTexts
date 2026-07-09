@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslocoModule } from '@jsverse/transloco';
 
@@ -33,6 +33,20 @@ export class PremiumComponent implements OnInit {
   ngOnInit(): void {
     // Refresh cached user so the login / premium state on this page is current.
     this.loginService.reqIsLogged().subscribe();
+  }
+
+  /**
+   * Resets the button state when the page is restored from the browser's back/forward
+   * cache (bfcache). Redirecting to Stripe leaves a button in its loading state; without
+   * this, hitting "Back" restores the frozen page with the spinner still spinning and the
+   * button disabled. `event.persisted` is true only for a bfcache restore.
+   */
+  @HostListener('window:pageshow', ['$event'])
+  onPageShow(event: PageTransitionEvent): void {
+    if (event.persisted) {
+      this.loading = null;
+      this.errored = false;
+    }
   }
 
   get isLogged(): boolean {

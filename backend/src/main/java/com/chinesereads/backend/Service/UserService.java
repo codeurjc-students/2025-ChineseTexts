@@ -40,6 +40,9 @@ public class UserService {
     @Autowired
     private UserTextRepository userTextRepository;
 
+    @Autowired
+    private StripeService stripeService;
+
     public UserDTO save(UserDTO user) {
         if (userRepository.findByEmail(user.email()).isPresent()) {
             return null;
@@ -93,6 +96,9 @@ public class UserService {
     @Transactional
     public void deleteOwnAccount(String email) {
         User user = userRepository.findByEmail(email).orElseThrow();
+        // Stop billing before the account disappears: otherwise the user would keep being
+        // charged with no way to cancel from the app.
+        stripeService.cancelSubscription(user);
         userRepository.delete(user);
     }
 
@@ -167,6 +173,11 @@ public class UserService {
         User user = userRepository.findById(id).orElseThrow();
         user.setPremiumUntil(premiumUntil);
         userRepository.save(user);
+        // Revoking premium must also stop billing: otherwise the user keeps paying for
+        // access they no longer have, and the next renewal webhook would re-grant it.
+        if (premiumUntil == null) {
+            stripeService.cancelSubscription(user);
+        }
         return getUserDetail(id);
     }
 
@@ -202,6 +213,8 @@ public class UserService {
         if (Objects.equals(user.getEmail(), requesterEmail)) {
             throw new IllegalStateException("You cannot delete your own account from the admin panel.");
         }
+        // Stop billing before removing the account (see deleteOwnAccount).
+        stripeService.cancelSubscription(user);
         userRepository.delete(user);
     }
 

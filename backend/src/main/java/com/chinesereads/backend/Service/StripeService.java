@@ -156,6 +156,33 @@ public class StripeService {
         return portal.getUrl();
     }
 
+    /**
+     * Cancels the user's Stripe subscription immediately, if they have one and billing
+     * is configured. Called when premium is revoked by an admin or when the account is
+     * deleted, so we stop charging a user who no longer has — or can no longer manage —
+     * their subscription (avoiding charges with no way to cancel, chargebacks and the
+     * renewal webhook silently re-granting premium).
+     *
+     * <p>Any Stripe failure is swallowed and logged so it never blocks account deletion;
+     * the local {@code stripeSubscriptionId} is cleared regardless, keeping our state
+     * consistent with the intent to cancel.
+     */
+    @Transactional
+    public void cancelSubscription(User user) {
+        String subscriptionId = user.getStripeSubscriptionId();
+        if (subscriptionId == null || subscriptionId.isBlank() || !isConfigured()) {
+            return;
+        }
+        ensureApiKey();
+        try {
+            Subscription.retrieve(subscriptionId).cancel();
+        } catch (StripeException e) {
+            log.warn("Could not cancel Stripe subscription {} (continuing anyway)", subscriptionId, e);
+        }
+        user.setStripeSubscriptionId(null);
+        userRepository.save(user);
+    }
+
     // ————————————————————————————— Webhook —————————————————————————————
 
     /**
