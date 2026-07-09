@@ -123,6 +123,53 @@
     </div>
   </section>
 
+  <!-- PLANS / PRICING SECTION -->
+  <section aria-labelledby="plans-heading" class="mt-5">
+    <h2 id="plans-heading" class="text-center mb-2" style="color:#c0392b; font-weight:700;">
+      {{ 'home.plans.heading' | transloco }}
+    </h2>
+    <p class="text-center mb-4 plans-subtitle">{{ 'home.plans.subtitle' | transloco }}</p>
+
+    <div class="row g-4 justify-content-center">
+
+      <!-- FREE PLAN -->
+      <article class="col-md-5 col-lg-4">
+        <div class="plan-box">
+          <h3 class="plan-box-name">{{ 'home.plans.free.name' | transloco }}</h3>
+          <div class="plan-box-price">{{ 'home.plans.free.price' | transloco }}</div>
+          <ul class="plan-box-list">
+            <li><i class="bi bi-check-circle-fill"></i> {{ 'home.plans.free.item1' | transloco }}</li>
+            <li><i class="bi bi-check-circle-fill"></i> {{ 'home.plans.free.item2' | transloco }}</li>
+            <li><i class="bi bi-check-circle-fill"></i> {{ 'home.plans.free.item3' | transloco }}</li>
+          </ul>
+          <button class="btn-main w-100" [routerLink]="['/signup'] | localizeLink">{{ 'home.plans.free.cta' | transloco }}</button>
+        </div>
+      </article>
+
+      <!-- PREMIUM PLAN -->
+      <article class="col-md-5 col-lg-4">
+        <div class="plan-box plan-box--featured">
+          <span class="plan-box-badge">{{ 'home.plans.premium.badge' | transloco }}</span>
+          <h3 class="plan-box-name">{{ 'home.plans.premium.name' | transloco }}</h3>
+          <div class="plan-box-price">
+            {{ 'premium.plans.monthly.price' | transloco }}<span class="plan-box-period">{{ 'premium.plans.monthly.period' | transloco }}</span>
+          </div>
+          <div class="plan-box-coffee">{{ 'home.plans.coffee' | transloco }}</div>
+          <ul class="plan-box-list">
+            <li><i class="bi bi-check-circle-fill"></i> {{ 'home.plans.premium.item1' | transloco }}</li>
+            <li><i class="bi bi-check-circle-fill"></i> {{ 'home.plans.premium.item2' | transloco }}</li>
+            <li><i class="bi bi-check-circle-fill"></i> {{ 'home.plans.premium.item3' | transloco }}</li>
+            <li><i class="bi bi-check-circle-fill"></i> {{ 'home.plans.premium.item4' | transloco }}</li>
+            <li><i class="bi bi-check-circle-fill"></i> {{ 'home.plans.premium.item5' | transloco }}</li>
+          </ul>
+          <button class="btn-main w-100" [routerLink]="'/premium' | localizeLink">{{ 'home.plans.premium.cta' | transloco }}</button>
+          <p class="plan-box-yearly">{{ 'home.plans.premium.yearlyNote' | transloco }}</p>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
   <!-- FINAL SECTION -->
   <section class="text-center mt-5" aria-labelledby="start-journey">
     <h2 id="start-journey" style="color:#c0392b; font-weight:700;">

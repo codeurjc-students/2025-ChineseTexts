@@ -88,6 +88,30 @@
       "heading": "Start Your Chinese Journey Today",
       "text": "Reading is one of the most effective ways to learn a language. Join thousands of learners improving their Chinese every day.",
       "cta": "Create a Free Account"
+    },
+    "plans": {
+      "heading": "Simple pricing",
+      "subtitle": "Start free. Go Premium whenever you're ready.",
+      "free": {
+        "name": "Free",
+        "price": "€0",
+        "item1": "Read every text, with pinyin, translations and breakdowns",
+        "item2": "10 text generations per month",
+        "item3": "100 word + 15 sentence/text audio plays per month",
+        "cta": "Start free"
+      },
+      "premium": {
+        "name": "Premium",
+        "badge": "Most popular",
+        "item1": "Unlimited text generation",
+        "item2": "Unlimited audio",
+        "item3": "Never blocked by shared limits",
+        "item4": "Early access to upcoming AI features",
+        "item5": "Cancel anytime — no commitment",
+        "cta": "Go Premium",
+        "yearlyNote": "or save 30% with yearly billing"
+      },
+      "coffee": "less than a coffee ☕"
     }
   },
   "footer": {
