@@ -7,8 +7,8 @@
 | Phase 1 | Core architecture, text reading, user auth, collections, flashcards, study/exam modes | ✅ Complete |
 |Phase 2 | Project setup, testing files and essential features | ✅ Complete |
 | Phase 3 | AI tools (DeepSeek + Google OCR), text-to-speech audio, dictionary word management, SEO optimization, deployment, CI/CD | 🔄 In Progress |
-| Phase 4 | Payment gateway (Stripe), premium plan, advanced admin (user management) | ✅ Complete |
-| Phase 5 | Personalized statistics, planned AI "ask about words/context" feature | 📋 Planned |
+| Phase 4 | Payment gateway (Stripe), premium plan, advanced admin (user management), AI "ask about words/context" tutor chat | ✅ Complete |
+| Phase 5 | Personalized statistics | 📋 Planned |
 
 ## Recently added (July 2026)
 
@@ -18,6 +18,8 @@
 - **Bilingual interface (English / Spanish).** The whole UI is now translatable via Transloco, with a working flag switcher in the header. English is served at the root and Spanish under `/es`, keeping SEO intact (per-locale `hreflang`, prerendered `/es` pages, bilingual sitemap). See the [Internationalization](dev-guide.md#internationalization-i18n) section of the Development Guide.
 - **Registered-only audio with tiered quotas.** Audio (`/api/tts`, paid Google TTS) now requires a free account — anonymous visitors are prompted to sign up to listen. Free users get a per-user monthly quota split by play type (single words vs sentences/full text, which cost very differently); premium and admins get unlimited audio. On top of that the endpoint keeps the earlier cost protection: a length cap (413), a Caffeine cache keyed by the exact text, and a per-IP rate limit (429) — all configurable.
 - **Private-text count in the admin user detail.** The admin user-detail page now shows how many private texts a user has created, alongside the existing collections and flashcards stats.
+- **AI contextual word chat.** In both readers, clicking a word opens a guardrailed AI tutor chat about that word in context (its sentence, the full text, the translation, the HSK level and the user's language). Registered-only (paid DeepSeek per message): free users get 10 messages/month shown as a dwindling counter, premium and admins are unlimited. The conversation is ephemeral (re-sent each turn).
+- **In-context selling.** Free-vs-Premium pricing cards on the home page, a monthly generation usage meter on the My Tools page, and upgrade nudges at every limit wall.
 
 ## Known Limitations
 
@@ -30,7 +32,5 @@
 
 - CI/CD pipeline via GitHub Actions
 - Personalized statistics dashboard
-- AI "ask about words / context" feature (planned as PREMIUM-only)
 - Admin: reset another user's password
 - Contact page (Terms of Use and Privacy Policy already implemented)
-- Switch Stripe from test mode to live (recreate products/prices/keys/webhook in live and swap the four Stripe values in `docker/.env`)

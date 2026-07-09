@@ -46,7 +46,7 @@
     },
     "donation": {
       "top": "If you enjoy ChineseReads and want to support its development, consider following us on instagram.",
-      "bottom": "ChineseReads is free and supported by users like you. If you want to help keep it running, you can support us here:",
+      "bottom": "ChineseReads is an indie project. If you'd like to follow along and help it grow, find us on Instagram:",
       "button": "Support the Project"
     },
     "badges": {
@@ -81,12 +81,12 @@
       },
       "collections": {
         "title": "Collections & Flashcards",
-        "text": "Use AI tools to translate Chinese texts, analyze sentences, and break down grammar."
+        "text": "Save any word into personal collections and review them as flashcards, with study and exam modes."
       }
     },
     "final": {
       "heading": "Start Your Chinese Journey Today",
-      "text": "Reading is one of the most effective ways to learn a language. Join thousands of learners improving their Chinese every day.",
+      "text": "Reading is one of the most effective ways to learn a language. Join a growing community of learners improving their Chinese every day.",
       "cta": "Create a Free Account"
     },
     "plans": {
@@ -98,6 +98,7 @@
         "item1": "Read every text, with pinyin, translations and breakdowns",
         "item2": "10 text generations per month",
         "item3": "100 word + 15 sentence/text audio plays per month",
+        "item4": "10 AI tutor messages per month",
         "cta": "Start free"
       },
       "premium": {
@@ -106,7 +107,7 @@
         "item1": "Unlimited text generation",
         "item2": "Unlimited audio",
         "item3": "Never blocked by shared limits",
-        "item4": "Early access to upcoming AI features",
+        "item4": "Unlimited AI tutor chat",
         "item5": "Cancel anytime — no commitment",
         "cta": "Go Premium",
         "yearlyNote": "or save 30% with yearly billing"
@@ -247,7 +248,7 @@
     "s2": {
       "title": "2. The service",
       "intro": "ChineseReads lets you:",
-      "item1": "Read graded HSK texts with word-by-word pinyin, translations and natural audio.",
+      "item1": "Read graded HSK texts with word-by-word pinyin and translations (audio requires a free account).",
       "item2": "Save words into personal vocabulary collections and study them as flashcards.",
       "item3": "Create your own texts from typed text or from images (OCR).",
       "item4": "Listen to text, sentences and words with text-to-speech audio."
@@ -365,7 +366,7 @@
       "privacyPolicyLabel": "Privacy policy",
       "stripe": "to process subscription payments securely. Your card and payment details are handled by Stripe as the payment processor; ChineseReads does not receive or store full card numbers.",
       "ga": "for anonymous traffic analysis.",
-      "deepseek": "to generate Chinese learning texts. Only text content is sent, no personal data.",
+      "deepseek": "to generate Chinese learning texts and to power the AI tutor (asking about words and context). Only the text you send is processed, no account or personal data.",
       "vision": "to extract text from uploaded images. Images are processed and not stored.",
       "tts": "to generate audio pronunciation of Chinese text, words and sentences. Only the Chinese text to be read aloud is sent, no personal data. Audio is generated on demand and not stored."
     },
@@ -1032,7 +1033,7 @@
   "premium": {
     "kicker": "ChineseReads Premium",
     "title": "Learn Chinese without limits",
-    "subtitle": "Go Premium for unlimited private graded readers that are never blocked by the shared daily limit, plus early access to upcoming AI features.",
+    "subtitle": "Go Premium for unlimited graded readers, unlimited audio and an unlimited AI tutor that explains any word in context — never blocked by shared limits.",
     "errorGeneric": "Something went wrong. Please try again.",
     "current": {
       "title": "You're Premium",
@@ -1047,8 +1048,8 @@
       "title": "What's included",
       "item1": "Unlimited private graded readers — no monthly cap (the free plan allows 10 per month)",
       "item2": "Unlimited audio — full narration of any text, sentence and word",
-      "item3": "Early access to upcoming AI features (ask about words and context)",
-      "item4": "Support the project and help it keep growing"
+      "item3": "Unlimited AI tutor — ask about any word or sentence in context (free plan: 10 messages/month)",
+      "item4": "Support an indie project and help it keep growing"
     },
     "secureNote": "Secure payment powered by Stripe. Cancel anytime.",
     "finePrint": "Subscriptions renew automatically until cancelled; you can cancel anytime. Prices are in euros; applicable taxes are shown at checkout. Payments are processed by Stripe.",

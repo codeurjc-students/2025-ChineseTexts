@@ -32,6 +32,7 @@ The main goal of ChineseReads is to provide a structured and accessible platform
 | F22 | Admin: grant / revoke PREMIUM to a user until a chosen date & time | ✅ |
 | F23 | Tiered usage limits (free: 10/month + global fuse; premium: unlimited, fuse-exempt, daily fair-use cap) | ✅ |
 | F24 | Terms of Use page + required consent at signup (GDPR) | ✅ |
+| F25 | AI "ask about words / context" tutor chat in both readers (registered-only: free 10 msgs/month, premium unlimited) | ✅ |
 
 ### Pending Functionalities
 
@@ -39,7 +40,6 @@ The main goal of ChineseReads is to provide a structured and accessible platform
 |---|---|
 | P01 | Personalized statistics |
 | P02 | Modify another user's password (admin) |
-| P03 | AI "ask about words / context" feature (planned as PREMIUM-only) |
 
 ---
 

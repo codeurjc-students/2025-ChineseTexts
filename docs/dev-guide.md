@@ -56,8 +56,8 @@ Python 3.11 + Flask microservice running on port 5000. Uses the Google Cloud Vis
 Official site: https://cloud.google.com/vision
 
 ### TTS Microservice — Google Cloud Text-to-Speech
-Python 3.11 + Flask microservice running on port 5002. Uses the Google Cloud Text-to-Speech API (WaveNet Mandarin voice `cmn-CN-Wavenet-A`) to synthesize natural audio for a full text, an individual word, a sentence, or a saved flashcard. The backend exposes it publicly at `/api/tts`, so anonymous readers can also listen. Free up to 1 million WaveNet characters/month.  
-Because the endpoint is public and paid per character, the backend protects it on three fronts (all configurable in `application.properties`): a **length cap** (`tts.max-chars`, rejects an oversized request with `413`), a **Caffeine cache** of the synthesized audio keyed by the exact text (`tts.cache.*`, so identical words/sentences/flashcards are never re-synthesized — the biggest ongoing saving), and a **per-IP rate limit** (`tts.rate-limit.per-minute`, returns `429` when exceeded; the client IP is read from `X-Forwarded-For` since the app runs behind Caddy).  
+Python 3.11 + Flask microservice running on port 5002. Uses the Google Cloud Text-to-Speech API (WaveNet Mandarin voice `cmn-CN-Wavenet-A`) to synthesize natural audio for a full text, an individual word, a sentence, or a saved flashcard. The backend exposes it at `/api/tts` for **registered users only** (anonymous → `401`; see the plans table for the per-user monthly audio quotas). Free up to 1 million WaveNet characters/month.  
+Because it is paid per character, the backend protects it on several fronts (all configurable in `application.properties`): a **length cap** (`tts.max-chars`, rejects an oversized request with `413`), a **Caffeine cache** of the synthesized audio keyed by the exact text (`tts.cache.*`, so identical words/sentences/flashcards are never re-synthesized — the biggest ongoing saving), a **per-IP rate limit** (`tts.rate-limit.per-minute`, returns `429` when exceeded; the client IP is read from `X-Forwarded-For` since the app runs behind Caddy), and a **per-user monthly quota** (`AudioUsageService`).  
 Official site: https://cloud.google.com/text-to-speech
 
 ### Payments — Stripe
@@ -163,7 +163,7 @@ The UI is available in **English and Spanish** (a flag switcher in the header). 
 
 ## Payments & Premium (Stripe)
 
-ChineseReads follows a **freemium** model: every reading/learning tool stays usable for free, and a paid **PREMIUM** plan raises the limits on the parts that cost money (AI text generation, and — planned — expanded audio and an AI "ask about words/context" feature). Premium is sold as a **recurring subscription** (monthly / yearly) through Stripe.
+ChineseReads follows a **freemium** model: every reading/learning tool stays usable for free (within limits), and a paid **PREMIUM** plan lifts the limits on the parts that cost money — AI text generation, audio (TTS), and the AI "ask about words/context" tutor chat. Premium is sold as a **recurring subscription** (monthly / yearly) through Stripe.
 
 ### Premium status — single source of truth
 
@@ -183,10 +183,13 @@ The concrete guard is the **text-generation quota**, tiered by plan. Free users 
 | Global generations / day (cost fuse) | 200 | exempt | 200 | `usage.global.daily-limit` |
 | Max chars per generated text | 1500 | 1500 | 1500 | `usage.text.max-chars` |
 | Audio (TTS) plays / month — words · sentences+text | registered-only · 100 · 15 | unlimited | unlimited | `usage.audio.word.monthly-limit` / `usage.audio.phrase.monthly-limit` |
+| AI word-chat messages / month | registered-only · 10 | unlimited | unlimited | `usage.chat.monthly-limit` |
 
 `UsageService.reserveGeneration` (called by `POST /api/my-texts`) applies one of three lanes: **free** users spend their monthly quota **and** the global daily fuse; **premium** users spend only a per-user daily fair-use counter (no monthly limit, exempt from the global fuse); **admins** are exempt from personal quotas but still bound by the global fuse. `reserveOcr` (the OCR extract step) charges the global fuse only.
 
 Audio (`POST /api/tts`) is **registered-only** (anonymous → 401): `AudioUsageService.reserveAudio` meters two per-user monthly buckets — single words (cheap, high quota) and sentences/full text (expensive, small quota) — with premium and admins exempt. On top of that the endpoint keeps the hard length cap, the per-IP rate limit and the text-keyed cache (`tts.*`).
+
+The AI contextual word chat (`POST /api/chat/word`) is likewise **registered-only**: `ChatUsageService.reserveChat` meters a per-user monthly message quota (`usage.chat.monthly-limit`, free 10 / premium·admin unlimited). The controller forwards the word, its context (sentence, full text, translation, HSK level), the user's language and the running message history to the AI service's `/chatWord` route, which holds a guardrail system prompt. The chat is stateless server-side (the history is re-sent each turn).
 
 ### How the Stripe integration works
 
