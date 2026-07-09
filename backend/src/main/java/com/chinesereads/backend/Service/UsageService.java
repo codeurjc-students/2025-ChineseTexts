@@ -13,9 +13,14 @@ import com.chinesereads.backend.Repository.AppUsageRepository;
 import com.chinesereads.backend.Repository.UserRepository;
 
 /**
- * Enforces the two cost guards for AI/OCR text generation:
- *  - a per-user monthly quota, and
- *  - a global daily kill-switch across all users.
+ * Enforces the cost guards for AI/OCR text generation, by tier:
+ *  - FREE users: a per-user monthly quota AND a global daily kill-switch.
+ *  - PREMIUM users: no monthly limit ("unlimited"), exempt from the global fuse, and
+ *    bounded only by a high per-user daily fair-use cap (so a single abusive account
+ *    can't run up the bill). Their usage never touches the global counter, so it can't
+ *    starve free users of the shared daily budget — and the shared budget can't tell a
+ *    paying customer to "come back tomorrow".
+ *  - ADMINS: exempt from personal quotas, but still subject to the global fuse.
  *
  * {@link #reserveGeneration(User)} both checks AND increments the counters BEFORE
  * any paid API call, so the maximum daily API spend is bounded no matter how many
@@ -24,13 +29,14 @@ import com.chinesereads.backend.Repository.UserRepository;
 @Service
 public class UsageService {
 
-    @Value("${usage.user.monthly-limit:30}")
+    @Value("${usage.user.monthly-limit:10}")
     private int userMonthlyLimit;
 
-    // Cupo mensual ampliado para usuarios PREMIUM. Nunca es menor que el gratuito,
-    // así que activar premium sólo puede subir el límite: nadie pierde acceso.
-    @Value("${usage.premium.monthly-limit:100}")
-    private int premiumMonthlyLimit;
+    // Tope diario de "uso justo" para usuarios PREMIUM. Premium no tiene límite
+    // mensual (es "ilimitado"), pero un tope diario alto evita que una sola cuenta
+    // abusiva dispare el coste. Tan alto que ningún usuario real lo nota.
+    @Value("${usage.premium.daily-limit:100}")
+    private int premiumDailyLimit;
 
     @Value("${usage.global.daily-limit:200}")
     private int globalDailyLimit;
@@ -52,37 +58,62 @@ public class UsageService {
     public void reserveGeneration(User user) {
         LocalDate today = LocalDate.now();
         boolean isAdmin = user.getRoles() != null && user.getRoles().contains("ADMIN");
-        // Tier of the monthly quota: PREMIUM subscribers get a higher ceiling than the
-        // free plan. Admins are handled separately (fully exempt) below.
-        int monthlyLimit = user.isPremiumActive() ? premiumMonthlyLimit : userMonthlyLimit;
 
-        // ——— Per-user monthly quota (admins are exempt so the owner can test/demo
-        // the product freely; the global kill-switch below still applies to everyone) ———
-        if (!isAdmin) {
-            LocalDate monthStart = today.withDayOfMonth(1);
-            if (user.getUsagePeriodStart() == null || !user.getUsagePeriodStart().equals(monthStart)) {
-                user.setUsagePeriodStart(monthStart);
-                user.setMonthlyTextCount(0);
-            }
-            if (user.getMonthlyTextCount() >= monthlyLimit) {
-                throw new UsageLimitException(
-                        "You've reached your monthly limit of " + monthlyLimit
-                                + " text creations. It resets at the start of next month.");
-            }
+        // ——— Admins: fully exempt from personal quotas (so the owner can test/demo
+        // freely), but the global kill-switch still applies as a hard cost fuse. ———
+        if (isAdmin) {
+            consumeGlobalDaily(today);
+            return;
         }
 
-        // ——— Global daily kill-switch (applies to EVERYONE, admins included, as a
-        // hard cost fuse) ———
+        // ——— PREMIUM: no monthly limit ("unlimited") and EXEMPT from the global fuse
+        // (they paid for unlimited — the shared cap must never tell a paying user "come
+        // back tomorrow", and their usage must not push free users toward that cap).
+        // The only guard is a high per-user DAILY safety cap against a single abusive
+        // account. Premium usage does NOT touch the global counter. ———
+        if (user.isPremiumActive()) {
+            if (user.getUsageDayStart() == null || !user.getUsageDayStart().equals(today)) {
+                user.setUsageDayStart(today);
+                user.setDailyTextCount(0);
+            }
+            if (user.getDailyTextCount() >= premiumDailyLimit) {
+                throw new UsageLimitException(
+                        "You've reached today's fair-use limit of " + premiumDailyLimit
+                                + " text creations. It resets tomorrow.");
+            }
+            user.setDailyTextCount(user.getDailyTextCount() + 1);
+            userRepository.save(user);
+            return;
+        }
+
+        // ——— FREE plan: per-user monthly quota AND the global daily kill-switch. ———
+        LocalDate monthStart = today.withDayOfMonth(1);
+        if (user.getUsagePeriodStart() == null || !user.getUsagePeriodStart().equals(monthStart)) {
+            user.setUsagePeriodStart(monthStart);
+            user.setMonthlyTextCount(0);
+        }
+        if (user.getMonthlyTextCount() >= userMonthlyLimit) {
+            throw new UsageLimitException(
+                    "You've reached your free monthly limit of " + userMonthlyLimit
+                            + " text creations. Upgrade to Premium for unlimited, or wait until next month.");
+        }
         AppUsage usage = appUsageRepository.findByDay(today).orElseGet(() -> new AppUsage(today, 0));
         if (usage.getCount() >= globalDailyLimit) {
             throw new UsageLimitException(
                     "Text creation is temporarily unavailable for today. Please try again tomorrow.");
         }
+        user.setMonthlyTextCount(user.getMonthlyTextCount() + 1);
+        userRepository.save(user);
+        usage.setCount(usage.getCount() + 1);
+        appUsageRepository.save(usage);
+    }
 
-        // ——— Consume one unit from each counter (admins don't spend monthly quota) ———
-        if (!isAdmin) {
-            user.setMonthlyTextCount(user.getMonthlyTextCount() + 1);
-            userRepository.save(user);
+    /** Checks and consumes one unit from the global daily kill-switch. */
+    private void consumeGlobalDaily(LocalDate today) {
+        AppUsage usage = appUsageRepository.findByDay(today).orElseGet(() -> new AppUsage(today, 0));
+        if (usage.getCount() >= globalDailyLimit) {
+            throw new UsageLimitException(
+                    "Text creation is temporarily unavailable for today. Please try again tomorrow.");
         }
         usage.setCount(usage.getCount() + 1);
         appUsageRepository.save(usage);

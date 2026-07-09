@@ -625,7 +625,7 @@
       "pasteText": "Paste some Chinese text, or extract it from a photo first.",
       "processFailed": "Could not process your text. Please try again.",
       "deleteFailed": "Could not delete the text. Please try again.",
-      "usageLimit": "You have reached your usage limit. Please try again later.",
+      "usageLimit": "You've reached your free monthly limit. Upgrade to Premium for unlimited text creation.",
       "invalidInput": "Please provide a valid Chinese text or image."
     }
   },
@@ -906,7 +906,7 @@
     },
     "premium": {
       "title": "Premium subscription",
-      "hint": "Grant premium access until the chosen date and time. Premium users get a higher monthly generation limit.",
+      "hint": "Grant premium access until the chosen date and time. Premium users get unlimited monthly generation (with a high daily fair-use cap).",
       "until": "Premium until",
       "grant": "Grant premium",
       "update": "Update expiry",
@@ -989,7 +989,7 @@
   "premium": {
     "kicker": "ChineseReads Premium",
     "title": "Learn Chinese without limits",
-    "subtitle": "Go Premium for a higher monthly limit on your private graded readers, expanded audio and early access to upcoming AI features.",
+    "subtitle": "Go Premium for unlimited private graded readers that are never blocked by the shared daily limit, plus early access to upcoming AI features.",
     "errorGeneric": "Something went wrong. Please try again.",
     "current": {
       "title": "You're Premium",
@@ -1002,8 +1002,8 @@
     },
     "benefits": {
       "title": "What's included",
-      "item1": "A much higher monthly limit for creating your own graded readers",
-      "item2": "Expanded audio pronunciation",
+      "item1": "Unlimited private graded readers — no monthly cap (the free plan allows 10 per month)",
+      "item2": "Your creations are never blocked by the shared daily limit",
       "item3": "Early access to upcoming AI features (ask about words and context)",
       "item4": "Support the project and help it keep growing"
     },
@@ -1013,7 +1013,7 @@
   },
   "premiumSuccess": {
     "title": "Welcome to Premium!",
-    "body": "Your subscription is active. Enjoy your higher limits and premium features.",
+    "body": "Your subscription is active. Enjoy unlimited generation and premium features.",
     "startCreating": "Start creating",
     "viewProfile": "View profile"
   }

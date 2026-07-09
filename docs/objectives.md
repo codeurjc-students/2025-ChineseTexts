@@ -30,7 +30,7 @@ The main goal of ChineseReads is to provide a structured and accessible platform
 | F20 | Buy a PREMIUM subscription (Stripe Checkout, monthly / yearly) | ✅ |
 | F21 | Manage / cancel the subscription (Stripe Billing Portal) | ✅ |
 | F22 | Admin: grant / revoke PREMIUM to a user until a chosen date & time | ✅ |
-| F23 | Tiered monthly usage limits (free vs premium) with a global daily cost fuse | ✅ |
+| F23 | Tiered usage limits (free: 10/month + global fuse; premium: unlimited, fuse-exempt, daily fair-use cap) | ✅ |
 | F24 | Terms of Use page + required consent at signup (GDPR) | ✅ |
 
 ### Pending Functionalities

@@ -37,6 +37,12 @@ public class User {
     private int monthlyTextCount = 0;
     private LocalDate usagePeriodStart;
 
+    // Contador diario de creaciones, usado sólo por el tope de "uso justo" de los
+    // usuarios PREMIUM (que no tienen límite mensual ni pasan por el fusible global).
+    // Se reinicia cuando cambia el día (ver usageDayStart). Null en cuentas antiguas.
+    private int dailyTextCount = 0;
+    private LocalDate usageDayStart;
+
     // Prueba de consentimiento (RGPD): momento en que el usuario aceptó los términos
     // de uso al registrarse. Null en cuentas anteriores a esta funcionalidad.
     private LocalDateTime termsAcceptedAt;
@@ -171,6 +177,22 @@ public class User {
 
     public void setUsagePeriodStart(LocalDate usagePeriodStart) {
         this.usagePeriodStart = usagePeriodStart;
+    }
+
+    public int getDailyTextCount() {
+        return dailyTextCount;
+    }
+
+    public void setDailyTextCount(int dailyTextCount) {
+        this.dailyTextCount = dailyTextCount;
+    }
+
+    public LocalDate getUsageDayStart() {
+        return usageDayStart;
+    }
+
+    public void setUsageDayStart(LocalDate usageDayStart) {
+        this.usageDayStart = usageDayStart;
     }
 
     public List<UserText> getUserTexts() {

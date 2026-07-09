@@ -174,16 +174,17 @@ A user is premium while `User.premiumUntil` (a nullable `LocalDateTime`) is in t
 
 ### Plans & limits
 
-The concrete guard today is the **monthly text-generation quota**; premium simply gets a higher ceiling (nobody loses access). All limits live in `application.properties`.
+The concrete guard is the **text-generation quota**, tiered by plan. Free users have a small monthly quota; **premium is unlimited monthly and exempt from the global daily fuse** (they paid for "unlimited", so the shared cap must never block them, and their usage must not starve free users of it) — bounded only by a high per-user daily fair-use cap against a single abusive account. All limits live in `application.properties`.
 
 | Limit | Free | Premium | Admin | Property |
 |---|---|---|---|---|
-| Own-text generations / month | 30 | 100 | unlimited (exempt) | `usage.user.monthly-limit` / `usage.premium.monthly-limit` |
-| Global generations / day (cost fuse, everyone) | 200 | 200 | 200 | `usage.global.daily-limit` |
+| Own-text generations / month | 10 | unlimited | unlimited (exempt) | `usage.user.monthly-limit` |
+| Own-text generations / day (fair-use cap) | — | 100 | — | `usage.premium.daily-limit` |
+| Global generations / day (cost fuse) | 200 | exempt | 200 | `usage.global.daily-limit` |
 | Max chars per generated text | 1500 | 1500 | 1500 | `usage.text.max-chars` |
 | Audio (TTS) | public · 1600 chars · 60/min per IP · cached | same | same | `tts.*` |
 
-`UsageService.reserveGeneration` (called by `POST /api/my-texts`) charges the user's monthly quota **and** the global daily fuse; `reserveOcr` (the OCR extract step) charges the daily fuse only. Admins are exempt from the monthly quota but still bound by the daily fuse.
+`UsageService.reserveGeneration` (called by `POST /api/my-texts`) applies one of three lanes: **free** users spend their monthly quota **and** the global daily fuse; **premium** users spend only a per-user daily fair-use counter (no monthly limit, exempt from the global fuse); **admins** are exempt from personal quotas but still bound by the global fuse. `reserveOcr` (the OCR extract step) charges the global fuse only.
 
 ### How the Stripe integration works
 
