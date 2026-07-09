@@ -77,9 +77,9 @@
     },
     "register": {
       "heading": "Funciones extra disponibles al registrarte",
-      "statistics": {
-        "title": "Estadísticas detalladas",
-        "text": "Sigue el crecimiento de tu vocabulario, tus resultados en los tests, tus textos favoritos y tu progreso general."
+      "audio": {
+        "title": "Audio natural",
+        "text": "Escucha la pronunciación nativa de cualquier texto, frase o palabra con síntesis de voz natural."
       },
       "tests": {
         "title": "Tests personalizados",

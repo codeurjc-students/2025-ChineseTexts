@@ -77,9 +77,9 @@
     },
     "register": {
       "heading": "Extra Features Available When You Register",
-      "statistics": {
-        "title": "Detailed Statistics",
-        "text": "Track your vocabulary growth, test performance, favorite texts, and overall progress."
+      "audio": {
+        "title": "Natural Audio",
+        "text": "Hear native pronunciation for any text, sentence or word, with natural text-to-speech."
       },
       "tests": {
         "title": "Personalized Tests",
