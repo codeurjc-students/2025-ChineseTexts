@@ -1,10 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
-import { Router, RouterModule } from '@angular/router';
+import { Router, RouterModule, NavigationEnd } from '@angular/router';
 import { LoginService } from '../../services/login.service';
 import { FormsModule } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { startWith } from 'rxjs/operators';
+import { startWith, filter } from 'rxjs/operators';
 import { isPlatformBrowser } from '@angular/common';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { LocalizeLinkPipe } from '../../i18n/localize-link.pipe';
@@ -64,6 +64,11 @@ export class HeaderComponent implements OnInit {
       });
       // A "Log in" action elsewhere (e.g. a toast) opens this header's login modal.
       this.authUi.openLogin$.subscribe(() => this.openLoginModal());
+      // Collapse the mobile navbar after navigating, so it doesn't stay open on top
+      // of the new page (which, with scroll-to-top, would show only the menu).
+      this.router.events
+        .pipe(filter((e): e is NavigationEnd => e instanceof NavigationEnd))
+        .subscribe(() => this.collapseMobileMenu());
     } else {
       // En SSR no mostramos nada condicionado al login
       this.authReady = false;
@@ -76,6 +81,15 @@ export class HeaderComponent implements OnInit {
     const bs = (window as any).bootstrap;
     if (el && bs?.Modal) {
       bs.Modal.getOrCreateInstance(el).show();
+    }
+  }
+
+  /** Closes the expanded mobile navbar (only if it's open). */
+  private collapseMobileMenu(): void {
+    const el = document.getElementById('navbarNav');
+    const bs = (window as any).bootstrap;
+    if (el && el.classList.contains('show') && bs?.Collapse) {
+      bs.Collapse.getOrCreateInstance(el).hide();
     }
   }
 
