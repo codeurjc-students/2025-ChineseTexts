@@ -43,6 +43,15 @@ public class User {
     private int dailyTextCount = 0;
     private LocalDate usageDayStart;
 
+    // Contadores mensuales de audio (TTS) del plan gratuito. El audio es de pago
+    // (Google TTS) y sólo accesible tras registro. Se separan en dos cubos porque
+    // cuestan muy distinto: la palabra suelta (barata, núcleo de la lectura) tiene un
+    // cupo alto, y la frase/texto completo (caro) uno escaso — que es el gancho premium.
+    // Premium y admin están exentos. Se reinician al cambiar el mes (audioUsagePeriodStart).
+    private int monthlyWordAudioCount = 0;
+    private int monthlyPhraseAudioCount = 0;
+    private LocalDate audioUsagePeriodStart;
+
     // Prueba de consentimiento (RGPD): momento en que el usuario aceptó los términos
     // de uso al registrarse. Null en cuentas anteriores a esta funcionalidad.
     private LocalDateTime termsAcceptedAt;
@@ -193,6 +202,30 @@ public class User {
 
     public void setUsageDayStart(LocalDate usageDayStart) {
         this.usageDayStart = usageDayStart;
+    }
+
+    public int getMonthlyWordAudioCount() {
+        return monthlyWordAudioCount;
+    }
+
+    public void setMonthlyWordAudioCount(int monthlyWordAudioCount) {
+        this.monthlyWordAudioCount = monthlyWordAudioCount;
+    }
+
+    public int getMonthlyPhraseAudioCount() {
+        return monthlyPhraseAudioCount;
+    }
+
+    public void setMonthlyPhraseAudioCount(int monthlyPhraseAudioCount) {
+        this.monthlyPhraseAudioCount = monthlyPhraseAudioCount;
+    }
+
+    public LocalDate getAudioUsagePeriodStart() {
+        return audioUsagePeriodStart;
+    }
+
+    public void setAudioUsagePeriodStart(LocalDate audioUsagePeriodStart) {
+        this.audioUsagePeriodStart = audioUsagePeriodStart;
     }
 
     public List<UserText> getUserTexts() {

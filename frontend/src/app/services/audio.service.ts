@@ -3,7 +3,10 @@ import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Observable, Subject } from 'rxjs';
 
-export type SpeakState = 'idle' | 'loading' | 'playing' | 'error';
+export type SpeakState = 'idle' | 'loading' | 'playing' | 'error' | 'authRequired' | 'limitReached';
+
+/** The kind of audio play, used for the per-user monthly quota on the backend. */
+export type AudioType = 'word' | 'phrase';
 
 /**
  * Plays Chinese text as speech using the backend TTS endpoint (/api/tts).
@@ -35,7 +38,7 @@ export class AudioService {
    * Returns the request id; emits 'loading' → 'playing' → 'idle' (or 'error')
    * on `state$` for that id.
    */
-  speak(text: string): number {
+  speak(text: string, audioType: AudioType = 'phrase'): number {
     const id = ++this.seq;
     const clean = (text || '').trim();
 
@@ -46,7 +49,7 @@ export class AudioService {
     this.activeId = id;
     this.emit(id, 'loading');
 
-    this.http.post('/api/tts', { text: clean }, { responseType: 'blob' }).subscribe({
+    this.http.post('/api/tts', { text: clean, type: audioType }, { responseType: 'blob' }).subscribe({
       next: (blob) => {
         if (this.activeId !== id) return;     // superseded while loading
         try {
@@ -65,10 +68,22 @@ export class AudioService {
           this.cleanup();
         }
       },
-      error: () => { if (this.activeId === id) this.emit(id, 'error'); }
+      error: (err) => { if (this.activeId === id) this.emit(id, this.stateForError(err)); }
     });
 
     return id;
+  }
+
+  /**
+   * Maps a failed TTS request to a button state: 401/403 means the visitor must sign
+   * up to listen (audio is registered-only), 429 means the monthly audio quota is
+   * spent (upgrade to premium), anything else is a generic error.
+   */
+  private stateForError(err: unknown): SpeakState {
+    const status = (err as { status?: number })?.status;
+    if (status === 401 || status === 403) return 'authRequired';
+    if (status === 429) return 'limitReached';
+    return 'error';
   }
 
   /** Stops current playback (if any) and resets its button to idle. */

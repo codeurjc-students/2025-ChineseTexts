@@ -5,8 +5,9 @@
   [class.speak-btn--lg]="size === 'lg'"
   [class.is-playing]="state === 'playing'"
   [class.is-error]="state === 'error'"
-  [attr.aria-label]="ariaLabel || ('speakButton.listen' | transloco)"
-  [title]="state === 'error' ? ('speakButton.audioUnavailable' | transloco) : (ariaLabel || ('speakButton.listen' | transloco))"
+  [class.is-locked]="!isLogged || state === 'authRequired' || state === 'limitReached'"
+  [attr.aria-label]="tooltip"
+  [title]="tooltip"
   [disabled]="!text"
   (click)="toggle($event)"
 >

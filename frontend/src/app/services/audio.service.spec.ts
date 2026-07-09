@@ -29,7 +29,7 @@ describe('AudioService', () => {
 
     const req = httpMock.expectOne('/api/tts');
     expect(req.request.method).toBe('POST');
-    expect(req.request.body).toEqual({ text: '你好' });
+    expect(req.request.body).toEqual({ text: '你好', type: 'phrase' });
     req.flush(new Blob(['x'], { type: 'audio/mpeg' }));
   });
 

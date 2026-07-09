@@ -77,7 +77,7 @@
           <button class="popover-close" (click)="closeWordPopover()">✕</button>
           <div class="popover-chinese-row">
             <div class="popover-chinese">{{ originalText[activeWordIndex] }}</div>
-            <app-speak-button [text]="originalText[activeWordIndex]" size="md" [ariaLabel]="'myTextReader.listen.word' | transloco"></app-speak-button>
+            <app-speak-button [text]="originalText[activeWordIndex]" audioType="word" size="md" [ariaLabel]="'myTextReader.listen.word' | transloco"></app-speak-button>
           </div>
           <div class="popover-pinyin">{{ wordsArray[activeWordIndex]?.pinyin || '—' }}</div>
           <hr class="my-1">
