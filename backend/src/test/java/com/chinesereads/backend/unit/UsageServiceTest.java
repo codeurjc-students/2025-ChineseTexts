@@ -1,7 +1,9 @@
 package com.chinesereads.backend.unit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -174,5 +176,52 @@ public class UsageServiceTest {
         expired.setPremiumUntil(LocalDateTime.now().minusDays(1)); // subscription already expired
 
         assertThrows(UsageLimitException.class, () -> usageService.reserveGeneration(expired));
+    }
+
+    @Test
+    @DisplayName("getStatus reports the free plan's used count and limit")
+    public void testStatusFree() {
+        User user = userWithUsage(1, LocalDate.now().withDayOfMonth(1));
+
+        var status = usageService.getStatus(user);
+
+        assertEquals("free", status.plan());
+        assertFalse(status.unlimited());
+        assertEquals(1, status.used());
+        assertEquals(2, status.limit()); // userMonthlyLimit injected as 2
+    }
+
+    @Test
+    @DisplayName("getStatus reports 0 used when the stored month has rolled over")
+    public void testStatusFreeRolledOverMonth() {
+        User user = userWithUsage(99, LocalDate.now().withDayOfMonth(1).minusMonths(1));
+
+        var status = usageService.getStatus(user);
+
+        assertEquals(0, status.used()); // last month's count does not carry over
+        assertEquals(2, status.limit());
+    }
+
+    @Test
+    @DisplayName("getStatus reports premium as unlimited")
+    public void testStatusPremium() {
+        User premium = userWithUsage(0, LocalDate.now().withDayOfMonth(1));
+        premium.setPremiumUntil(LocalDateTime.now().plusDays(10));
+
+        var status = usageService.getStatus(premium);
+
+        assertEquals("premium", status.plan());
+        assertTrue(status.unlimited());
+    }
+
+    @Test
+    @DisplayName("getStatus reports admin as unlimited")
+    public void testStatusAdmin() {
+        User admin = new User("a@a.com", "A", "pass", "en", "USER", "ADMIN");
+
+        var status = usageService.getStatus(admin);
+
+        assertEquals("admin", status.plan());
+        assertTrue(status.unlimited());
     }
 }

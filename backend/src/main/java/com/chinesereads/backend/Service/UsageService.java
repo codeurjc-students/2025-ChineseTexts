@@ -11,6 +11,7 @@ import com.chinesereads.backend.Model.AppUsage;
 import com.chinesereads.backend.Model.User;
 import com.chinesereads.backend.Repository.AppUsageRepository;
 import com.chinesereads.backend.Repository.UserRepository;
+import com.chinesereads.backend.dto.UsageStatusDTO;
 
 /**
  * Enforces the cost guards for AI/OCR text generation, by tier:
@@ -139,5 +140,25 @@ public class UsageService {
 
     public int getUserMonthlyLimit() {
         return userMonthlyLimit;
+    }
+
+    /**
+     * Read-only snapshot of the user's current generation usage, for the UI meter.
+     * Premium and admins are unlimited. For free users, reports this month's used count
+     * (0 if the stored period has rolled over into a new month) and the monthly cap —
+     * without mutating any state (the real reset happens on the next reservation).
+     */
+    @Transactional(readOnly = true)
+    public UsageStatusDTO getStatus(User user) {
+        boolean isAdmin = user.getRoles() != null && user.getRoles().contains("ADMIN");
+        if (isAdmin) {
+            return new UsageStatusDTO("admin", true, 0, 0);
+        }
+        if (user.isPremiumActive()) {
+            return new UsageStatusDTO("premium", true, 0, 0);
+        }
+        LocalDate monthStart = LocalDate.now().withDayOfMonth(1);
+        int used = monthStart.equals(user.getUsagePeriodStart()) ? user.getMonthlyTextCount() : 0;
+        return new UsageStatusDTO("free", false, used, userMonthlyLimit);
     }
 }

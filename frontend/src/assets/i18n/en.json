@@ -621,6 +621,11 @@
   "myTools": {
     "title": "My Tools",
     "subtitle": "Turn any Chinese text or a photo into your own private reader — with pinyin, translations and audio.",
+    "usage": {
+      "unlimited": "Unlimited generation",
+      "remaining": "{{remaining}} of {{limit}} generations left this month",
+      "upgrade": "Go unlimited"
+    },
     "create": {
       "photoLabel": "Have a photo? Extract the text first",
       "reading": "Reading…",

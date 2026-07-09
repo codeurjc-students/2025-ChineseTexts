@@ -101,6 +101,8 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/api/premium/webhook").permitAll()
                 .requestMatchers("/api/premium/**").hasAnyRole("USER", "ADMIN")
 
+                .requestMatchers(HttpMethod.GET, "/api/usage/**").hasAnyRole("USER", "ADMIN")
+
                 // Audio (TTS) calls the paid Google TTS API, so it is registered-only:
                 // anonymous visitors must sign up to listen (per-user quota in AudioUsageService).
                 .requestMatchers("/api/tts/**").hasAnyRole("USER", "ADMIN")
