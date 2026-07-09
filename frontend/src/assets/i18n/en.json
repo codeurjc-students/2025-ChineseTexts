@@ -984,7 +984,9 @@
   },
   "speakButton": {
     "listen": "Listen",
-    "audioUnavailable": "Audio unavailable — click to retry"
+    "audioUnavailable": "Audio unavailable — click to retry",
+    "registerToListen": "Create a free account to listen",
+    "limitReached": "Monthly audio limit reached — go Premium for unlimited audio"
   },
   "premium": {
     "kicker": "ChineseReads Premium",
@@ -1003,7 +1005,7 @@
     "benefits": {
       "title": "What's included",
       "item1": "Unlimited private graded readers — no monthly cap (the free plan allows 10 per month)",
-      "item2": "Your creations are never blocked by the shared daily limit",
+      "item2": "Unlimited audio — full narration of any text, sentence and word",
       "item3": "Early access to upcoming AI features (ask about words and context)",
       "item4": "Support the project and help it keep growing"
     },

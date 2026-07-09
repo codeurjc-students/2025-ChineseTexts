@@ -182,9 +182,11 @@ The concrete guard is the **text-generation quota**, tiered by plan. Free users 
 | Own-text generations / day (fair-use cap) | — | 100 | — | `usage.premium.daily-limit` |
 | Global generations / day (cost fuse) | 200 | exempt | 200 | `usage.global.daily-limit` |
 | Max chars per generated text | 1500 | 1500 | 1500 | `usage.text.max-chars` |
-| Audio (TTS) | public · 1600 chars · 60/min per IP · cached | same | same | `tts.*` |
+| Audio (TTS) plays / month — words · sentences+text | registered-only · 100 · 15 | unlimited | unlimited | `usage.audio.word.monthly-limit` / `usage.audio.phrase.monthly-limit` |
 
 `UsageService.reserveGeneration` (called by `POST /api/my-texts`) applies one of three lanes: **free** users spend their monthly quota **and** the global daily fuse; **premium** users spend only a per-user daily fair-use counter (no monthly limit, exempt from the global fuse); **admins** are exempt from personal quotas but still bound by the global fuse. `reserveOcr` (the OCR extract step) charges the global fuse only.
+
+Audio (`POST /api/tts`) is **registered-only** (anonymous → 401): `AudioUsageService.reserveAudio` meters two per-user monthly buckets — single words (cheap, high quota) and sentences/full text (expensive, small quota) — with premium and admins exempt. On top of that the endpoint keeps the hard length cap, the per-IP rate limit and the text-keyed cache (`tts.*`).
 
 ### How the Stripe integration works
 

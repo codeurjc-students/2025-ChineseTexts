@@ -20,6 +20,9 @@
 
   &.is-playing { color: #e74c3c; }
   &.is-error   { color: #b7770d; }
+  // Locked: audio requires a free account, or the monthly quota is spent.
+  &.is-locked  { color: #9aa0a6; }
+  &.is-locked:hover:not(:disabled) { background: #f1f3f4; color: #5f6368; }
 
   &--sm { width: 26px; height: 26px; font-size: 0.85rem; }
   &--lg { width: 44px; height: 44px; font-size: 1.4rem; }
