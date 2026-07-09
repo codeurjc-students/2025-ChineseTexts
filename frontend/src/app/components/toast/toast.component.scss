@@ -1,32 +1,44 @@
 .toast-wrap {
   position: fixed;
-  left: 50%;
+  left: 16px;
+  right: 16px;
   bottom: 24px;
-  transform: translateX(-50%);
-  z-index: 1200;
-  width: max-content;
-  max-width: calc(100vw - 32px);
-  animation: toast-in 0.25s ease;
+  // Above the cookie banner (z-index 9999) so it is never hidden by it.
+  z-index: 10000;
+  display: flex;
+  justify-content: center;
+  // Only the box itself is interactive; clicks around it pass through.
+  pointer-events: none;
 }
 
 .toast-box {
+  pointer-events: auto;
+  position: relative;
+  width: 100%;
+  max-width: 460px;
   display: flex;
+  flex-wrap: wrap;              // on narrow screens the buttons drop below the text
   align-items: center;
-  gap: 14px;
+  gap: 10px 12px;
   background: #2c3e50;
   color: #fff;
-  padding: 12px 16px;
+  padding: 14px 40px 14px 16px; // right padding leaves room for the close button
   border-radius: 10px;
   box-shadow: 0 6px 22px rgba(0, 0, 0, 0.3);
   font-size: 0.95rem;
+  animation: toast-in 0.25s ease;
 }
 
-.toast-text { line-height: 1.4; }
+.toast-text {
+  flex: 1 1 200px;   // grows, but forces wrapping of the actions when space is tight
+  min-width: 0;
+  line-height: 1.4;
+}
 
 .toast-actions {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
-  flex-shrink: 0;
 }
 
 .toast-action {
@@ -51,17 +63,20 @@
 }
 
 .toast-close {
-  flex-shrink: 0;
+  position: absolute;
+  top: 8px;
+  right: 10px;
   background: transparent;
   border: none;
   color: #cfd6dc;
   font-size: 0.95rem;
+  line-height: 1;
   cursor: pointer;
-  padding: 0 2px;
+  padding: 2px;
   &:hover { color: #fff; }
 }
 
 @keyframes toast-in {
-  from { opacity: 0; transform: translate(-50%, 12px); }
-  to   { opacity: 1; transform: translate(-50%, 0); }
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
