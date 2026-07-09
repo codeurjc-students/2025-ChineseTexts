@@ -625,7 +625,7 @@
       "pasteText": "Pega algo de texto en chino, o extráelo primero de una foto.",
       "processFailed": "No se pudo procesar tu texto. Inténtalo de nuevo.",
       "deleteFailed": "No se pudo eliminar el texto. Inténtalo de nuevo.",
-      "usageLimit": "Has alcanzado tu límite de uso. Inténtalo más tarde.",
+      "usageLimit": "Has alcanzado tu límite mensual gratuito. Hazte Premium para crear textos sin límite.",
       "invalidInput": "Proporciona un texto en chino o una imagen válidos."
     }
   },
@@ -906,7 +906,7 @@
     },
     "premium": {
       "title": "Suscripción premium",
-      "hint": "Concede acceso premium hasta la fecha y hora elegidas. Los usuarios premium tienen un límite mensual de generación más alto.",
+      "hint": "Concede acceso premium hasta la fecha y hora elegidas. Los usuarios premium tienen generación mensual ilimitada (con un tope diario de uso justo).",
       "until": "Premium hasta",
       "grant": "Conceder premium",
       "update": "Actualizar caducidad",
@@ -989,7 +989,7 @@
   "premium": {
     "kicker": "ChineseReads Premium",
     "title": "Aprende chino sin límites",
-    "subtitle": "Hazte Premium para un límite mensual más alto en tus lecturas graduadas privadas, audio ampliado y acceso anticipado a las próximas funciones de IA.",
+    "subtitle": "Hazte Premium para crear lecturas graduadas privadas sin límite, que nunca se bloquean por el límite diario compartido, además de acceso anticipado a las próximas funciones de IA.",
     "errorGeneric": "Algo ha salido mal. Inténtalo de nuevo.",
     "current": {
       "title": "Eres Premium",
@@ -1002,8 +1002,8 @@
     },
     "benefits": {
       "title": "Qué incluye",
-      "item1": "Un límite mensual mucho más alto para crear tus propias lecturas graduadas",
-      "item2": "Audio de pronunciación ampliado",
+      "item1": "Lecturas graduadas privadas ilimitadas, sin tope mensual (el plan gratis permite 10 al mes)",
+      "item2": "Tus creaciones nunca se bloquean por el límite diario compartido",
       "item3": "Acceso anticipado a las próximas funciones de IA (preguntar sobre palabras y contexto)",
       "item4": "Apoya el proyecto y ayúdalo a seguir creciendo"
     },
@@ -1013,7 +1013,7 @@
   },
   "premiumSuccess": {
     "title": "¡Bienvenido a Premium!",
-    "body": "Tu suscripción está activa. Disfruta de tus límites ampliados y funciones premium.",
+    "body": "Tu suscripción está activa. Disfruta de generación ilimitada y funciones premium.",
     "startCreating": "Empezar a crear",
     "viewProfile": "Ver perfil"
   }

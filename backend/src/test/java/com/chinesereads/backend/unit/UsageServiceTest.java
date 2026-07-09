@@ -37,7 +37,7 @@ public class UsageServiceTest {
         injectField(usageService, "userRepository", userRepository);
         injectField(usageService, "appUsageRepository", appUsageRepository);
         injectField(usageService, "userMonthlyLimit", 2);
-        injectField(usageService, "premiumMonthlyLimit", 5);
+        injectField(usageService, "premiumDailyLimit", 5);
         injectField(usageService, "globalDailyLimit", 3);
 
         // By default there is no usage recorded for today.
@@ -58,6 +58,14 @@ public class UsageServiceTest {
         User u = new User("u@u.com", "U", "pass", "en", "USER");
         u.setMonthlyTextCount(monthlyCount);
         u.setUsagePeriodStart(periodStart);
+        return u;
+    }
+
+    private User premiumWithDaily(int dailyCount, LocalDate dayStart) {
+        User u = new User("p@p.com", "P", "pass", "en", "USER");
+        u.setPremiumUntil(LocalDateTime.now().plusDays(30)); // active subscription
+        u.setDailyTextCount(dailyCount);
+        u.setUsageDayStart(dayStart);
         return u;
     }
 
@@ -120,23 +128,43 @@ public class UsageServiceTest {
     }
 
     @Test
-    @DisplayName("Premium users get the higher monthly ceiling and still spend their quota")
-    public void testPremiumGetsHigherLimit() {
-        User premium = userWithUsage(2, LocalDate.now().withDayOfMonth(1)); // at the FREE limit of 2
+    @DisplayName("Premium ignores the monthly limit (unlimited) and spends the daily counter, not the monthly one")
+    public void testPremiumIgnoresMonthlyLimit() {
+        User premium = userWithUsage(99, LocalDate.now().withDayOfMonth(1)); // far over the FREE limit of 2
         premium.setPremiumUntil(LocalDateTime.now().plusDays(30)); // active subscription
 
-        // Free users would be blocked at 2, but premium's ceiling is 5.
         assertDoesNotThrow(() -> usageService.reserveGeneration(premium));
-        assertEquals(3, premium.getMonthlyTextCount()); // premium still consumes quota
+        assertEquals(99, premium.getMonthlyTextCount()); // monthly quota untouched for premium
+        assertEquals(1, premium.getDailyTextCount());    // premium spends the daily fair-use counter
     }
 
     @Test
-    @DisplayName("Premium users are blocked once they reach the premium ceiling")
-    public void testPremiumLimitReached() {
-        User premium = userWithUsage(5, LocalDate.now().withDayOfMonth(1)); // premium limit is 5
-        premium.setPremiumUntil(LocalDateTime.now().plusDays(30));
+    @DisplayName("Premium users are blocked once they reach the daily fair-use cap")
+    public void testPremiumDailyCapReached() {
+        User premium = premiumWithDaily(5, LocalDate.now()); // daily cap is 5
 
         assertThrows(UsageLimitException.class, () -> usageService.reserveGeneration(premium));
+    }
+
+    @Test
+    @DisplayName("Premium is exempt from the global daily fuse")
+    public void testPremiumExemptFromGlobalFuse() {
+        User premium = premiumWithDaily(0, LocalDate.now());
+        when(appUsageRepository.findByDay(any()))
+                .thenReturn(Optional.of(new AppUsage(LocalDate.now(), 3))); // global fuse at its cap of 3
+
+        // A free user would be blocked here, but premium ignores the global fuse entirely.
+        assertDoesNotThrow(() -> usageService.reserveGeneration(premium));
+        assertEquals(1, premium.getDailyTextCount());
+    }
+
+    @Test
+    @DisplayName("A new day resets the premium daily counter")
+    public void testPremiumDailyResetOnNewDay() {
+        User premium = premiumWithDaily(99, LocalDate.now().minusDays(1)); // yesterday's usage
+
+        assertDoesNotThrow(() -> usageService.reserveGeneration(premium));
+        assertEquals(1, premium.getDailyTextCount()); // reset to 0 for the new day, then incremented
     }
 
     @Test
