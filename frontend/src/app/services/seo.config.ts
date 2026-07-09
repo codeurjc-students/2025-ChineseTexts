@@ -124,15 +124,15 @@ const STATIC_SEO: Record<string, LocalizedSeo> = {
     en: {
       title: 'ChineseReads Premium — Unlock Unlimited Chinese Reading Tools',
       description:
-        'Upgrade to ChineseReads Premium for unlimited private graded readers, never blocked by the ' +
-        'shared daily limit, plus early access to upcoming AI features. Keep learning Chinese without limits.',
+        'Upgrade to ChineseReads Premium for unlimited graded readers, unlimited audio and an unlimited ' +
+        'AI tutor that explains any word in context. Keep learning Chinese without limits.',
       path: '/premium'
     },
     es: {
       title: 'ChineseReads Premium — Desbloquea las herramientas de lectura sin límites',
       description:
-        'Hazte Premium en ChineseReads para crear lecturas graduadas privadas ilimitadas, que nunca se ' +
-        'bloquean por el límite diario compartido, y accede antes a las próximas funciones de IA. Sigue aprendiendo chino sin límites.',
+        'Hazte Premium en ChineseReads para lecturas graduadas ilimitadas, audio ilimitado y un tutor IA ' +
+        'ilimitado que te explica cualquier palabra en contexto. Sigue aprendiendo chino sin límites.',
       path: '/premium'
     }
   },

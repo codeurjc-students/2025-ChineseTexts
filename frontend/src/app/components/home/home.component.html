@@ -59,7 +59,7 @@
           <div class="feature-icon"><i class="bi bi-stars"></i></div>
           <h3 class="fw-bold">
             {{ 'home.benefits.ai.title' | transloco }}
-            <span class="premium-badge">{{ 'home.badges.comingSoon' | transloco }}</span>
+            <span class="premium-badge" style="background:#27ae60;">{{ 'home.badges.free' | transloco }}</span>
           </h3>
           <p>
             {{ 'home.benefits.ai.text' | transloco }}
@@ -141,6 +141,7 @@
             <li><i class="bi bi-check-circle-fill"></i> {{ 'home.plans.free.item1' | transloco }}</li>
             <li><i class="bi bi-check-circle-fill"></i> {{ 'home.plans.free.item2' | transloco }}</li>
             <li><i class="bi bi-check-circle-fill"></i> {{ 'home.plans.free.item3' | transloco }}</li>
+            <li><i class="bi bi-check-circle-fill"></i> {{ 'home.plans.free.item4' | transloco }}</li>
           </ul>
           <button class="btn-main w-100" [routerLink]="['/signup'] | localizeLink">{{ 'home.plans.free.cta' | transloco }}</button>
         </div>
