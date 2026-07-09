@@ -24,6 +24,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import com.chinesereads.backend.Model.User;
 import com.chinesereads.backend.Repository.UserRepository;
 import com.chinesereads.backend.Repository.UserTextRepository;
+import com.chinesereads.backend.Service.StripeService;
 import com.chinesereads.backend.Service.UserService;
 import com.chinesereads.backend.dto.AdminUserDetailDTO;
 import com.chinesereads.backend.dto.UserDTO;
@@ -37,6 +38,7 @@ public class UserServiceTest {
     private UserService userService;
     private UserMapper userMapper;
     private PasswordEncoder passwordEncoder;
+    private StripeService stripeService;
 
     @BeforeEach
     public void setUp() {
@@ -44,6 +46,7 @@ public class UserServiceTest {
         userTextRepository = mock(UserTextRepository.class);
         userMapper = new UserMapperImpl();
         passwordEncoder = new BCryptPasswordEncoder();
+        stripeService = mock(StripeService.class);
         userService = new UserService();
 
         // Inyectamos dependencias manualmente via reflection
@@ -51,6 +54,7 @@ public class UserServiceTest {
         injectField(userService, "userTextRepository", userTextRepository);
         injectField(userService, "userMapper", userMapper);
         injectField(userService, "passwordEncoder", passwordEncoder);
+        injectField(userService, "stripeService", stripeService);
     }
 
     private void injectField(Object target, String fieldName, Object value) {
@@ -153,6 +157,43 @@ public class UserServiceTest {
         userService.deleteUser(99L, "admin@test.com");
 
         verify(userRepository, times(1)).delete(junk);
+    }
+
+    // Revocar premium (premiumUntil = null) debe cancelar también la suscripción de Stripe.
+    @Test
+    @DisplayName("Revoking premium cancels the Stripe subscription")
+    public void testRevokePremiumCancelsSubscription() {
+        User user = new User("p@p.com", "P", "encoded", "es", "USER");
+        when(userRepository.findById(5L)).thenReturn(Optional.of(user));
+
+        userService.setPremium(5L, null);
+
+        verify(stripeService, times(1)).cancelSubscription(user);
+    }
+
+    // Conceder/extender premium NO debe cancelar la suscripción.
+    @Test
+    @DisplayName("Granting premium does not cancel the Stripe subscription")
+    public void testGrantPremiumDoesNotCancel() {
+        User user = new User("q@q.com", "Q", "encoded", "es", "USER");
+        when(userRepository.findById(6L)).thenReturn(Optional.of(user));
+
+        userService.setPremium(6L, java.time.LocalDateTime.now().plusDays(30));
+
+        verify(stripeService, never()).cancelSubscription(any());
+    }
+
+    // Borrar la propia cuenta debe cancelar la suscripción antes de eliminar el registro.
+    @Test
+    @DisplayName("Deleting own account cancels the Stripe subscription")
+    public void testDeleteOwnAccountCancelsSubscription() {
+        User user = new User("r@r.com", "R", "encoded", "es", "USER");
+        when(userRepository.findByEmail("r@r.com")).thenReturn(Optional.of(user));
+
+        userService.deleteOwnAccount("r@r.com");
+
+        verify(stripeService, times(1)).cancelSubscription(user);
+        verify(userRepository, times(1)).delete(user);
     }
 
     // Test unitario 5: Cuando se actualiza el perfil, se guarda el nuevo nombre y lenguaje

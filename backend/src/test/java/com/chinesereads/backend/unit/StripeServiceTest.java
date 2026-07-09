@@ -145,6 +145,26 @@ public class StripeServiceTest {
     }
 
     @Test
+    @DisplayName("Cancelling with no subscription id is a no-op")
+    public void testCancelSubscriptionNoSubscription() {
+        User user = new User("f@f.com", "F", "pass", "en", "USER");
+        // no stripeSubscriptionId set
+        stripeService.cancelSubscription(user);
+        verify(userRepository, never()).save(any());
+    }
+
+    @Test
+    @DisplayName("Cancelling when billing is not configured leaves state untouched")
+    public void testCancelSubscriptionNotConfigured() {
+        User user = new User("g@g.com", "G", "pass", "en", "USER");
+        user.setStripeSubscriptionId("sub_11");
+        // secretKey is empty here → not configured, so we never touch the Stripe API
+        stripeService.cancelSubscription(user);
+        assertEquals("sub_11", user.getStripeSubscriptionId());
+        verify(userRepository, never()).save(any());
+    }
+
+    @Test
     @DisplayName("Not configured until a Stripe secret key is present")
     public void testIsConfigured() {
         assertFalse(stripeService.isConfigured());
