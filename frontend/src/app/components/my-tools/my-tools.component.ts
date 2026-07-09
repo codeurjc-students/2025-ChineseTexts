@@ -6,6 +6,7 @@ import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 
 import { LoginService } from '../../services/login.service';
 import { MyTextsService, UserTextSummary } from '../../services/my-texts.service';
+import { UsageService, UsageStatus } from '../../services/usage.service';
 import { LocaleNavService } from '../../i18n/locale-nav.service';
 
 /**
@@ -27,6 +28,9 @@ export class MyToolsComponent implements OnInit {
   texts: UserTextSummary[] = [];
   loadingList = false;
 
+  /** Generation usage meter (free plan shows used/limit; premium/admin are unlimited). */
+  usage: UsageStatus | null = null;
+
   pasteText = '';
   selectedFile: File | null = null;
   extracting = false;
@@ -41,6 +45,7 @@ export class MyToolsComponent implements OnInit {
     @Inject(PLATFORM_ID) private platformId: Object,
     private loginService: LoginService,
     private myTexts: MyTextsService,
+    private usageService: UsageService,
     private router: Router,
     private transloco: TranslocoService,
     private localeNav: LocaleNavService
@@ -55,9 +60,22 @@ export class MyToolsComponent implements OnInit {
       next: (user) => {
         if (!user) { this.localeNav.navigate(['/']); return; }
         this.loadTexts();
+        this.loadUsage();
       },
       error: () => this.localeNav.navigate(['/'])
     });
+  }
+
+  /** Loads the generation usage meter; failures leave it hidden (non-critical). */
+  loadUsage(): void {
+    this.usageService.getStatus().subscribe({
+      next: (status) => { this.usage = status; },
+      error: () => { this.usage = null; }
+    });
+  }
+
+  goToPremium(): void {
+    this.localeNav.navigate(['/premium']);
   }
 
   // ——— List ———

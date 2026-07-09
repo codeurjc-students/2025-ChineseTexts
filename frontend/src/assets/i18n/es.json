@@ -597,6 +597,11 @@
   "myTools": {
     "title": "Mis herramientas",
     "subtitle": "Convierte cualquier texto en chino o una foto en tu propio lector privado, con pinyin, traducciones y audio.",
+    "usage": {
+      "unlimited": "Generación ilimitada",
+      "remaining": "Te quedan {{remaining}} de {{limit}} generaciones este mes",
+      "upgrade": "Hazlo ilimitado"
+    },
     "create": {
       "photoLabel": "¿Tienes una foto? Extrae primero el texto",
       "reading": "Leyendo…",

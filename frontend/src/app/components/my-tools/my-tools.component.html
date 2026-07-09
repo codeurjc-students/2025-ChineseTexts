@@ -6,6 +6,22 @@
   <!-- ══════ Crear ══════ -->
   <div class="create-card">
 
+    <!-- Contador de uso -->
+    <div class="usage-meter" *ngIf="usage">
+      <span class="usage-unlimited" *ngIf="usage.unlimited">
+        <i class="bi bi-infinity me-1"></i>{{ 'myTools.usage.unlimited' | transloco }}
+      </span>
+      <ng-container *ngIf="!usage.unlimited">
+        <div class="usage-row" [class.is-depleted]="usage.used >= usage.limit">
+          <span class="usage-label">{{ 'myTools.usage.remaining' | transloco: { remaining: (usage.limit - usage.used) < 0 ? 0 : (usage.limit - usage.used), limit: usage.limit } }}</span>
+          <a class="usage-upgrade" (click)="goToPremium()">{{ 'myTools.usage.upgrade' | transloco }}</a>
+        </div>
+        <div class="usage-bar">
+          <div class="usage-bar-fill" [style.width.%]="usage.used >= usage.limit ? 100 : (usage.used / usage.limit) * 100"></div>
+        </div>
+      </ng-container>
+    </div>
+
     <!-- Extraer de una foto (OCR) -->
     <label class="field-label"><i class="bi bi-camera me-1"></i>{{ 'myTools.create.photoLabel' | transloco }}</label>
     <div class="ocr-controls">
