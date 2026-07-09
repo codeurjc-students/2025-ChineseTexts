@@ -88,6 +88,30 @@
       "heading": "Empieza hoy tu aventura con el chino",
       "text": "Leer es una de las formas más eficaces de aprender un idioma. Únete a miles de estudiantes que mejoran su chino cada día.",
       "cta": "Crea una cuenta gratis"
+    },
+    "plans": {
+      "heading": "Precios sencillos",
+      "subtitle": "Empieza gratis. Hazte Premium cuando quieras.",
+      "free": {
+        "name": "Gratis",
+        "price": "0 €",
+        "item1": "Lee todos los textos, con pinyin, traducciones y desgloses",
+        "item2": "10 generaciones de texto al mes",
+        "item3": "100 audios de palabra + 15 de frase/texto al mes",
+        "cta": "Empezar gratis"
+      },
+      "premium": {
+        "name": "Premium",
+        "badge": "Más popular",
+        "item1": "Generación de texto ilimitada",
+        "item2": "Audio ilimitado",
+        "item3": "Nunca te bloquean los límites compartidos",
+        "item4": "Acceso anticipado a las próximas funciones de IA",
+        "item5": "Cancela cuando quieras — sin compromiso",
+        "cta": "Hazte Premium",
+        "yearlyNote": "o ahorra un 30 % con el plan anual"
+      },
+      "coffee": "menos que un café ☕"
     }
   },
   "footer": {
