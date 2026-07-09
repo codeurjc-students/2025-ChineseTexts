@@ -103,9 +103,12 @@
         </div>
 
         <!-- Botón save o panel de guardado -->
-        <div *ngIf="!showSavePanel">
+        <div *ngIf="!showSavePanel" class="popover-actions">
           <button class="btn-save" (click)="addWord(originalText[activeWordIndex])">
             <i class="bi bi-bookmark-plus"></i> {{ 'text.save.button' | transloco }}
+          </button>
+          <button class="btn-ai-explain" (click)="openWordChat()">
+            <i class="bi bi-stars"></i> {{ 'wordChat.explainButton' | transloco }}
           </button>
         </div>
 
@@ -217,3 +220,9 @@
 
   </div>
 </div>
+
+<!-- AI contextual word chat -->
+<app-word-chat *ngIf="showChat"
+  [word]="chatWord" [sentence]="chatSentence" [text]="chatText"
+  [translation]="chatTranslation" [level]="chatLevel"
+  (closed)="showChat = false"></app-word-chat>

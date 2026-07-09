@@ -55,11 +55,45 @@ No incluyas explicaciones ni texto adicional. Solo el array.
 Array: {input_text}
 """
 
+PROMPT_WORD_CHAT_SYSTEM = """You are a friendly, expert Chinese tutor helping a learner understand ONE specific word as it appears in a text they are reading.
+
+The word: {word}
+The sentence it appears in: {sentence}
+The full text being read: {text}
+Translation of the text: {translation}
+{level_line}
+
+Your job: explain THIS word IN THIS CONTEXT and answer the learner's follow-up questions about it — its meaning here, pronunciation, the characters, grammar, usage, nuances, common collocations, similar or related words, and example sentences.
+
+Rules:
+- Stay strictly on the topic of this word and its context. If the learner asks about something unrelated (other topics, general chit-chat, tasks that are not about this word), politely decline in one short sentence and steer them back to the word.
+- Be concise, clear and encouraging: short explanations and examples a learner can follow.
+- ALWAYS reply in {language_full}, whatever language the question is in. You may still show Chinese characters and pinyin when helpful.
+"""
+
+
 def call_deepseek(prompt: str) -> str:
     client = OpenAI(api_key=DEEPSEEK_API_KEY, base_url=DEEPSEEK_API_URL)
     response = client.chat.completions.create(
         model="deepseek-chat",
         messages=[{"role": "user", "content": prompt}],
+        stream=False
+    )
+    return response.choices[0].message.content.strip()
+
+
+def call_deepseek_chat(system_prompt: str, history: list) -> str:
+    """Multi-turn chat: a system prompt plus the prior user/assistant messages."""
+    client = OpenAI(api_key=DEEPSEEK_API_KEY, base_url=DEEPSEEK_API_URL)
+    messages = [{"role": "system", "content": system_prompt}]
+    for m in history:
+        role = m.get("role")
+        content = (m.get("content") or "").strip()
+        if role in ("user", "assistant") and content:
+            messages.append({"role": role, "content": content})
+    response = client.chat.completions.create(
+        model="deepseek-chat",
+        messages=messages,
         stream=False
     )
     return response.choices[0].message.content.strip()
@@ -202,6 +236,38 @@ def get_missing_words():
         return jsonify(parsed)
     except Exception as e:
         return jsonify({"error": f"Invalid format: {str(e)}", "raw": raw}), 500
+
+
+@app.route("/chatWord", methods=["POST"])
+def chat_word():
+    data = request.get_json()
+    if not data or not str(data.get("word", "")).strip():
+        return jsonify({"error": "word is required"}), 400
+
+    history = data.get("history", [])
+    if not isinstance(history, list) or len(history) == 0:
+        return jsonify({"error": "history must be a non-empty list"}), 400
+
+    word = str(data.get("word", "")).strip()
+    sentence = str(data.get("sentence", "")).strip()
+    text = str(data.get("text", "")).strip()
+    translation = str(data.get("translation", "")).strip()
+    level = str(data.get("level", "")).strip()
+    language = str(data.get("language", "en")).strip().lower()
+
+    language_full = "Spanish (español)" if language == "es" else "English"
+    level_line = f"The learner's HSK level: {level}" if level else ""
+
+    system_prompt = PROMPT_WORD_CHAT_SYSTEM\
+        .replace("{word}", word)\
+        .replace("{sentence}", sentence or word)\
+        .replace("{text}", text or sentence or word)\
+        .replace("{translation}", translation or "(not provided)")\
+        .replace("{level_line}", level_line)\
+        .replace("{language_full}", language_full)
+
+    reply = call_deepseek_chat(system_prompt, history)
+    return jsonify({"reply": reply})
 
 
 if __name__ == "__main__":

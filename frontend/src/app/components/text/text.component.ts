@@ -7,6 +7,7 @@ import { LoginService } from '../../services/login.service';
 import { WordsService, Word } from '../../services/words.service';
 import { CollectionsService, CollectionDTO } from '../../services/collections.service';
 import { SpeakButtonComponent } from '../speak-button/speak-button.component';
+import { WordChatComponent } from '../word-chat/word-chat.component';
 import { SeoService } from '../../services/seo.service';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { Lang } from '../../i18n/locale.util';
@@ -15,7 +16,7 @@ import { LocaleNavService } from '../../i18n/locale-nav.service';
 @Component({
   selector: 'app-text',
   standalone: true,
-  imports: [CommonModule, FormsModule, SpeakButtonComponent, TranslocoModule],
+  imports: [CommonModule, FormsModule, SpeakButtonComponent, WordChatComponent, TranslocoModule],
   templateUrl: './text.component.html',
   styleUrl: './text.component.scss'
 })
@@ -53,6 +54,14 @@ export class TextComponent implements OnInit {
   pendingWord: string | null = null;
 
   showDeleteTextModal = false;
+
+  // AI word chat
+  showChat = false;
+  chatWord = '';
+  chatSentence = '';
+  chatText = '';
+  chatTranslation = '';
+  chatLevel = '';
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
@@ -97,6 +106,38 @@ export class TextComponent implements OnInit {
     this.activeSentenceIndex = null;
     this.activeWordIndex = this.activeWordIndex === index ? null : index;
     this.resetSavePanel();
+  }
+
+  /** Opens the AI chat about the active word. Anonymous users are sent to sign up. */
+  openWordChat(): void {
+    if (this.activeWordIndex === null) return;
+    if (!this.loginService.isLogged()) {
+      this.localeNav.navigate(['/signup']);
+      return;
+    }
+    this.chatWord = this.originalText[this.activeWordIndex] || '';
+    this.chatSentence = this.sentenceForWordIndex(this.activeWordIndex);
+    this.chatText = this.text.text || '';
+    this.chatTranslation = this.displayTranslation;
+    this.chatLevel = this.text.level || '';
+    this.showChat = true;
+  }
+
+  /** The sentence (as a string) that the word at `index` belongs to. */
+  private sentenceForWordIndex(index: number): string {
+    let current: string[] = [];
+    let start = 0;
+    for (let i = 0; i < this.originalText.length; i++) {
+      current.push(this.originalText[i]);
+      const w = this.originalText[i];
+      if (w.endsWith('.') || w.endsWith('。')) {
+        if (index >= start && index <= i) return current.join('');
+        current = [];
+        start = i + 1;
+      }
+    }
+    if (index >= start && current.length > 0) return current.join('');
+    return this.originalText[index] || '';
   }
 
   closeWordPopover(): void {

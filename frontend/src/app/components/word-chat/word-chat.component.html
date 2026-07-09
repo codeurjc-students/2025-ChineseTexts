@@ -1,0 +1,45 @@
+<div class="wc-overlay" (click)="onClose()">
+  <div class="wc-panel" (click)="$event.stopPropagation()">
+
+    <div class="wc-header">
+      <span class="wc-title">
+        <i class="bi bi-stars me-1"></i>{{ 'wordChat.title' | transloco }} <strong>{{ word }}</strong>
+      </span>
+      <button class="wc-close" (click)="onClose()" [attr.aria-label]="'common.buttons.close' | transloco">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+
+    <div class="wc-messages">
+      <div *ngFor="let m of visibleMessages" class="wc-msg"
+           [ngClass]="m.role === 'user' ? 'wc-msg--user' : 'wc-msg--ai'">
+        <div class="wc-bubble">{{ m.content }}</div>
+      </div>
+
+      <div *ngIf="loading" class="wc-msg wc-msg--ai">
+        <div class="wc-bubble wc-typing"><span></span><span></span><span></span></div>
+      </div>
+
+      <div *ngIf="errored" class="wc-notice wc-notice--error">{{ 'wordChat.error' | transloco }}</div>
+
+      <div *ngIf="limitReached" class="wc-notice wc-notice--limit">
+        <p>{{ 'wordChat.limitReached' | transloco }}</p>
+        <button class="btn-primary" (click)="goPremium()">{{ 'wordChat.goPremium' | transloco }}</button>
+      </div>
+    </div>
+
+    <div class="wc-input" *ngIf="!limitReached">
+      <input type="text" [(ngModel)]="draft" (keyup.enter)="send()"
+             [placeholder]="'wordChat.placeholder' | transloco" [disabled]="loading" />
+      <button class="btn-primary wc-send" (click)="send()" [disabled]="loading || !draft.trim()"
+              [attr.aria-label]="'wordChat.send' | transloco">
+        <i class="bi bi-send"></i>
+      </button>
+    </div>
+
+    <p class="wc-remaining" *ngIf="remaining !== null && !limitReached">
+      {{ 'wordChat.remaining' | transloco: { remaining: remaining } }}
+    </p>
+
+  </div>
+</div>
