@@ -172,6 +172,15 @@ body {
   &:hover { background: #f0b90b; }
 }
 
+/* Los dos CTA del hero, lado a lado (se apilan solos en pantallas estrechas) */
+.hero-ctas {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
 /* CTA secundario del hero: el test de nivel, con aspecto claramente pulsable */
 .btn-test {
   background: transparent;

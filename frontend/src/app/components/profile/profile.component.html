@@ -62,18 +62,6 @@
       <div class="info-card" *ngIf="stats">
         <h2 class="card-section-title">{{ 'profile.progress.title' | transloco }}</h2>
 
-        <div class="level-row" *ngIf="hskLevel !== null">
-          <span class="level-chip" (click)="goToMyLevelReadings()" role="button">
-            <i class="bi bi-mortarboard-fill"></i>
-            {{ 'profile.progress.level' | transloco }}: <strong>HSK{{ hskLevel }}</strong>
-          </span>
-        </div>
-        <div class="level-row" *ngIf="hskLevel === null">
-          <a class="level-test-link" (click)="goToLevelTest()" role="button">
-            <i class="bi bi-clipboard-check"></i> {{ 'profile.progress.takeTest' | transloco }}
-          </a>
-        </div>
-
         <div class="progress-stats">
           <div class="progress-stat">
             <div class="progress-stat-value streak-value" [class.streak-value--lit]="stats.readToday">
