@@ -76,9 +76,17 @@ export class SignupComponent implements OnInit, OnDestroy {
     };
 
     this.userService.register(userDTO).subscribe({
-      next: (response: UserDTO) => {
-        this.localeNav.navigate(['/success'], {
-          queryParams: { msg: this.transloco.translate('signup.successMessage') }
+      next: () => {
+        // Sign the new user in right away (like users expect): no second form.
+        // If the auto-login ever fails, fall back to a clear "log in now" notice.
+        this.loginService.login(userDTO.email, userDTO.password as string).subscribe({
+          next: () => {
+            this.loginService.reqIsLogged().subscribe({
+              next: () => this.localeNav.navigate(['/']),
+              error: () => this.notifyCreatedPleaseLogin()
+            });
+          },
+          error: () => this.notifyCreatedPleaseLogin()
         });
       },
       error: (err: any) => {
@@ -96,6 +104,13 @@ export class SignupComponent implements OnInit, OnDestroy {
         const msg = this.transloco.translate(key || 'signup.errorGeneric');
         this.localeNav.navigate(['/error'], { queryParams: { msg } });
       }
+    });
+  }
+
+  /** Fallback when the account exists but the auto-login could not complete. */
+  private notifyCreatedPleaseLogin(): void {
+    this.localeNav.navigate(['/success'], {
+      queryParams: { msg: this.transloco.translate('signup.successMessage') }
     });
   }
 

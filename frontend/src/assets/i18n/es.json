@@ -268,7 +268,7 @@
     },
     "submit": "Crear mi cuenta",
     "back": "Volver",
-    "successMessage": "¡Tu cuenta se ha creado correctamente!",
+    "successMessage": "¡Tu cuenta ha sido creada! Inicia sesión con tus credenciales para empezar.",
     "errorGeneric": "Se ha producido un error inesperado.",
     "errors": {
       "emailInUse": "Este correo electrónico ya está registrado. Prueba a iniciar sesión.",

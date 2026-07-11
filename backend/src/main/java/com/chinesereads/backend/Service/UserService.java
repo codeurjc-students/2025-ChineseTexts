@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.chinesereads.backend.Model.Collection;
 import com.chinesereads.backend.Model.User;
 import com.chinesereads.backend.Repository.UserRepository;
+import com.chinesereads.backend.Repository.ReadingLogRepository;
 import com.chinesereads.backend.Repository.UserTextRepository;
 import com.chinesereads.backend.dto.AdminCollectionSummaryDTO;
 import com.chinesereads.backend.dto.AdminUserDTO;
@@ -42,6 +43,9 @@ public class UserService {
 
     @Autowired
     private StripeService stripeService;
+
+    @Autowired
+    private ReadingLogRepository readingLogRepository;
 
     public UserDTO save(UserDTO user) {
         if (userRepository.findByEmail(user.email()).isPresent()) {
@@ -99,6 +103,9 @@ public class UserService {
         // Stop billing before the account disappears: otherwise the user would keep being
         // charged with no way to cancel from the app.
         stripeService.cancelSubscription(user);
+        // The activity history references the user (FK) and has no JPA cascade from
+        // User, so it must be removed first or MySQL rejects the delete.
+        readingLogRepository.deleteByUser(user);
         userRepository.delete(user);
     }
 
@@ -215,6 +222,8 @@ public class UserService {
         }
         // Stop billing before removing the account (see deleteOwnAccount).
         stripeService.cancelSubscription(user);
+        // Same FK cleanup as deleteOwnAccount.
+        readingLogRepository.deleteByUser(user);
         userRepository.delete(user);
     }
 

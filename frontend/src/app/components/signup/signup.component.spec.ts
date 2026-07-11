@@ -26,11 +26,13 @@ describe('SignupComponent', () => {
     loggedInSubject = new BehaviorSubject<boolean>(false);
     userServiceSpy = jasmine.createSpyObj('UserService', ['register']);
     loginServiceSpy = jasmine.createSpyObj('LoginService',
-      ['isLogged', 'reqIsLogged'],
+      ['isLogged', 'reqIsLogged', 'login'],
       { loggedIn$: loggedInSubject.asObservable() }
     );
     loginServiceSpy.isLogged.and.returnValue(false);
     loginServiceSpy.reqIsLogged.and.returnValue(of(null));
+    // Default: the post-signup auto-login succeeds (tests may override with throwError).
+    loginServiceSpy.login.and.returnValue(of({}));
 
     await TestBed.configureTestingModule({
       imports: [translocoTesting(), SignupComponent],
@@ -122,7 +124,7 @@ describe('SignupComponent', () => {
     );
   });
 
-  it('should navigate to /success after successful registration', () => {
+  it('should auto-login and land on home after successful registration', () => {
     const navigateSpy = spyOn(router, 'navigate').and.resolveTo(true);
     const mockUser: UserDTO = {
       id: 1, email: 'test@test.com', name: 'Test',
@@ -130,6 +132,26 @@ describe('SignupComponent', () => {
       password: 'pass123', newPassword: null
     };
     userServiceSpy.register.and.returnValue(of(mockUser));
+    loginServiceSpy.login.and.returnValue(of({}));
+
+    component.signupForm.setValue({
+      name: 'Test', email: 'test@test.com',
+      password: 'pass123', language: 'en', acceptTerms: true
+    });
+    component.submitSignup();
+
+    expect(loginServiceSpy.login).toHaveBeenCalledWith('test@test.com', 'pass123');
+    expect(navigateSpy).toHaveBeenCalledWith(['/']);
+  });
+
+  it('should fall back to a "log in now" notice if the auto-login fails', () => {
+    const navigateSpy = spyOn(router, 'navigate').and.resolveTo(true);
+    userServiceSpy.register.and.returnValue(of({
+      id: 1, email: 'test@test.com', name: 'Test',
+      language: 'en', collections: [], roles: ['USER'],
+      password: 'pass123', newPassword: null
+    } as UserDTO));
+    loginServiceSpy.login.and.returnValue(throwError(() => new Error('boom')));
 
     component.signupForm.setValue({
       name: 'Test', email: 'test@test.com',
