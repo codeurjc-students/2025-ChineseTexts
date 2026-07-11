@@ -44,6 +44,9 @@ export class ProfileComponent implements OnInit {
   /** Reading progress (streak, totals, weekly chart); null until loaded. */
   stats: Stats | null = null;
 
+  /** HSK level from the level test (kept per device in localStorage); null if untested. */
+  hskLevel: number | null = null;
+
   languages = [
     { value: 'en', label: 'English' },
     { value: 'es', label: 'Spanish' }
@@ -66,10 +69,30 @@ export class ProfileComponent implements OnInit {
         } else {
           this.user = user;
           this.loadStats();
+          this.loadHskLevel();
         }
       },
       error: () => this.localeNav.navigate(['/'])
     });
+  }
+
+  /** Recovers the level-test result from this device, if any. */
+  private loadHskLevel(): void {
+    try {
+      const saved = Number(localStorage.getItem('hskLevel'));
+      this.hskLevel = saved >= 1 && saved <= 6 ? saved : null;
+    } catch {
+      this.hskLevel = null; // SSR or private mode
+    }
+  }
+
+  goToLevelTest(): void {
+    this.localeNav.navigate(['/level-test']);
+  }
+
+  goToMyLevelReadings(): void {
+    if (this.hskLevel === null) return;
+    this.localeNav.navigate(['/texts', `HSK${this.hskLevel}`]);
   }
 
   /** Loads the progress card; failures just hide it (non-critical). */

@@ -172,11 +172,18 @@ body {
   &:hover { background: #f0b90b; }
 }
 
-.hero-test-link a {
+/* CTA secundario del hero: el test de nivel, con aspecto claramente pulsable */
+.btn-test {
+  background: transparent;
   color: #c0392b;
+  border: 2px solid #c0392b;
+  border-radius: 6px;
+  padding: 10px 24px;
+  font-size: 1.05rem;
   font-weight: 600;
-  text-decoration: none;
-  font-size: 1.02rem;
-  &:hover { text-decoration: underline; }
-  i { margin-right: 4px; }
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+
+  i { margin-right: 6px; }
+  &:hover { background: #c0392b; color: #fff; }
 }

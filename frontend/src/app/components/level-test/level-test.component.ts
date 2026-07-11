@@ -32,6 +32,9 @@ export class LevelTestComponent implements OnInit {
 
   phase: 'intro' | 'question' | 'result' = 'intro';
 
+  /** Last saved result (from a previous run on this device), shown on the intro. */
+  savedLevel: number | null = null;
+
   questionNumber = 0;           // 1-based while testing
   current: LevelQuestion | null = null;
   options: string[] = [];
@@ -53,10 +56,29 @@ export class LevelTestComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Refresh session state so the result screen shows the right CTA.
+    // Refresh session state so the result screen shows the right CTA, and recover a
+    // previous result so returning users (e.g. right after signing up) see their
+    // level without retaking the test.
     if (isPlatformBrowser(this.platformId)) {
       this.loginService.reqIsLogged().subscribe();
+      try {
+        const saved = Number(localStorage.getItem('hskLevel'));
+        if (saved >= 1 && saved <= 6) {
+          this.savedLevel = saved;
+          this.resultLevel = saved; // so resultRange reflects the saved result too
+        }
+      } catch { /* private mode */ }
     }
+  }
+
+  /** The saved result as a range, for anonymous visitors. */
+  get savedRange(): string {
+    return this.resultRange;
+  }
+
+  goToSavedReadings(): void {
+    if (this.savedLevel === null) return;
+    this.localeNav.navigate(['/texts', `HSK${this.savedLevel}`]);
   }
 
   get isLogged(): boolean {
