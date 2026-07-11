@@ -58,6 +58,13 @@ public class User {
     private int monthlyChatCount = 0;
     private LocalDate chatUsagePeriodStart;
 
+    // Racha de lectura (capa de hábito): días consecutivos con al menos una lectura.
+    // Se actualiza al registrar una lectura (ver ActivityService); lastReadingDay
+    // permite detectar si la racha sigue viva sin recorrer el historial.
+    private int currentStreak = 0;
+    private int bestStreak = 0;
+    private LocalDate lastReadingDay;
+
     // Prueba de consentimiento (RGPD): momento en que el usuario aceptó los términos
     // de uso al registrarse. Null en cuentas anteriores a esta funcionalidad.
     private LocalDateTime termsAcceptedAt;
@@ -248,6 +255,30 @@ public class User {
 
     public void setChatUsagePeriodStart(LocalDate chatUsagePeriodStart) {
         this.chatUsagePeriodStart = chatUsagePeriodStart;
+    }
+
+    public int getCurrentStreak() {
+        return currentStreak;
+    }
+
+    public void setCurrentStreak(int currentStreak) {
+        this.currentStreak = currentStreak;
+    }
+
+    public int getBestStreak() {
+        return bestStreak;
+    }
+
+    public void setBestStreak(int bestStreak) {
+        this.bestStreak = bestStreak;
+    }
+
+    public LocalDate getLastReadingDay() {
+        return lastReadingDay;
+    }
+
+    public void setLastReadingDay(LocalDate lastReadingDay) {
+        this.lastReadingDay = lastReadingDay;
     }
 
     public List<UserText> getUserTexts() {

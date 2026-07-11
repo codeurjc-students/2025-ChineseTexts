@@ -10,6 +10,7 @@ import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { LocalizeLinkPipe } from '../../i18n/localize-link.pipe';
 import { LocaleNavService } from '../../i18n/locale-nav.service';
 import { AuthUiService } from '../../services/auth-ui.service';
+import { ActivityService } from '../../services/activity.service';
 import { Lang, addLangPrefix, stripLangPrefix } from '../../i18n/locale.util';
 
 @Component({
@@ -32,12 +33,17 @@ export class HeaderComponent implements OnInit {
   /** Active UI language, for highlighting the correct flag. */
   lang$: Observable<string>;
 
+  /** Reading streak shown in the nav (null until loaded / when logged out). */
+  streak: number | null = null;
+  streakLitToday = false;
+
   constructor(
     public loginService: LoginService,
     private router: Router,
     private transloco: TranslocoService,
     private localeNav: LocaleNavService,
     private authUi: AuthUiService,
+    private activity: ActivityService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {
     this.isLoggedIn$ = this.loginService.loggedIn$;
@@ -64,6 +70,13 @@ export class HeaderComponent implements OnInit {
       });
       // A "Log in" action elsewhere (e.g. a toast) opens this header's login modal.
       this.authUi.openLogin$.subscribe(() => this.openLoginModal());
+      // Streak flame: load when the session is (or becomes) active, refresh after
+      // each recorded reading, and hide it on logout.
+      this.loginService.loggedIn$.subscribe(logged => {
+        if (logged) this.refreshStreak();
+        else { this.streak = null; this.streakLitToday = false; }
+      });
+      this.activity.statsChanged$.subscribe(() => this.refreshStreak());
       // Collapse the mobile navbar after navigating, so it doesn't stay open on top
       // of the new page (which, with scroll-to-top, would show only the menu).
       this.router.events
@@ -82,6 +95,14 @@ export class HeaderComponent implements OnInit {
     if (el && bs?.Modal) {
       bs.Modal.getOrCreateInstance(el).show();
     }
+  }
+
+  /** Loads the streak for the nav flame; failures just hide it (non-critical). */
+  private refreshStreak(): void {
+    this.activity.getStats().subscribe({
+      next: (s) => { this.streak = s.currentStreak; this.streakLitToday = s.readToday; },
+      error: () => { this.streak = null; }
+    });
   }
 
   /** Closes the expanded mobile navbar (only if it's open). */

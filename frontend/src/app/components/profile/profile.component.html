@@ -58,6 +58,46 @@
         </div>
       </div>
 
+      <!-- Reading progress -->
+      <div class="info-card" *ngIf="stats">
+        <h2 class="card-section-title">{{ 'profile.progress.title' | transloco }}</h2>
+
+        <div class="progress-stats">
+          <div class="progress-stat">
+            <div class="progress-stat-value streak-value" [class.streak-value--lit]="stats.readToday">
+              <i class="bi bi-fire"></i> {{ stats.currentStreak }}
+            </div>
+            <div class="progress-stat-label">{{ 'profile.progress.streak' | transloco }}</div>
+          </div>
+          <div class="progress-stat">
+            <div class="progress-stat-value">{{ stats.bestStreak }}</div>
+            <div class="progress-stat-label">{{ 'profile.progress.bestStreak' | transloco }}</div>
+          </div>
+          <div class="progress-stat">
+            <div class="progress-stat-value">{{ stats.textsRead }}</div>
+            <div class="progress-stat-label">{{ 'profile.progress.textsRead' | transloco }}</div>
+          </div>
+          <div class="progress-stat">
+            <div class="progress-stat-value">{{ stats.wordsSaved }}</div>
+            <div class="progress-stat-label">{{ 'profile.progress.wordsSaved' | transloco }}</div>
+          </div>
+        </div>
+
+        <p class="week-title">{{ 'profile.progress.thisWeek' | transloco }}</p>
+        <div class="week-chart">
+          <div class="week-day" *ngFor="let d of stats.week">
+            <div class="week-bar-track">
+              <div class="week-bar" [style.height.%]="barHeight(d.count)"></div>
+            </div>
+            <span class="week-day-label">{{ dayLabel(d.day) }}</span>
+          </div>
+        </div>
+
+        <p class="progress-hint" *ngIf="!stats.readToday">
+          <i class="bi bi-lightbulb"></i> {{ 'profile.progress.keepStreakHint' | transloco }}
+        </p>
+      </div>
+
       <div class="action-cards">
         <div class="action-card" (click)="openEditProfile()">
           <i class="bi bi-pencil-square"></i>

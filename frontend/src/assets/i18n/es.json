@@ -29,6 +29,7 @@
       "profile": "Perfil",
       "logout": "Cerrar sesión"
     },
+    "streakTitle": "Tu racha de lectura — lee un texto al día para mantenerla",
     "lang": {
       "spanish": "Español",
       "english": "Inglés"
@@ -511,6 +512,16 @@
       "premiumUntil": "hasta",
       "upgrade": "Hazte Premium",
       "managePlan": "Gestionar suscripción"
+    },
+    "progress": {
+      "title": "Tu progreso",
+      "streak": "Días de racha",
+      "bestStreak": "Mejor racha",
+      "textsRead": "Textos leídos",
+      "wordsSaved": "Palabras guardadas",
+      "thisWeek": "Esta semana",
+      "keepStreakHint": "¡Lee un texto hoy para mantener tu racha viva!",
+      "days": { "mon": "lun", "tue": "mar", "wed": "mié", "thu": "jue", "fri": "vie", "sat": "sáb", "sun": "dom" }
     },
     "actions": {
       "editProfile": {
