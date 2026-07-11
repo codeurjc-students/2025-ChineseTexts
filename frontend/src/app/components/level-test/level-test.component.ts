@@ -16,10 +16,10 @@ import {
  * staircase over the static question bank: right answers climb a level, misses drop
  * one, and the final estimate is the median of the converged tail. Fully client-side.
  *
- * Funnel: anonymous visitors get a RANGE ("around HSK2–HSK3") plus a sign-up CTA to
- * see the exact level and recommended readings; logged-in users get the exact level
- * and a direct link to their HSK reading list. The result is kept in localStorage so
- * returning users land on the right level.
+ * Funnel: anonymous visitors get their level as a RANGE ("HSK2–HSK4") plus a sign-up
+ * CTA that sells tracking their progress (streaks, saved words, flashcards);
+ * logged-in users get the exact level and a direct link to their HSK reading list.
+ * Nothing is persisted — retaking the test is always free and instant.
  */
 @Component({
   selector: 'app-level-test',
