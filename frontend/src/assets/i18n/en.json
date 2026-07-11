@@ -153,7 +153,8 @@
     "resultTextAnon": "Create a free account to see your exact level and get readings picked for it — plus flashcards, audio and the AI tutor.",
     "signUpCta": "Create free account — see my exact level",
     "browseInstead": "Or browse all texts without an account",
-    "retry": "Take the test again"
+    "retry": "Take the test again",
+    "savedTitle": "Your last result"
   },
   "footer": {
     "copyright": "© 2026 ChineseReads. All rights reserved",
@@ -540,7 +541,17 @@
       "wordsSaved": "Words saved",
       "thisWeek": "This week",
       "keepStreakHint": "Read one text today to keep your streak alive!",
-      "days": { "mon": "mon", "tue": "tue", "wed": "wed", "thu": "thu", "fri": "fri", "sat": "sat", "sun": "sun" }
+      "days": {
+        "mon": "mon",
+        "tue": "tue",
+        "wed": "wed",
+        "thu": "thu",
+        "fri": "fri",
+        "sat": "sat",
+        "sun": "sun"
+      },
+      "level": "Your level",
+      "takeTest": "Don't know your level yet? Take the free 3-minute test"
     },
     "actions": {
       "editProfile": {

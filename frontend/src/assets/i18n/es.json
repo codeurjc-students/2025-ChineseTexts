@@ -153,7 +153,8 @@
     "resultTextAnon": "Crea una cuenta gratis para ver tu nivel exacto y recibir lecturas a tu medida — además de flashcards, audio y el tutor IA.",
     "signUpCta": "Crear cuenta gratis — ver mi nivel exacto",
     "browseInstead": "O explora todos los textos sin cuenta",
-    "retry": "Repetir el test"
+    "retry": "Repetir el test",
+    "savedTitle": "Tu último resultado"
   },
   "footer": {
     "copyright": "© 2026 ChineseReads. Todos los derechos reservados",
@@ -540,7 +541,17 @@
       "wordsSaved": "Palabras guardadas",
       "thisWeek": "Esta semana",
       "keepStreakHint": "¡Lee un texto hoy para mantener tu racha viva!",
-      "days": { "mon": "lun", "tue": "mar", "wed": "mié", "thu": "jue", "fri": "vie", "sat": "sáb", "sun": "dom" }
+      "days": {
+        "mon": "lun",
+        "tue": "mar",
+        "wed": "mié",
+        "thu": "jue",
+        "fri": "vie",
+        "sat": "sáb",
+        "sun": "dom"
+      },
+      "level": "Tu nivel",
+      "takeTest": "¿Aún no sabes tu nivel? Haz el test gratis de 3 minutos"
     },
     "actions": {
       "editProfile": {

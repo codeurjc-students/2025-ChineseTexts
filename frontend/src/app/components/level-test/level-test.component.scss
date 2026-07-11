@@ -135,3 +135,38 @@
   font-size: 0.9rem;
   &:hover { color: #c0392b; }
 }
+
+/* Resultado previo recordado (dispositivo) */
+.lt-saved {
+  background: #f1faf4;
+  border: 1px solid #bfe8cd;
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin: 18px auto;
+  max-width: 420px;
+}
+.lt-saved-label {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #1e7e46;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+.lt-saved-level {
+  font-size: 1.9rem;
+  font-weight: 700;
+  color: #c0392b;
+  margin: 2px 0 8px;
+}
+.lt-saved-cta {
+  background: #27ae60;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 18px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  &:hover { background: #2ecc71; }
+}

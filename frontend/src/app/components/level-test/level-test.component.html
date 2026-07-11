@@ -4,12 +4,28 @@
   <div *ngIf="phase === 'intro'" class="lt-card text-center">
     <h1 class="lt-title">{{ 'levelTest.title' | transloco }}</h1>
     <p class="lt-subtitle">{{ 'levelTest.subtitle' | transloco }}</p>
+
+    <!-- Previous result (this device): exact for logged-in users, range otherwise -->
+    <div *ngIf="savedLevel !== null" class="lt-saved">
+      <p class="lt-saved-label">{{ 'levelTest.savedTitle' | transloco }}</p>
+      <div class="lt-saved-level" *ngIf="isLogged">HSK{{ savedLevel }}</div>
+      <div class="lt-saved-level" *ngIf="!isLogged">{{ savedRange }}</div>
+      <button *ngIf="isLogged" class="lt-saved-cta" (click)="goToSavedReadings()">
+        {{ 'levelTest.goRead' | transloco }}
+      </button>
+      <button *ngIf="!isLogged" class="lt-saved-cta" (click)="signUp()">
+        {{ 'levelTest.signUpCta' | transloco }}
+      </button>
+    </div>
+
     <ul class="lt-facts">
       <li><i class="bi bi-clock"></i> {{ 'levelTest.fact1' | transloco }}</li>
       <li><i class="bi bi-list-check"></i> {{ 'levelTest.fact2' | transloco }}</li>
       <li><i class="bi bi-gift"></i> {{ 'levelTest.fact3' | transloco }}</li>
     </ul>
-    <button class="btn-start" (click)="start()">{{ 'levelTest.start' | transloco }}</button>
+    <button class="btn-start" (click)="start()">
+      {{ (savedLevel !== null ? 'levelTest.retry' : 'levelTest.start') | transloco }}
+    </button>
     <p class="lt-note">{{ 'levelTest.noAccountNeeded' | transloco }}</p>
   </div>
 
