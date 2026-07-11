@@ -234,4 +234,21 @@
     <priority>0.7</priority>
   </url>
 
+  <url>
+    <loc>https://chinesereads.com/level-test</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://chinesereads.com/level-test"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://chinesereads.com/es/level-test"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chinesereads.com/level-test"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://chinesereads.com/es/level-test</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://chinesereads.com/level-test"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://chinesereads.com/es/level-test"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chinesereads.com/level-test"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
 </urlset>

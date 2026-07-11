@@ -17,6 +17,7 @@ import { MyToolsComponent } from './components/my-tools/my-tools.component';
 import { MyTextReaderComponent } from './components/my-text-reader/my-text-reader.component';
 import { PremiumComponent } from './components/premium/premium.component';
 import { PremiumSuccessComponent } from './components/premium-success/premium-success.component';
+import { LevelTestComponent } from './components/level-test/level-test.component';
 
 /**
  * The application's routes, defined once. English is served from the root and
@@ -43,6 +44,7 @@ const appRoutes: Routes = [
   { path: 'founder', component: FounderComponent },
   { path: 'premium', component: PremiumComponent },
   { path: 'premium/success', component: PremiumSuccessComponent },
+  { path: 'level-test', component: LevelTestComponent },
 ];
 
 export const routes: Routes = [

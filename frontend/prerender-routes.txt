@@ -20,3 +20,5 @@
 /es/texts/HSK4
 /es/texts/HSK5
 /es/texts/HSK6
+/level-test
+/es/level-test

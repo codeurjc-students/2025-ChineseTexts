@@ -10,6 +10,12 @@
     <button class="btn-main mt-3" [routerLink]="'/texts' | localizeLink">
       {{ 'home.hero.cta' | transloco }}
     </button>
+
+    <p class="hero-test-link mt-3">
+      <a [routerLink]="'/level-test' | localizeLink">
+        <i class="bi bi-clipboard-check"></i> {{ 'home.hero.levelTestLink' | transloco }}
+      </a>
+    </p>
   </header>
 
   <!-- HOW IT WORKS SECTION -->

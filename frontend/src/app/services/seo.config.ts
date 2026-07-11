@@ -137,6 +137,24 @@ const STATIC_SEO: Record<string, LocalizedSeo> = {
     }
   },
 
+  // Free HSK level test — public onboarding + SEO magnet, indexable.
+  '/level-test': {
+    en: {
+      title: 'Free Chinese Level Test (HSK 1–6) — Find Your Level in 3 Minutes',
+      description:
+        'Take a free, 12-question adaptive Chinese level test and find out your HSK level in about ' +
+        '3 minutes — no sign-up needed. Then start reading graded Chinese texts at exactly your level.',
+      path: '/level-test'
+    },
+    es: {
+      title: 'Test de nivel de chino gratis (HSK 1–6) — Descubre tu nivel en 3 minutos',
+      description:
+        'Haz un test de nivel de chino gratuito y adaptativo de 12 preguntas y descubre tu nivel HSK en ' +
+        'unos 3 minutos, sin registrarte. Después empieza a leer textos graduados en chino de tu nivel exacto.',
+      path: '/level-test'
+    }
+  },
+
   // Authenticated / transactional pages — kept out of the search index.
   '/premium/success': localizedPrivate('Welcome to Premium', 'Your ChineseReads Premium subscription is active.', 'Bienvenido a Premium', 'Tu suscripción Premium de ChineseReads está activa.', '/premium/success'),
   '/collections': localizedPrivate('My Collections', 'Your saved Chinese vocabulary collections and flashcards.', 'Mis colecciones', 'Tus colecciones de vocabulario chino y tarjetas guardadas.', '/collections'),
