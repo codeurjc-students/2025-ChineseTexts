@@ -1,0 +1,64 @@
+<div class="container my-5 level-test">
+
+  <!-- INTRO -->
+  <div *ngIf="phase === 'intro'" class="lt-card text-center">
+    <h1 class="lt-title">{{ 'levelTest.title' | transloco }}</h1>
+    <p class="lt-subtitle">{{ 'levelTest.subtitle' | transloco }}</p>
+    <ul class="lt-facts">
+      <li><i class="bi bi-clock"></i> {{ 'levelTest.fact1' | transloco }}</li>
+      <li><i class="bi bi-list-check"></i> {{ 'levelTest.fact2' | transloco }}</li>
+      <li><i class="bi bi-gift"></i> {{ 'levelTest.fact3' | transloco }}</li>
+    </ul>
+    <button class="btn-start" (click)="start()">{{ 'levelTest.start' | transloco }}</button>
+    <p class="lt-note">{{ 'levelTest.noAccountNeeded' | transloco }}</p>
+  </div>
+
+  <!-- QUESTION -->
+  <div *ngIf="phase === 'question' && current" class="lt-card">
+    <div class="lt-progress">
+      <div class="lt-progress-bar" [style.width.%]="progressPercent"></div>
+    </div>
+    <p class="lt-counter">{{ questionNumber }} / {{ totalQuestions }}</p>
+
+    <p class="lt-question-label">{{ 'levelTest.whatMeans' | transloco }}</p>
+    <div class="lt-chinese">{{ current.chinese }}</div>
+    <div class="lt-pinyin">{{ current.pinyin }}</div>
+
+    <div class="lt-options">
+      <button *ngFor="let o of options" class="lt-option"
+        [class.lt-option--correct]="answered && o === correctOf(current)"
+        [class.lt-option--wrong]="answered && selected === o && o !== correctOf(current)"
+        [disabled]="answered"
+        (click)="answer(o)">{{ o }}</button>
+    </div>
+  </div>
+
+  <!-- RESULT -->
+  <div *ngIf="phase === 'result'" class="lt-card text-center">
+    <i class="bi bi-award lt-award"></i>
+
+    <!-- Logged in: exact level + straight to their readings -->
+    <ng-container *ngIf="isLogged">
+      <h2 class="lt-result-title">{{ 'levelTest.resultTitle' | transloco }}</h2>
+      <div class="lt-level">HSK{{ resultLevel }}</div>
+      <p class="lt-result-text">{{ 'levelTest.resultText' | transloco }}</p>
+      <button class="btn-start" (click)="goToReadings()">{{ 'levelTest.goRead' | transloco }}</button>
+    </ng-container>
+
+    <!-- Anonymous: range + sign-up funnel for the exact level -->
+    <ng-container *ngIf="!isLogged">
+      <h2 class="lt-result-title">{{ 'levelTest.resultTitleAnon' | transloco }}</h2>
+      <div class="lt-level">{{ resultRange }}</div>
+      <p class="lt-result-text">{{ 'levelTest.resultTextAnon' | transloco }}</p>
+      <button class="btn-start" (click)="signUp()">{{ 'levelTest.signUpCta' | transloco }}</button>
+      <p class="lt-note">
+        <a [routerLink]="'/texts' | localizeLink">{{ 'levelTest.browseInstead' | transloco }}</a>
+      </p>
+    </ng-container>
+
+    <button class="lt-retry" (click)="start()">
+      <i class="bi bi-arrow-repeat"></i> {{ 'levelTest.retry' | transloco }}
+    </button>
+  </div>
+
+</div>

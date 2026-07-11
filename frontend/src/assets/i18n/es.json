@@ -49,7 +49,8 @@
     "hero": {
       "title": "Aprende chino leyendo",
       "subtitle": "Mejora tu vocabulario y tu comprensión del chino con relatos cortos adaptados a tu nivel HSK. Disfruta de traducciones instantáneas gratuitas y desbloquea herramientas de aprendizaje avanzadas al registrarte.",
-      "cta": "Empieza a leer gratis"
+      "cta": "Empieza a leer gratis",
+      "levelTestLink": "¿No sabes tu nivel? Haz el test gratis de 3 minutos"
     },
     "donation": {
       "bottom": "ChineseReads se desarrolla de forma independiente. Si quieres seguirlo de cerca y ayudarlo a crecer, encuéntranos en Instagram:",
@@ -134,6 +135,24 @@
         "yearlyNote": "o ahorra un 30 % con el plan anual"
       }
     }
+  },
+  "levelTest": {
+    "title": "Test de nivel de chino gratis",
+    "subtitle": "Responde 12 preguntas rápidas y descubre tu nivel HSK — y empieza a leer textos hechos exactamente para ese nivel.",
+    "fact1": "Dura unos 3 minutos",
+    "fact2": "12 preguntas que se adaptan a tus respuestas",
+    "fact3": "Gratis y sin necesidad de cuenta",
+    "start": "Empezar el test",
+    "noAccountNeeded": "No hace falta registrarse para hacer el test.",
+    "whatMeans": "¿Qué significa esta palabra?",
+    "resultTitle": "Tu nivel es",
+    "resultText": "Hemos elegido la lista de lecturas que corresponde a tu nivel. Cada texto incluye pinyin, traducciones y audio.",
+    "goRead": "Leer textos de mi nivel",
+    "resultTitleAnon": "Estás alrededor de",
+    "resultTextAnon": "Crea una cuenta gratis para ver tu nivel exacto y recibir lecturas a tu medida — además de flashcards, audio y el tutor IA.",
+    "signUpCta": "Crear cuenta gratis — ver mi nivel exacto",
+    "browseInstead": "O explora todos los textos sin cuenta",
+    "retry": "Repetir el test"
   },
   "footer": {
     "copyright": "© 2026 ChineseReads. Todos los derechos reservados",
@@ -1061,8 +1080,20 @@
       "manage": "Gestionar suscripción"
     },
     "plans": {
-      "monthly": { "name": "Mensual", "price": "3,99 €", "period": "/mes", "cta": "Hazte Premium" },
-      "yearly": { "name": "Anual", "price": "33,50 €", "period": "/año", "equivalent": "≈ 2,79 €/mes · ahorra 30 %", "cta": "Hazte Premium", "badge": "Mejor valor" }
+      "monthly": {
+        "name": "Mensual",
+        "price": "3,99 €",
+        "period": "/mes",
+        "cta": "Hazte Premium"
+      },
+      "yearly": {
+        "name": "Anual",
+        "price": "33,50 €",
+        "period": "/año",
+        "equivalent": "≈ 2,79 €/mes · ahorra 30 %",
+        "cta": "Hazte Premium",
+        "badge": "Mejor valor"
+      }
     },
     "benefits": {
       "title": "Qué incluye",
