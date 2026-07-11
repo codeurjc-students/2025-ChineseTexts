@@ -22,6 +22,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.chinesereads.backend.Model.User;
+import com.chinesereads.backend.Repository.ReadingLogRepository;
 import com.chinesereads.backend.Repository.UserRepository;
 import com.chinesereads.backend.Repository.UserTextRepository;
 import com.chinesereads.backend.Service.StripeService;
@@ -39,6 +40,7 @@ public class UserServiceTest {
     private UserMapper userMapper;
     private PasswordEncoder passwordEncoder;
     private StripeService stripeService;
+    private ReadingLogRepository readingLogRepository;
 
     @BeforeEach
     public void setUp() {
@@ -47,6 +49,7 @@ public class UserServiceTest {
         userMapper = new UserMapperImpl();
         passwordEncoder = new BCryptPasswordEncoder();
         stripeService = mock(StripeService.class);
+        readingLogRepository = mock(ReadingLogRepository.class);
         userService = new UserService();
 
         // Inyectamos dependencias manualmente via reflection
@@ -55,6 +58,7 @@ public class UserServiceTest {
         injectField(userService, "userMapper", userMapper);
         injectField(userService, "passwordEncoder", passwordEncoder);
         injectField(userService, "stripeService", stripeService);
+        injectField(userService, "readingLogRepository", readingLogRepository);
     }
 
     private void injectField(Object target, String fieldName, Object value) {
@@ -156,6 +160,7 @@ public class UserServiceTest {
 
         userService.deleteUser(99L, "admin@test.com");
 
+        verify(readingLogRepository, times(1)).deleteByUser(junk);
         verify(userRepository, times(1)).delete(junk);
     }
 
@@ -193,6 +198,9 @@ public class UserServiceTest {
         userService.deleteOwnAccount("r@r.com");
 
         verify(stripeService, times(1)).cancelSubscription(user);
+        // The activity history must be removed BEFORE the user row (FK constraint):
+        // a user with reading logs could otherwise never be deleted.
+        verify(readingLogRepository, times(1)).deleteByUser(user);
         verify(userRepository, times(1)).delete(user);
     }
 

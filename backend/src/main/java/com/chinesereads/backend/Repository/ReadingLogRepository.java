@@ -16,4 +16,7 @@ public interface ReadingLogRepository extends JpaRepository<ReadingLog, Long> {
 
     /** Logs from `from` (inclusive) onwards, for the weekly activity chart. */
     List<ReadingLog> findByUserAndDayGreaterThanEqual(User user, LocalDate from);
+
+    /** Removes a user's activity history; MUST run before deleting the user (FK). */
+    void deleteByUser(User user);
 }

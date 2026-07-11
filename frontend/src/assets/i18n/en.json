@@ -268,7 +268,7 @@
     },
     "submit": "Create My Account",
     "back": "Back",
-    "successMessage": "Your account has been created successfully!",
+    "successMessage": "Your account has been created! Log in with your credentials to get started.",
     "errorGeneric": "An unexpected error occurred.",
     "errors": {
       "emailInUse": "This email is already registered. Try logging in instead.",
