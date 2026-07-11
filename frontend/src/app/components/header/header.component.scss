@@ -101,3 +101,14 @@
 .premium-link:hover {
   color: #a9861a !important;
 }
+
+/* Racha de lectura: gris hasta leer hoy, encendida (naranja) después */
+.streak-link {
+  color: #9aa0a6 !important;
+}
+.streak-link--lit {
+  color: #e8590c !important;
+}
+.streak-link:hover {
+  color: #e8590c !important;
+}

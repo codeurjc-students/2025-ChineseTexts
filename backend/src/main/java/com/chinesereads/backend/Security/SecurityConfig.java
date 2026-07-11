@@ -110,6 +110,9 @@ public class SecurityConfig {
                 // AI contextual word chat calls the paid AI service, so it is
                 // registered-only (per-user quota in ChatUsageService).
                 .requestMatchers("/api/chat/**").hasAnyRole("USER", "ADMIN")
+
+                // Reading activity (streak + progress stats) belongs to an account.
+                .requestMatchers("/api/activity/**").hasAnyRole("USER", "ADMIN")
                 .anyRequest().permitAll()
             );
 

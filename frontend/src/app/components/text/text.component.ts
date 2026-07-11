@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TextsService, TextItem } from '../../services/texts.service';
@@ -13,6 +13,7 @@ import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { Lang } from '../../i18n/locale.util';
 import { LocaleNavService } from '../../i18n/locale-nav.service';
 import { AuthUiService } from '../../services/auth-ui.service';
+import { ActivityService } from '../../services/activity.service';
 
 @Component({
   selector: 'app-text',
@@ -75,7 +76,8 @@ export class TextComponent implements OnInit {
     private seo: SeoService,
     private transloco: TranslocoService,
     private localeNav: LocaleNavService,
-    private authUi: AuthUiService
+    private authUi: AuthUiService,
+    private activity: ActivityService
   ) {}
 
   get isAdmin(): boolean {
@@ -244,6 +246,11 @@ export class TextComponent implements OnInit {
       next: (text) => {
         this.text = text;
         this.updateSeo();
+        // Habit layer: log the reading (browser-only, logged-in only; idempotent
+        // per day on the backend, so refreshes don't inflate the stats).
+        if (isPlatformBrowser(this.platformId) && this.loginService.isLogged()) {
+          this.activity.recordReading(`public:${text.id}`);
+        }
       },
       error: (err) => console.error('Error loading text', err)
     });

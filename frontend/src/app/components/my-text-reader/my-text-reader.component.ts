@@ -10,6 +10,7 @@ import { SpeakButtonComponent } from '../speak-button/speak-button.component';
 import { WordChatComponent } from '../word-chat/word-chat.component';
 import { LocaleNavService } from '../../i18n/locale-nav.service';
 import { AuthUiService } from '../../services/auth-ui.service';
+import { ActivityService } from '../../services/activity.service';
 
 /**
  * Read-only reader for one of the user's PRIVATE texts. Mirrors the public text
@@ -61,7 +62,8 @@ export class MyTextReaderComponent implements OnInit {
     private router: Router,
     private localeNav: LocaleNavService,
     private transloco: TranslocoService,
-    private authUi: AuthUiService
+    private authUi: AuthUiService,
+    private activity: ActivityService
   ) {}
 
   /** Full translation in the active UI language (falls back to the other language). */
@@ -118,6 +120,8 @@ export class MyTextReaderComponent implements OnInit {
     this.myTexts.get(id).subscribe({
       next: (reader) => {
         this.reader = reader;
+        // Habit layer: private readers count toward the streak too (idempotent/day).
+        this.activity.recordReading(`own:${id}`);
         this.wordsArray = reader.words;
         this.originalText = reader.words.map(w => w.chinese);
         this.translatedEnglishText = reader.words.map(w => w.english);

@@ -7,6 +7,7 @@ import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { LoginService } from '../../services/login.service';
 import { UserService, UserDTO } from '../../services/users.service';
 import { LocaleNavService } from '../../i18n/locale-nav.service';
+import { ActivityService, Stats } from '../../services/activity.service';
 
 type ProfileSection = 'view' | 'editProfile' | 'editPassword' | 'deleteAccount';
 
@@ -40,6 +41,9 @@ export class ProfileComponent implements OnInit {
   deleteStatus: 'idle' | 'deleting' | 'error' = 'idle';
   deleteError = '';
 
+  /** Reading progress (streak, totals, weekly chart); null until loaded. */
+  stats: Stats | null = null;
+
   languages = [
     { value: 'en', label: 'English' },
     { value: 'es', label: 'Spanish' }
@@ -50,7 +54,8 @@ export class ProfileComponent implements OnInit {
     private userService: UserService,
     private router: Router,
     private transloco: TranslocoService,
-    private localeNav: LocaleNavService
+    private localeNav: LocaleNavService,
+    private activity: ActivityService
   ) {}
 
   ngOnInit(): void {
@@ -60,10 +65,33 @@ export class ProfileComponent implements OnInit {
           this.localeNav.navigate(['/']);
         } else {
           this.user = user;
+          this.loadStats();
         }
       },
       error: () => this.localeNav.navigate(['/'])
     });
+  }
+
+  /** Loads the progress card; failures just hide it (non-critical). */
+  private loadStats(): void {
+    this.activity.getStats().subscribe({
+      next: (s) => this.stats = s,
+      error: () => this.stats = null
+    });
+  }
+
+  /** Bar height (%) for the weekly chart, scaled to the busiest day. */
+  barHeight(count: number): number {
+    if (!this.stats || count === 0) return 0;
+    const max = Math.max(...this.stats.week.map(d => d.count), 1);
+    return Math.round((count / max) * 100);
+  }
+
+  /** Localized short weekday label ("mon"/"lun") for a chart day. */
+  dayLabel(day: string): string {
+    const idx = new Date(day + 'T00:00:00').getDay(); // 0 = Sunday
+    const keys = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+    return this.transloco.translate('profile.progress.days.' + keys[idx]);
   }
 
   get languageLabel(): string {

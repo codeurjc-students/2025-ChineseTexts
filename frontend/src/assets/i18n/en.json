@@ -29,6 +29,7 @@
       "profile": "Profile",
       "logout": "Logout"
     },
+    "streakTitle": "Your reading streak — read one text a day to keep it going",
     "lang": {
       "spanish": "Español",
       "english": "English"
@@ -511,6 +512,16 @@
       "premiumUntil": "until",
       "upgrade": "Upgrade to Premium",
       "managePlan": "Manage subscription"
+    },
+    "progress": {
+      "title": "Your progress",
+      "streak": "Day streak",
+      "bestStreak": "Best streak",
+      "textsRead": "Texts read",
+      "wordsSaved": "Words saved",
+      "thisWeek": "This week",
+      "keepStreakHint": "Read one text today to keep your streak alive!",
+      "days": { "mon": "mon", "tue": "tue", "wed": "wed", "thu": "thu", "fri": "fri", "sat": "sat", "sun": "sun" }
     },
     "actions": {
       "editProfile": {
