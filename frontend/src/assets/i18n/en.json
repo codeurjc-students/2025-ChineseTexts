@@ -51,7 +51,7 @@
       "title": "Learn Chinese Through Reading",
       "subtitle": "Improve your Chinese vocabulary and comprehension with short stories adapted to your HSK level. Enjoy free instant translations and unlock advanced learning tools by registering.",
       "cta": "Start Reading for Free",
-      "levelTestLink": "Not sure of your level? Take the free 3-minute test"
+      "levelTestLink": "Take the free level test (3 min)"
     },
     "donation": {
       "bottom": "ChineseReads is developed independently. If you'd like to follow along and help it grow, find us on Instagram:",
@@ -149,12 +149,11 @@
     "resultTitle": "Your level is",
     "resultText": "We've picked the reading list that matches your level. Every text comes with pinyin, translations and audio.",
     "goRead": "Read texts at my level",
-    "resultTitleAnon": "You're around",
-    "resultTextAnon": "Create a free account to see your exact level and get readings picked for it — plus flashcards, audio and the AI tutor.",
-    "signUpCta": "Create free account — see my exact level",
+    "resultTitleAnon": "Your level is",
+    "resultTextAnon": "Create a free account to track your progress — reading streaks, saved words and flashcards — and keep improving your level.",
+    "signUpCta": "Create free account — track my progress",
     "browseInstead": "Or browse all texts without an account",
-    "retry": "Take the test again",
-    "savedTitle": "Your last result"
+    "retry": "Take the test again"
   },
   "footer": {
     "copyright": "© 2026 ChineseReads. All rights reserved",
@@ -549,9 +548,7 @@
         "fri": "fri",
         "sat": "sat",
         "sun": "sun"
-      },
-      "level": "Your level",
-      "takeTest": "Don't know your level yet? Take the free 3-minute test"
+      }
     },
     "actions": {
       "editProfile": {

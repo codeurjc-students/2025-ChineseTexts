@@ -7,11 +7,10 @@
       {{ 'home.hero.subtitle' | transloco }}
     </p>
 
-    <button class="btn-main mt-3" [routerLink]="'/texts' | localizeLink">
-      {{ 'home.hero.cta' | transloco }}
-    </button>
-
-    <div class="mt-3">
+    <div class="hero-ctas mt-3">
+      <button class="btn-main" [routerLink]="'/texts' | localizeLink">
+        {{ 'home.hero.cta' | transloco }}
+      </button>
       <button class="btn-test" [routerLink]="'/level-test' | localizeLink">
         <i class="bi bi-clipboard-check"></i> {{ 'home.hero.levelTestLink' | transloco }}
       </button>
