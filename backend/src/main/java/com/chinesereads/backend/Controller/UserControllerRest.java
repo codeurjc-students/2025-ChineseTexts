@@ -66,12 +66,20 @@ public class UserControllerRest {
         // GDPR: consent is enforced HERE, not just by the client checkbox. A stale cached
         // page (or any direct API call) that omits it is rejected, so we never create an
         // account — nor record a false proof of consent — without genuine acceptance.
-        if (!userDTO.termsAccepted()) {
+        if (!Boolean.TRUE.equals(userDTO.termsAccepted())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(Map.of("code", "TERMS_NOT_ACCEPTED", "message", "You must accept the terms of use"));
         }
 
-        UserDTO newUser = userService.save(userDTO);
+        // Security: public signups ALWAYS get the USER role, whatever the request says.
+        // Honoring client-sent roles would let a direct API call self-register as ADMIN
+        // (or with no role at all, locking the account out of every authenticated
+        // endpoint). Internal callers (DatabaseInitializer, tests) keep using
+        // userService.save() directly, which honors the DTO's roles.
+        UserDTO sanitized = new UserDTO(null, email, name, userDTO.language(),
+                userDTO.collections(), List.of("USER"), password, null,
+                userDTO.termsAccepted(), null, userDTO.emailConsent());
+        UserDTO newUser = userService.save(sanitized);
         if (newUser == null) {
             // 409 Conflict: an email-already-registered clash. The distinct STATUS lets the
             // client show the specific localized message even in environments where the

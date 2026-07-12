@@ -13,8 +13,9 @@ public record UserDTO (
     String password,
     String newPassword,
     // GDPR: whether the user actively accepted the terms of use on signup. Sent by the
-    // client and validated server-side. Defaults to false for callers that predate it.
-    boolean termsAccepted,
+    // client and validated server-side. Nullable on purpose: Jackson 3 rejects bodies
+    // that omit a primitive field, and requests like the profile update never send it.
+    Boolean termsAccepted,
     // Read-only: when the PREMIUM subscription expires (null = free plan). Surfaced on
     // /api/users/me so the client can show the user's plan; never set from the client.
     LocalDateTime premiumUntil,

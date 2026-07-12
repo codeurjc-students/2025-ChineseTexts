@@ -9,6 +9,8 @@ public record FounderItemDTO(
     String description,
     String linkUrl,
     String linkLabel,
-    int displayOrder,
-    boolean hasLogo
+    // Wrapper on purpose: Jackson 3 rejects request bodies that omit a primitive
+    // field, and this DTO also arrives as a (possibly partial) @RequestBody payload.
+    Integer displayOrder,
+    Boolean hasLogo
 ) {}
