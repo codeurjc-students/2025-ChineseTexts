@@ -11,6 +11,7 @@ import { LocalizeLinkPipe } from '../../i18n/localize-link.pipe';
 import { LocaleNavService } from '../../i18n/locale-nav.service';
 import { AuthUiService } from '../../services/auth-ui.service';
 import { ActivityService } from '../../services/activity.service';
+import { CollectionsService } from '../../services/collections.service';
 import { Lang, addLangPrefix, stripLangPrefix } from '../../i18n/locale.util';
 
 @Component({
@@ -37,6 +38,9 @@ export class HeaderComponent implements OnInit {
   streak: number | null = null;
   streakLitToday = false;
 
+  /** SRS cards due today, for the nav badge (0 hides it). */
+  dueCount = 0;
+
   constructor(
     public loginService: LoginService,
     private router: Router,
@@ -44,6 +48,7 @@ export class HeaderComponent implements OnInit {
     private localeNav: LocaleNavService,
     private authUi: AuthUiService,
     private activity: ActivityService,
+    private collectionsService: CollectionsService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {
     this.isLoggedIn$ = this.loginService.loggedIn$;
@@ -73,10 +78,13 @@ export class HeaderComponent implements OnInit {
       // Streak flame: load when the session is (or becomes) active, refresh after
       // each recorded reading, and hide it on logout.
       this.loginService.loggedIn$.subscribe(logged => {
-        if (logged) this.refreshStreak();
-        else { this.streak = null; this.streakLitToday = false; }
+        if (logged) { this.refreshStreak(); this.refreshDueCount(); }
+        else { this.streak = null; this.streakLitToday = false; this.dueCount = 0; }
       });
       this.activity.statsChanged$.subscribe(() => this.refreshStreak());
+      // Review badge: refresh after each review session (adding cards elsewhere
+      // is picked up on the next login/navigation, which is enough for a badge).
+      this.collectionsService.reviewsChanged$.subscribe(() => this.refreshDueCount());
       // Collapse the mobile navbar after navigating, so it doesn't stay open on top
       // of the new page (which, with scroll-to-top, would show only the menu).
       this.router.events
@@ -102,6 +110,14 @@ export class HeaderComponent implements OnInit {
     this.activity.getStats().subscribe({
       next: (s) => { this.streak = s.currentStreak; this.streakLitToday = s.readToday; },
       error: () => { this.streak = null; }
+    });
+  }
+
+  /** Loads the due-cards badge; failures just hide it (non-critical). */
+  private refreshDueCount(): void {
+    this.collectionsService.getDueCount().subscribe({
+      next: (r) => this.dueCount = r.count,
+      error: () => this.dueCount = 0
     });
   }
 

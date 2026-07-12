@@ -1,5 +1,7 @@
 package com.chinesereads.backend.Model;
 
+import java.time.LocalDate;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -10,7 +12,7 @@ import jakarta.persistence.ManyToOne;
 
 @Entity
 public class Flashcard {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -27,6 +29,15 @@ public class Flashcard {
     @ManyToOne
     @JoinColumn(name = "collection_id")
     private Collection collection;
+
+    // ——— SRS (SM-2) ——— Wrapper types on purpose: cards created before this feature
+    // hold NULL in these columns (ddl-auto=update only adds columns), and the service
+    // treats NULL as "brand-new card" (0 reps, ease 2.5, due immediately). Primitives
+    // would crash on load for those legacy rows.
+    private Integer srsRepetitions;
+    private Double srsEase;
+    private Integer srsIntervalDays;
+    private LocalDate srsDueDate;
 
     public Flashcard() {
     }
@@ -73,5 +84,37 @@ public class Flashcard {
 
     public void setCollection(Collection collection){
         this.collection = collection;
+    }
+
+    public Integer getSrsRepetitions() {
+        return srsRepetitions;
+    }
+
+    public void setSrsRepetitions(Integer srsRepetitions) {
+        this.srsRepetitions = srsRepetitions;
+    }
+
+    public Double getSrsEase() {
+        return srsEase;
+    }
+
+    public void setSrsEase(Double srsEase) {
+        this.srsEase = srsEase;
+    }
+
+    public Integer getSrsIntervalDays() {
+        return srsIntervalDays;
+    }
+
+    public void setSrsIntervalDays(Integer srsIntervalDays) {
+        this.srsIntervalDays = srsIntervalDays;
+    }
+
+    public LocalDate getSrsDueDate() {
+        return srsDueDate;
+    }
+
+    public void setSrsDueDate(LocalDate srsDueDate) {
+        this.srsDueDate = srsDueDate;
     }
 }

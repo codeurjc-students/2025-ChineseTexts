@@ -30,6 +30,7 @@
       "logout": "Cerrar sesión"
     },
     "streakTitle": "Tu racha de lectura — lee un texto al día para mantenerla",
+    "reviewTitle": "Tarjetas para repasar hoy — la repetición espaciada las fija en tu memoria a largo plazo",
     "lang": {
       "spanish": "Español",
       "english": "Inglés"
@@ -646,6 +647,18 @@
       "restart": "Reiniciar",
       "dontKnow": "No lo sé",
       "gotIt": "Lo sé"
+    },
+    "review": {
+      "banner": "Tienes {{count}} tarjetas para repasar hoy",
+      "bannerOne": "Tienes 1 tarjeta para repasar hoy",
+      "start": "Repasar ahora",
+      "badge": "Repaso",
+      "again": "Otra vez",
+      "hard": "Difícil",
+      "good": "Bien",
+      "easy": "Fácil",
+      "done": "¡Repaso completado!",
+      "doneHint": "Todo al día — las tarjetas volverán justo cuando estés a punto de olvidarlas."
     },
     "exam": {
       "complete": "Examen completado",

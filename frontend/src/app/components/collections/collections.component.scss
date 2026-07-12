@@ -525,3 +525,45 @@
   transition: color 0.15s, background 0.15s;
   &:hover { color: #2471a3; background: #eaf4ff; }
 }
+// ——— REPASO SRS (SM-2) ———
+.review-banner {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 14px; flex-wrap: wrap;
+  padding: 16px 20px; margin-bottom: 1.5rem;
+  background: linear-gradient(135deg, #fff6f0, #fdecea);
+  border: 1px solid #f0d0ce; border-radius: 14px;
+  animation: fadeIn 0.2s ease;
+}
+
+.review-banner-text {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 0.95rem; font-weight: 600; color: #7a2a20;
+  i { font-size: 1.2rem; color: #c0392b; }
+}
+
+.btn-review {
+  padding: 10px 20px; border: none;
+  background: #c0392b; color: white;
+  border-radius: 10px; font-size: 0.9rem; font-weight: 600;
+  cursor: pointer; transition: background 0.15s;
+  display: flex; align-items: center; gap: 6px;
+  &:hover { background: #e74c3c; }
+}
+
+.grade-row {
+  display: flex; gap: 10px; width: 100%;
+  animation: fadeUp 0.2s ease;
+}
+
+.btn-grade {
+  flex: 1; padding: 13px 4px; border: none;
+  border-radius: 12px; font-size: 0.9rem; font-weight: 600;
+  cursor: pointer; transition: filter 0.15s;
+  &:hover { filter: brightness(0.94); }
+  &:disabled { opacity: 0.6; cursor: not-allowed; }
+}
+
+.btn-grade--again { background: #fdecea; color: #c0392b; }
+.btn-grade--hard  { background: #fef5e7; color: #b9770e; }
+.btn-grade--good  { background: #eafaf1; color: #1e8449; }
+.btn-grade--easy  { background: #eaf4ff; color: #2471a3; }

@@ -31,13 +31,15 @@ describe('CollectionsComponent', () => {
   beforeEach(async () => {
     collectionsServiceSpy = jasmine.createSpyObj('CollectionsService',
       ['getUserCollections', 'getCollectionFlashcards', 'createCollection',
-       'deleteCollection', 'deleteFlashcard']);
+       'deleteCollection', 'deleteFlashcard',
+       'getDueCount', 'getDueFlashcards', 'reviewFlashcard', 'notifyReviewsChanged']);
     loginServiceSpy = jasmine.createSpyObj('LoginService',
       ['isLogged', 'reqIsLogged'], { loggedIn$: of(true) });
 
     loginServiceSpy.isLogged.and.returnValue(true);
     loginServiceSpy.reqIsLogged.and.returnValue(of({ email: 'user@test.com', roles: ['USER'] } as any));
     collectionsServiceSpy.getUserCollections.and.returnValue(of(mockCollections));
+    collectionsServiceSpy.getDueCount.and.returnValue(of({ count: 0 }));
 
     await TestBed.configureTestingModule({
       imports: [translocoTesting(), CollectionsComponent, RouterTestingModule],
@@ -108,5 +110,57 @@ describe('CollectionsComponent', () => {
     component.openAddModal();
     expect(component.showAddModal).toBeTrue();
     expect(component.newCollectionTitle).toBe('');
+  });
+
+  // ——— Repaso SRS (SM-2) ———
+
+  // Test unitario 8: startReview carga la cola de pendientes y entra en modo repaso
+  it('should load the due queue and enter review mode', () => {
+    collectionsServiceSpy.getDueFlashcards.and.returnValue(of(mockFlashcards));
+
+    component.startReview();
+
+    expect(component.mode).toBe('review');
+    expect(component.reviewQueue.length).toBe(1);
+    expect(component.reviewDone).toBeFalse();
+  });
+
+  // Test unitario 9: una respuesta aprobada gradúa la tarjeta y cierra la sesión
+  it('should graduate the card on a passing grade and finish the session', () => {
+    collectionsServiceSpy.getDueFlashcards.and.returnValue(of(mockFlashcards));
+    collectionsServiceSpy.reviewFlashcard.and.returnValue(
+      of({ flashcardId: 1, intervalDays: 1, nextDue: '2026-07-13' }));
+
+    component.startReview();
+    component.gradeReview(4);
+
+    expect(collectionsServiceSpy.reviewFlashcard).toHaveBeenCalledWith(1, 4);
+    expect(component.reviewQueue.length).toBe(0);
+    expect(component.reviewGraduated).toBe(1);
+    expect(component.reviewDone).toBeTrue();
+  });
+
+  // Test unitario 10: "Otra vez" recircula la tarjeta al final de la cola de hoy
+  it('should recirculate the card to the end of the queue on "again"', () => {
+    collectionsServiceSpy.getDueFlashcards.and.returnValue(of(mockFlashcards));
+    collectionsServiceSpy.reviewFlashcard.and.returnValue(
+      of({ flashcardId: 1, intervalDays: 0, nextDue: '2026-07-12' }));
+
+    component.startReview();
+    component.gradeReview(0);
+
+    expect(component.reviewQueue.length).toBe(1);
+    expect(component.reviewGraduated).toBe(0);
+    expect(component.reviewDone).toBeFalse();
+  });
+
+  // Test unitario 11: sin tarjetas pendientes, startReview no cambia de modo
+  it('should stay on the list when there is nothing due', () => {
+    collectionsServiceSpy.getDueFlashcards.and.returnValue(of([]));
+
+    component.startReview();
+
+    expect(component.mode).toBe('list');
+    expect(component.dueCount).toBe(0);
   });
 });

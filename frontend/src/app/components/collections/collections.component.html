@@ -64,6 +64,70 @@
     </div>
   </div>
 
+  <!-- ═══════════════════ MODO REPASO (SRS / SM-2) ═══════════════════ -->
+  <div *ngIf="mode === 'review' && !loading" class="study-view">
+
+    <div *ngIf="reviewDone" class="result-screen">
+      <h2 class="result-title">{{ 'collections.review.done' | transloco }}</h2>
+      <div class="result-ring ring--perfect">
+        <span class="result-fraction">{{ reviewGraduated }}<span class="result-total">/{{ reviewGraduated }}</span></span>
+      </div>
+      <p class="result-label">{{ 'collections.review.doneHint' | transloco }}</p>
+      <div class="result-actions">
+        <button class="btn-primary" (click)="finishReview()">{{ 'collections.study.backToCollections' | transloco }}</button>
+      </div>
+    </div>
+
+    <div *ngIf="!reviewDone && reviewQueue.length > 0" class="study-container">
+      <div class="study-topbar">
+        <button class="btn-icon" (click)="finishReview()"><i class="bi bi-x-lg"></i></button>
+        <div class="topbar-progress">
+          <div class="progress-track">
+            <div class="progress-fill" [style.width.%]="reviewProgress"></div>
+          </div>
+          <span class="progress-label">{{ reviewGraduated }} / {{ reviewTotal }}</span>
+        </div>
+        <span class="exam-badge review-badge-label">{{ 'collections.review.badge' | transloco }}</span>
+      </div>
+
+      <div class="flashcard">
+        <div class="card-top-label">{{ 'collections.study.whatDoesItMean' | transloco }}</div>
+        <div class="card-chinese-row">
+          <div class="card-chinese">{{ currentReviewCard.word.chinese }}</div>
+          <app-speak-button [text]="currentReviewCard.word.chinese" audioType="word" size="lg" [ariaLabel]="'collections.listen.word' | transloco"></app-speak-button>
+        </div>
+        <div class="card-pinyin" *ngIf="!reviewRevealed">···</div>
+        <div *ngIf="reviewRevealed" class="card-reveal">
+          <div class="card-pinyin">{{ currentReviewCard.word.pinyin }}</div>
+          <hr class="card-hr">
+          <div class="card-tr"><span class="badge-lang">EN</span>{{ currentReviewCard.word.english }}</div>
+          <div class="card-tr"><span class="badge-lang">ES</span>{{ currentReviewCard.word.spanish }}</div>
+        </div>
+      </div>
+
+      <div *ngIf="!reviewRevealed" class="action-row">
+        <button class="btn-flip" (click)="revealReviewCard()">
+          <i class="bi bi-arrow-repeat"></i> {{ 'collections.study.revealAnswer' | transloco }}
+        </button>
+      </div>
+
+      <div *ngIf="reviewRevealed" class="grade-row">
+        <button class="btn-grade btn-grade--again" [disabled]="reviewSaving" (click)="gradeReview(0)">
+          {{ 'collections.review.again' | transloco }}
+        </button>
+        <button class="btn-grade btn-grade--hard" [disabled]="reviewSaving" (click)="gradeReview(3)">
+          {{ 'collections.review.hard' | transloco }}
+        </button>
+        <button class="btn-grade btn-grade--good" [disabled]="reviewSaving" (click)="gradeReview(4)">
+          {{ 'collections.review.good' | transloco }}
+        </button>
+        <button class="btn-grade btn-grade--easy" [disabled]="reviewSaving" (click)="gradeReview(5)">
+          {{ 'collections.review.easy' | transloco }}
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- ═══════════════════ MODO ESTUDIO ═══════════════════ -->
   <div *ngIf="mode === 'study' && !loading" class="study-view">
 
@@ -250,6 +314,18 @@
 
     <!-- LISTA DE COLECCIONES -->
     <div *ngIf="mode === 'list'">
+
+      <!-- Banner de repaso SRS: solo cuando hay tarjetas pendientes hoy -->
+      <div *ngIf="dueCount > 0" class="review-banner">
+        <div class="review-banner-text">
+          <i class="bi bi-stack"></i>
+          <span>{{ (dueCount === 1 ? 'collections.review.bannerOne' : 'collections.review.banner') | transloco:{ count: dueCount } }}</span>
+        </div>
+        <button class="btn-review" (click)="startReview()">
+          <i class="bi bi-lightning-charge-fill"></i> {{ 'collections.review.start' | transloco }}
+        </button>
+      </div>
+
       <div class="list-header">
         <h1 class="page-title mb-0">{{ 'collections.list.title' | transloco }}</h1>
         <button class="btn-add" (click)="openAddModal()">

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
 export interface CollectionDTO {
   id: number;
@@ -21,12 +21,51 @@ export interface FlashcardDTO {
   collection: CollectionDTO;
 }
 
+/** Result of grading one card with SM-2: when it will come back. */
+export interface SrsReviewResult {
+  flashcardId: number;
+  intervalDays: number;
+  nextDue: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class CollectionsService {
 
   private apiUrl = '/api/collections';
+  private srsUrl = '/api/flashcards';
+
+  /**
+   * Fires after a review session touches the queue, so the header badge can
+   * refresh its count without polling.
+   */
+  readonly reviewsChanged$ = new Subject<void>();
 
   constructor(private http: HttpClient) {}
+
+  // ————————————————————— SRS (SM-2 spaced repetition) —————————————————————
+
+  /** Every card due today across all the user's collections. */
+  getDueFlashcards(): Observable<FlashcardDTO[]> {
+    return this.http.get<FlashcardDTO[]>(`${this.srsUrl}/due`, { withCredentials: true });
+  }
+
+  /** Just the due-today count (cheap; used by the header badge). */
+  getDueCount(): Observable<{ count: number }> {
+    return this.http.get<{ count: number }>(`${this.srsUrl}/due/count`, { withCredentials: true });
+  }
+
+  /** Grades a card: 0 = again, 3 = hard, 4 = good, 5 = easy. */
+  reviewFlashcard(flashcardId: number, quality: number): Observable<SrsReviewResult> {
+    return this.http.post<SrsReviewResult>(
+      `${this.srsUrl}/${flashcardId}/review`,
+      { quality },
+      { withCredentials: true }
+    );
+  }
+
+  notifyReviewsChanged(): void {
+    this.reviewsChanged$.next();
+  }
 
   getUserCollections(): Observable<CollectionDTO[]> {
     return this.http.get<CollectionDTO[]>(this.apiUrl, { withCredentials: true });

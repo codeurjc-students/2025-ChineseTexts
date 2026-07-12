@@ -46,6 +46,14 @@
             </a>
           </li>
 
+          <!-- SRS: cards due today (hidden when the queue is empty) -->
+          <li *ngIf="(isLoggedIn$ | async) && dueCount > 0" class="nav-item me-2">
+            <a class="nav-link fw-semibold review-link" [routerLink]="['/collections'] | localizeLink"
+               [title]="'header.reviewTitle' | transloco">
+              <i class="bi bi-stack"></i> {{ dueCount }}
+            </a>
+          </li>
+
           <li *ngIf="isLoggedIn$ | async" class="nav-item me-2">
             <a class="nav-link fw-semibold text-dark" [routerLink]="['/collections'] | localizeLink">
               <i class="bi bi-collection me-1"></i> {{ 'header.nav.myCollections' | transloco }}
