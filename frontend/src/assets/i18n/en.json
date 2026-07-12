@@ -30,6 +30,7 @@
       "logout": "Logout"
     },
     "streakTitle": "Your reading streak — read one text a day to keep it going",
+    "reviewTitle": "Flashcards to review today — spaced repetition keeps them in your long-term memory",
     "lang": {
       "spanish": "Español",
       "english": "English"
@@ -646,6 +647,18 @@
       "restart": "Restart",
       "dontKnow": "Don't know",
       "gotIt": "Got it"
+    },
+    "review": {
+      "banner": "You have {{count}} cards to review today",
+      "bannerOne": "You have 1 card to review today",
+      "start": "Review now",
+      "badge": "Review",
+      "again": "Again",
+      "hard": "Hard",
+      "good": "Good",
+      "easy": "Easy",
+      "done": "Review complete!",
+      "doneHint": "All caught up — the cards will come back just when you are about to forget them."
     },
     "exam": {
       "complete": "Exam complete",

@@ -9,7 +9,7 @@ import { SpeakButtonComponent } from '../speak-button/speak-button.component';
 import { LocalizeLinkPipe } from '../../i18n/localize-link.pipe';
 import { LocaleNavService } from '../../i18n/locale-nav.service';
 
-type AppMode = 'list' | 'detail' | 'study' | 'exam';
+type AppMode = 'list' | 'detail' | 'study' | 'exam' | 'review';
 type CardFace = 'chinese' | 'translation';
 
 interface ExamQuestion {
@@ -48,6 +48,15 @@ export class CollectionsComponent implements OnInit {
   studyDone = false;
   studyNoWordsError = false;
 
+  // ——— Repaso SRS (SM-2) ———
+  /** Cards due today; failed ("again") cards recirculate to the end of the queue. */
+  reviewQueue: FlashcardDTO[] = [];
+  reviewRevealed = false;
+  reviewGraduated = 0;
+  reviewDone = false;
+  reviewSaving = false;
+  dueCount = 0;
+
   // ——— Examen ———
   examQuestions: ExamQuestion[] = [];
   examIndex = 0;
@@ -83,7 +92,7 @@ export class CollectionsComponent implements OnInit {
     this.loginService.reqIsLogged().subscribe({
       next: (user) => {
         if (!user) this.localeNav.navigate(['/']);
-        else this.loadCollections();
+        else { this.loadCollections(); this.loadDueCount(); }
       },
       error: () => this.localeNav.navigate(['/'])
     });
@@ -241,6 +250,82 @@ export class CollectionsComponent implements OnInit {
     } else {
       this.studyDone = true;
     }
+  }
+
+  // ——— REPASO SRS (SM-2) ———
+
+  /** Refreshes the "N cards to review today" banner; failures just hide it. */
+  private loadDueCount(): void {
+    this.collectionsService.getDueCount().subscribe({
+      next: (r) => this.dueCount = r.count,
+      error: () => this.dueCount = 0
+    });
+  }
+
+  startReview(): void {
+    this.loading = true;
+    this.collectionsService.getDueFlashcards().subscribe({
+      next: (cards) => {
+        this.loading = false;
+        if (cards.length === 0) { this.dueCount = 0; return; }
+        // Own copy: the queue is consumed (shift/push) while grading.
+        this.reviewQueue = [...cards];
+        this.reviewRevealed = false;
+        this.reviewGraduated = 0;
+        this.reviewDone = false;
+        this.mode = 'review';
+      },
+      error: () => this.loading = false
+    });
+  }
+
+  get currentReviewCard(): FlashcardDTO { return this.reviewQueue[0]; }
+
+  get reviewTotal(): number { return this.reviewGraduated + this.reviewQueue.length; }
+
+  get reviewProgress(): number {
+    return this.reviewTotal === 0 ? 0 : Math.round((this.reviewGraduated / this.reviewTotal) * 100);
+  }
+
+  revealReviewCard(): void { this.reviewRevealed = true; }
+
+  /**
+   * Grades the current card (0 again / 3 hard / 4 good / 5 easy). "Again" keeps the
+   * card in today's queue (it recirculates to the end until it sticks), any pass
+   * graduates it out of the session. The SM-2 scheduling itself happens server-side.
+   */
+  gradeReview(quality: number): void {
+    if (this.reviewSaving || this.reviewQueue.length === 0) return;
+    const card = this.reviewQueue[0];
+    this.reviewSaving = true;
+    this.collectionsService.reviewFlashcard(card.id, quality).subscribe({
+      next: () => this.advanceReview(quality),
+      // The grade could not be saved: still move on so the session never blocks;
+      // the card simply stays due and will reappear in the next session.
+      error: () => this.advanceReview(quality)
+    });
+  }
+
+  private advanceReview(quality: number): void {
+    this.reviewSaving = false;
+    const card = this.reviewQueue.shift();
+    if (quality < 3 && card) {
+      this.reviewQueue.push(card);
+    } else {
+      this.reviewGraduated++;
+    }
+    this.reviewRevealed = false;
+    if (this.reviewQueue.length === 0) {
+      this.reviewDone = true;
+      this.dueCount = 0;
+      this.collectionsService.notifyReviewsChanged();
+    }
+  }
+
+  finishReview(): void {
+    this.mode = 'list';
+    this.loadDueCount();
+    this.collectionsService.notifyReviewsChanged();
   }
 
   // ——— EXAMEN ———
