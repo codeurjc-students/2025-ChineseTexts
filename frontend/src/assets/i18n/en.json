@@ -264,7 +264,8 @@
       "acceptTermsPrefix": "I have read and accept the",
       "acceptTermsLink": "Terms of Use",
       "acceptTermsSuffix": ".",
-      "acceptTermsRequired": "You must accept the Terms of Use to create an account."
+      "acceptTermsRequired": "You must accept the Terms of Use to create an account.",
+      "emailConsentLabel": "I'd like to receive learning tips and news by email (optional — you can change this anytime in your profile)"
     },
     "submit": "Create My Account",
     "back": "Back",
@@ -408,7 +409,8 @@
       "ga": "for anonymous traffic analysis.",
       "deepseek": "to generate Chinese learning texts and to power the AI tutor (asking about words and context). Only the text you send is processed, no account or personal data.",
       "vision": "to extract text from uploaded images. Images are processed and not stored.",
-      "tts": "to generate audio pronunciation of Chinese text, words and sentences. Only the Chinese text to be read aloud is sent, no personal data. Audio is generated on demand and not stored."
+      "tts": "to generate audio pronunciation of Chinese text, words and sentences. Only the Chinese text to be read aloud is sent, no personal data. Audio is generated on demand and not stored.",
+      "brevo": "to send account emails (such as the welcome email when you register) and, only if you opted in, occasional learning tips and news. Your email address and name are shared with Brevo solely to deliver these messages; you can withdraw the optional consent anytime from your profile."
     },
     "s6": {
       "title": "6. Data retention",
@@ -571,7 +573,9 @@
       "languageLabel": "Preferred language",
       "success": "Profile updated successfully!",
       "saving": "Saving...",
-      "save": "Save changes"
+      "save": "Save changes",
+      "emailConsentLabel": "Receive learning tips and news by email",
+      "emailConsentHint": "Optional. Account emails (like your welcome email) don't depend on this. You can change it anytime."
     },
     "changePassword": {
       "title": "Change password",

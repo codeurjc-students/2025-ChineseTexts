@@ -329,3 +329,18 @@
   padding: 8px 12px;
   i { margin-right: 6px; }
 }
+
+/* Consentimiento de emails (RGPD) en editar perfil */
+.consent-toggle .consent-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  input { margin-top: 4px; }
+}
+.consent-toggle .consent-hint {
+  margin: 4px 0 0 24px;
+  font-size: 0.82rem;
+  color: #888;
+}

@@ -25,6 +25,7 @@ import com.chinesereads.backend.Model.User;
 import com.chinesereads.backend.Repository.ReadingLogRepository;
 import com.chinesereads.backend.Repository.UserRepository;
 import com.chinesereads.backend.Repository.UserTextRepository;
+import com.chinesereads.backend.Service.EmailService;
 import com.chinesereads.backend.Service.StripeService;
 import com.chinesereads.backend.Service.UserService;
 import com.chinesereads.backend.dto.AdminUserDetailDTO;
@@ -41,6 +42,7 @@ public class UserServiceTest {
     private PasswordEncoder passwordEncoder;
     private StripeService stripeService;
     private ReadingLogRepository readingLogRepository;
+    private EmailService emailService;
 
     @BeforeEach
     public void setUp() {
@@ -50,6 +52,7 @@ public class UserServiceTest {
         passwordEncoder = new BCryptPasswordEncoder();
         stripeService = mock(StripeService.class);
         readingLogRepository = mock(ReadingLogRepository.class);
+        emailService = mock(EmailService.class);
         userService = new UserService();
 
         // Inyectamos dependencias manualmente via reflection
@@ -59,6 +62,7 @@ public class UserServiceTest {
         injectField(userService, "passwordEncoder", passwordEncoder);
         injectField(userService, "stripeService", stripeService);
         injectField(userService, "readingLogRepository", readingLogRepository);
+        injectField(userService, "emailService", emailService);
     }
 
     private void injectField(Object target, String fieldName, Object value) {
@@ -101,6 +105,52 @@ public class UserServiceTest {
         assertNotNull(result);
         assertEquals("test@test.com", result.email());
         verify(userRepository, times(1)).save(any(User.class));
+    }
+
+    // El registro dispara el email de bienvenida (transaccional, en el idioma del usuario).
+    @Test
+    @DisplayName("Signup sends the welcome email")
+    public void testSignupSendsWelcomeEmail() {
+        UserDTO userDTO = new UserDTO(null, "w@test.com", "W", "es", List.of(), List.of("USER"), "password123", null);
+        when(userRepository.findByEmail("w@test.com")).thenReturn(Optional.empty());
+        when(userRepository.save(any(User.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        userService.save(userDTO);
+
+        verify(emailService, times(1)).sendWelcomeEmail("w@test.com", "W", "es");
+    }
+
+    // El consentimiento de email es OPCIONAL: solo se guarda si viene a true, con su sello.
+    @Test
+    @DisplayName("Signup stores optional email consent with proof timestamp")
+    public void testSignupStoresEmailConsent() {
+        UserDTO withConsent = new UserDTO(null, "c@test.com", "C", "en", List.of(), List.of("USER"),
+                "password123", null, true, null, true);
+        when(userRepository.findByEmail("c@test.com")).thenReturn(Optional.empty());
+        when(userRepository.save(any(User.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        userService.save(withConsent);
+
+        org.mockito.ArgumentCaptor<User> captor = org.mockito.ArgumentCaptor.forClass(User.class);
+        verify(userRepository).save(captor.capture());
+        assertTrue(captor.getValue().isEmailConsent());
+        assertNotNull(captor.getValue().getEmailConsentAt());
+    }
+
+    // Sin casilla marcada (o cliente antiguo que ni la envía): consentimiento false.
+    @Test
+    @DisplayName("Signup without the optional box leaves email consent off")
+    public void testSignupWithoutEmailConsent() {
+        UserDTO noConsent = new UserDTO(null, "n@test.com", "N", "en", List.of(), List.of("USER"), "password123", null);
+        when(userRepository.findByEmail("n@test.com")).thenReturn(Optional.empty());
+        when(userRepository.save(any(User.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        userService.save(noConsent);
+
+        org.mockito.ArgumentCaptor<User> captor = org.mockito.ArgumentCaptor.forClass(User.class);
+        verify(userRepository).save(captor.capture());
+        assertFalse(captor.getValue().isEmailConsent());
+        assertNull(captor.getValue().getEmailConsentAt());
     }
 
     // Test unitario 2: Cuando se registra un usuario con un email ya existente, devuelve null

@@ -81,7 +81,7 @@ describe('ProfileComponent', () => {
     component.saveProfile();
 
     expect(userServiceSpy.updateProfile).toHaveBeenCalledWith({
-      name: 'New Name', language: 'es'
+      name: 'New Name', language: 'es', emailConsent: false
     });
     expect(component.profileStatus).toBe('success');
   });

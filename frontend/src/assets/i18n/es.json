@@ -264,7 +264,8 @@
       "acceptTermsPrefix": "He leído y acepto los",
       "acceptTermsLink": "términos de uso",
       "acceptTermsSuffix": ".",
-      "acceptTermsRequired": "Debes aceptar los términos de uso para crear una cuenta."
+      "acceptTermsRequired": "Debes aceptar los términos de uso para crear una cuenta.",
+      "emailConsentLabel": "Quiero recibir consejos de aprendizaje y novedades por email (opcional — puedes cambiarlo cuando quieras en tu perfil)"
     },
     "submit": "Crear mi cuenta",
     "back": "Volver",
@@ -408,7 +409,8 @@
       "ga": "para el análisis de tráfico anónimo.",
       "deepseek": "para generar textos de aprendizaje en chino y para el tutor IA (preguntar sobre palabras y contexto). Solo se procesa el texto que envías, ningún dato de cuenta ni personal.",
       "vision": "para extraer texto de las imágenes subidas. Las imágenes se procesan y no se almacenan.",
-      "tts": "para generar la pronunciación en audio de textos, palabras y frases en chino. Solo se envía el texto en chino que se va a leer en voz alta, ningún dato personal. El audio se genera bajo demanda y no se almacena."
+      "tts": "para generar la pronunciación en audio de textos, palabras y frases en chino. Solo se envía el texto en chino que se va a leer en voz alta, ningún dato personal. El audio se genera bajo demanda y no se almacena.",
+      "brevo": "para enviar correos de cuenta (como el de bienvenida al registrarte) y, solo si diste tu consentimiento, consejos de aprendizaje y novedades ocasionales. Tu email y tu nombre se comparten con Brevo únicamente para entregar estos mensajes; puedes retirar el consentimiento opcional en cualquier momento desde tu perfil."
     },
     "s6": {
       "title": "6. Conservación de los datos",
@@ -571,7 +573,9 @@
       "languageLabel": "Idioma preferido",
       "success": "¡Perfil actualizado correctamente!",
       "saving": "Guardando...",
-      "save": "Guardar cambios"
+      "save": "Guardar cambios",
+      "emailConsentLabel": "Recibir consejos de aprendizaje y novedades por email",
+      "emailConsentHint": "Opcional. Los correos de cuenta (como el de bienvenida) no dependen de esto. Puedes cambiarlo en cualquier momento."
     },
     "changePassword": {
       "title": "Cambiar contraseña",

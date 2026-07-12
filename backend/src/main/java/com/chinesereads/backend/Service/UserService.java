@@ -47,6 +47,9 @@ public class UserService {
     @Autowired
     private ReadingLogRepository readingLogRepository;
 
+    @Autowired
+    private EmailService emailService;
+
     public UserDTO save(UserDTO user) {
         if (userRepository.findByEmail(user.email()).isPresent()) {
             return null;
@@ -57,7 +60,17 @@ public class UserService {
             // Record proof of consent (GDPR): the signup form requires accepting the
             // terms of use, so reaching registration means consent was given now.
             newUser.setTermsAcceptedAt(LocalDateTime.now());
-            return userMapper.toDTO(userRepository.save(newUser));
+            // OPTIONAL marketing-email consent (unchecked by default on the form).
+            // Recorded with its own timestamp as proof; the welcome email below is
+            // transactional and does not depend on it.
+            if (Boolean.TRUE.equals(user.emailConsent())) {
+                newUser.setEmailConsent(true);
+                newUser.setEmailConsentAt(LocalDateTime.now());
+            }
+            UserDTO saved = userMapper.toDTO(userRepository.save(newUser));
+            // Async + failure-swallowing: an email problem never breaks a signup.
+            emailService.sendWelcomeEmail(newUser.getEmail(), newUser.getName(), newUser.getLanguage());
+            return saved;
         }
     }
 
@@ -77,6 +90,18 @@ public class UserService {
         User user = userRepository.findByEmail(email).orElseThrow();
         user.setName(data.name());
         user.setLanguage(data.language());
+        // Email consent: only touched when explicitly sent (null = unchanged), so
+        // older clients can never revoke it by omission. Granting refreshes the proof
+        // timestamp; withdrawing clears it (GDPR: as easy to withdraw as to give).
+        if (data.emailConsent() != null) {
+            boolean granting = data.emailConsent() && !user.isEmailConsent();
+            user.setEmailConsent(data.emailConsent());
+            if (granting) {
+                user.setEmailConsentAt(LocalDateTime.now());
+            } else if (!data.emailConsent()) {
+                user.setEmailConsentAt(null);
+            }
+        }
         return userMapper.toDTO(userRepository.save(user));
     }
 

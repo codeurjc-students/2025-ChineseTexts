@@ -26,6 +26,7 @@ export class ProfileComponent implements OnInit {
   // Editar perfil
   editName = '';
   editLanguage = '';
+  editEmailConsent = false;
   profileStatus: 'idle' | 'saving' | 'success' | 'error' = 'idle';
   profileError = '';
 
@@ -116,6 +117,7 @@ export class ProfileComponent implements OnInit {
   openEditProfile(): void {
     this.editName = this.user?.name ?? '';
     this.editLanguage = this.user?.language ?? 'en';
+    this.editEmailConsent = this.user?.emailConsent === true;
     this.profileStatus = 'idle';
     this.profileError = '';
     this.section = 'editProfile';
@@ -139,7 +141,8 @@ export class ProfileComponent implements OnInit {
 
     this.userService.updateProfile({
       name: this.editName.trim(),
-      language: this.editLanguage
+      language: this.editLanguage,
+      emailConsent: this.editEmailConsent
     }).subscribe({
       next: (updated) => {
         this.user = updated;

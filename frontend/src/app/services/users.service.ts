@@ -15,6 +15,8 @@ export interface UserDTO {
   termsAccepted?: boolean;
   /** Read-only: ISO datetime when PREMIUM expires (null/absent = free plan). */
   premiumUntil?: string | null;
+  /** OPTIONAL marketing-email consent (GDPR). null/absent = leave unchanged. */
+  emailConsent?: boolean | null;
 }
 
 /** One row of the admin user list. */
@@ -64,7 +66,7 @@ export class UserService {
     return this.http.post(`${this.apiUrl}/signup`, user);
   }
 
-  updateProfile(data: { name: string; language: string }): Observable<UserDTO> {
+  updateProfile(data: { name: string; language: string; emailConsent?: boolean | null }): Observable<UserDTO> {
     return this.http.put<UserDTO>(`${this.apiUrl}/me`, data, { withCredentials: true });
   }
 
