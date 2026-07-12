@@ -117,7 +117,9 @@ public class FounderService {
         social.setLabel(data.label());
         social.setIcon(data.icon());
         social.setUrl(data.url());
-        social.setDisplayOrder(data.displayOrder());
+        if (data.displayOrder() != null) {
+            social.setDisplayOrder(data.displayOrder());
+        }
         return founderMapper.toDTO(socialRepository.save(social));
     }
 
@@ -147,7 +149,9 @@ public class FounderService {
         if (data.type() != null) {
             section.setType(data.type());
         }
-        section.setDisplayOrder(data.displayOrder());
+        if (data.displayOrder() != null) {
+            section.setDisplayOrder(data.displayOrder());
+        }
         return founderMapper.toDTO(sectionRepository.save(section));
     }
 
@@ -174,7 +178,9 @@ public class FounderService {
         FounderItem item = itemRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Item not found with id: " + id));
         applyItemFields(item, data);
-        item.setDisplayOrder(data.displayOrder());
+        if (data.displayOrder() != null) {
+            item.setDisplayOrder(data.displayOrder());
+        }
         return founderMapper.toDTO(itemRepository.save(item));
     }
 
