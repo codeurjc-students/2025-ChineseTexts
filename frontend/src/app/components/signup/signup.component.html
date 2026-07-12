@@ -106,6 +106,13 @@
             {{ 'signup.form.acceptTermsRequired' | transloco }}
           </div>
         </div>
+
+        <div class="form-check mt-2">
+          <input id="emailConsent" type="checkbox" class="form-check-input" formControlName="emailConsent">
+          <label class="form-check-label" for="emailConsent">
+            {{ 'signup.form.emailConsentLabel' | transloco }}
+          </label>
+        </div>
       </div>
 
     </form>

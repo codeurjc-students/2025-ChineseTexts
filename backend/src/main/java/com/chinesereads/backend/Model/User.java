@@ -69,6 +69,12 @@ public class User {
     // de uso al registrarse. Null en cuentas anteriores a esta funcionalidad.
     private LocalDateTime termsAcceptedAt;
 
+    // Consentimiento OPCIONAL para comunicaciones por email (consejos, novedades).
+    // RGPD: casilla desmarcada por defecto en el registro; revocable desde el perfil.
+    // El email de bienvenida es transaccional y NO depende de este consentimiento.
+    private boolean emailConsent = false;
+    private LocalDateTime emailConsentAt;
+
     // Suscripción PREMIUM caducable: el usuario disfruta del plan premium mientras
     // premiumUntil sea una fecha/hora futura. Null (o pasada) = plan gratuito. Lo fija
     // un administrador o la pasarela de pago (Stripe). Es la ÚNICA fuente de verdad del
@@ -295,6 +301,22 @@ public class User {
 
     public void setTermsAcceptedAt(LocalDateTime termsAcceptedAt) {
         this.termsAcceptedAt = termsAcceptedAt;
+    }
+
+    public boolean isEmailConsent() {
+        return emailConsent;
+    }
+
+    public void setEmailConsent(boolean emailConsent) {
+        this.emailConsent = emailConsent;
+    }
+
+    public LocalDateTime getEmailConsentAt() {
+        return emailConsentAt;
+    }
+
+    public void setEmailConsentAt(LocalDateTime emailConsentAt) {
+        this.emailConsentAt = emailConsentAt;
     }
 
     public LocalDateTime getPremiumUntil() {

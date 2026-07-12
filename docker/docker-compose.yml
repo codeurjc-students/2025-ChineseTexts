@@ -31,6 +31,10 @@ services:
       TTS_SERVICE_URL: http://tts-service:5002
       # Stripe (PREMIUM). Values live in docker/.env on the server (never committed);
       # empty defaults keep the app booting if billing is not configured yet.
+      # Transactional email (Brevo). Empty defaults keep email disabled until set.
+      BREVO_API_KEY: ${BREVO_API_KEY:-}
+      MAIL_FROM: ${MAIL_FROM:-}
+      MAIL_FROM_NAME: ${MAIL_FROM_NAME:-ChineseReads}
       STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:-}
       STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:-}
       STRIPE_PRICE_MONTHLY: ${STRIPE_PRICE_MONTHLY:-}

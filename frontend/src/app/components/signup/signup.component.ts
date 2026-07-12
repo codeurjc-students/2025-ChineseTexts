@@ -37,7 +37,9 @@ export class SignupComponent implements OnInit, OnDestroy {
       password: ['', [Validators.required, Validators.minLength(6)]],
       language: ['en', Validators.required],
       // GDPR: must actively accept the terms of use to register (unchecked by default).
-      acceptTerms: [false, Validators.requiredTrue]
+      acceptTerms: [false, Validators.requiredTrue],
+      // OPTIONAL marketing-email consent — GDPR requires it unchecked by default.
+      emailConsent: [false]
     });
   }
 
@@ -72,7 +74,8 @@ export class SignupComponent implements OnInit, OnDestroy {
       password: this.signupForm.value.password,
       newPassword: null,
       // Consent is validated server-side too; sent from the required checkbox.
-      termsAccepted: this.signupForm.value.acceptTerms
+      termsAccepted: this.signupForm.value.acceptTerms,
+      emailConsent: this.signupForm.value.emailConsent === true
     };
 
     this.userService.register(userDTO).subscribe({
