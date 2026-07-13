@@ -1,14 +1,29 @@
 package com.chinesereads.backend.Repository;
 
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import com.chinesereads.backend.Model.Text;
 
 public interface TextRepository extends JpaRepository<Text, Long> {
+
+    /**
+     * Projection for the dynamic sitemap: just id + date, so building the sitemap
+     * never loads the @Lob columns (text, translations, image) of every text.
+     */
+    interface TextSitemapRow {
+        Long getId();
+        LocalDate getCreationDate();
+    }
+
+    @Query("SELECT t.id AS id, t.creationDate AS creationDate FROM Text t ORDER BY t.id")
+    List<TextSitemapRow> findSitemapRows();
 
     Optional<Text> findByTitleSpanish(String titleSpanish);
 

@@ -213,6 +213,19 @@
       </div>
     </div>
 
+    <!-- VOCABULARIO CLAVE (estudio + contenido indexable propio de cada texto) -->
+    <div *ngIf="keyVocabulary.length > 0" class="mt-4">
+      <h5 class="text-primary">{{ 'text.vocab.heading' | transloco }}</h5>
+      <p class="text-muted vocab-hint">{{ 'text.vocab.hint' | transloco }}</p>
+      <ul class="vocab-list">
+        <li class="vocab-item" *ngFor="let w of keyVocabulary">
+          <span class="vocab-chinese">{{ w.chinese }}</span>
+          <span class="vocab-pinyin">{{ w.pinyin }}</span>
+          <span class="vocab-meaning">{{ vocabMeaning(w) }}</span>
+        </li>
+      </ul>
+    </div>
+
     <!-- BOTÓN VOLVER -->
     <div class="text-center mt-4">
       <button class="btn-back" (click)="goBack()">{{ 'text.back' | transloco }}</button>

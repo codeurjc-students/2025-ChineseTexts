@@ -20,6 +20,7 @@ describe('SeoService', () => {
 
   afterEach(() => {
     doc.querySelectorAll("link[rel='canonical'], link[rel='alternate']").forEach(l => l.remove());
+    doc.getElementById('seo-page-jsonld')?.remove();
   });
 
   it('should be created', () => {
@@ -85,5 +86,26 @@ describe('SeoService', () => {
   it('should not emit hreflang alternates for noindex pages', () => {
     service.update({ title: 'P', description: 'D', path: '/profile', noindex: true }, 'en');
     expect(doc.querySelectorAll("link[rel='alternate']").length).toBe(0);
+  });
+
+  it('should set per-page keywords when provided', () => {
+    service.update({ title: 'T', description: 'D', path: '/text/1', keywords: 'foo, bar' });
+    expect(meta.getTag("name='keywords'")?.content).toBe('foo, bar');
+  });
+
+  it('should inject a single per-page JSON-LD script and replace it on re-set', () => {
+    service.setPageJsonLd({ '@type': 'Article', headline: 'A' });
+    service.setPageJsonLd({ '@type': 'Article', headline: 'B' });
+
+    const scripts = doc.querySelectorAll('#seo-page-jsonld');
+    expect(scripts.length).toBe(1);
+    expect(JSON.parse(scripts[0].textContent || '{}').headline).toBe('B');
+    expect((scripts[0] as HTMLScriptElement).type).toBe('application/ld+json');
+  });
+
+  it('should clear per-page JSON-LD on the next update() so it never leaks across routes', () => {
+    service.setPageJsonLd({ headline: 'stale' });
+    service.update({ title: 'T', description: 'D', path: '/texts' });
+    expect(doc.getElementById('seo-page-jsonld')).toBeNull();
   });
 });

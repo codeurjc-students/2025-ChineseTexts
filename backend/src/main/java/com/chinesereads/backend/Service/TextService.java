@@ -52,6 +52,11 @@ public class TextService {
         }
     }
 
+    /** Id + creation date of every text, for the dynamic sitemap (/sitemap-texts.xml). */
+    public List<TextRepository.TextSitemapRow> getSitemapRows() {
+        return textRepository.findSitemapRows();
+    }
+
     public List<TextDTO> getTexts(int page, int size) {
         Pageable pageable = PageRequest.of(
                 page,

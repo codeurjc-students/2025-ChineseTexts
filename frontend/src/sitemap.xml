@@ -4,8 +4,9 @@
   Lists the public, indexable routes in both languages. English lives at the root
   and Spanish under /es. Each URL declares its language alternates via xhtml:link
   (hreflang en/es/x-default) so Google serves the right variant. Individual text
-  pages (/text/:id) are reachable through the HSK listing pages, so crawlers
-  discover them by following internal links.
+  pages (/text/:id) live in the database, so they are NOT listed here: the backend
+  generates them dynamically at /sitemap-texts.xml (SitemapController), which
+  robots.txt also references.
 -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:xhtml="http://www.w3.org/1999/xhtml">

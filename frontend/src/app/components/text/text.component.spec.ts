@@ -209,4 +209,27 @@ describe('TextComponent', () => {
     // La traducción inglesa tiene 3 frases separadas por punto
     expect(component.translatedEnglishTextSeparatedBySentences.length).toBe(3);
   });
+
+  // Test 14: el vocabulario clave contiene solo palabras únicas de 2+ caracteres
+  // (fuera partículas de un carácter como 我 y puntuación como 。)
+  it('should build key vocabulary from unique multi-character words', () => {
+    fixture.detectChanges();
+
+    expect(component.keyVocabulary.map(w => w.chinese)).toEqual(['每天', '七点', '起床']);
+  });
+
+  // Test 15: cada texto inyecta sus datos estructurados (JSON-LD) con nivel y vocabulario
+  it('should inject per-text JSON-LD structured data with level and vocabulary', () => {
+    fixture.detectChanges();
+
+    const script = document.getElementById('seo-page-jsonld');
+    expect(script).toBeTruthy();
+
+    const data = JSON.parse(script!.textContent || '{}');
+    expect(data.educationalLevel).toBe('HSK2');
+    expect(data.headline).toBe('Daily Routine');
+    expect(data.teaches).toContain('每天');
+
+    document.getElementById('seo-page-jsonld')?.remove();
+  });
 });

@@ -233,6 +233,10 @@
       "heading": "Text by sentences",
       "hint": "Click to see translation"
     },
+    "vocab": {
+      "heading": "Key vocabulary",
+      "hint": "The most useful words in this text, with pinyin and meaning at a glance."
+    },
     "back": "Back"
   },
   "signup": {

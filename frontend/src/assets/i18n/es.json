@@ -233,6 +233,10 @@
       "heading": "Texto por frases",
       "hint": "Haz clic para ver la traducción"
     },
+    "vocab": {
+      "heading": "Vocabulario clave",
+      "hint": "Las palabras más útiles de este texto, con pinyin y significado de un vistazo."
+    },
     "back": "Volver"
   },
   "signup": {

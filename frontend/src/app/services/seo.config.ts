@@ -197,21 +197,24 @@ function hskConfig(level: string, lang: Lang): SeoConfig {
   };
 }
 
-/** Fallback for an individual text page before the component sets the real title. */
+/**
+ * Fallback for an individual text page before the component sets the real title.
+ * No `path` here: resolveSeo() fills in the page's own /text/:id path so the
+ * canonical is self-referential from the first render (a canonical pointing at
+ * the /texts listing would risk Google folding every text into the listing).
+ */
 const TEXT_DEFAULT: LocalizedSeo = {
   en: {
     title: 'Read a Chinese Text with Pinyin, Translation & Audio | ChineseReads',
     description:
       'Read a graded Chinese text with word-by-word pinyin, instant translations, sentence ' +
-      'breakdown and natural audio pronunciation on ChineseReads.',
-    path: '/texts'
+      'breakdown and natural audio pronunciation on ChineseReads.'
   },
   es: {
     title: 'Lee un texto en chino con pinyin, traducción y audio | ChineseReads',
     description:
       'Lee un texto en chino graduado con pinyin palabra por palabra, traducciones instantáneas, ' +
-      'desglose de frases y pronunciación con audio natural en ChineseReads.',
-    path: '/texts'
+      'desglose de frases y pronunciación con audio natural en ChineseReads.'
   }
 };
 
@@ -237,7 +240,7 @@ export function resolveSeo(path: string, lang: Lang = 'en'): SeoConfig {
   if (/^\/my-text\/[^/]+$/.test(clean)) return STATIC_SEO['/my-text'][lang];
 
   // /text/:id — the TextComponent refines this with the actual text title.
-  if (/^\/text\/[^/]+$/.test(clean)) return TEXT_DEFAULT[lang];
+  if (/^\/text\/[^/]+$/.test(clean)) return { ...TEXT_DEFAULT[lang], path: clean };
 
   return HOME[lang];
 }
