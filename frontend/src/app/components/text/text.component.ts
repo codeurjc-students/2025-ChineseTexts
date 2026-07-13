@@ -44,6 +44,10 @@ export class TextComponent implements OnInit {
   showTranslation = true;
   showSentences = false;
   showPinyin = true;
+  // Default TRUE on purpose: the vocabulary section must be in the DOM when
+  // crawlers render the page (it is this text's unique indexable content).
+  // Unchecking only ever happens on user interaction, which crawlers never do.
+  showVocab = true;
 
   activeWordIndex: number | null = null;
   activeSentenceIndex: number | null = null;

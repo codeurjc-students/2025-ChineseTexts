@@ -205,7 +205,8 @@
     "options": {
       "showTranslation": "Ver el texto traducido",
       "showSentences": "Ver el texto desglosado por frases",
-      "showPinyin": "Mostrar pinyin"
+      "showPinyin": "Mostrar pinyin",
+      "showVocab": "Mostrar vocabulario clave"
     },
     "words": {
       "heading": "Texto desglosado por palabras",

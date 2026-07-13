@@ -63,6 +63,10 @@
       <input class="form-check-input" type="checkbox" [(ngModel)]="showPinyin" id="chkPinyin">
       <label class="form-check-label" for="chkPinyin">{{ 'text.options.showPinyin' | transloco }}</label>
     </div>
+    <div class="form-check">
+      <input class="form-check-input" type="checkbox" [(ngModel)]="showVocab" id="chkVocab">
+      <label class="form-check-label" for="chkVocab">{{ 'text.options.showVocab' | transloco }}</label>
+    </div>
 
     <!-- TEXTO DESGLOSADO POR PALABRAS -->
     <h5 class="mt-4 text-primary">{{ 'text.words.heading' | transloco }}</h5>
@@ -213,8 +217,10 @@
       </div>
     </div>
 
-    <!-- VOCABULARIO CLAVE (estudio + contenido indexable propio de cada texto) -->
-    <div *ngIf="keyVocabulary.length > 0" class="mt-4">
+    <!-- VOCABULARIO CLAVE (estudio + contenido indexable propio de cada texto).
+         showVocab nace en true: los rastreadores renderizan el estado inicial,
+         así que la sección siempre está en el DOM para el SEO. -->
+    <div *ngIf="showVocab && keyVocabulary.length > 0" class="mt-4">
       <h5 class="text-primary">{{ 'text.vocab.heading' | transloco }}</h5>
       <p class="text-muted vocab-hint">{{ 'text.vocab.hint' | transloco }}</p>
       <ul class="vocab-list">
