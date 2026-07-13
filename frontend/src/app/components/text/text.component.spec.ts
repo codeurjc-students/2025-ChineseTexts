@@ -218,6 +218,23 @@ describe('TextComponent', () => {
     expect(component.keyVocabulary.map(w => w.chinese)).toEqual(['每天', '七点', '起床']);
   });
 
+  // Test 15b: el vocabulario clave es VISIBLE POR DEFECTO (crítico para SEO: los
+  // rastreadores renderizan el estado inicial) y el checkbox lo oculta al desmarcar
+  it('should render key vocabulary by default and hide it when toggled off', () => {
+    fixture.detectChanges();
+
+    expect(component.showVocab).toBeTrue();
+    expect(fixture.nativeElement.querySelectorAll('.vocab-item').length).toBe(3);
+
+    component.showVocab = false;
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelectorAll('.vocab-item').length).toBe(0);
+
+    component.showVocab = true;
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelectorAll('.vocab-item').length).toBe(3);
+  });
+
   // Test 15: cada texto inyecta sus datos estructurados (JSON-LD) con nivel y vocabulario
   it('should inject per-text JSON-LD structured data with level and vocabulary', () => {
     fixture.detectChanges();
