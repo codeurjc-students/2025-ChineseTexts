@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,11 +29,14 @@ import com.chinesereads.backend.dto.StatsDTO;
 @Service
 public class ActivityService {
 
-    @Autowired
-    private ReadingLogRepository readingLogRepository;
+    private final ReadingLogRepository readingLogRepository;
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+
+    public ActivityService(ReadingLogRepository readingLogRepository, UserRepository userRepository) {
+        this.readingLogRepository = readingLogRepository;
+        this.userRepository = userRepository;
+    }
 
     /**
      * Records that the user read {@code textKey} today and advances the streak when

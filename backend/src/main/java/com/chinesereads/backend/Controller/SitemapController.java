@@ -2,7 +2,6 @@ package com.chinesereads.backend.Controller;
 
 import java.time.LocalDate;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,13 +27,16 @@ import com.chinesereads.backend.Service.TextService;
 @RestController
 public class SitemapController {
 
-    @Autowired
-    private TextService textService;
+    private final TextService textService;
 
     // Site origin for absolute URLs. Same property Stripe uses for its return
     // URLs; in production docker-compose sets it to https://chinesereads.com.
     @Value("${app.public-url}")
     private String publicUrl;
+
+    public SitemapController(TextService textService) {
+        this.textService = textService;
+    }
 
     @GetMapping(value = "/sitemap-texts.xml", produces = MediaType.APPLICATION_XML_VALUE)
     public String textsSitemap() {

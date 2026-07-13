@@ -36,22 +36,10 @@ public class ActivityServiceTest {
     public void setUp() {
         readingLogRepository = mock(ReadingLogRepository.class);
         userRepository = mock(UserRepository.class);
-        activityService = new ActivityService();
-        injectField(activityService, "readingLogRepository", readingLogRepository);
-        injectField(activityService, "userRepository", userRepository);
+        activityService = new ActivityService(readingLogRepository, userRepository);
 
         when(readingLogRepository.existsByUserAndDayAndTextKey(any(), any(), any())).thenReturn(false);
         when(readingLogRepository.findByUserAndDayGreaterThanEqual(any(), any())).thenReturn(List.of());
-    }
-
-    private void injectField(Object target, String fieldName, Object value) {
-        try {
-            var field = target.getClass().getDeclaredField(fieldName);
-            field.setAccessible(true);
-            field.set(target, value);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
     }
 
     private User user() {

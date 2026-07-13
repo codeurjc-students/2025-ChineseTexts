@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 import org.hibernate.engine.jdbc.proxy.BlobProxy;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -34,20 +33,23 @@ import com.chinesereads.backend.dto.FounderSocialDTO;
 @Transactional
 public class FounderService {
 
-    @Autowired
-    private FounderProfileRepository profileRepository;
+    private final FounderProfileRepository profileRepository;
 
-    @Autowired
-    private FounderSocialRepository socialRepository;
+    private final FounderSocialRepository socialRepository;
 
-    @Autowired
-    private FounderSectionRepository sectionRepository;
+    private final FounderSectionRepository sectionRepository;
 
-    @Autowired
-    private FounderItemRepository itemRepository;
+    private final FounderItemRepository itemRepository;
 
-    @Autowired
-    private FounderMapper founderMapper;
+    private final FounderMapper founderMapper;
+
+    public FounderService(FounderProfileRepository profileRepository, FounderSocialRepository socialRepository, FounderSectionRepository sectionRepository, FounderItemRepository itemRepository, FounderMapper founderMapper) {
+        this.profileRepository = profileRepository;
+        this.socialRepository = socialRepository;
+        this.sectionRepository = sectionRepository;
+        this.itemRepository = itemRepository;
+        this.founderMapper = founderMapper;
+    }
 
     // ---------- Perfil ----------
 

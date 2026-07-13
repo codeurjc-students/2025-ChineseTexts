@@ -38,21 +38,7 @@ public class CollectionServiceTest {
         collectionRepository = mock(CollectionRepository.class);
         userRepository = mock(UserRepository.class);
         collectionMapper = new CollectionMapperImpl();
-        collectionService = new CollectionService();
-
-        injectField(collectionService, "collectionRepository", collectionRepository);
-        injectField(collectionService, "userRepository", userRepository);
-        injectField(collectionService, "collectionMapper", collectionMapper);
-    }
-
-    private void injectField(Object target, String fieldName, Object value) {
-        try {
-            var field = target.getClass().getDeclaredField(fieldName);
-            field.setAccessible(true);
-            field.set(target, value);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        collectionService = new CollectionService(collectionRepository, userRepository, collectionMapper, null);
     }
 
     // Test unitario 1: Cuando se crea una colección, se guarda con el usuario correcto

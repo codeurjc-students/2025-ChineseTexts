@@ -2,7 +2,6 @@ package com.chinesereads.backend.Service;
 
 import java.time.LocalDate;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,8 +28,11 @@ public class AudioUsageService {
     @Value("${usage.audio.phrase.monthly-limit:15}")
     private int phraseMonthlyLimit;
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+
+    public AudioUsageService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     /**
      * Verifies the relevant monthly audio quota and, if allowed, consumes one unit.

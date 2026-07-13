@@ -34,10 +34,8 @@ public class UsageServiceTest {
     public void setUp() {
         userRepository = mock(UserRepository.class);
         appUsageRepository = mock(AppUsageRepository.class);
-        usageService = new UsageService();
+        usageService = new UsageService(userRepository, appUsageRepository);
 
-        injectField(usageService, "userRepository", userRepository);
-        injectField(usageService, "appUsageRepository", appUsageRepository);
         injectField(usageService, "userMonthlyLimit", 2);
         injectField(usageService, "premiumDailyLimit", 5);
         injectField(usageService, "globalDailyLimit", 3);

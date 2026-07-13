@@ -3,7 +3,6 @@ package com.chinesereads.backend.Controller;
 import java.security.Principal;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -39,21 +38,24 @@ import jakarta.servlet.http.HttpServletRequest;
 @RequestMapping("/api/tts")
 public class TtsController {
 
-    @Autowired
-    private TtsService ttsService;
+    private final TtsService ttsService;
 
-    @Autowired
-    private TtsRateLimiterService rateLimiter;
+    private final TtsRateLimiterService rateLimiter;
 
-    @Autowired
-    private AudioUsageService audioUsageService;
+    private final AudioUsageService audioUsageService;
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     /** Maximum characters accepted; the Flask TTS service itself caps around 1600. */
     @Value("${tts.max-chars:1600}")
     private int maxChars;
+
+    public TtsController(TtsService ttsService, TtsRateLimiterService rateLimiter, AudioUsageService audioUsageService, UserRepository userRepository) {
+        this.ttsService = ttsService;
+        this.rateLimiter = rateLimiter;
+        this.audioUsageService = audioUsageService;
+        this.userRepository = userRepository;
+    }
 
     @PostMapping
     public ResponseEntity<byte[]> synthesize(HttpServletRequest request,

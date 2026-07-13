@@ -35,8 +35,7 @@ public class UserControllerRestTest {
     @BeforeEach
     public void setUp() {
         userService = mock(UserService.class);
-        controller = new UserControllerRest();
-        injectField(controller, "userService", userService);
+        controller = new UserControllerRest(userService);
         // The success path builds a Location header via ServletUriComponentsBuilder,
         // which needs a current request in the context.
         RequestContextHolder.setRequestAttributes(
@@ -46,16 +45,6 @@ public class UserControllerRestTest {
     @AfterEach
     public void tearDown() {
         RequestContextHolder.resetRequestAttributes();
-    }
-
-    private void injectField(Object target, String fieldName, Object value) {
-        try {
-            var field = target.getClass().getDeclaredField(fieldName);
-            field.setAccessible(true);
-            field.set(target, value);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
     }
 
     private UserDTO dto(boolean termsAccepted) {

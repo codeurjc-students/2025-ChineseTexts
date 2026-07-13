@@ -2,7 +2,6 @@ package com.chinesereads.backend.Service;
 
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.chinesereads.backend.Model.Word;
@@ -13,11 +12,14 @@ import com.chinesereads.backend.dto.WordMapper;
 @Service
 public class WordService {
 
-    @Autowired
-    private WordRepository wordRepository;
+    private final WordRepository wordRepository;
 
-    @Autowired
-    private WordMapper wordMapper;
+    private final WordMapper wordMapper;
+
+    public WordService(WordRepository wordRepository, WordMapper wordMapper) {
+        this.wordRepository = wordRepository;
+        this.wordMapper = wordMapper;
+    }
 
     public WordDTO getWord(String chinese) {
         Optional<Word> word = wordRepository.findByChinese(chinese);

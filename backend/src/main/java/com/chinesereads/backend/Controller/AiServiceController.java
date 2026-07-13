@@ -2,7 +2,6 @@ package com.chinesereads.backend.Controller;
 
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,8 +22,11 @@ import java.security.Principal;
 @RequestMapping("/api/ai")
 public class AiServiceController {
 
-    @Autowired
-    private AiService aiService;
+    private final AiService aiService;
+
+    public AiServiceController(AiService aiService) {
+        this.aiService = aiService;
+    }
 
     // Genera un texto chino con IA dado un nivel HSK
     @PostMapping("/generate")

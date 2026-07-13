@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -31,8 +30,11 @@ import jakarta.servlet.http.HttpServletRequest;
 @RequestMapping("/api/flashcards")
 public class FlashcardControlerRest {
 
-    @Autowired
-    private FlashcardService flashcardService;
+    private final FlashcardService flashcardService;
+
+    public FlashcardControlerRest(FlashcardService flashcardService) {
+        this.flashcardService = flashcardService;
+    }
 
     /** Cards due today, oldest first (never-reviewed cards count as due). */
     @GetMapping("/due")

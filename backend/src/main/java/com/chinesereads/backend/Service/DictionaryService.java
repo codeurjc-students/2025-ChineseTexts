@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.chinesereads.backend.Model.Word;
@@ -17,11 +16,14 @@ public class DictionaryService {
     /** Result of a delete attempt, so the controller can map it to the right HTTP status. */
     public enum DeleteResult { DELETED, NOT_FOUND, IN_USE }
 
-    @Autowired
-    private WordRepository wordRepository;
+    private final WordRepository wordRepository;
 
-    @Autowired
-    private FlashcardRepository flashcardRepository;
+    private final FlashcardRepository flashcardRepository;
+
+    public DictionaryService(WordRepository wordRepository, FlashcardRepository flashcardRepository) {
+        this.wordRepository = wordRepository;
+        this.flashcardRepository = flashcardRepository;
+    }
 
     public Word save(Word word){
         if(wordRepository.findByChinese(word.getChinese()).isPresent()){

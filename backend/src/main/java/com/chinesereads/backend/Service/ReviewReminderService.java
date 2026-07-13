@@ -6,7 +6,6 @@ import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -34,14 +33,11 @@ public class ReviewReminderService {
 
     private static final Logger log = LoggerFactory.getLogger(ReviewReminderService.class);
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private FlashcardRepository flashcardRepository;
+    private final FlashcardRepository flashcardRepository;
 
-    @Autowired
-    private EmailService emailService;
+    private final EmailService emailService;
 
     // Kill switch independent of the Brevo credentials (see application.properties).
     @Value("${reminder.enabled:true}")
@@ -51,6 +47,12 @@ public class ReviewReminderService {
     // due-count, so a card due "today" is due on the user's calendar, not UTC's.
     @Value("${reminder.zone:Europe/Madrid}")
     private String zone;
+
+    public ReviewReminderService(UserRepository userRepository, FlashcardRepository flashcardRepository, EmailService emailService) {
+        this.userRepository = userRepository;
+        this.flashcardRepository = flashcardRepository;
+        this.emailService = emailService;
+    }
 
     @Scheduled(cron = "${reminder.cron:0 0 18 * * *}", zone = "${reminder.zone:Europe/Madrid}")
     public void sendDailyReviewReminders() {

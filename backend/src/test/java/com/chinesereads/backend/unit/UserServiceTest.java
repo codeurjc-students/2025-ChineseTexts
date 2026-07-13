@@ -53,26 +53,8 @@ public class UserServiceTest {
         stripeService = mock(StripeService.class);
         readingLogRepository = mock(ReadingLogRepository.class);
         emailService = mock(EmailService.class);
-        userService = new UserService();
-
-        // Inyectamos dependencias manualmente via reflection
-        injectField(userService, "userRepository", userRepository);
-        injectField(userService, "userTextRepository", userTextRepository);
-        injectField(userService, "userMapper", userMapper);
-        injectField(userService, "passwordEncoder", passwordEncoder);
-        injectField(userService, "stripeService", stripeService);
-        injectField(userService, "readingLogRepository", readingLogRepository);
-        injectField(userService, "emailService", emailService);
-    }
-
-    private void injectField(Object target, String fieldName, Object value) {
-        try {
-            var field = target.getClass().getDeclaredField(fieldName);
-            field.setAccessible(true);
-            field.set(target, value);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        userService = new UserService(userRepository, userMapper, passwordEncoder,
+                userTextRepository, stripeService, readingLogRepository, emailService);
     }
 
     @Test

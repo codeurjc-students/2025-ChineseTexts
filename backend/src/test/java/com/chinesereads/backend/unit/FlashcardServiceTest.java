@@ -42,11 +42,8 @@ public class FlashcardServiceTest {
     public void setUp() {
         flashcardRepository = mock(FlashcardRepository.class);
         userRepository = mock(UserRepository.class);
-        flashcardService = new FlashcardService();
-
-        injectField(flashcardService, "flashcardRepository", flashcardRepository);
-        injectField(flashcardService, "userRepository", userRepository);
-        injectField(flashcardService, "flashcardMapper", new FlashcardMapperImpl());
+        flashcardService = new FlashcardService(flashcardRepository, null, null, null,
+                userRepository, new FlashcardMapperImpl());
 
         owner = new User("u@u.com", "User", "encoded", "es", "USER");
         Collection collection = new Collection("Col", LocalDate.now(), owner, List.of());
@@ -55,16 +52,6 @@ public class FlashcardServiceTest {
 
         when(flashcardRepository.findById(1L)).thenReturn(Optional.of(card));
         when(flashcardRepository.save(any(Flashcard.class))).thenAnswer(inv -> inv.getArgument(0));
-    }
-
-    private void injectField(Object target, String fieldName, Object value) {
-        try {
-            var field = target.getClass().getDeclaredField(fieldName);
-            field.setAccessible(true);
-            field.set(target, value);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
     }
 
     // Test unitario 1: una tarjeta nueva contestada bien se programa para mañana

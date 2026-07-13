@@ -8,7 +8,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +32,7 @@ public class UserTextServiceTest {
         try {
             Method m = UserTextService.class.getDeclaredMethod("buildSentences", List.class);
             m.setAccessible(true);
-            return (List<String>) m.invoke(new UserTextService(), segments);
+            return (List<String>) m.invoke(new UserTextService(null, null, null, null, null, null), segments);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -90,9 +89,7 @@ public class UserTextServiceTest {
             .thenReturn(List.of(Map.of("chinese", "你好", "pinyin", "nǐ hǎo", "english", "hello", "spanish", "hola")))
             .thenReturn(List.of(Map.of("chinese", "世界", "pinyin", "shì jiè", "english", "world", "spanish", "mundo")));
 
-        UserTextService service = new UserTextService();
-        injectField(service, "wordRepository", wordRepository);
-        injectField(service, "aiService", aiService);
+        UserTextService service = new UserTextService(null, null, wordRepository, null, aiService, null);
 
         Method m = UserTextService.class.getDeclaredMethod("resolveDefinitions", List.class);
         m.setAccessible(true);
@@ -101,15 +98,5 @@ public class UserTextServiceTest {
         assertEquals("hello", defs.get("你好")[1]);
         assertEquals("world", defs.get("世界")[1]); // filled by the retry
         verify(aiService, times(2)).getWordDefinitions(any());
-    }
-
-    private void injectField(Object target, String fieldName, Object value) {
-        try {
-            Field field = target.getClass().getDeclaredField(fieldName);
-            field.setAccessible(true);
-            field.set(target, value);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
     }
 }

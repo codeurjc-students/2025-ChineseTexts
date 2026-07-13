@@ -2,7 +2,6 @@ package com.chinesereads.backend.Service;
 
 import java.time.LocalDate;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,8 +21,11 @@ public class ChatUsageService {
     @Value("${usage.chat.monthly-limit:10}")
     private int chatMonthlyLimit;
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+
+    public ChatUsageService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     /** True when the user has no monthly chat cap (active premium or admin). */
     public boolean isUnlimited(User user) {

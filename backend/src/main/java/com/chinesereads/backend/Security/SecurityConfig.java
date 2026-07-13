@@ -1,6 +1,5 @@
 package com.chinesereads.backend.Security;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -22,14 +21,17 @@ import com.chinesereads.backend.Security.jwt.UnauthorizedHandlerJwt;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Autowired
-    private JwtRequestFilter jwtRequestFilter;
+    private final JwtRequestFilter jwtRequestFilter;
 
-    @Autowired
-    RepositoryUserDetailsService userDetailsService;
+    private final RepositoryUserDetailsService userDetailsService;
 
-    @Autowired
-    private UnauthorizedHandlerJwt unauthorizedHandlerJwt;
+    private final UnauthorizedHandlerJwt unauthorizedHandlerJwt;
+
+    public SecurityConfig(JwtRequestFilter jwtRequestFilter, RepositoryUserDetailsService userDetailsService, UnauthorizedHandlerJwt unauthorizedHandlerJwt) {
+        this.jwtRequestFilter = jwtRequestFilter;
+        this.userDetailsService = userDetailsService;
+        this.unauthorizedHandlerJwt = unauthorizedHandlerJwt;
+    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
