@@ -71,17 +71,50 @@ public class EmailService {
         });
     }
 
+    /**
+     * Sends the daily SRS review reminder (marketing: only for users who opted in via
+     * {@code emailConsent}). SYNCHRONOUS on purpose — the caller is the scheduled
+     * reminder job, which already runs on a background thread and needs the failure
+     * to propagate so an unsent reminder is not marked as sent (it retries next day).
+     */
+    public void sendReviewReminderEmail(String toEmail, String toName, String language,
+                                        long dueCount, int streak, String unsubscribeToken) {
+        if (!isConfigured()) {
+            return;
+        }
+        boolean es = "es".equalsIgnoreCase(language);
+        String subject = es
+                ? "Tienes " + dueCount + (dueCount == 1 ? " tarjeta esperándote" : " tarjetas esperándote") + " hoy 📚"
+                : "You have " + dueCount + (dueCount == 1 ? " flashcard waiting" : " flashcards waiting") + " today 📚";
+        String unsubscribeUrl = publicUrl + "/api/users/unsubscribe?token=" + unsubscribeToken;
+        // List-Unsubscribe: standard header mail clients (Gmail, Apple Mail) surface as
+        // a native "Unsubscribe" button; also improves deliverability of marketing mail.
+        send(toEmail, toName, subject,
+                buildReviewReminderHtml(toName, es, dueCount, streak, unsubscribeToken),
+                Map.of("List-Unsubscribe", "<" + unsubscribeUrl + ">"));
+        log.info("Review reminder ({} due) sent to {}", dueCount, toEmail);
+    }
+
     /** Posts one transactional email to Brevo. */
     private void send(String toEmail, String toName, String subject, String html) {
+        send(toEmail, toName, subject, html, Map.of());
+    }
+
+    /** Posts one email to Brevo, optionally with extra SMTP headers (e.g. List-Unsubscribe). */
+    private void send(String toEmail, String toName, String subject, String html,
+                      Map<String, String> extraHeaders) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.set("api-key", apiKey);
 
-        Map<String, Object> body = Map.of(
+        Map<String, Object> body = new java.util.HashMap<>(Map.of(
                 "sender", Map.of("email", fromEmail, "name", fromName),
                 "to", java.util.List.of(Map.of("email", toEmail, "name", toName)),
                 "subject", subject,
-                "htmlContent", html);
+                "htmlContent", html));
+        if (!extraHeaders.isEmpty()) {
+            body.put("headers", extraHeaders);
+        }
 
         restTemplate.postForEntity(BREVO_URL, new HttpEntity<>(body, headers), String.class);
     }
@@ -186,6 +219,103 @@ public class EmailService {
                 .replace("%CTA%", cta)
                 .replace("%CTATEST%", ctaTest)
                 .replace("%FOOTER%", footer)
+                .replace("%PRIVACY%", privacy)
+                .replace("%LP%", lp);
+    }
+
+    /**
+     * The daily review-reminder body: same corporate table/inline-style skeleton as the
+     * welcome email. Short by design — one number, one optional streak nudge, one CTA.
+     * The footer explains WHY the user receives it (opted-in reminders) and offers a
+     * one-click, no-login unsubscribe (GDPR: withdrawing must be as easy as giving).
+     * Exposed for testing.
+     */
+    public String buildReviewReminderHtml(String name, boolean es, long dueCount, int streak,
+                                          String unsubscribeToken) {
+        String base = publicUrl;
+        String lp = es ? base + "/es" : base;
+        String logo = base + "/icon-512.png";
+        String safeName = name == null ? "" : name.trim();
+        String unsubscribeUrl = base + "/api/users/unsubscribe?token=" + unsubscribeToken;
+
+        String hello = es ? "¡Hola, " + safeName + "! 你好!" : "Hi " + safeName + "! 你好!";
+        String intro = es
+                ? "Tus repasos de hoy están listos: <strong>" + dueCount
+                  + (dueCount == 1 ? " tarjeta espera" : " tarjetas esperan")
+                  + "</strong> en tus colecciones. Son solo unos minutos, y es justo el momento en que repasarlas fija las palabras en tu memoria."
+                : "Today's reviews are ready: <strong>" + dueCount
+                  + (dueCount == 1 ? " flashcard is waiting" : " flashcards are waiting")
+                  + "</strong> in your collections. It only takes a few minutes, and right now is when reviewing locks those words into your memory.";
+        String streakLine = streak <= 0 ? ""
+                : (es
+                    ? "🔥 Llevas <strong>" + streak + (streak == 1 ? " día" : " días")
+                      + "</strong> de racha leyendo — una lectura hoy la mantiene viva."
+                    : "🔥 You're on a <strong>" + streak + (streak == 1 ? "-day" : "-day")
+                      + "</strong> reading streak — one reading today keeps it alive.");
+        String cta = es ? "Repasar ahora" : "Review now";
+        String footer = es
+                ? "Recibes este correo porque activaste las comunicaciones por email en tu cuenta de ChineseReads. Como máximo te enviaremos un recordatorio al día, y solo cuando tengas repasos pendientes."
+                : "You're receiving this email because you enabled email updates in your ChineseReads account. We send at most one reminder a day, and only when you have reviews due.";
+        String unsubscribe = es ? "Darse de baja con un clic" : "Unsubscribe with one click";
+        String privacy = es ? "Política de privacidad" : "Privacy policy";
+
+        return """
+<!doctype html>
+<html>
+<body style="margin:0;padding:0;background-color:#f4f1ec;">
+  <table role="presentation" width="100%%" cellpadding="0" cellspacing="0" style="background-color:#f4f1ec;padding:24px 0;">
+    <tr><td align="center">
+      <table role="presentation" width="600" cellpadding="0" cellspacing="0"
+             style="width:600px;max-width:94%%;background:#ffffff;border-radius:12px;overflow:hidden;font-family:Arial,Helvetica,sans-serif;">
+        <tr>
+          <td style="background:#c0392b;padding:26px 32px;" align="center">
+            <img src="%LOGO%" width="56" height="56" alt="ChineseReads"
+                 style="display:block;border-radius:12px;margin:0 auto 10px;">
+            <div style="color:#ffffff;font-size:22px;font-weight:bold;letter-spacing:.3px;">ChineseReads</div>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:32px 36px 8px;">
+            <h1 style="margin:0 0 12px;font-size:22px;color:#2c3e50;">%HELLO%</h1>
+            <p style="margin:0;font-size:15px;line-height:1.6;color:#444;">%INTRO%</p>
+          </td>
+        </tr>
+        %STREAKROW%
+        <tr>
+          <td align="center" style="padding:24px 36px 30px;">
+            <a href="%LP%/collections"
+               style="display:inline-block;background:#27ae60;color:#ffffff;text-decoration:none;
+                      font-size:16px;font-weight:bold;padding:13px 34px;border-radius:8px;">%CTA%</a>
+          </td>
+        </tr>
+        <tr>
+          <td style="background:#faf9f7;padding:18px 36px;border-top:1px solid #eee;" align="center">
+            <p style="margin:0 0 6px;font-size:12px;color:#999;line-height:1.5;">%FOOTER%</p>
+            <a href="%UNSUB%" style="font-size:12px;color:#999;">%UNSUBTEXT%</a>
+            &nbsp;·&nbsp;
+            <a href="%LP%/privacy-policy" style="font-size:12px;color:#999;">%PRIVACY%</a>
+          </td>
+        </tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>
+"""
+                .replace("%STREAKROW%", streakLine.isEmpty() ? "" : """
+        <tr>
+          <td style="padding:14px 36px 0;">
+            <p style="margin:0;font-size:14px;line-height:1.6;color:#555;">%STREAK%</p>
+          </td>
+        </tr>
+""".replace("%STREAK%", streakLine))
+                .replace("%LOGO%", logo)
+                .replace("%HELLO%", hello)
+                .replace("%INTRO%", intro)
+                .replace("%CTA%", cta)
+                .replace("%FOOTER%", footer)
+                .replace("%UNSUB%", unsubscribeUrl)
+                .replace("%UNSUBTEXT%", unsubscribe)
                 .replace("%PRIVACY%", privacy)
                 .replace("%LP%", lp);
     }

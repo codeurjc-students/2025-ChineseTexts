@@ -105,6 +105,23 @@ public class UserService {
         return userMapper.toDTO(userRepository.save(user));
     }
 
+    /**
+     * One-click unsubscribe from reminder emails via the token embedded in each email
+     * (no login required — GDPR: withdrawing must be as easy as giving). Same semantics
+     * as revoking from the profile: consent off, proof timestamp cleared. Returns the
+     * user (for the confirmation page's language) or empty when the token is unknown.
+     */
+    public java.util.Optional<User> unsubscribeByToken(String token) {
+        if (token == null || token.isBlank()) {
+            return java.util.Optional.empty();
+        }
+        return userRepository.findByUnsubscribeToken(token).map(user -> {
+            user.setEmailConsent(false);
+            user.setEmailConsentAt(null);
+            return userRepository.save(user);
+        });
+    }
+
     public boolean checkPassword(String email, String rawPassword) {
         User user = userRepository.findByEmail(email).orElseThrow();
         return passwordEncoder.matches(rawPassword, user.getPassword());

@@ -63,6 +63,10 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/api/words/textWords").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/texts/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/founder/**").permitAll()
+                // One-click email unsubscribe: the visitor comes from a mail client with
+                // no session; the token IS the authentication. Must precede the ADMIN
+                // GET /api/users/* wildcard below (first match wins).
+                .requestMatchers(HttpMethod.GET, "/api/users/unsubscribe").permitAll()
                 // USER
                 .requestMatchers("/api/my-texts/**").hasAnyRole("USER", "ADMIN")
                 .requestMatchers(HttpMethod.GET, "/api/flashcards/**").hasAnyRole("USER", "ADMIN")

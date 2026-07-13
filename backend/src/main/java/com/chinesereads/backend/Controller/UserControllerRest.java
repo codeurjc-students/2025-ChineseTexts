@@ -10,6 +10,7 @@ import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -254,5 +255,51 @@ public class UserControllerRest {
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(Map.of("message", e.getMessage()));
         }
+    }
+
+    /**
+     * One-click unsubscribe from reminder emails, linked from every reminder (the
+     * token identifies the user — no login, per GDPR ease-of-withdrawal). Public
+     * (see SecurityConfig) and answers with a tiny standalone confirmation page in
+     * the user's language: the visitor comes from an email client, not the SPA.
+     */
+    @GetMapping("/unsubscribe")
+    public ResponseEntity<String> unsubscribe(@RequestParam String token) {
+        return userService.unsubscribeByToken(token)
+                .map(user -> ResponseEntity.ok()
+                        .contentType(MediaType.TEXT_HTML)
+                        .body(unsubscribePage("es".equalsIgnoreCase(user.getLanguage()))))
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .contentType(MediaType.TEXT_HTML)
+                        .body(unsubscribeInvalidPage()));
+    }
+
+    private String unsubscribePage(boolean es) {
+        String title = es ? "Te has dado de baja" : "You have been unsubscribed";
+        String body = es
+                ? "No volverás a recibir recordatorios por correo. Puedes reactivarlos cuando quieras desde tu perfil."
+                : "You will no longer receive email reminders. You can turn them back on anytime from your profile.";
+        return unsubscribeHtml(title, body);
+    }
+
+    private String unsubscribeInvalidPage() {
+        // Unknown token → unknown user → unknown language, so both are shown.
+        return unsubscribeHtml("Invalid link / Enlace no válido",
+                "This unsubscribe link is not valid. / Este enlace de baja no es válido.");
+    }
+
+    private String unsubscribeHtml(String title, String body) {
+        return """
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex"><title>%TITLE% · ChineseReads</title></head>
+<body style="margin:0;font-family:Arial,Helvetica,sans-serif;background:#f4f1ec;display:flex;align-items:center;justify-content:center;min-height:100vh;">
+<div style="background:#fff;border-radius:12px;padding:36px 40px;max-width:420px;text-align:center;">
+<div style="color:#c0392b;font-size:20px;font-weight:bold;margin-bottom:14px;">ChineseReads</div>
+<h1 style="font-size:19px;color:#2c3e50;margin:0 0 10px;">%TITLE%</h1>
+<p style="font-size:14px;color:#555;line-height:1.6;margin:0;">%BODY%</p>
+</div></body></html>
+"""
+                .replace("%TITLE%", title)
+                .replace("%BODY%", body);
     }
 }

@@ -75,6 +75,14 @@ public class User {
     private boolean emailConsent = false;
     private LocalDateTime emailConsentAt;
 
+    // Recordatorio diario de repasos SRS (solo con emailConsent). lastReviewReminderDay
+    // garantiza como máximo UN correo al día aunque el trabajo programado se re-ejecute
+    // (reinicio del servidor a mitad de día). unsubscribeToken permite la baja en un
+    // clic desde el propio correo, sin iniciar sesión (RGPD: revocar tan fácil como
+    // dar). Ambos nullables: las cuentas antiguas los reciben perezosamente.
+    private LocalDate lastReviewReminderDay;
+    private String unsubscribeToken;
+
     // Suscripción PREMIUM caducable: el usuario disfruta del plan premium mientras
     // premiumUntil sea una fecha/hora futura. Null (o pasada) = plan gratuito. Lo fija
     // un administrador o la pasarela de pago (Stripe). Es la ÚNICA fuente de verdad del
@@ -317,6 +325,22 @@ public class User {
 
     public void setEmailConsentAt(LocalDateTime emailConsentAt) {
         this.emailConsentAt = emailConsentAt;
+    }
+
+    public LocalDate getLastReviewReminderDay() {
+        return lastReviewReminderDay;
+    }
+
+    public void setLastReviewReminderDay(LocalDate lastReviewReminderDay) {
+        this.lastReviewReminderDay = lastReviewReminderDay;
+    }
+
+    public String getUnsubscribeToken() {
+        return unsubscribeToken;
+    }
+
+    public void setUnsubscribeToken(String unsubscribeToken) {
+        this.unsubscribeToken = unsubscribeToken;
     }
 
     public LocalDateTime getPremiumUntil() {
