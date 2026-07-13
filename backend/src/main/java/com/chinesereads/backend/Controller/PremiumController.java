@@ -5,7 +5,6 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -38,11 +37,14 @@ public class PremiumController {
 
     private static final Logger log = LoggerFactory.getLogger(PremiumController.class);
 
-    @Autowired
-    private StripeService stripeService;
+    private final StripeService stripeService;
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+
+    public PremiumController(StripeService stripeService, UserRepository userRepository) {
+        this.stripeService = stripeService;
+        this.userRepository = userRepository;
+    }
 
     @PostMapping("/checkout")
     public ResponseEntity<?> checkout(@RequestBody Map<String, String> body, Principal principal) {

@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.time.LocalDate;
 
 import org.hibernate.engine.jdbc.proxy.BlobProxy;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
@@ -19,17 +18,20 @@ import jakarta.annotation.PostConstruct;
 @Service
 public class DatabaseInitializer {
 
-    @Autowired
-    private DictionaryService dictionaryService;
+    private final DictionaryService dictionaryService;
 
-    @Autowired
-    private TextService textService;
+    private final TextService textService;
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
-    @Autowired
-    private UserMapper userMapper;
+    private final UserMapper userMapper;
+
+    public DatabaseInitializer(DictionaryService dictionaryService, TextService textService, UserService userService, UserMapper userMapper) {
+        this.dictionaryService = dictionaryService;
+        this.textService = textService;
+        this.userService = userService;
+        this.userMapper = userMapper;
+    }
     
     @PostConstruct
     public void initializeDatabase(){

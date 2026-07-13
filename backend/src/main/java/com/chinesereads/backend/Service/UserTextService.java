@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,27 +34,30 @@ import com.chinesereads.backend.dto.UserTextWordDTO;
 @Service
 public class UserTextService {
 
-    @Autowired
-    private UserTextRepository userTextRepository;
+    private final UserTextRepository userTextRepository;
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private WordRepository wordRepository;
+    private final WordRepository wordRepository;
 
-    @Autowired
-    private JiebaService jiebaService;
+    private final JiebaService jiebaService;
 
-    @Autowired
-    private AiService aiService;
+    private final AiService aiService;
 
-    @Autowired
-    private UsageService usageService;
+    private final UsageService usageService;
 
     /** Max characters per text: bounds per-generation API cost and keeps full-text audio working. */
     @Value("${usage.text.max-chars:1500}")
     private int maxChars;
+
+    public UserTextService(UserTextRepository userTextRepository, UserRepository userRepository, WordRepository wordRepository, JiebaService jiebaService, AiService aiService, UsageService usageService) {
+        this.userTextRepository = userTextRepository;
+        this.userRepository = userRepository;
+        this.wordRepository = wordRepository;
+        this.jiebaService = jiebaService;
+        this.aiService = aiService;
+        this.usageService = usageService;
+    }
 
     /**
      * Builds a private text from an uploaded image (OCR) or pasted Chinese text.

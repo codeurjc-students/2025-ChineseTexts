@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -37,8 +36,11 @@ import jakarta.servlet.http.HttpServletRequest;
 @RequestMapping("/api/my-texts")
 public class UserTextControllerRest {
 
-    @Autowired
-    private UserTextService userTextService;
+    private final UserTextService userTextService;
+
+    public UserTextControllerRest(UserTextService userTextService) {
+        this.userTextService = userTextService;
+    }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> create(

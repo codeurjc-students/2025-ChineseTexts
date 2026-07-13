@@ -10,7 +10,6 @@ import com.chinesereads.backend.Security.jwt.UserLoginService;
 
 import jakarta.servlet.http.HttpServletResponse;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -22,8 +21,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RequestMapping("/api/auth")
 public class LoginControllerRest {    
 
-    @Autowired
-    private UserLoginService userLoginService;
+    private final UserLoginService userLoginService;
+
+    public LoginControllerRest(UserLoginService userLoginService) {
+        this.userLoginService = userLoginService;
+    }
 
     @PostMapping("/login")
 	public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest loginRequest, HttpServletResponse response) {

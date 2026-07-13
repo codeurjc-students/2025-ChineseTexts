@@ -4,7 +4,6 @@ import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -35,14 +34,17 @@ import jakarta.servlet.http.HttpServletRequest;
 @RequestMapping("/api/chat")
 public class ChatControllerRest {
 
-    @Autowired
-    private AiService aiService;
+    private final AiService aiService;
 
-    @Autowired
-    private ChatUsageService chatUsageService;
+    private final ChatUsageService chatUsageService;
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+
+    public ChatControllerRest(AiService aiService, ChatUsageService chatUsageService, UserRepository userRepository) {
+        this.aiService = aiService;
+        this.chatUsageService = chatUsageService;
+        this.userRepository = userRepository;
+    }
 
     @PostMapping("/word")
     public ResponseEntity<?> chatWord(@RequestBody(required = false) WordChatRequestDTO body,

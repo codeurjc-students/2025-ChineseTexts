@@ -39,8 +39,7 @@ public class StripeServiceTest {
     @BeforeEach
     public void setUp() {
         userRepository = mock(UserRepository.class);
-        stripeService = new StripeService();
-        injectField(stripeService, "userRepository", userRepository);
+        stripeService = new StripeService(userRepository);
         injectField(stripeService, "priceMonthly", "price_month");
         injectField(stripeService, "priceYearly", "price_year");
     }

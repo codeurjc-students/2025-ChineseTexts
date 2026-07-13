@@ -2,7 +2,6 @@ package com.chinesereads.backend.Service;
 
 import java.time.LocalDate;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,11 +41,14 @@ public class UsageService {
     @Value("${usage.global.daily-limit:200}")
     private int globalDailyLimit;
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private AppUsageRepository appUsageRepository;
+    private final AppUsageRepository appUsageRepository;
+
+    public UsageService(UserRepository userRepository, AppUsageRepository appUsageRepository) {
+        this.userRepository = userRepository;
+        this.appUsageRepository = appUsageRepository;
+    }
 
     /**
      * Verifies both limits and, if allowed, consumes one unit from each counter.

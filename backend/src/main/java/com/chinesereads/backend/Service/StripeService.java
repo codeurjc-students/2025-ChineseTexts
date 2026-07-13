@@ -6,7 +6,6 @@ import java.time.ZoneId;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,8 +56,11 @@ public class StripeService {
     @Value("${app.public-url:}")
     private String publicUrl;
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+
+    public StripeService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     /** True only when a Stripe secret key is present, so billing endpoints can operate. */
     public boolean isConfigured() {

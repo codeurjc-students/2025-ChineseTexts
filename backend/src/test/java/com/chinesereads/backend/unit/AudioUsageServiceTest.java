@@ -32,8 +32,7 @@ public class AudioUsageServiceTest {
     @BeforeEach
     public void setUp() {
         userRepository = mock(UserRepository.class);
-        audioUsageService = new AudioUsageService();
-        injectField(audioUsageService, "userRepository", userRepository);
+        audioUsageService = new AudioUsageService(userRepository);
         injectField(audioUsageService, "wordMonthlyLimit", 3);
         injectField(audioUsageService, "phraseMonthlyLimit", 2);
     }

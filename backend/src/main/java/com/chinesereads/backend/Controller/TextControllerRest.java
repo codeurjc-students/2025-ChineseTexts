@@ -5,7 +5,6 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -33,8 +32,11 @@ import jakarta.servlet.http.HttpServletRequest;
 @RequestMapping("/api/texts")
 public class TextControllerRest {
 
-    @Autowired
-    private TextService textService;
+    private final TextService textService;
+
+    public TextControllerRest(TextService textService) {
+        this.textService = textService;
+    }
 
     @GetMapping
     public List<TextDTO> getTexts(@RequestParam int page, @RequestParam int size) {

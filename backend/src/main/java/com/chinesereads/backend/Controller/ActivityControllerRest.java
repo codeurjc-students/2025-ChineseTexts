@@ -3,7 +3,6 @@ package com.chinesereads.backend.Controller;
 import java.security.Principal;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -29,11 +28,14 @@ import jakarta.servlet.http.HttpServletRequest;
 @RequestMapping("/api/activity")
 public class ActivityControllerRest {
 
-    @Autowired
-    private ActivityService activityService;
+    private final ActivityService activityService;
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+
+    public ActivityControllerRest(ActivityService activityService, UserRepository userRepository) {
+        this.activityService = activityService;
+        this.userRepository = userRepository;
+    }
 
     /** Logs a reading; body: {"textKey": "public:12" | "own:34"}. Idempotent per day. */
     @PostMapping("/reading")

@@ -2,7 +2,6 @@ package com.chinesereads.backend.Controller;
 
 import java.security.Principal;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -26,11 +25,14 @@ import jakarta.servlet.http.HttpServletRequest;
 @RequestMapping("/api/usage")
 public class UsageControllerRest {
 
-    @Autowired
-    private UsageService usageService;
+    private final UsageService usageService;
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+
+    public UsageControllerRest(UsageService usageService, UserRepository userRepository) {
+        this.usageService = usageService;
+        this.userRepository = userRepository;
+    }
 
     @GetMapping("/me")
     public ResponseEntity<UsageStatusDTO> myUsage(HttpServletRequest request) {

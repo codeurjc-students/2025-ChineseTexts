@@ -2,7 +2,6 @@ package com.chinesereads.backend.Controller;
 
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -36,8 +35,11 @@ import com.chinesereads.backend.dto.FounderSocialDTO;
 @RequestMapping("/api/founder")
 public class FounderControllerRest {
 
-    @Autowired
-    private FounderService founderService;
+    private final FounderService founderService;
+
+    public FounderControllerRest(FounderService founderService) {
+        this.founderService = founderService;
+    }
 
     // ---------- Perfil ----------
 

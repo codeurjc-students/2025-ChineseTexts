@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.io.ByteArrayResource;
@@ -30,13 +29,16 @@ public class AiService {
     @Value("${ocr.service.url:http://localhost:5000}")
     private String ocrServiceUrl;
 
-    @Autowired
-    private WordRepository wordRepository;
+    private final WordRepository wordRepository;
 
-    @Autowired
-    private JiebaService jiebaService;
+    private final JiebaService jiebaService;
 
     private final RestTemplate restTemplate = new RestTemplate();
+
+    public AiService(WordRepository wordRepository, JiebaService jiebaService) {
+        this.wordRepository = wordRepository;
+        this.jiebaService = jiebaService;
+    }
 
     public Map<String, Object> generateFullText(String level, String topic) throws Exception {
         Map<String, String> generateRequest = new HashMap<>();

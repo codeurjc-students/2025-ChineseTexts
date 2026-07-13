@@ -4,7 +4,6 @@ import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,11 +20,14 @@ import jakarta.servlet.http.HttpServletRequest;
 @RequestMapping("/api/collections")
 public class CollectionControllerRest {
 
-    @Autowired
-    private CollectionService collectionService;
+    private final CollectionService collectionService;
 
-    @Autowired
-    private FlashcardService flashcardService;
+    private final FlashcardService flashcardService;
+
+    public CollectionControllerRest(CollectionService collectionService, FlashcardService flashcardService) {
+        this.collectionService = collectionService;
+        this.flashcardService = flashcardService;
+    }
 
     // GET /api/collections — colecciones del usuario logueado
     @GetMapping

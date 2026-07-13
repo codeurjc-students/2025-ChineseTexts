@@ -34,8 +34,7 @@ public class ChatUsageServiceTest {
     @BeforeEach
     public void setUp() {
         userRepository = mock(UserRepository.class);
-        chatUsageService = new ChatUsageService();
-        injectField(chatUsageService, "userRepository", userRepository);
+        chatUsageService = new ChatUsageService(userRepository);
         injectField(chatUsageService, "chatMonthlyLimit", 3);
     }
 

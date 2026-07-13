@@ -3,7 +3,6 @@ package com.chinesereads.backend.Service;
 import java.time.LocalDate;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.chinesereads.backend.Model.Collection;
@@ -27,23 +26,26 @@ public class FlashcardService {
     private static final double DEFAULT_EASE = 2.5;
     private static final double MIN_EASE = 1.3;
 
-    @Autowired
-    private FlashcardRepository flashcardRepository;
+    private final FlashcardRepository flashcardRepository;
 
-    @Autowired
-    private CollectionRepository collectionRepository;
+    private final CollectionRepository collectionRepository;
 
-    @Autowired
-    private WordRepository wordRepository;
+    private final WordRepository wordRepository;
 
-    @Autowired
-    private TextRepository textRepository;
+    private final TextRepository textRepository;
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private FlashcardMapper flashcardMapper;
+    private final FlashcardMapper flashcardMapper;
+
+    public FlashcardService(FlashcardRepository flashcardRepository, CollectionRepository collectionRepository, WordRepository wordRepository, TextRepository textRepository, UserRepository userRepository, FlashcardMapper flashcardMapper) {
+        this.flashcardRepository = flashcardRepository;
+        this.collectionRepository = collectionRepository;
+        this.wordRepository = wordRepository;
+        this.textRepository = textRepository;
+        this.userRepository = userRepository;
+        this.flashcardMapper = flashcardMapper;
+    }
 
     public FlashcardDTO addFlashcard(Long collectionId, String chinese, Long textId, String email) {
         Collection collection = collectionRepository.findById(collectionId).orElseThrow();

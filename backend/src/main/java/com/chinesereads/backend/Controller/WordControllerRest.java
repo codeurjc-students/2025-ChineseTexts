@@ -1,6 +1,5 @@
 package com.chinesereads.backend.Controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -25,14 +24,17 @@ import com.chinesereads.backend.dto.WordMapper;
 @RequestMapping("/api/words")
 public class WordControllerRest {
 
-    @Autowired
-    private WordService wordService;
+    private final WordService wordService;
 
-    @Autowired
-    private DictionaryService dictionaryService;
+    private final DictionaryService dictionaryService;
 
-    @Autowired
-    private WordMapper wordMapper;
+    private final WordMapper wordMapper;
+
+    public WordControllerRest(WordService wordService, DictionaryService dictionaryService, WordMapper wordMapper) {
+        this.wordService = wordService;
+        this.dictionaryService = dictionaryService;
+        this.wordMapper = wordMapper;
+    }
 
     @GetMapping("/textWords")
     public ResponseEntity<WordDTO[]> getTextWords(@RequestParam String text) {

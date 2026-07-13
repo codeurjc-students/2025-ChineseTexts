@@ -8,7 +8,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.hibernate.engine.jdbc.proxy.BlobProxy;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
@@ -28,20 +27,23 @@ import com.chinesereads.backend.dto.ValidationResultDTO;
 @Service
 public class TextService {
 
-    @Autowired
-    private TextRepository textRepository;
+    private final TextRepository textRepository;
 
-    @Autowired
-    private TextMapper textMapper;
+    private final TextMapper textMapper;
 
-    @Autowired
-    private JiebaService jiebaService;
+    private final JiebaService jiebaService;
 
-    @Autowired
-    private DictionaryService dictionaryService;
+    private final DictionaryService dictionaryService;
 
-    @Autowired
-    private WordRepository wordRepository;
+    private final WordRepository wordRepository;
+
+    public TextService(TextRepository textRepository, TextMapper textMapper, JiebaService jiebaService, DictionaryService dictionaryService, WordRepository wordRepository) {
+        this.textRepository = textRepository;
+        this.textMapper = textMapper;
+        this.jiebaService = jiebaService;
+        this.dictionaryService = dictionaryService;
+        this.wordRepository = wordRepository;
+    }
 
     public TextDTO save(Text text) {
         if (textRepository.findByTitleEnglish(text.getTitleEnglish()).isPresent()

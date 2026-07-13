@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -29,26 +28,29 @@ import com.chinesereads.backend.dto.UserMapper;
 @Service
 public class UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private UserMapper userMapper;
+    private final UserMapper userMapper;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private UserTextRepository userTextRepository;
+    private final UserTextRepository userTextRepository;
 
-    @Autowired
-    private StripeService stripeService;
+    private final StripeService stripeService;
 
-    @Autowired
-    private ReadingLogRepository readingLogRepository;
+    private final ReadingLogRepository readingLogRepository;
 
-    @Autowired
-    private EmailService emailService;
+    private final EmailService emailService;
+
+    public UserService(UserRepository userRepository, UserMapper userMapper, PasswordEncoder passwordEncoder, UserTextRepository userTextRepository, StripeService stripeService, ReadingLogRepository readingLogRepository, EmailService emailService) {
+        this.userRepository = userRepository;
+        this.userMapper = userMapper;
+        this.passwordEncoder = passwordEncoder;
+        this.userTextRepository = userTextRepository;
+        this.stripeService = stripeService;
+        this.readingLogRepository = readingLogRepository;
+        this.emailService = emailService;
+    }
 
     public UserDTO save(UserDTO user) {
         if (userRepository.findByEmail(user.email()).isPresent()) {

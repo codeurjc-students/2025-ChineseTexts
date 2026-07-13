@@ -3,7 +3,6 @@ package com.chinesereads.backend.Service;
 import java.time.LocalDate;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.chinesereads.backend.Model.Collection;
@@ -18,17 +17,20 @@ import com.chinesereads.backend.dto.FlashcardMapper;
 @Service
 public class CollectionService {
 
-    @Autowired
-    private CollectionRepository collectionRepository;
+    private final CollectionRepository collectionRepository;
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private CollectionMapper collectionMapper;
+    private final CollectionMapper collectionMapper;
 
-    @Autowired
-    private FlashcardMapper flashcardMapper;
+    private final FlashcardMapper flashcardMapper;
+
+    public CollectionService(CollectionRepository collectionRepository, UserRepository userRepository, CollectionMapper collectionMapper, FlashcardMapper flashcardMapper) {
+        this.collectionRepository = collectionRepository;
+        this.userRepository = userRepository;
+        this.collectionMapper = collectionMapper;
+        this.flashcardMapper = flashcardMapper;
+    }
 
     public List<CollectionDTO> getUserCollections(String email) {
         User user = userRepository.findByEmail(email).orElseThrow();

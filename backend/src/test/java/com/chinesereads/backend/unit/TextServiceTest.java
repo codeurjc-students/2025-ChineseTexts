@@ -44,23 +44,7 @@ public class TextServiceTest {
         jiebaService = mock(JiebaService.class);
         dictionaryService = mock(DictionaryService.class);
         textMapper = new TextMapperImpl();
-        textService = new TextService();
-
-        injectField(textService, "textRepository", textRepository);
-        injectField(textService, "textMapper", textMapper);
-        injectField(textService, "jiebaService", jiebaService);
-        injectField(textService, "dictionaryService", dictionaryService);
-        injectField(textService, "wordRepository", wordRepository);
-    }
-
-    private void injectField(Object target, String fieldName, Object value) {
-        try {
-            var field = target.getClass().getDeclaredField(fieldName);
-            field.setAccessible(true);
-            field.set(target, value);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        textService = new TextService(textRepository, textMapper, jiebaService, dictionaryService, wordRepository);
     }
 
     // Test unitario 1: Cuando se guarda un texto con título único, se guarda correctamente
