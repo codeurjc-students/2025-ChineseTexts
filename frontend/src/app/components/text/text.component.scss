@@ -317,19 +317,26 @@ body {
   margin-bottom: 10px;
 }
 
+// Chips de ancho natural (flex-wrap), no cuadrícula de columnas fijas: así cada
+// palabra ocupa SIEMPRE una sola línea, aunque tenga 4 caracteres o un pinyin
+// largo — la fila simplemente acoge menos chips. En el caso extremo (chip más
+// ancho que la pantalla, móvil) el significado se recorta con elipsis en vez
+// de saltar de línea; el title del elemento muestra el texto completo.
 .vocab-list {
   list-style: none;
   padding: 0;
   margin: 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  display: flex;
+  flex-wrap: wrap;
   gap: 10px;
 }
 
 .vocab-item {
-  display: flex;
+  display: inline-flex;
   align-items: baseline;
   gap: 8px;
+  max-width: 100%;
+  white-space: nowrap;
   padding: 8px 12px;
   border: 1px solid #eee;
   border-radius: 8px;
@@ -340,17 +347,19 @@ body {
   font-size: 1.15rem;
   font-weight: 600;
   color: #222;
+  flex-shrink: 0;
 }
 
 .vocab-pinyin {
   color: #c0392b;
   font-size: 0.85rem;
-  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .vocab-meaning {
   color: #666;
   font-size: 0.85rem;
-  margin-left: auto;
-  text-align: right;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
