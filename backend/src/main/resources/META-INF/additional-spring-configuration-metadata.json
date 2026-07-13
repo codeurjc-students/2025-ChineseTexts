@@ -1,0 +1,154 @@
+{
+  "properties": [
+    {
+      "name": "ai.service.url",
+      "type": "java.lang.String",
+      "description": "Base URL of the internal AI microservice (DeepSeek pipeline) used for admin text generation.",
+      "defaultValue": "http://localhost:5001"
+    },
+    {
+      "name": "ocr.service.url",
+      "type": "java.lang.String",
+      "description": "Base URL of the internal OCR microservice used to extract Chinese text from images.",
+      "defaultValue": "http://localhost:5000"
+    },
+    {
+      "name": "tts.service.url",
+      "type": "java.lang.String",
+      "description": "Base URL of the internal TTS microservice (Google Cloud Text-to-Speech proxy).",
+      "defaultValue": "http://localhost:5002"
+    },
+    {
+      "name": "app.public-url",
+      "type": "java.lang.String",
+      "description": "Public origin of the site, used to build absolute URLs (Stripe return URLs, sitemap entries, email links). Production sets https://chinesereads.com via APP_PUBLIC_URL.",
+      "defaultValue": "http://localhost:4200"
+    },
+    {
+      "name": "usage.user.monthly-limit",
+      "type": "java.lang.Integer",
+      "description": "User-text creations (OCR + paste) allowed per FREE user each calendar month.",
+      "defaultValue": 10
+    },
+    {
+      "name": "usage.premium.daily-limit",
+      "type": "java.lang.Integer",
+      "description": "Fair-use daily cap per PREMIUM user (premium is exempt from the monthly limit and the global fuse; this only stops a single abusive account).",
+      "defaultValue": 100
+    },
+    {
+      "name": "usage.global.daily-limit",
+      "type": "java.lang.Integer",
+      "description": "Global fuse: total FREE/admin text creations across all users per day.",
+      "defaultValue": 200
+    },
+    {
+      "name": "usage.text.max-chars",
+      "type": "java.lang.Integer",
+      "description": "Maximum characters per user text; bounds per-generation cost and keeps full-text audio under the TTS cap.",
+      "defaultValue": 1500
+    },
+    {
+      "name": "tts.max-chars",
+      "type": "java.lang.Integer",
+      "description": "Hard cap of characters per /api/tts request (blocks a single huge synthesis).",
+      "defaultValue": 1600
+    },
+    {
+      "name": "tts.rate-limit.per-minute",
+      "type": "java.lang.Integer",
+      "description": "Maximum /api/tts requests per client IP per minute.",
+      "defaultValue": 60
+    },
+    {
+      "name": "tts.cache.max-entries",
+      "type": "java.lang.Integer",
+      "description": "Maximum entries of the Caffeine cache of synthesized audio (keyed by exact text).",
+      "defaultValue": 1000
+    },
+    {
+      "name": "tts.cache.ttl-days",
+      "type": "java.lang.Integer",
+      "description": "Days a cached TTS audio stays valid before re-synthesis.",
+      "defaultValue": 30
+    },
+    {
+      "name": "usage.audio.word.monthly-limit",
+      "type": "java.lang.Integer",
+      "description": "Monthly single-word audio plays per FREE user (premium and admins are exempt).",
+      "defaultValue": 100
+    },
+    {
+      "name": "usage.audio.phrase.monthly-limit",
+      "type": "java.lang.Integer",
+      "description": "Monthly sentence/full-text audio plays per FREE user (the expensive premium draw).",
+      "defaultValue": 15
+    },
+    {
+      "name": "usage.chat.monthly-limit",
+      "type": "java.lang.Integer",
+      "description": "Monthly AI contextual word-chat messages per FREE user (paid DeepSeek per message).",
+      "defaultValue": 10
+    },
+    {
+      "name": "reminder.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Kill switch of the daily SRS review-reminder email, independent of the Brevo credentials.",
+      "defaultValue": true
+    },
+    {
+      "name": "reminder.cron",
+      "type": "java.lang.String",
+      "description": "Spring cron (6 fields: sec min hour day-of-month month day-of-week) that fires the review-reminder job. Emails can only go out when the job runs, and never more than one per user per day.",
+      "defaultValue": "0 0 18 * * *"
+    },
+    {
+      "name": "reminder.zone",
+      "type": "java.lang.String",
+      "description": "Time zone of the reminder cron AND of what \"today\" means for the due-count and the once-per-day guarantee.",
+      "defaultValue": "Europe/Madrid"
+    },
+    {
+      "name": "brevo.api-key",
+      "type": "java.lang.String",
+      "description": "Brevo API v3 key (xkeysib-...). SECRET: lives in docker/.env, never committed. Empty disables all email sending.",
+      "defaultValue": ""
+    },
+    {
+      "name": "mail.from",
+      "type": "java.lang.String",
+      "description": "Verified sender address for outgoing email (its domain must pass SPF/DKIM in Brevo). Empty disables all email sending.",
+      "defaultValue": ""
+    },
+    {
+      "name": "mail.from-name",
+      "type": "java.lang.String",
+      "description": "Display name shown in inboxes as the email sender.",
+      "defaultValue": "ChineseReads"
+    },
+    {
+      "name": "stripe.secret-key",
+      "type": "java.lang.String",
+      "description": "Stripe secret API key. SECRET: lives in docker/.env, never committed. Empty disables billing.",
+      "defaultValue": ""
+    },
+    {
+      "name": "stripe.webhook-secret",
+      "type": "java.lang.String",
+      "description": "Stripe webhook signing secret used to verify /api/premium/webhook calls. SECRET: lives in docker/.env.",
+      "defaultValue": ""
+    },
+    {
+      "name": "stripe.price.monthly",
+      "type": "java.lang.String",
+      "description": "Stripe recurring Price ID of the monthly PREMIUM plan.",
+      "defaultValue": ""
+    },
+    {
+      "name": "stripe.price.yearly",
+      "type": "java.lang.String",
+      "description": "Stripe recurring Price ID of the yearly PREMIUM plan.",
+      "defaultValue": ""
+    }
+  ]
+}
