@@ -1,5 +1,6 @@
 package com.chinesereads.backend.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -10,6 +11,12 @@ import com.chinesereads.backend.Model.User;
 
 public interface UserRepository extends JpaRepository<User, Long>{
     Optional<User> findByEmail(String email);
+
+    /** Candidates for the daily review-reminder email (consenting, not blocked). */
+    List<User> findByEmailConsentTrueAndBlockedFalse();
+
+    /** One-click unsubscribe: resolves the token embedded in reminder emails. */
+    Optional<User> findByUnsubscribeToken(String unsubscribeToken);
 
     Optional<User> findByStripeCustomerId(String stripeCustomerId);
 

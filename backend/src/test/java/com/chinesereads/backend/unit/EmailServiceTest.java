@@ -77,4 +77,31 @@ public class EmailServiceTest {
     public void testNullNameSafe() {
         assertDoesNotThrow(() -> emailService.buildWelcomeHtml(null, true));
     }
+
+    @Test
+    @DisplayName("The Spanish reminder carries the count, the streak and the one-click unsubscribe")
+    public void testReminderHtmlSpanish() {
+        String html = emailService.buildReviewReminderHtml("María", true, 7, 4, "tok-abc");
+        assertTrue(html.contains("7 tarjetas esperan"));
+        assertTrue(html.contains("4 días"));                                          // racha
+        assertTrue(html.contains("https://chinesereads.com/es/collections"));         // CTA
+        assertTrue(html.contains("/api/users/unsubscribe?token=tok-abc"));            // baja 1 clic
+        assertTrue(html.contains("Darse de baja con un clic"));
+    }
+
+    @Test
+    @DisplayName("The English reminder uses singular forms and omits the streak row at streak 0")
+    public void testReminderHtmlEnglishSingularNoStreak() {
+        String html = emailService.buildReviewReminderHtml("John", false, 1, 0, "tok-xyz");
+        assertTrue(html.contains("1 flashcard is waiting"));
+        assertFalse(html.contains("streak"));                                         // sin racha
+        assertTrue(html.contains("https://chinesereads.com/collections"));
+        assertTrue(html.contains("Unsubscribe with one click"));
+    }
+
+    @Test
+    @DisplayName("Sending a reminder while unconfigured is a silent no-op (never throws)")
+    public void testUnconfiguredReminderIsNoop() {
+        assertDoesNotThrow(() -> emailService.sendReviewReminderEmail("a@a.com", "A", "en", 3, 0, "t"));
+    }
 }
