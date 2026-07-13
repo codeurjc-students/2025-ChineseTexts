@@ -40,6 +40,13 @@ services:
       STRIPE_PRICE_MONTHLY: ${STRIPE_PRICE_MONTHLY:-}
       STRIPE_PRICE_YEARLY: ${STRIPE_PRICE_YEARLY:-}
       APP_PUBLIC_URL: ${APP_PUBLIC_URL:-https://chinesereads.com}
+      # Daily SRS review-reminder email. Tune from docker/.env without code changes:
+      # REMINDER_ENABLED=false to switch off, REMINDER_CRON to change the schedule
+      # (e.g. "0 0 18 * * MON" = weekly), REMINDER_ZONE for the timezone. Deleting
+      # the .env line restores these defaults on the next container restart.
+      REMINDER_ENABLED: ${REMINDER_ENABLED:-true}
+      REMINDER_CRON: ${REMINDER_CRON:-0 0 18 * * *}
+      REMINDER_ZONE: ${REMINDER_ZONE:-Europe/Madrid}
     depends_on:
       db:
         condition: service_healthy
