@@ -19,8 +19,10 @@ export interface SeoConfig {
   noindex?: boolean;
 }
 
-const SITE_URL = 'https://chinesereads.com';
+export const SITE_URL = 'https://chinesereads.com';
 const SITE_NAME = 'ChineseReads';
+/** id of the per-page JSON-LD <script>, so it never collides with the static site-wide graph. */
+const PAGE_JSONLD_ID = 'seo-page-jsonld';
 const DEFAULT_IMAGE = `${SITE_URL}/icon-512.png`;
 const DEFAULT_KEYWORDS =
   'learn chinese, chinese reads, chinese texts, learn chinese by reading, ' +
@@ -83,7 +85,30 @@ export class SeoService {
 
     this.setCanonical(url);
     this.setAlternates(enPath, config.noindex === true);
+    // Per-page JSON-LD is cleared on every update so it can never leak into the
+    // next route; pages that want structured data re-set it after each update.
+    this.clearPageJsonLd();
     this.setJsonLdLanguage(lang);
+  }
+
+  /**
+   * Injects page-specific structured data (schema.org JSON-LD) alongside the
+   * static site-wide graph from index.html. Idempotent: one script element,
+   * replaced on every call and removed by the next `update()`.
+   */
+  setPageJsonLd(data: object): void {
+    let script = this.doc.getElementById(PAGE_JSONLD_ID) as HTMLScriptElement | null;
+    if (!script) {
+      script = this.doc.createElement('script');
+      script.type = 'application/ld+json';
+      script.id = PAGE_JSONLD_ID;
+      this.doc.head.appendChild(script);
+    }
+    script.textContent = JSON.stringify(data);
+  }
+
+  clearPageJsonLd(): void {
+    this.doc.getElementById(PAGE_JSONLD_ID)?.remove();
   }
 
   /** Ensures a single <link rel="canonical"> pointing at the current URL. */
@@ -132,7 +157,9 @@ export class SeoService {
    */
   private setJsonLdLanguage(lang: Lang): void {
     try {
-      const script = this.doc.querySelector('script[type="application/ld+json"]');
+      // :not() keeps this from touching the per-page JSON-LD, whose inLanguage
+      // is the language of the CONTENT (e.g. zh-Hans), not of the UI.
+      const script = this.doc.querySelector(`script[type="application/ld+json"]:not(#${PAGE_JSONLD_ID})`);
       if (!script || !script.textContent) return;
       const data = JSON.parse(script.textContent);
       const nodes = Array.isArray(data['@graph']) ? data['@graph'] : [data];

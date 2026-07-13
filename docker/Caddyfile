@@ -6,6 +6,15 @@ chinesereads.com, www.chinesereads.com {
         reverse_proxy backend:8080
     }
 
+    # Sitemap dinámico de textos: las páginas /text/:id viven en la base de datos,
+    # así que su sitemap lo genera el backend (SitemapController). El sitemap.xml
+    # estático solo lista las rutas públicas fijas; robots.txt referencia ambos.
+    # Debe vivir en la raíz del sitio (no bajo /api) porque el protocolo de
+    # sitemaps limita cada sitemap a su directorio y subdirectorios.
+    handle /sitemap-texts.xml {
+        reverse_proxy backend:8080
+    }
+
     handle {
         root * /srv
 

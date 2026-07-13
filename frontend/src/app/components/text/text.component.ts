@@ -8,7 +8,7 @@ import { WordsService, Word } from '../../services/words.service';
 import { CollectionsService, CollectionDTO } from '../../services/collections.service';
 import { SpeakButtonComponent } from '../speak-button/speak-button.component';
 import { WordChatComponent } from '../word-chat/word-chat.component';
-import { SeoService } from '../../services/seo.service';
+import { SeoService, SITE_URL } from '../../services/seo.service';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { Lang } from '../../i18n/locale.util';
 import { LocaleNavService } from '../../i18n/locale-nav.service';
@@ -32,6 +32,8 @@ export class TextComponent implements OnInit {
 
   originalText: string[] = [];
   wordsArray: Word[] = [];
+  /** The text's most useful words (unique, multi-character), for the study/SEO section. */
+  keyVocabulary: Word[] = [];
   translatedSpanishText: string[] = [];
   translatedEnglishText: string[] = [];
   originalTextSeparatedBySentences: string[] = [];
@@ -256,10 +258,17 @@ export class TextComponent implements OnInit {
     });
   }
 
-  /** Gives each text page a unique, content-rich title & description for SEO. */
+  /**
+   * Gives each text page a unique, content-rich title & description for SEO,
+   * plus per-text keywords, its cover as social image, and Article/LearningResource
+   * structured data. Runs twice: once when the text arrives, and again when the
+   * vocabulary is ready so keywords and JSON-LD `teaches` can include it.
+   */
   private updateSeo(): void {
     const lang = this.transloco.getActiveLang() as Lang;
     const level = this.text.level || 'HSK';
+    const image = this.text.id ? `${SITE_URL}/api/texts/${this.text.id}/image` : undefined;
+    const keywords = this.buildKeywords(lang, level);
 
     if (lang === 'es') {
       const title = (this.text.titleSpanish || '').trim();
@@ -271,22 +280,84 @@ export class TextComponent implements OnInit {
         description: summary
           || `Lee este texto en chino graduado de nivel ${level} con pinyin palabra por palabra, traducciones `
              + `instantáneas, desglose de frases y pronunciación con audio natural en ChineseReads.`,
+        keywords,
+        image,
         path: `/text/${this.text.id}`
       }, 'es');
-      return;
+    } else {
+      const title = (this.text.titleEnglish || '').trim();
+      const summary = (this.text.englishDescription || '').trim();
+      this.seo.update({
+        title: title
+          ? `${title} — ${level} Chinese Reading Text | ChineseReads`
+          : `Read a ${level} Chinese Text | ChineseReads`,
+        description: summary
+          || `Read this ${level} graded Chinese text with word-by-word pinyin, instant translations, `
+           + `sentence breakdown and natural audio pronunciation on ChineseReads.`,
+        keywords,
+        image,
+        path: `/text/${this.text.id}`
+      }, 'en');
     }
 
-    const title = (this.text.titleEnglish || '').trim();
-    const summary = (this.text.englishDescription || '').trim();
-    this.seo.update({
-      title: title
-        ? `${title} — ${level} Chinese Reading Text | ChineseReads`
-        : `Read a ${level} Chinese Text | ChineseReads`,
-      description: summary
-        || `Read this ${level} graded Chinese text with word-by-word pinyin, instant translations, `
-           + `sentence breakdown and natural audio pronunciation on ChineseReads.`,
-      path: `/text/${this.text.id}`
-    }, 'en');
+    this.updatePageJsonLd(lang, level);
+  }
+
+  /**
+   * Per-text meta keywords: the title, the level phrases and the key vocabulary
+   * (hanzi + pinyin), so each page targets its own long-tail searches instead of
+   * the generic site-wide keyword list.
+   */
+  private buildKeywords(lang: Lang, level: string): string | undefined {
+    if (!this.text.id) return undefined;
+    const title = ((lang === 'es' ? this.text.titleSpanish : this.text.titleEnglish) || '').trim();
+    const base = lang === 'es'
+      ? [`texto en chino ${level}`, `lectura graduada ${level}`, 'aprender chino leyendo', 'vocabulario chino con pinyin']
+      : [`${level} chinese text`, `${level} graded reader`, 'learn chinese by reading', 'chinese vocabulary with pinyin'];
+    const vocab = this.keyVocabulary.slice(0, 10).map(w => `${w.chinese} ${w.pinyin}`.trim());
+    return [...(title ? [title] : []), ...base, ...vocab].join(', ');
+  }
+
+  /**
+   * Structured data (schema.org Article + LearningResource) so search engines
+   * understand each reading as an educational resource: HSK level, publication
+   * date, cover image and the key vocabulary it teaches.
+   */
+  private updatePageJsonLd(lang: Lang, level: string): void {
+    if (!this.text.id) return;
+    const es = lang === 'es';
+    const title = ((es ? this.text.titleSpanish : this.text.titleEnglish)
+      || this.text.titleEnglish || this.text.titleSpanish || '').trim();
+    const description = ((es ? this.text.spanishDescription : this.text.englishDescription)
+      || this.text.englishDescription || this.text.spanishDescription || '').trim();
+    const url = `${SITE_URL}${es ? '/es' : ''}/text/${this.text.id}`;
+
+    const data: Record<string, unknown> = {
+      '@context': 'https://schema.org',
+      '@type': ['Article', 'LearningResource'],
+      headline: title,
+      description,
+      url,
+      mainEntityOfPage: url,
+      image: `${SITE_URL}/api/texts/${this.text.id}/image`,
+      datePublished: this.text.creationDate || undefined,
+      educationalLevel: level,
+      learningResourceType: 'Reading passage',
+      isAccessibleForFree: true,
+      // The passage itself is Simplified Chinese; the UI language is already
+      // declared on <html lang> and og:locale.
+      inLanguage: 'zh-Hans',
+      publisher: {
+        '@type': 'Organization',
+        name: 'ChineseReads',
+        url: SITE_URL,
+        logo: { '@type': 'ImageObject', url: `${SITE_URL}/icon-512.png` }
+      }
+    };
+    if (this.keyVocabulary.length > 0) {
+      data['teaches'] = this.keyVocabulary.map(w => `${w.chinese} (${w.pinyin})`).join(', ');
+    }
+    this.seo.setPageJsonLd(data);
   }
 
   private getSpanishText(id: number): void {
@@ -315,9 +386,40 @@ export class TextComponent implements OnInit {
 
   private getWords(chineseText: string[]): void {
     this.wordService.getTextWords(chineseText).subscribe({
-      next: (wordsArray) => this.wordsArray = wordsArray,
+      next: (wordsArray) => {
+        this.wordsArray = wordsArray;
+        this.computeKeyVocabulary();
+        // Re-run so keywords + JSON-LD pick up the vocabulary just computed.
+        // Guarded: if the words beat the text itself (parallel requests), the
+        // text's own updateSeo() will run later with the vocabulary already set.
+        if (this.text.id) this.updateSeo();
+      },
       error: (err) => console.error('Error loading words', err)
     });
+  }
+
+  /**
+   * Distils the segmented text into its key vocabulary: unique dictionary words
+   * of 2+ characters (single characters are mostly particles, and punctuation
+   * never reaches 2), in order of first appearance, capped at 12.
+   */
+  private computeKeyVocabulary(): void {
+    const seen = new Set<string>();
+    const vocab: Word[] = [];
+    for (const w of this.wordsArray) {
+      if (!w || !w.chinese || w.chinese.length < 2 || !w.pinyin) continue;
+      if (seen.has(w.chinese)) continue;
+      seen.add(w.chinese);
+      vocab.push(w);
+      if (vocab.length >= 12) break;
+    }
+    this.keyVocabulary = vocab;
+  }
+
+  /** Meaning of a vocabulary word in the active UI language (falls back). */
+  vocabMeaning(w: Word): string {
+    const es = this.transloco.getActiveLang() === 'es';
+    return (es ? w.spanish : w.english) || w.english || w.spanish || '';
   }
 
   private getSentences(text: string[]): string[] {
