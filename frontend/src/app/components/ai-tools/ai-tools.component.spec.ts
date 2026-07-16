@@ -29,7 +29,7 @@ describe('AiToolsComponent', () => {
     loginServiceSpy = jasmine.createSpyObj('LoginService', ['reqIsLogged']);
     loginServiceSpy.reqIsLogged.and.returnValue(of(mockAdminUser));
 
-    const textsServiceSpy = jasmine.createSpyObj('TextsService', ['uploadText']);
+    const textsServiceSpy = jasmine.createSpyObj('TextsService', ['uploadText', 'validateText']);
     const wordsServiceSpy = jasmine.createSpyObj('WordsService', ['saveWord']);
 
     await TestBed.configureTestingModule({
@@ -110,6 +110,49 @@ describe('AiToolsComponent', () => {
     component.chineseText = '你好。';
     component.missingWordForms = [];
     expect(component.canUpload).toBeTrue();
+  });
+
+  // La SEGUNDA comprobación de palabras: antes de subir, el backend re-valida el
+  // texto final contra el diccionario; si faltan palabras, NO se sube y aparecen
+  // como formularios pendientes de guardar
+  it('should re-validate words against the dictionary before uploading and block if any is missing', () => {
+    const textsService = TestBed.inject(TextsService) as jasmine.SpyObj<TextsService>;
+    textsService.validateText.and.returnValue(of({ valid: false, missingWords: ['谢谢'], segments: [] }));
+
+    component.status = 'ready';
+    component.imageFile = new File([''], 'test.jpg');
+    component.chineseText = '你好。谢谢。';
+    component.titleEnglish = 't'; component.titleSpanish = 't';
+    component.englishTranslation = 'Hello. Thanks.';
+    component.spanishTranslation = 'Hola. Gracias.';
+    component.englishDescription = 'd'; component.spanishDescription = 'd';
+    component.missingWordForms = [];
+
+    component.upload();
+
+    expect(textsService.uploadText).not.toHaveBeenCalled();
+    expect(component.missingWordForms.map(f => f.chinese)).toEqual(['谢谢']);
+    expect(component.status).toBe('ready');
+  });
+
+  it('should upload when the backend word re-validation passes', () => {
+    const textsService = TestBed.inject(TextsService) as jasmine.SpyObj<TextsService>;
+    textsService.validateText.and.returnValue(of({ valid: true, missingWords: [], segments: [] }));
+    textsService.uploadText.and.returnValue(of({} as any));
+
+    component.status = 'ready';
+    component.imageFile = new File([''], 'test.jpg');
+    component.chineseText = '你好。谢谢。';
+    component.titleEnglish = 't'; component.titleSpanish = 't';
+    component.englishTranslation = 'Hello. Thanks.';
+    component.spanishTranslation = 'Hola. Gracias.';
+    component.englishDescription = 'd'; component.spanishDescription = 'd';
+    component.missingWordForms = [];
+
+    component.upload();
+
+    expect(textsService.uploadText).toHaveBeenCalled();
+    expect(component.status).toBe('success');
   });
 
   it('should redirect to home if user is not admin', () => {

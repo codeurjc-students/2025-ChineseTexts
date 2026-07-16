@@ -140,10 +140,39 @@ public class TextService {
                 data.creationDate() != null ? data.creationDate() : LocalDate.now(),
                 null
         );
+        buildAlignedSentences(text);
         if (image != null && !image.isEmpty()) {
             text.setImage(BlobProxy.generateProxy(image.getInputStream(), image.getSize()));
         }
         return save(text);
+    }
+
+    /**
+     * Builds the aligned sentence pairs for a NEW public text and validates them:
+     * the Chinese sentences (shared segmentation + terminators) must match the
+     * sentence count of BOTH submitted translations. This is what guarantees the
+     * reader never has to guess the pairing again — any misaligned text is
+     * rejected at the door with a clear message instead of being published broken.
+     */
+    private void buildAlignedSentences(Text text) {
+        List<String> chineseSentences = jiebaService.buildSentences(
+                jiebaService.segment(text.getText().replace("\n", "")));
+        List<String> english = jiebaService.splitTranslatedBlock(text.getEnglishTranslation());
+        List<String> spanish = jiebaService.splitTranslatedBlock(text.getSpanishTranslation());
+
+        if (chineseSentences.isEmpty()
+                || english.size() != chineseSentences.size()
+                || spanish.size() != chineseSentences.size()) {
+            throw new IllegalArgumentException(
+                    "Sentence counts do not match: " + chineseSentences.size() + " Chinese, "
+                    + english.size() + " English, " + spanish.size() + " Spanish. "
+                    + "Each Chinese sentence needs exactly one translated sentence.");
+        }
+
+        for (int i = 0; i < chineseSentences.size(); i++) {
+            text.addSentence(new com.chinesereads.backend.Model.TextSentence(
+                    i, chineseSentences.get(i), english.get(i), spanish.get(i)));
+        }
     }
 
     public void deleteText(long id) {

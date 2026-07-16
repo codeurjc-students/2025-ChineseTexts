@@ -1,6 +1,7 @@
 package com.chinesereads.backend.dto;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public record TextDTO(
     Long id,
@@ -12,5 +13,9 @@ public record TextDTO(
     String level,
     String englishDescription,
     String spanishDescription,
-    LocalDate creationDate) {
+    LocalDate creationDate,
+    // Aligned sentence pairs (nullable: texts created before they existed have
+    // none and old clients may omit the field — never a primitive, Jackson 3
+    // rejects bodies missing primitive fields).
+    List<TextSentenceDTO> sentences) {
 }

@@ -222,41 +222,16 @@ public class UserTextService {
                 .orElseThrow(() -> new NoSuchElementException("Text not found"));
     }
 
-    /** Chinese sentence terminators used to split a text into sentences. */
-    private static final String SENTENCE_TERMINATORS = "。！？…；.!?;";
-
     /**
-     * Groups the ordered segments into sentences, ending ONLY on a punctuation
-     * terminator (。！？…；．！？). Line breaks are deliberately NOT used here: in a
-     * photo they are often cosmetic wraps that fall mid-sentence (even mid-word), so
-     * splitting on them would cut a sentence like 你做什么运动了？ into 你做什 | 么…. Line
-     * breaks drive the visual layout only (see {@code newlineAfter}), not sentences.
+     * Groups the ordered segments into sentences — delegated to the shared
+     * {@link JiebaService#buildSentences} so private and public texts use the
+     * exact same boundaries. Line breaks are deliberately NOT used here: in a
+     * photo they are often cosmetic wraps that fall mid-sentence (even mid-word),
+     * so splitting on them would cut a sentence like 你做什么运动了？ into 你做什 | 么….
+     * Line breaks drive the visual layout only (see {@code newlineAfter}).
      */
     private List<String> buildSentences(List<String> segments) {
-        List<String> sentences = new ArrayList<>();
-        StringBuilder current = new StringBuilder();
-        for (String seg : segments) {
-            current.append(seg);
-            if (endsWithTerminator(seg)) {
-                String s = current.toString().strip();
-                if (!s.isEmpty()) {
-                    sentences.add(s);
-                }
-                current.setLength(0);
-            }
-        }
-        String tail = current.toString().strip();
-        if (!tail.isEmpty()) {
-            sentences.add(tail);
-        }
-        return sentences;
-    }
-
-    private static boolean endsWithTerminator(String seg) {
-        if (seg == null || seg.isEmpty()) {
-            return false;
-        }
-        return SENTENCE_TERMINATORS.indexOf(seg.charAt(seg.length() - 1)) >= 0;
+        return jiebaService.buildSentences(segments);
     }
 
     /** Builds a map chinese -> [pinyin, english, spanish] for the unique segments. */

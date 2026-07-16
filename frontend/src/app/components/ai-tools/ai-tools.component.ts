@@ -8,6 +8,7 @@ import { LoginService } from '../../services/login.service';
 import { TextsService } from '../../services/texts.service';
 import { WordsService } from '../../services/words.service';
 import { LocaleNavService } from '../../i18n/locale-nav.service';
+import { splitChineseSentences, splitTranslatedSentences } from '../../utils/sentence.util';
 
 interface MissingWordForm {
   chinese: string;
@@ -114,10 +115,11 @@ export class AiToolsComponent implements OnInit {
   // ——— Validación del formulario ———
 
   get sentenceCountMatch(): boolean {
-    const count = (text: string) => (text.match(/[.。]/g) || []).length;
-    const original = count(this.chineseText);
-    const english = count(this.englishTranslation);
-    const spanish = count(this.spanishTranslation);
+    // Same sentence rules as the backend (which rejects mismatches with 400):
+    // this pre-check just surfaces the problem before uploading.
+    const original = splitChineseSentences(this.chineseText).length;
+    const english = splitTranslatedSentences(this.englishTranslation).length;
+    const spanish = splitTranslatedSentences(this.spanishTranslation).length;
     return original > 0 && original === english && original === spanish;
   }
 
@@ -284,6 +286,41 @@ export class AiToolsComponent implements OnInit {
     this.status = 'uploading';
     this.validationError = '';
 
+    // SEGUNDA comprobación de palabras (la misma del formulario manual): el
+    // backend re-segmenta el texto FINAL y exige que el 100% de sus palabras
+    // exista en el diccionario. Cubre lo que la primera pasada (sugerencias de
+    // la generación) no puede: ediciones manuales del chino y palabras que la
+    // IA no llegó a devolver. Ningún texto se publica con palabras sin definir.
+    this.textsService.validateText(this.chineseText.trim()).subscribe({
+      next: (result) => {
+        if (!result.valid) {
+          this.status = 'ready';
+          const known = new Set(this.missingWordForms.map(f => f.chinese));
+          for (const form of this.missingWordForms) {
+            if (result.missingWords.includes(form.chinese)) form.saved = false;
+          }
+          for (const w of result.missingWords) {
+            if (!known.has(w)) {
+              this.missingWordForms.push({
+                chinese: w, pinyin: '', english: '', spanish: '',
+                saved: false, saving: false, error: ''
+              });
+            }
+          }
+          this.missingWordsOpen = true;
+          this.validationError = this.transloco.translate('aiTools.errors.saveWords');
+          return;
+        }
+        this.doUpload();
+      },
+      error: () => {
+        this.status = 'ready';
+        this.validationError = this.transloco.translate('aiTools.errors.uploadFailed');
+      }
+    });
+  }
+
+  private doUpload(): void {
     const data = {
       id: null,
       titleEnglish: this.titleEnglish.trim(),
@@ -307,7 +344,9 @@ export class AiToolsComponent implements OnInit {
         this.status = 'ready';
         this.validationError = err.status === 409
           ? this.transloco.translate('aiTools.errors.titleExists')
-          : this.transloco.translate('aiTools.errors.uploadFailed');
+          : err.status === 400
+            ? this.transloco.translate('aiTools.errors.sentenceMismatch')
+            : this.transloco.translate('aiTools.errors.uploadFailed');
       }
     });
   }
