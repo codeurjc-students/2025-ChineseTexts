@@ -182,10 +182,10 @@
       </div>
     </div>
 
-    <!-- TRADUCCIÓN -->
+    <!-- TRADUCCIÓN (una frase por línea, como el lector privado) -->
     <div *ngIf="showTranslation" class="mt-4">
       <h5 class="text-primary">{{ 'text.translation.heading' | transloco }}</h5>
-      <p class="text-large mt-3">{{ displayTranslation }}</p>
+      <p class="text-large mt-3" style="white-space: pre-line;">{{ displayTranslation }}</p>
     </div>
 
     <!-- FRASES -->

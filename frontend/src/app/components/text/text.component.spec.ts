@@ -210,6 +210,33 @@ describe('TextComponent', () => {
     expect(component.translatedEnglishTextSeparatedBySentences.length).toBe(3);
   });
 
+  // Test 13b: la traducción completa se muestra como en el lector privado —
+  // una frase por línea (join con '\n' + white-space: pre-line), con su
+  // puntuación final, mostrando TODAS las frases
+  it('should render the full translation one sentence per line like the private reader', () => {
+    fixture.detectChanges();
+
+    expect(component.displayTranslation)
+      .toBe('I get up at seven.\nI eat breakfast.\nThen I go to school.');
+
+    const p: HTMLElement = fixture.nativeElement
+      .querySelector('p[style*="white-space: pre-line"]');
+    expect(p).toBeTruthy();
+    expect(p.textContent).toContain('I get up at seven.');
+    expect(p.textContent).toContain('Then I go to school.');
+  });
+
+  // Test 13c: si no hay frases alineadas utilizables, se muestra la traducción
+  // guardada tal cual (comportamiento de siempre para casos raros)
+  it('should fall back to the stored translation when sentence arrays are empty', () => {
+    fixture.detectChanges();
+    component.translatedEnglishTextSeparatedBySentences = [];
+    component.translatedSpanishTextSeparatedBySentences = [];
+
+    expect(component.displayTranslation)
+      .toBe('I get up at seven. I eat breakfast. Then I go to school.');
+  });
+
   // Test 14: el vocabulario clave contiene solo palabras únicas de 2+ caracteres
   // (fuera partículas de un carácter como 我 y puntuación como 。)
   it('should build key vocabulary from unique multi-character words', () => {
