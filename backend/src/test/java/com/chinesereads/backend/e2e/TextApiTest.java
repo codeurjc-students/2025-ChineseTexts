@@ -274,4 +274,50 @@ public class TextApiTest {
             .statusCode(200)
             .body("email", equalTo("admin@test.com"));
     }
+
+    // Test E2E 11: un texto guardado con saltos de línea (diálogo) expone tokens "\n"
+    // alineados 1:1 con las traducciones; un texto sin saltos no expone ninguno
+    @Test
+    @DisplayName("Reader endpoint keeps line breaks as aligned standalone tokens; flat texts stay flat")
+    public void testSpanishTextExposesLineBreakTokens() {
+        com.chinesereads.backend.Model.Text dialogue = new com.chinesereads.backend.Model.Text(
+                "Dialogue", "Diálogo", "你好。\n再见。", "Hello. Bye.", "Hola. Adiós.",
+                "Desc", "Desc", "HSK1", java.time.LocalDate.now(), null);
+        long dialogueId = textRepository.save(dialogue).getId();
+
+        Response response = given()
+        .when()
+            .get("/api/texts/" + dialogueId + "/SpanishText")
+        .then()
+            .statusCode(200)
+            .extract().response();
+
+        List<List<String>> arrays = response.jsonPath().getList("$");
+        List<String> tokens = arrays.get(0);
+        List<String> translations = arrays.get(1);
+
+        assertThat("token and translation arrays stay aligned",
+                tokens.size(), equalTo(translations.size()));
+        int breakIndex = tokens.indexOf("\n");
+        assertThat("the stored line break is exposed as a standalone token",
+                breakIndex, greaterThan(0));
+        assertThat("a break token maps to an empty translation",
+                translations.get(breakIndex), equalTo(""));
+
+        com.chinesereads.backend.Model.Text flat = new com.chinesereads.backend.Model.Text(
+                "Flat", "Plano", "你好。再见。", "Hello. Bye.", "Hola. Adiós.",
+                "Desc", "Desc", "HSK1", java.time.LocalDate.now(), null);
+        long flatId = textRepository.save(flat).getId();
+
+        Response flatResponse = given()
+        .when()
+            .get("/api/texts/" + flatId + "/SpanishText")
+        .then()
+            .statusCode(200)
+            .extract().response();
+
+        List<String> flatTokens = flatResponse.jsonPath().getList("[0]");
+        assertThat("texts without breaks segment exactly as before",
+                flatTokens.contains("\n"), equalTo(false));
+    }
 }

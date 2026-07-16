@@ -235,6 +235,29 @@ describe('TextComponent', () => {
     expect(fixture.nativeElement.querySelectorAll('.vocab-item').length).toBe(3);
   });
 
+  // Test 15c: los textos con disposición (diálogos) traen tokens '\n' que se
+  // renderizan como saltos visuales, no como palabras clicables, y las frases
+  // se agrupan ignorándolos (misma semántica que el lector privado)
+  it('should render line-break tokens as visual breaks and skip them in sentences', () => {
+    textsServiceSpy.getSpanishText.and.returnValue(of([
+      ['我', '每天', '七点', '起床', '。', '\n', '我', '吃', '早饭', '。'],
+      ['Yo', 'Cada día', 'Siete en punto', 'Levantarse', '.', '', 'Yo', 'Comer', 'Desayuno', '.']
+    ]));
+    textsServiceSpy.getEnglishText.and.returnValue(of([
+      ['我', '每天', '七点', '起床', '。', '\n', '我', '吃', '早饭', '。'],
+      ['I', 'Every day', 'Seven o\'clock', 'Get up', '.', '', 'I', 'Eat', 'Breakfast', '.']
+    ]));
+    fixture.detectChanges();
+
+    // Un salto visual, y ninguna palabra clicable extra por el token '\n'.
+    expect(fixture.nativeElement.querySelectorAll('.line-break').length).toBe(1);
+    expect(fixture.nativeElement.querySelectorAll('.word-wrapper').length).toBe(9);
+    // Las frases no contienen el token de salto.
+    expect(component.originalTextSeparatedBySentences.length).toBe(2);
+    expect(component.originalTextSeparatedBySentences[0]).not.toContain('\n');
+    expect(component.originalTextSeparatedBySentences[1]).not.toContain('\n');
+  });
+
   // Test 15: cada texto inyecta sus datos estructurados (JSON-LD) con nivel y vocabulario
   it('should inject per-text JSON-LD structured data with level and vocabulary', () => {
     fixture.detectChanges();

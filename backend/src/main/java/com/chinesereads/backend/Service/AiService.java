@@ -84,32 +84,18 @@ public class AiService {
         return response != null ? (String) response.get("reply") : null;
     }
 
+    /**
+     * Admin OCR pipeline. The layout is preserved (same as private user texts):
+     * a photographed dialogue keeps its line breaks in the returned chineseText,
+     * so the published text renders as a conversation.
+     */
     public Map<String, Object> processOcrAndGenerate(MultipartFile image) throws Exception {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-
-        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-        body.add("file", new ByteArrayResource(image.getBytes()) {
-            @Override
-            public String getFilename() {
-                return image.getOriginalFilename();
-            }
-        });
-
-        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
-        ResponseEntity<Map<String, Object>> ocrResponse = restTemplate.exchange(
-                ocrServiceUrl + "/ocr",
-                HttpMethod.POST,
-                requestEntity,
-                new ParameterizedTypeReference<Map<String, Object>>() {}
-        );
-
-        String chineseText = (String) ocrResponse.getBody().get("text");
+        String chineseText = ocrImageToText(image, true);
         if (chineseText == null || chineseText.isBlank()) {
             throw new RuntimeException("OCR did not extract any text from the image");
         }
 
-        return buildAiResult(chineseText);
+        return buildAiResult(chineseText.trim());
     }
 
     // ——————————— Reusable building blocks (also used for private user texts) ———————————
@@ -211,12 +197,17 @@ public class AiService {
         Map<String, Object> result = new HashMap<>();
         result.put("chineseText", chineseText);
 
+        // Line breaks are pure layout: every AI call and the segmentation below work
+        // on the flat text so a word split by a line wrap in the photo (什\n么) is
+        // never sent — or segmented — as two halves. Only chineseText keeps them.
+        String flatText = chineseText.replace("\n", "");
+
         // Títulos
         try {
             List<String> titles = restTemplate.exchange(
                     aiServiceUrl + "/getTitles",
                     HttpMethod.POST,
-                    new HttpEntity<>(Map.of("text", chineseText)),
+                    new HttpEntity<>(Map.of("text", flatText)),
                     new ParameterizedTypeReference<List<String>>() {}
             ).getBody();
             result.put("titleEnglish", titles != null && titles.size() > 0 ? titles.get(0) : "");
@@ -231,7 +222,7 @@ public class AiService {
             List<String> translations = restTemplate.exchange(
                     aiServiceUrl + "/getTranslations",
                     HttpMethod.POST,
-                    new HttpEntity<>(Map.of("text", chineseText)),
+                    new HttpEntity<>(Map.of("text", flatText)),
                     new ParameterizedTypeReference<List<String>>() {}
             ).getBody();
             result.put("englishTranslation", translations != null && translations.size() > 0 ? translations.get(0) : "");
@@ -246,7 +237,7 @@ public class AiService {
             List<String> descriptions = restTemplate.exchange(
                     aiServiceUrl + "/getDescriptions",
                     HttpMethod.POST,
-                    new HttpEntity<>(Map.of("text", chineseText)),
+                    new HttpEntity<>(Map.of("text", flatText)),
                     new ParameterizedTypeReference<List<String>>() {}
             ).getBody();
             result.put("englishDescription", descriptions != null && descriptions.size() > 0 ? descriptions.get(0) : "");
@@ -257,7 +248,7 @@ public class AiService {
         }
 
         // Palabras faltantes
-        List<String> segments = jiebaService.segment(chineseText);
+        List<String> segments = jiebaService.segment(flatText);
         List<String> missingWords = segments.stream()
                 .distinct()
                 .filter(w -> !w.isBlank())

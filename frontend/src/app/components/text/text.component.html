@@ -73,18 +73,22 @@
     <div class="text-muted my-2">{{ 'text.words.hint' | transloco }}</div>
 
     <div class="words-container">
-      <div
-        *ngFor="let word of originalText; let i = index"
-        class="word-wrapper"
-        (click)="onWordClick($event, i)"
-      >
-        <span class="hover-highlight" [class.active]="activeWordIndex === i">
-          {{ word }}
-        </span>
-        <span class="pinyin" *ngIf="showPinyin">
-          {{ wordsArray[i]?.pinyin || '' }}
-        </span>
-      </div>
+      <ng-container *ngFor="let word of originalText; let i = index">
+        <!-- Salto de línea (diálogos / conversaciones), igual que en el lector privado -->
+        <div class="line-break" *ngIf="isLineBreak(word)"></div>
+        <div
+          *ngIf="!isLineBreak(word)"
+          class="word-wrapper"
+          (click)="onWordClick($event, i)"
+        >
+          <span class="hover-highlight" [class.active]="activeWordIndex === i">
+            {{ word }}
+          </span>
+          <span class="pinyin" *ngIf="showPinyin">
+            {{ wordsArray[i]?.pinyin || '' }}
+          </span>
+        </div>
+      </ng-container>
     </div>
 
     <!-- POPOVER PALABRA -->

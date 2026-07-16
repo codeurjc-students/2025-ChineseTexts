@@ -93,8 +93,12 @@ public class TextService {
         return text.map(textMapper::toDTO).orElse(null);
     }
 
+    // The reader endpoints segment preserving the layout: texts stored with line
+    // breaks (photographed dialogues) emit standalone "\n" tokens the frontend
+    // renders as visual breaks. Both arrays stay aligned 1:1 (a break maps to "").
+    // Texts without breaks — all pre-existing ones — segment exactly as before.
     public String[][] getTextSpanish(TextDTO text) {
-        List<String> textSegmented = jiebaService.segment(text.text());
+        List<String> textSegmented = jiebaService.segmentWithLayout(text.text());
         List<String> words = dictionaryService.translateToSpanish(textSegmented);
         return new String[][] {
             textSegmented.toArray(new String[0]),
@@ -103,7 +107,7 @@ public class TextService {
     }
 
     public String[][] getTextEnglish(TextDTO text) {
-        List<String> textSegmented = jiebaService.segment(text.text());
+        List<String> textSegmented = jiebaService.segmentWithLayout(text.text());
         List<String> words = dictionaryService.translateToEnglish(textSegmented);
         return new String[][] {
             textSegmented.toArray(new String[0]),
@@ -112,7 +116,9 @@ public class TextService {
     }
 
     public ValidationResultDTO validateText(String chineseText) {
-        List<String> segments = jiebaService.segment(chineseText);
+        // Dictionary validation ignores layout: breaks are stripped BEFORE
+        // segmenting so a word split by a line wrap (什\n么) is still one word.
+        List<String> segments = jiebaService.segment(chineseText.replace("\n", ""));
         List<String> missing = segments.stream()
                 .distinct()
                 .filter(word -> !word.isBlank())
