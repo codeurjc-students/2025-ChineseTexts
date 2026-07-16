@@ -97,11 +97,43 @@ export class TextComponent implements OnInit {
       || this.text.titleEnglish || this.text.titleSpanish || '';
   }
 
-  /** Full translation of the text in the active UI language (falls back). */
+  /**
+   * Full translation in the active UI language, one sentence per line — same
+   * presentation as the private reader (my-text-reader): rebuilt from the
+   * per-sentence translations, each line re-punctuated from its Chinese
+   * sentence. Purely presentational; if the sentence arrays are not usable
+   * the stored translation is shown as-is (old behaviour).
+   */
   get displayTranslation(): string {
     const es = this.transloco.getActiveLang() === 'es';
+    const primary = es ? this.translatedSpanishTextSeparatedBySentences
+                       : this.translatedEnglishTextSeparatedBySentences;
+    const secondary = es ? this.translatedEnglishTextSeparatedBySentences
+                         : this.translatedSpanishTextSeparatedBySentences;
+    if (primary && primary.length) {
+      const lines = primary
+        .map((t, i) => this.punctuate((t || secondary[i] || '').trim(),
+                                      this.originalTextSeparatedBySentences[i] || ''))
+        .filter(t => t);
+      if (lines.length) return lines.join('\n');
+    }
     return (es ? this.text.spanishTranslation : this.text.englishTranslation)
       || this.text.englishTranslation || this.text.spanishTranslation || '';
+  }
+
+  /**
+   * Ensures a sentence translation ends with sentence-final punctuation, borrowing the
+   * terminator (?, !, .) from its source Chinese sentence when the translation lacks one.
+   */
+  private punctuate(translation: string, chinese: string): string {
+    if (!translation) return '';
+    if (/[.!?…。！？;；:]$/.test(translation)) return translation;
+    const last = (chinese || '').trim().slice(-1);
+    const map: Record<string, string> = {
+      '？': '?', '?': '?', '！': '!', '!': '!',
+      '。': '.', '．': '.', '.': '.', '…': '…', '；': ';', ';': ';'
+    };
+    return translation + (map[last] || '.');
   }
 
   ngOnInit(): void {
