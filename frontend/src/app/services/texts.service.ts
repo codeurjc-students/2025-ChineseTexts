@@ -2,6 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
+/** One aligned sentence of a public text (stored server-side at upload). */
+export interface TextSentencePair {
+  chinese: string;
+  english: string;
+  spanish: string;
+}
+
 export interface TextItem {
   id: number;
   titleEnglish: string;
@@ -14,6 +21,9 @@ export interface TextItem {
   spanishDescription: string;
   creationDate: string;
   liked?: boolean;
+  // Aligned chinese↔EN↔ES sentences; absent/empty on texts created before
+  // they existed (the reader then falls back to the heuristic split).
+  sentences?: TextSentencePair[];
 }
 
 export interface ValidationResult {

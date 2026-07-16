@@ -8,6 +8,7 @@ import { LoginService } from '../../services/login.service';
 import { TextsService } from '../../services/texts.service';
 import { WordsService } from '../../services/words.service';
 import { LocaleNavService } from '../../i18n/locale-nav.service';
+import { splitChineseSentences, splitTranslatedSentences } from '../../utils/sentence.util';
 
 interface MissingWordForm {
   chinese: string;
@@ -114,10 +115,11 @@ export class AiToolsComponent implements OnInit {
   // ——— Validación del formulario ———
 
   get sentenceCountMatch(): boolean {
-    const count = (text: string) => (text.match(/[.。]/g) || []).length;
-    const original = count(this.chineseText);
-    const english = count(this.englishTranslation);
-    const spanish = count(this.spanishTranslation);
+    // Same sentence rules as the backend (which rejects mismatches with 400):
+    // this pre-check just surfaces the problem before uploading.
+    const original = splitChineseSentences(this.chineseText).length;
+    const english = splitTranslatedSentences(this.englishTranslation).length;
+    const spanish = splitTranslatedSentences(this.spanishTranslation).length;
     return original > 0 && original === english && original === spanish;
   }
 
@@ -307,7 +309,9 @@ export class AiToolsComponent implements OnInit {
         this.status = 'ready';
         this.validationError = err.status === 409
           ? this.transloco.translate('aiTools.errors.titleExists')
-          : this.transloco.translate('aiTools.errors.uploadFailed');
+          : err.status === 400
+            ? this.transloco.translate('aiTools.errors.sentenceMismatch')
+            : this.transloco.translate('aiTools.errors.uploadFailed');
       }
     });
   }

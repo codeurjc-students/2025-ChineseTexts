@@ -98,7 +98,19 @@ class AiServiceTestCase(unittest.TestCase):
         ]
         response = self.client.post("/getTranslations", json={"text": "你好。谢谢。"})
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.get_json(), ["Hello. ", "Hola. "])
+        self.assertEqual(response.get_json(), ["Hello.", "Hola."])
+
+    @patch("deepseekService.call_deepseek")
+    def test_get_translations_splits_on_all_terminators_and_keeps_them(self, mock_call):
+        mock_call.side_effect = [
+            '{"english": "Hello", "spanish": "Hola"}',
+            '{"english": "Thanks", "spanish": "Gracias"}',
+        ]
+        response = self.client.post("/getTranslations", json={"text": "你好！谢谢。"})
+        self.assertEqual(response.status_code, 200)
+        # ！ also closes a sentence, and each part keeps ITS terminator (no "!.").
+        self.assertEqual(response.get_json(), ["Hello! Thanks.", "Hola! Gracias."])
+        self.assertEqual(mock_call.call_count, 2)
 
     # ————————————————————— /translateSentences (1:1 alignment) —————————————————————
 

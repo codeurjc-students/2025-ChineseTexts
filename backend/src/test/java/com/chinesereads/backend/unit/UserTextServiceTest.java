@@ -18,6 +18,7 @@ import org.junit.jupiter.api.Test;
 
 import com.chinesereads.backend.Repository.WordRepository;
 import com.chinesereads.backend.Service.AiService;
+import com.chinesereads.backend.Service.JiebaService;
 import com.chinesereads.backend.Service.UserTextService;
 
 /**
@@ -32,7 +33,10 @@ public class UserTextServiceTest {
         try {
             Method m = UserTextService.class.getDeclaredMethod("buildSentences", List.class);
             m.setAccessible(true);
-            return (List<String>) m.invoke(new UserTextService(null, null, null, null, null, null), segments);
+            // buildSentences now delegates to the shared JiebaService.buildSentences,
+            // so the service needs a real JiebaService (4th constructor arg).
+            return (List<String>) m.invoke(
+                    new UserTextService(null, null, null, new JiebaService(), null, null), segments);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

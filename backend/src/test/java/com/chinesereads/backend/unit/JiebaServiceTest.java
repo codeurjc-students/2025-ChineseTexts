@@ -59,4 +59,31 @@ public class JiebaServiceTest {
         assertTrue(tokens.stream().noneMatch(JiebaService.LINE_BREAK::equals));
         assertEquals(jiebaService.segment("你好"), tokens);
     }
+
+    // ——— buildSentences (shared by private AND public texts) ———
+
+    @Test
+    @DisplayName("buildSentences closes on every terminator (。！？) and keeps a tail without one")
+    public void buildSentencesClosesOnTerminatorsAndKeepsTail() {
+        assertEquals(List.of("你好。", "你好吗？"),
+                jiebaService.buildSentences(List.of("你好", "。", "你", "好吗", "？")));
+        assertEquals(List.of("第一句。", "没有句号的结尾"),
+                jiebaService.buildSentences(List.of("第一句", "。", "没有句号的结尾")));
+        assertEquals(List.of("你好！", "很高兴。"),
+                jiebaService.buildSentences(List.of("你好", "！", "很", "高兴", "。")));
+    }
+
+    // ——— splitTranslatedBlock (mirror of the frontend's splitTranslatedSentences) ———
+
+    @Test
+    @DisplayName("splitTranslatedBlock splits after terminator + space/end, keeping each terminator")
+    public void splitTranslatedBlockSplitsLikeTheFrontend() {
+        assertEquals(List.of("Hello!", "Nice to meet you.", "Goodbye."),
+                jiebaService.splitTranslatedBlock("Hello! Nice to meet you. Goodbye."));
+        // A terminator NOT followed by whitespace/end does not split (e.g. "3.5").
+        assertEquals(List.of("It costs 3.5 yuan."),
+                jiebaService.splitTranslatedBlock("It costs 3.5 yuan."));
+        assertEquals(List.of(), jiebaService.splitTranslatedBlock("   "));
+        assertEquals(List.of(), jiebaService.splitTranslatedBlock(null));
+    }
 }

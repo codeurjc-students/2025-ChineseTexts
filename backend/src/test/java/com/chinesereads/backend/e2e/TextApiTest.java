@@ -275,6 +275,62 @@ public class TextApiTest {
             .body("email", equalTo("admin@test.com"));
     }
 
+    // Test E2E 12: POST /api/texts guarda los pares de frases alineados y los expone
+    // en GET; una subida con recuentos desalineados se rechaza con 400
+    @Test
+    @DisplayName("POST stores aligned sentence pairs (returned by GET); misaligned uploads get 400")
+    public void testUploadStoresAlignedSentencePairs() throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        JSONObject aligned = new JSONObject();
+        aligned.put("titleEnglish", "Aligned Dialogue");
+        aligned.put("titleSpanish", "Diálogo alineado");
+        aligned.put("text", "你好！很高兴。");
+        aligned.put("englishTranslation", "Hello! Nice to meet you.");
+        aligned.put("spanishTranslation", "¡Hola! Encantado.");
+        aligned.put("level", "HSK1");
+        aligned.put("englishDescription", "Desc");
+        aligned.put("spanishDescription", "Desc");
+        aligned.put("creationDate", "2026-07-16");
+
+        int id = given()
+            .cookies(adminCookies)
+            .contentType("multipart/form-data")
+            .multiPart("data", "data.json", objectMapper.writeValueAsString(aligned).getBytes(), "application/json")
+        .when()
+            .post("/api/texts")
+        .then()
+            .statusCode(201)
+            .body("sentences.size()", equalTo(2))
+            .extract().path("id");
+
+        given()
+        .when()
+            .get("/api/texts/" + id)
+        .then()
+            .statusCode(200)
+            .body("sentences[0].chinese", equalTo("你好！"))
+            .body("sentences[0].english", equalTo("Hello!"))
+            .body("sentences[0].spanish", equalTo("¡Hola!"))
+            .body("sentences[1].chinese", equalTo("很高兴。"))
+            .body("sentences[1].english", equalTo("Nice to meet you."))
+            .body("sentences[1].spanish", equalTo("Encantado."));
+
+        JSONObject misaligned = new JSONObject(aligned);
+        misaligned.put("titleEnglish", "Misaligned Dialogue");
+        misaligned.put("titleSpanish", "Diálogo desalineado");
+        misaligned.put("spanishTranslation", "¡Hola!");
+
+        given()
+            .cookies(adminCookies)
+            .contentType("multipart/form-data")
+            .multiPart("data", "data.json", objectMapper.writeValueAsString(misaligned).getBytes(), "application/json")
+        .when()
+            .post("/api/texts")
+        .then()
+            .statusCode(400);
+    }
+
     // Test E2E 11: un texto guardado con saltos de línea (diálogo) expone tokens "\n"
     // alineados 1:1 con las traducciones; un texto sin saltos no expone ninguno
     @Test

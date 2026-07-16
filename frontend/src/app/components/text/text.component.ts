@@ -285,10 +285,29 @@ export class TextComponent implements OnInit {
     this.getSpanishText(id);
   }
 
+  /** Aligned sentence pairs stored with the text (new texts); [] for old ones. */
+  private get sentencePairs(): { chinese: string; english: string; spanish: string }[] {
+    return this.text?.sentences || [];
+  }
+
+  /**
+   * New texts carry their sentences with translations aligned 1:1 (built and
+   * validated at upload, like the private reader's): use them verbatim. Old
+   * texts have none and keep the heuristic split (exact old behaviour).
+   */
+  private applySentencePairsIfAny(): void {
+    const pairs = this.sentencePairs;
+    if (!pairs.length) return;
+    this.originalTextSeparatedBySentences = pairs.map(p => p.chinese);
+    this.translatedEnglishTextSeparatedBySentences = pairs.map(p => p.english);
+    this.translatedSpanishTextSeparatedBySentences = pairs.map(p => p.spanish);
+  }
+
   private getText(id: number): void {
     this.textService.getText(id).subscribe({
       next: (text) => {
         this.text = text;
+        this.applySentencePairsIfAny();
         this.updateSeo();
         // Habit layer: log the reading (browser-only, logged-in only; idempotent
         // per day on the backend, so refreshes don't inflate the stats).
@@ -407,8 +426,12 @@ export class TextComponent implements OnInit {
       next: (data) => {
         this.originalText = data[0];
         this.translatedSpanishText = data[1];
-        this.originalTextSeparatedBySentences = this.getSentences(data[0]);
-        this.translatedSpanishTextSeparatedBySentences = this.getSentencesString(this.text.spanishTranslation);
+        if (this.sentencePairs.length) {
+          this.applySentencePairsIfAny();
+        } else {
+          this.originalTextSeparatedBySentences = this.getSentences(data[0]);
+          this.translatedSpanishTextSeparatedBySentences = this.getSentencesString(this.text.spanishTranslation);
+        }
         this.getEnglishText(id);
       },
       error: (err) => console.error('Error loading Spanish text', err)
@@ -419,7 +442,9 @@ export class TextComponent implements OnInit {
     this.textService.getEnglishText(id).subscribe({
       next: (data) => {
         this.translatedEnglishText = data[1];
-        this.translatedEnglishTextSeparatedBySentences = this.getSentencesString(this.text.englishTranslation);
+        if (!this.sentencePairs.length) {
+          this.translatedEnglishTextSeparatedBySentences = this.getSentencesString(this.text.englishTranslation);
+        }
         this.getWords(data[0]);
       },
       error: (err) => console.error('Error loading English text', err)

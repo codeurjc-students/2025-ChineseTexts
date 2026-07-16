@@ -82,6 +82,25 @@ Rules:
 
 CHINESE_CHAR_RE = re.compile(r"[一-鿿]")
 
+# Sentence-final terminators — the SAME set the backend and frontend use, so the
+# sentence boundaries agree end to end (this is what keeps the full translation
+# splittable back into exactly one part per Chinese sentence).
+SENTENCE_TERMINATORS = "。！？…；.!?;"
+SENTENCE_SPLIT_RE = re.compile(r"(?<=[。！？…；.!?;])")
+TERMINAL_BORROW = {"？": "?", "?": "?", "！": "!", "!": "!", "…": "…", "；": ";", ";": ";"}
+
+
+def ensure_terminal(translation: str, chinese_sentence: str) -> str:
+    """Ensures a sentence translation ends with sentence-final punctuation,
+    borrowing the terminator from its Chinese sentence when the AI drops it."""
+    t = (translation or "").strip()
+    if not t:
+        return ""
+    if t[-1] in SENTENCE_TERMINATORS:
+        return t
+    zh = (chinese_sentence or "").strip()
+    return t + TERMINAL_BORROW.get(zh[-1] if zh else "", ".")
+
 
 class AiFormatError(ValueError):
     """The model's reply did not match the required JSON format/schema."""
@@ -262,8 +281,11 @@ def get_translations():
 
     input_text = data["text"]
 
-    # Dividimos por 。 y filtramos vacíos
-    sentences = [s.strip() for s in input_text.split('。') if s.strip()]
+    # Dividimos por TODOS los terminadores de frase (。！？…；.!?;) — los mismos que
+    # usan backend y frontend — y cada traducción conserva SU puntuación final
+    # (prestada de la frase china si el modelo la pierde). Así el texto completo
+    # se vuelve a partir exactamente en una frase por frase china.
+    sentences = [s.strip() for s in SENTENCE_SPLIT_RE.split(input_text) if s.strip()]
 
     english_parts = []
     spanish_parts = []
@@ -271,15 +293,15 @@ def get_translations():
     for sentence in sentences:
         try:
             english, spanish = translate_sentence_pair(sentence)
-            english_parts.append(english.rstrip('.') + '.')
-            spanish_parts.append(spanish.rstrip('.') + '.')
+            english_parts.append(ensure_terminal(english, sentence))
+            spanish_parts.append(ensure_terminal(spanish, sentence))
         except AiFormatError as e:
             print(f"Error traduciendo frase '{sentence}': {e}")
             english_parts.append('')
             spanish_parts.append('')
 
-    english_full = ' '.join(english_parts)
-    spanish_full = ' '.join(spanish_parts)
+    english_full = ' '.join(p for p in english_parts if p)
+    spanish_full = ' '.join(p for p in spanish_parts if p)
 
     return jsonify([english_full, spanish_full])
 

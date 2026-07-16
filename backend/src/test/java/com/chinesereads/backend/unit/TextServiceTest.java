@@ -154,6 +154,51 @@ public class TextServiceTest {
         verify(jiebaService, times(1)).segment("你好。");
     }
 
+    // Test unitario 9: uploadText construye y guarda los pares de frases alineados
+    // (chino↔EN↔ES) validando los recuentos — la garantía de que el lector nunca
+    // vuelve a emparejar por heurística
+    @Test
+    @DisplayName("uploadText stores aligned sentence pairs when counts match")
+    public void testUploadTextStoresAlignedSentences() throws Exception {
+        TextService service = new TextService(textRepository, textMapper,
+                new com.chinesereads.backend.Service.JiebaService(), dictionaryService, wordRepository);
+        when(textRepository.findByTitleEnglish(any())).thenReturn(Optional.empty());
+        when(textRepository.findByTitleSpanish(any())).thenReturn(Optional.empty());
+        when(textRepository.save(any(Text.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        TextDTO data = new TextDTO(null, "Dialogue", "Diálogo", "你好！很高兴。",
+                "¡Hola! Encantado.", "Hello! Nice to meet you.",
+                "HSK1", "Desc", "Desc", LocalDate.now(), null);
+
+        TextDTO saved = service.uploadText(data, null);
+
+        assertNotNull(saved);
+        assertEquals(2, saved.sentences().size());
+        assertEquals("你好！", saved.sentences().get(0).chinese());
+        assertEquals("Hello!", saved.sentences().get(0).english());
+        assertEquals("¡Hola!", saved.sentences().get(0).spanish());
+        assertEquals("很高兴。", saved.sentences().get(1).chinese());
+        assertEquals("Nice to meet you.", saved.sentences().get(1).english());
+        assertEquals("Encantado.", saved.sentences().get(1).spanish());
+    }
+
+    // Test unitario 10: uploadText rechaza un texto cuyas traducciones no cuadran
+    // frase a frase con el chino (nunca se publica un texto desalineado)
+    @Test
+    @DisplayName("uploadText rejects mismatched sentence counts")
+    public void testUploadTextRejectsMismatchedCounts() {
+        TextService service = new TextService(textRepository, textMapper,
+                new com.chinesereads.backend.Service.JiebaService(), dictionaryService, wordRepository);
+
+        TextDTO data = new TextDTO(null, "Dialogue", "Diálogo", "你好！很高兴。",
+                "¡Hola!", "Hello! Nice to meet you.",
+                "HSK1", "Desc", "Desc", LocalDate.now(), null);
+
+        org.junit.jupiter.api.Assertions.assertThrows(IllegalArgumentException.class,
+                () -> service.uploadText(data, null));
+        verify(textRepository, never()).save(any(Text.class));
+    }
+
     // Test unitario 8: El lector público conserva los saltos como tokens "\n" alineados
     // 1:1 con las traducciones por palabra
     @Test

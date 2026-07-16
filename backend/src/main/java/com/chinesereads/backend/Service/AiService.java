@@ -193,6 +193,33 @@ public class AiService {
         }
     }
 
+    /**
+     * Ensures a sentence translation ends with sentence-final punctuation,
+     * borrowing the terminator from its Chinese sentence when the AI drops it
+     * (？→?, ！→!, 。→.). Keeps every translated sentence self-delimiting, so the
+     * joined block splits back into exactly one part per Chinese sentence.
+     */
+    private static String ensureTerminal(String translation, String chineseSentence) {
+        String t = translation == null ? "" : translation.strip();
+        if (t.isEmpty()) {
+            return "";
+        }
+        char last = t.charAt(t.length() - 1);
+        if (JiebaService.SENTENCE_TERMINATORS.indexOf(last) >= 0) {
+            return t;
+        }
+        char zh = chineseSentence.strip().isEmpty() ? '.'
+                : chineseSentence.strip().charAt(chineseSentence.strip().length() - 1);
+        String borrowed = switch (zh) {
+            case '？', '?' -> "?";
+            case '！', '!' -> "!";
+            case '…' -> "…";
+            case '；', ';' -> ";";
+            default -> ".";
+        };
+        return t + borrowed;
+    }
+
     private Map<String, Object> buildAiResult(String chineseText) {
         Map<String, Object> result = new HashMap<>();
         result.put("chineseText", chineseText);
@@ -217,16 +244,24 @@ public class AiService {
             result.put("titleSpanish", "");
         }
 
-        // Traducciones
+        // Traducciones — frase a frase (mismas fronteras que guardará uploadText y
+        // que muestra el lector), cada una conservando SU puntuación final. El texto
+        // completo es la unión de las frases: los recuentos chino/EN/ES coinciden por
+        // construcción, así que los pares alineados sobreviven hasta la BBDD.
         try {
-            List<String> translations = restTemplate.exchange(
-                    aiServiceUrl + "/getTranslations",
-                    HttpMethod.POST,
-                    new HttpEntity<>(Map.of("text", flatText)),
-                    new ParameterizedTypeReference<List<String>>() {}
-            ).getBody();
-            result.put("englishTranslation", translations != null && translations.size() > 0 ? translations.get(0) : "");
-            result.put("spanishTranslation", translations != null && translations.size() > 1 ? translations.get(1) : "");
+            List<String> sentenceTexts = jiebaService.buildSentences(jiebaService.segment(flatText));
+            List<List<String>> pairs = getSentenceTranslations(sentenceTexts);
+            List<String> englishParts = new java.util.ArrayList<>();
+            List<String> spanishParts = new java.util.ArrayList<>();
+            for (int i = 0; i < sentenceTexts.size(); i++) {
+                List<String> pair = (pairs != null && i < pairs.size()) ? pairs.get(i) : null;
+                String en = ensureTerminal(pair != null && pair.size() > 0 ? pair.get(0) : "", sentenceTexts.get(i));
+                String es = ensureTerminal(pair != null && pair.size() > 1 ? pair.get(1) : "", sentenceTexts.get(i));
+                if (!en.isBlank()) englishParts.add(en);
+                if (!es.isBlank()) spanishParts.add(es);
+            }
+            result.put("englishTranslation", String.join(" ", englishParts));
+            result.put("spanishTranslation", String.join(" ", spanishParts));
         } catch (Exception e) {
             result.put("englishTranslation", "");
             result.put("spanishTranslation", "");

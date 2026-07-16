@@ -7,6 +7,7 @@ import { TextsService, ValidationResult } from '../../services/texts.service';
 import { WordsService, Word } from '../../services/words.service';
 import { LoginService } from '../../services/login.service';
 import { LocaleNavService } from '../../i18n/locale-nav.service';
+import { splitChineseSentences, splitTranslatedSentences } from '../../utils/sentence.util';
 
 interface MissingWordForm {
   chinese: string;
@@ -104,12 +105,12 @@ export class UploadTextComponent implements OnInit {
   }
 
   get sentenceCountMatch(): boolean {
-    const countSentences = (text: string): number =>
-      (text.match(/[.。]/g) || []).length;
-    const original = countSentences(this.chineseText);
-    const english = countSentences(this.englishTranslation);
-    const spanish = countSentences(this.spanishTranslation);
-    return original === english && original === spanish;
+    // Same sentence rules as the backend (which rejects mismatches with 400):
+    // this pre-check just surfaces the problem before uploading.
+    const original = splitChineseSentences(this.chineseText).length;
+    const english = splitTranslatedSentences(this.englishTranslation).length;
+    const spanish = splitTranslatedSentences(this.spanishTranslation).length;
+    return original > 0 && original === english && original === spanish;
   }
 
   validate(): void {
@@ -222,7 +223,9 @@ export class UploadTextComponent implements OnInit {
         this.status = 'error';
         this.errorMessage = err.status === 409
           ? this.transloco.translate('uploadText.errors.titleExists')
-          : this.transloco.translate('uploadText.errors.uploadFailed');
+          : err.status === 400
+            ? this.transloco.translate('uploadText.errors.sentenceMismatch')
+            : this.transloco.translate('uploadText.errors.uploadFailed');
       }
     });
   }

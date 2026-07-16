@@ -18,6 +18,18 @@ export function splitTranslatedSentences(text: string): string[] {
 }
 
 /**
+ * Splits a CHINESE text into sentences after every terminator (no space
+ * required — Chinese has none). Used by the admin forms to pre-check that the
+ * chinese/EN/ES sentence counts match before uploading; the backend applies
+ * the authoritative version of the same rule and rejects mismatches with 400.
+ */
+export function splitChineseSentences(text: string): string[] {
+  return (text || '').replace(/\n/g, '')
+    .split(/(?<=[。！？…；.!?;])/)
+    .filter(s => s.trim() !== '');
+}
+
+/**
  * Break-after flags per sentence, derived from the token stream with '\n'
  * layout markers. A line break only counts when it falls BETWEEN sentences
  * (right after a terminator): breaks inside a sentence — a speaker label like

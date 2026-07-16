@@ -226,6 +226,34 @@ describe('TextComponent', () => {
     expect(p.textContent).toContain('Then I go to school.');
   });
 
+  // Test 13e: los textos nuevos traen sus frases alineadas 1:1 desde la BBDD
+  // (construidas y validadas al subir): el lector las usa TAL CUAL — chino,
+  // inglés y español — sin volver a emparejar por heurística
+  it('should use the stored aligned sentence pairs when the text has them', () => {
+    textsServiceSpy.getText.and.returnValue(of({
+      ...mockText,
+      text: '你好！很高兴。',
+      englishTranslation: 'Hello! Nice to meet you.',
+      spanishTranslation: '¡Hola! Encantado.',
+      sentences: [
+        { chinese: '你好！', english: 'Hello!', spanish: '¡Hola!' },
+        { chinese: '很高兴。', english: 'Nice to meet you.', spanish: 'Encantado.' }
+      ]
+    }));
+    const tokens = ['你好', '！', '很', '高兴', '。'];
+    const perWord = ['hello', '!', 'very', 'glad', '.'];
+    textsServiceSpy.getSpanishText.and.returnValue(of([tokens, perWord]));
+    textsServiceSpy.getEnglishText.and.returnValue(of([tokens, perWord]));
+    fixture.detectChanges();
+
+    expect(component.originalTextSeparatedBySentences).toEqual(['你好！', '很高兴。']);
+    expect(component.translatedEnglishTextSeparatedBySentences)
+      .toEqual(['Hello!', 'Nice to meet you.']);
+    expect(component.translatedSpanishTextSeparatedBySentences)
+      .toEqual(['¡Hola!', 'Encantado.']);
+    expect(component.displayTranslation).toBe('Hello!\nNice to meet you.');
+  });
+
   // Test 13d: en textos CON disposición (diálogos), la traducción refleja las
   // líneas del original: las frases de una misma línea china van juntas y el
   // salto solo aparece donde el chino salta de línea entre frases. Además ！

@@ -15,10 +15,66 @@ public class JiebaService {         //Segmenta el texto en palabras
     /** Token emitted by {@link #segmentWithLayout} to mark a line break between words. */
     public static final String LINE_BREAK = "\n";
 
+    /**
+     * Sentence-final terminators, shared by every sentence split in the app
+     * (private texts, public texts and — mirrored — the frontend readers).
+     */
+    public static final String SENTENCE_TERMINATORS = "。！？…；.!?;";
+
     public List<String> segment(String text){
         JiebaSegmenter segmenter = new JiebaSegmenter();
         List<SegToken> tokens = segmenter.process(text, JiebaSegmenter.SegMode.SEARCH);
         return tokens.stream().map(token -> token.word).collect(Collectors.toList());
+    }
+
+    /** True when the token's last char is a sentence terminator. */
+    public static boolean endsWithTerminator(String token) {
+        if (token == null || token.isEmpty()) {
+            return false;
+        }
+        return SENTENCE_TERMINATORS.indexOf(token.charAt(token.length() - 1)) >= 0;
+    }
+
+    /**
+     * Groups ordered segments into sentences, ending ONLY on a terminator
+     * (。！？…；.!?;). A trailing group without terminator still forms a final
+     * sentence. Shared by the private flow (UserTextService) and the public
+     * flow (TextService/AiService) so all sentence boundaries agree.
+     */
+    public List<String> buildSentences(List<String> segments) {
+        List<String> sentences = new ArrayList<>();
+        StringBuilder current = new StringBuilder();
+        for (String seg : segments) {
+            current.append(seg);
+            if (endsWithTerminator(seg)) {
+                String s = current.toString().strip();
+                if (!s.isEmpty()) {
+                    sentences.add(s);
+                }
+                current.setLength(0);
+            }
+        }
+        String tail = current.toString().strip();
+        if (!tail.isEmpty()) {
+            sentences.add(tail);
+        }
+        return sentences;
+    }
+
+    /**
+     * Splits a TRANSLATED block (English/Spanish) into sentences: after a
+     * terminator followed by whitespace or end of text. Mirror of the
+     * frontend's splitTranslatedSentences (utils/sentence.util.ts) — both must
+     * stay in sync so counts agree end to end.
+     */
+    public List<String> splitTranslatedBlock(String text) {
+        if (text == null || text.isBlank()) {
+            return List.of();
+        }
+        return java.util.Arrays.stream(text.split("(?<=[。！？…；.!?;])(?=\\s|$)"))
+                .map(String::strip)
+                .filter(s -> !s.isEmpty())
+                .collect(Collectors.toList());
     }
 
     /**

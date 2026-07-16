@@ -2,15 +2,18 @@ package com.chinesereads.backend.Model;
 
 import java.sql.Blob;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderBy;
 
 @Entity
 public class Text {
@@ -37,6 +40,14 @@ public class Text {
 
     @OneToMany(mappedBy = "example", cascade = CascadeType.REMOVE)  // Elimina las flashcards si se borra el texto
     private List<Flashcard> flashcards;
+
+    // Frases chino↔EN↔ES alineadas 1:1, construidas y validadas al subir el texto
+    // (mismo diseño que UserText). Los textos antiguos no tienen filas: el lector
+    // usa entonces el desglose heurístico de siempre. EAGER a propósito: TextDTO
+    // siempre las incluye, así que se necesitan en cada mapeo.
+    @OneToMany(mappedBy = "text", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OrderBy("position ASC, id ASC")
+    private List<TextSentence> sentences = new ArrayList<>();
 
     private LocalDate creationDate;
 
@@ -140,6 +151,20 @@ public class Text {
 
     public void setCreationDate(LocalDate creationDate) {
         this.creationDate = creationDate;
+    }
+
+    public List<TextSentence> getSentences() {
+        return this.sentences;
+    }
+
+    public void setSentences(List<TextSentence> sentences) {
+        this.sentences = sentences;
+    }
+
+    /** Adds a sentence and keeps the bidirectional link consistent. */
+    public void addSentence(TextSentence sentence) {
+        sentence.setText(this);
+        this.sentences.add(sentence);
     }
 
     public void setImage(Blob image) {
