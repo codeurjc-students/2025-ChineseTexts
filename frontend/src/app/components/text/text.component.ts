@@ -138,8 +138,8 @@ export class TextComponent implements OnInit {
     let current: string[] = [];
     let start = 0;
     for (let i = 0; i < this.originalText.length; i++) {
-      current.push(this.originalText[i]);
       const w = this.originalText[i];
+      if (!this.isLineBreak(w)) current.push(w);
       if (w.endsWith('.') || w.endsWith('。')) {
         if (index >= start && index <= i) return current.join('');
         current = [];
@@ -426,10 +426,20 @@ export class TextComponent implements OnInit {
     return (es ? w.spanish : w.english) || w.english || w.spanish || '';
   }
 
+  /**
+   * The segmented text may carry standalone '\n' tokens (texts stored with line
+   * breaks: dialogues, conversations). They are layout only: the words view
+   * renders them as visual breaks and every other consumer skips them.
+   */
+  isLineBreak(word: string): boolean {
+    return word === '\n';
+  }
+
   private getSentences(text: string[]): string[] {
     const sentences: string[] = [];
     let current: string[] = [];
     for (const word of text) {
+      if (this.isLineBreak(word)) continue;
       current.push(word);
       if (word.endsWith('.') || word.endsWith('。')) {
         sentences.push(current.join(''));

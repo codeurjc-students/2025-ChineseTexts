@@ -138,4 +138,43 @@ public class TextServiceTest {
         assertEquals(1, result.missingWords().size());
         assertEquals("世界", result.missingWords().get(0));
     }
+
+    // Test unitario 7: La validación ignora los saltos de línea (una palabra partida
+    // por un salto cosmético de la foto se valida entera)
+    @Test
+    @DisplayName("Validation strips line breaks before segmenting, so a wrapped word stays whole")
+    public void testValidateTextStripsLineBreaks() {
+        when(jiebaService.segment("你好。")).thenReturn(java.util.List.of("你好", "。"));
+        when(wordRepository.findByChinese("你好")).thenReturn(Optional.of(new Word()));
+        when(wordRepository.findByChinese("。")).thenReturn(Optional.of(new Word()));
+
+        var result = textService.validateText("你\n好。");
+
+        assertEquals(true, result.valid());
+        verify(jiebaService, times(1)).segment("你好。");
+    }
+
+    // Test unitario 8: El lector público conserva los saltos como tokens "\n" alineados
+    // 1:1 con las traducciones por palabra
+    @Test
+    @DisplayName("Reader endpoints keep line-break tokens aligned 1:1 with per-word translations")
+    public void testGetTextSpanishKeepsBreakTokensAligned() {
+        Text text = new Text("Title", "Título", "你好。\n再见。", "Hello.", "Hola.",
+                "Description", "Descripción", "HSK1", LocalDate.now(), null);
+        TextDTO dto = textMapper.toDTO(text);
+
+        java.util.List<String> tokens = java.util.List.of("你好", "。", "\n", "再见", "。");
+        when(jiebaService.segmentWithLayout("你好。\n再见。")).thenReturn(tokens);
+        when(dictionaryService.translateToSpanish(tokens))
+                .thenReturn(java.util.List.of("hola", "", "", "adiós", ""));
+
+        String[][] result = textService.getTextSpanish(dto);
+
+        assertEquals(5, result[0].length);
+        assertEquals(result[0].length, result[1].length);
+        assertEquals("\n", result[0][2]);
+        assertEquals("", result[1][2]);
+        assertEquals("再见", result[0][3]);
+        assertEquals("adiós", result[1][3]);
+    }
 }

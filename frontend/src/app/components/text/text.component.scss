@@ -162,6 +162,10 @@ body {
   margin-top: 1rem;
 }
 
+// Salto de línea dentro del flujo de palabras (preserva diálogos / disposición),
+// misma técnica que el lector privado (my-text-reader).
+.line-break { flex-basis: 100%; width: 100%; height: 0.5rem; }
+
 .word-wrapper {
   display: inline-flex;
   flex-direction: column;

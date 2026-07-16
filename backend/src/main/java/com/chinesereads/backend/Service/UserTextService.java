@@ -98,46 +98,21 @@ public class UserTextService {
                 : snippet(chineseText);
         userText.setTitle(title);
 
-        // Segment the WHOLE text (not line by line) so a word is never split by a
-        // cosmetic line wrap in the photo (e.g. 什\n么 → 什么 stays one word, with the
-        // right definition). Line breaks are then snapped to the nearest word boundary
-        // and kept only as a visual layout hint (newlineAfter) — never inside a word.
-        StringBuilder strippedBuilder = new StringBuilder();
-        List<Integer> newlineAfterChar = new ArrayList<>(); // stripped char index after which a line break falls
-        for (int i = 0; i < chineseText.length(); i++) {
-            char c = chineseText.charAt(i);
-            if (c == '\n') {
-                if (strippedBuilder.length() > 0) {
-                    newlineAfterChar.add(strippedBuilder.length() - 1);
-                }
-            } else {
-                strippedBuilder.append(c);
-            }
-        }
-        String stripped = strippedBuilder.toString();
-
+        // Segment keeping the layout (shared with the public reader): the whole text
+        // is segmented at once so a word is never split by a cosmetic line wrap in
+        // the photo, and each break is snapped to a word boundary. Here the breaks
+        // are stored as a per-word visual hint (newlineAfter).
         List<String> segments = new ArrayList<>();
         List<Boolean> newlineFlags = new ArrayList<>();
-        int cursor = 0;   // running char offset within the stripped text
-        int nlIdx = 0;    // pointer into newlineAfterChar
-        for (String seg : jiebaService.segment(stripped)) {
-            if (seg.isEmpty()) {
-                continue;
+        for (String token : jiebaService.segmentWithLayout(chineseText)) {
+            if (JiebaService.LINE_BREAK.equals(token)) {
+                if (!newlineFlags.isEmpty()) {
+                    newlineFlags.set(newlineFlags.size() - 1, true);
+                }
+            } else {
+                segments.add(token);
+                newlineFlags.add(false);
             }
-            int start = stripped.indexOf(seg, cursor);
-            if (start < 0) {
-                start = cursor;
-            }
-            int end = start + seg.length();
-            segments.add(seg);
-            newlineFlags.add(false);
-            // Snap every line break that falls within this token onto its boundary,
-            // so the break renders after a whole word, never mid-word.
-            while (nlIdx < newlineAfterChar.size() && newlineAfterChar.get(nlIdx) < end) {
-                newlineFlags.set(newlineFlags.size() - 1, true);
-                nlIdx++;
-            }
-            cursor = end;
         }
 
         // Group into sentences (ending ONLY on a punctuation terminator) and translate
