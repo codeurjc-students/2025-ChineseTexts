@@ -226,6 +226,29 @@ describe('TextComponent', () => {
     expect(p.textContent).toContain('Then I go to school.');
   });
 
+  // Test 13d: en textos CON disposición (diálogos), la traducción refleja las
+  // líneas del original: las frases de una misma línea china van juntas y el
+  // salto solo aparece donde el chino salta de línea entre frases. Además ！
+  // cierra frase (terminadores compartidos con el backend).
+  it('should mirror the original lines in the translation for dialogue texts', () => {
+    textsServiceSpy.getText.and.returnValue(of({
+      ...mockText,
+      text: '你好！很高兴。\n再见。',
+      englishTranslation: 'Hello! Nice to meet you. Goodbye.',
+      spanishTranslation: '¡Hola! Encantado. Adiós.'
+    }));
+    const tokens = ['你好', '！', '很', '高兴', '。', '\n', '再见', '。'];
+    const perWord = ['hello', '!', 'very', 'glad', '.', '', 'goodbye', '.'];
+    textsServiceSpy.getSpanishText.and.returnValue(of([tokens, perWord]));
+    textsServiceSpy.getEnglishText.and.returnValue(of([tokens, perWord]));
+    fixture.detectChanges();
+
+    expect(component.originalTextSeparatedBySentences)
+      .toEqual(['你好！', '很高兴。', '再见。']);
+    expect(component.displayTranslation)
+      .toBe('Hello! Nice to meet you.\nGoodbye.');
+  });
+
   // Test 13c: si no hay frases alineadas utilizables, se muestra la traducción
   // guardada tal cual (comportamiento de siempre para casos raros)
   it('should fall back to the stored translation when sentence arrays are empty', () => {

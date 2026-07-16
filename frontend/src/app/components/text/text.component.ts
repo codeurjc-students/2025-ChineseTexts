@@ -14,6 +14,7 @@ import { Lang } from '../../i18n/locale.util';
 import { LocaleNavService } from '../../i18n/locale-nav.service';
 import { AuthUiService } from '../../services/auth-ui.service';
 import { ActivityService } from '../../services/activity.service';
+import { endsSentence, splitTranslatedSentences, sentenceBreaksFromTokens, groupTranslationLines } from '../../utils/sentence.util';
 
 @Component({
   selector: 'app-text',
@@ -98,11 +99,13 @@ export class TextComponent implements OnInit {
   }
 
   /**
-   * Full translation in the active UI language, one sentence per line — same
-   * presentation as the private reader (my-text-reader): rebuilt from the
-   * per-sentence translations, each line re-punctuated from its Chinese
-   * sentence. Purely presentational; if the sentence arrays are not usable
-   * the stored translation is shown as-is (old behaviour).
+   * Full translation in the active UI language, laid out like the original —
+   * same presentation as the private reader (my-text-reader). Rebuilt from the
+   * per-sentence translations, each re-punctuated from its Chinese sentence:
+   * when the text carries a real layout ('\n' between sentences: dialogues),
+   * the lines mirror the original's lines; otherwise one sentence per line.
+   * Purely presentational; if the sentence arrays are not usable the stored
+   * translation is shown as-is (old behaviour).
    */
   get displayTranslation(): string {
     const es = this.transloco.getActiveLang() === 'es';
@@ -111,10 +114,13 @@ export class TextComponent implements OnInit {
     const secondary = es ? this.translatedEnglishTextSeparatedBySentences
                          : this.translatedSpanishTextSeparatedBySentences;
     if (primary && primary.length) {
-      const lines = primary
+      const sents = primary
         .map((t, i) => this.punctuate((t || secondary[i] || '').trim(),
-                                      this.originalTextSeparatedBySentences[i] || ''))
-        .filter(t => t);
+                                      this.originalTextSeparatedBySentences[i] || ''));
+      const breaks = sentenceBreaksFromTokens(this.originalText);
+      const lines = breaks.some(b => b)
+        ? groupTranslationLines(sents, breaks)
+        : sents.filter(t => t);
       if (lines.length) return lines.join('\n');
     }
     return (es ? this.text.spanishTranslation : this.text.englishTranslation)
@@ -172,7 +178,7 @@ export class TextComponent implements OnInit {
     for (let i = 0; i < this.originalText.length; i++) {
       const w = this.originalText[i];
       if (!this.isLineBreak(w)) current.push(w);
-      if (w.endsWith('.') || w.endsWith('。')) {
+      if (endsSentence(w)) {
         if (index >= start && index <= i) return current.join('');
         current = [];
         start = i + 1;
@@ -467,13 +473,15 @@ export class TextComponent implements OnInit {
     return word === '\n';
   }
 
+  // Sentence boundaries use the shared terminator set (。！？…；.!?; — the same
+  // one the backend uses), so 你好！ or 是吗？ close a sentence just like 。 does.
   private getSentences(text: string[]): string[] {
     const sentences: string[] = [];
     let current: string[] = [];
     for (const word of text) {
       if (this.isLineBreak(word)) continue;
       current.push(word);
-      if (word.endsWith('.') || word.endsWith('。')) {
+      if (endsSentence(word)) {
         sentences.push(current.join(''));
         current = [];
       }
@@ -483,7 +491,7 @@ export class TextComponent implements OnInit {
   }
 
   private getSentencesString(text: string): string[] {
-    return text.split(/(?<=\.|。)(?=\s|$)/).filter(s => s.trim() !== '');
+    return splitTranslatedSentences(text);
   }
 
   openDeleteTextModal(): void {

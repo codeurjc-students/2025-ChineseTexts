@@ -11,6 +11,7 @@ import { WordChatComponent } from '../word-chat/word-chat.component';
 import { LocaleNavService } from '../../i18n/locale-nav.service';
 import { AuthUiService } from '../../services/auth-ui.service';
 import { ActivityService } from '../../services/activity.service';
+import { endsSentence, splitTranslatedSentences, sentenceBreaksFromTokens, groupTranslationLines } from '../../utils/sentence.util';
 
 /**
  * Read-only reader for one of the user's PRIVATE texts. Mirrors the public text
@@ -72,13 +73,20 @@ export class MyTextReaderComponent implements OnInit {
     const es = this.transloco.getActiveLang() === 'es';
     const sents = this.reader.sentences;
     if (sents && sents.length) {
-      // Rebuild the block from the 1:1 aligned sentence translations: one sentence per
-      // line (readable), each ending with the terminal punctuation of its Chinese
-      // sentence — the AI sometimes drops the final '.', '?' or '!'. Purely
-      // presentational: no data is changed and old behaviour is preserved via the fallback.
-      const lines = sents
-        .map(s => this.punctuate(((es ? s.spanish : s.english) || (es ? s.english : s.spanish) || '').trim(), s.chinese))
-        .filter(t => t);
+      // Rebuild the block from the 1:1 aligned sentence translations, each ending with
+      // the terminal punctuation of its Chinese sentence — the AI sometimes drops the
+      // final '.', '?' or '!'. When the text carries a real layout (line breaks between
+      // sentences: dialogues), the translation lines mirror the original's lines;
+      // otherwise one sentence per line (readable). Purely presentational: no data is
+      // changed and old behaviour is preserved via the fallback.
+      const translated = sents
+        .map(s => this.punctuate(((es ? s.spanish : s.english) || (es ? s.english : s.spanish) || '').trim(), s.chinese));
+      const tokens = this.reader.words
+        .flatMap(w => w.newlineAfter ? [w.chinese, '\n'] : [w.chinese]);
+      const breaks = sentenceBreaksFromTokens(tokens);
+      const lines = breaks.some(b => b)
+        ? groupTranslationLines(translated, breaks)
+        : translated.filter(t => t);
       if (lines.length) return lines.join('\n');
     }
     // Old texts without aligned sentences: use the stored translation as-is.
@@ -180,7 +188,7 @@ export class MyTextReaderComponent implements OnInit {
     for (let i = 0; i < this.originalText.length; i++) {
       current.push(this.originalText[i]);
       const w = this.originalText[i];
-      if (w.endsWith('.') || w.endsWith('。')) {
+      if (endsSentence(w)) {
         if (index >= start && index <= i) return current.join('');
         current = [];
         start = i + 1;
@@ -225,7 +233,7 @@ export class MyTextReaderComponent implements OnInit {
     let current: string[] = [];
     for (const word of text) {
       current.push(word);
-      if (word.endsWith('.') || word.endsWith('。')) {
+      if (endsSentence(word)) {
         sentences.push(current.join(''));
         current = [];
       }
@@ -235,6 +243,6 @@ export class MyTextReaderComponent implements OnInit {
   }
 
   private splitSentences(text: string): string[] {
-    return (text || '').split(/(?<=\.|。)(?=\s|$)/).filter(s => s.trim() !== '');
+    return splitTranslatedSentences(text);
   }
 }
