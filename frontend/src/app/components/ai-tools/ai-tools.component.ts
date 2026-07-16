@@ -286,6 +286,41 @@ export class AiToolsComponent implements OnInit {
     this.status = 'uploading';
     this.validationError = '';
 
+    // SEGUNDA comprobación de palabras (la misma del formulario manual): el
+    // backend re-segmenta el texto FINAL y exige que el 100% de sus palabras
+    // exista en el diccionario. Cubre lo que la primera pasada (sugerencias de
+    // la generación) no puede: ediciones manuales del chino y palabras que la
+    // IA no llegó a devolver. Ningún texto se publica con palabras sin definir.
+    this.textsService.validateText(this.chineseText.trim()).subscribe({
+      next: (result) => {
+        if (!result.valid) {
+          this.status = 'ready';
+          const known = new Set(this.missingWordForms.map(f => f.chinese));
+          for (const form of this.missingWordForms) {
+            if (result.missingWords.includes(form.chinese)) form.saved = false;
+          }
+          for (const w of result.missingWords) {
+            if (!known.has(w)) {
+              this.missingWordForms.push({
+                chinese: w, pinyin: '', english: '', spanish: '',
+                saved: false, saving: false, error: ''
+              });
+            }
+          }
+          this.missingWordsOpen = true;
+          this.validationError = this.transloco.translate('aiTools.errors.saveWords');
+          return;
+        }
+        this.doUpload();
+      },
+      error: () => {
+        this.status = 'ready';
+        this.validationError = this.transloco.translate('aiTools.errors.uploadFailed');
+      }
+    });
+  }
+
+  private doUpload(): void {
     const data = {
       id: null,
       titleEnglish: this.titleEnglish.trim(),
