@@ -1,17 +1,20 @@
-import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
+import { Subscription } from 'rxjs';
 
 import { MyTextsService, UserTextReader, UserTextWord } from '../../services/my-texts.service';
 import { LoginService } from '../../services/login.service';
+import { AudioService } from '../../services/audio.service';
 import { SpeakButtonComponent } from '../speak-button/speak-button.component';
 import { WordChatComponent } from '../word-chat/word-chat.component';
 import { LocaleNavService } from '../../i18n/locale-nav.service';
 import { AuthUiService } from '../../services/auth-ui.service';
 import { ActivityService } from '../../services/activity.service';
 import { endsSentence, splitTranslatedSentences, sentenceBreaksFromTokens, groupTranslationLines } from '../../utils/sentence.util';
+import { karaokeIndexAt } from '../../utils/karaoke.util';
 
 /**
  * Read-only reader for one of the user's PRIVATE texts. Mirrors the public text
@@ -26,7 +29,7 @@ import { endsSentence, splitTranslatedSentences, sentenceBreaksFromTokens, group
   templateUrl: './my-text-reader.component.html',
   styleUrl: './my-text-reader.component.scss'
 })
-export class MyTextReaderComponent implements OnInit {
+export class MyTextReaderComponent implements OnInit, OnDestroy {
 
   reader: UserTextReader | null = null;
   loading = true;
@@ -46,6 +49,12 @@ export class MyTextReaderComponent implements OnInit {
   activeWordIndex: number | null = null;
   activeSentenceIndex: number | null = null;
 
+  // Karaoke: index of the word being spoken while the FULL-TEXT audio plays
+  // (estimated from playback progress — see karaoke.util). -1 = no highlight.
+  karaokeIndex = -1;
+  private fullTextAudioId = -1;
+  private karaokeSubs: Subscription[] = [];
+
   showDeleteModal = false;
 
   // AI word chat
@@ -64,7 +73,8 @@ export class MyTextReaderComponent implements OnInit {
     private localeNav: LocaleNavService,
     private transloco: TranslocoService,
     private authUi: AuthUiService,
-    private activity: ActivityService
+    private activity: ActivityService,
+    private audioService: AudioService
   ) {}
 
   /** Full translation in the active UI language (falls back to the other language). */
@@ -121,6 +131,30 @@ export class MyTextReaderComponent implements OnInit {
       },
       error: () => this.localeNav.navigate(['/'])
     });
+
+    // Karaoke: follow the full-text playback (the id arrives via onFullTextPlayback).
+    this.karaokeSubs.push(
+      this.audioService.progress$.subscribe(e => {
+        if (e.id === this.fullTextAudioId) {
+          this.karaokeIndex = karaokeIndexAt(e.ratio, this.originalText);
+        }
+      }),
+      this.audioService.state$.subscribe(e => {
+        if (e.id === this.fullTextAudioId && e.state !== 'playing' && e.state !== 'loading') {
+          this.karaokeIndex = -1;
+        }
+      })
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.karaokeSubs.forEach(s => s.unsubscribe());
+  }
+
+  /** The full-text speak button reports each playback it starts; we follow that one. */
+  onFullTextPlayback(id: number): void {
+    this.fullTextAudioId = id;
+    this.karaokeIndex = -1;
   }
 
   private load(): void {

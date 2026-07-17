@@ -29,6 +29,11 @@ export class AudioService {
   private readonly stateSubject = new Subject<{ id: number; state: SpeakState }>();
   readonly state$: Observable<{ id: number; state: SpeakState }> = this.stateSubject.asObservable();
 
+  // Playback progress (currentTime / duration, 0..1) for the active id, driven by the
+  // audio element's timeupdate (~4 Hz). The readers use it for the karaoke highlight.
+  private readonly progressSubject = new Subject<{ id: number; ratio: number }>();
+  readonly progress$: Observable<{ id: number; ratio: number }> = this.progressSubject.asObservable();
+
   constructor(@Inject(PLATFORM_ID) platformId: Object, private http: HttpClient) {
     this.isBrowser = isPlatformBrowser(platformId);
   }
@@ -59,6 +64,11 @@ export class AudioService {
 
           audio.onended = () => { if (this.activeId === id) { this.emit(id, 'idle'); this.cleanup(); } };
           audio.onerror = () => { if (this.activeId === id) { this.emit(id, 'error'); this.cleanup(); } };
+          audio.ontimeupdate = () => {
+            if (this.activeId === id && audio.duration > 0) {
+              this.progressSubject.next({ id, ratio: audio.currentTime / audio.duration });
+            }
+          };
 
           audio.play()
             .then(() => { if (this.activeId === id) this.emit(id, 'playing'); })
@@ -101,6 +111,7 @@ export class AudioService {
     if (this.audio) {
       this.audio.onended = null;
       this.audio.onerror = null;
+      this.audio.ontimeupdate = null;
       this.audio = null;
     }
     if (this.objectUrl) {

@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { Subscription } from 'rxjs';
@@ -38,6 +38,13 @@ export class SpeakButtonComponent implements OnInit, OnDestroy {
 
   /** 'word' (cheap, high monthly quota) or 'phrase' for sentences / full text (metered). */
   @Input() audioType: AudioType = 'phrase';
+
+  /**
+   * Emits the AudioService playback id every time this button starts a playback,
+   * so a host (the readers) can follow that exact playback on state$/progress$
+   * — e.g. for the karaoke highlight. Optional: most hosts ignore it.
+   */
+  @Output() playback = new EventEmitter<number>();
 
   state: SpeakState = 'idle';
 
@@ -88,6 +95,7 @@ export class SpeakButtonComponent implements OnInit, OnDestroy {
     }
     this.state = 'loading';            // instant feedback; async states arrive via state$
     this.myId = this.audio.speak(this.text, this.audioType);
+    this.playback.emit(this.myId);
   }
 
   get icon(): string {

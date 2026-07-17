@@ -1,9 +1,11 @@
-import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { TextsService, TextItem } from '../../services/texts.service';
 import { LoginService } from '../../services/login.service';
+import { AudioService } from '../../services/audio.service';
 import { WordsService, Word } from '../../services/words.service';
 import { CollectionsService, CollectionDTO } from '../../services/collections.service';
 import { SpeakButtonComponent } from '../speak-button/speak-button.component';
@@ -15,6 +17,7 @@ import { LocaleNavService } from '../../i18n/locale-nav.service';
 import { AuthUiService } from '../../services/auth-ui.service';
 import { ActivityService } from '../../services/activity.service';
 import { endsSentence, splitTranslatedSentences, sentenceBreaksFromTokens, groupTranslationLines } from '../../utils/sentence.util';
+import { karaokeIndexAt } from '../../utils/karaoke.util';
 
 @Component({
   selector: 'app-text',
@@ -23,7 +26,7 @@ import { endsSentence, splitTranslatedSentences, sentenceBreaksFromTokens, group
   templateUrl: './text.component.html',
   styleUrl: './text.component.scss'
 })
-export class TextComponent implements OnInit {
+export class TextComponent implements OnInit, OnDestroy {
 
   text: TextItem = {
     id: 0, titleSpanish: '', titleEnglish: '', text: '',
@@ -52,6 +55,12 @@ export class TextComponent implements OnInit {
 
   activeWordIndex: number | null = null;
   activeSentenceIndex: number | null = null;
+
+  // Karaoke: index of the word being spoken while the FULL-TEXT audio plays
+  // (estimated from playback progress — see karaoke.util). -1 = no highlight.
+  karaokeIndex = -1;
+  private fullTextAudioId = -1;
+  private karaokeSubs: Subscription[] = [];
 
   // Save word
   showSavePanel = false;
@@ -84,7 +93,8 @@ export class TextComponent implements OnInit {
     private transloco: TranslocoService,
     private localeNav: LocaleNavService,
     private authUi: AuthUiService,
-    private activity: ActivityService
+    private activity: ActivityService,
+    private audioService: AudioService
   ) {}
 
   get isAdmin(): boolean {
@@ -145,6 +155,32 @@ export class TextComponent implements OnInit {
   ngOnInit(): void {
     this.loginService.reqIsLogged().subscribe(); // solo para actualizar el estado del usuario
     this.init(); // carga el texto independientemente
+
+    // Karaoke: follow the full-text playback (the id arrives via onFullTextPlayback).
+    this.karaokeSubs.push(
+      this.audioService.progress$.subscribe(e => {
+        if (e.id === this.fullTextAudioId) {
+          this.karaokeIndex = karaokeIndexAt(e.ratio, this.originalText);
+        }
+      }),
+      this.audioService.state$.subscribe(e => {
+        // Any terminal state of OUR playback (or a new playback superseding it)
+        // clears the highlight.
+        if (e.id === this.fullTextAudioId && e.state !== 'playing' && e.state !== 'loading') {
+          this.karaokeIndex = -1;
+        }
+      })
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.karaokeSubs.forEach(s => s.unsubscribe());
+  }
+
+  /** The full-text speak button reports each playback it starts; we follow that one. */
+  onFullTextPlayback(id: number): void {
+    this.fullTextAudioId = id;
+    this.karaokeIndex = -1;
   }
 
   // ——— Palabra popover ———

@@ -2,13 +2,14 @@ import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideRouter } from '@angular/router';
-import { of } from 'rxjs';
+import { of, Subject } from 'rxjs';
 
 import { TextComponent } from './text.component';
 import { TextsService, TextItem } from '../../services/texts.service';
 import { LoginService } from '../../services/login.service';
 import { WordsService, Word } from '../../services/words.service';
 import { CollectionsService } from '../../services/collections.service';
+import { AudioService, SpeakState } from '../../services/audio.service';
 
 import { translocoTesting } from "../../i18n/transloco-testing";
 
@@ -19,6 +20,10 @@ describe('TextComponent', () => {
   let loginServiceSpy: jasmine.SpyObj<LoginService>;
   let wordsServiceSpy: jasmine.SpyObj<WordsService>;
   let collectionsServiceSpy: jasmine.SpyObj<CollectionsService>;
+  // Stub AudioService exposing its streams as Subjects so tests can drive playback.
+  let audioState$: Subject<{ id: number; state: SpeakState }>;
+  let audioProgress$: Subject<{ id: number; ratio: number }>;
+  let audioStub: Partial<AudioService>;
 
   const mockText: TextItem = {
     id: 1,
@@ -51,6 +56,14 @@ describe('TextComponent', () => {
     wordsServiceSpy = jasmine.createSpyObj('WordsService', ['getTextWords']);
     collectionsServiceSpy = jasmine.createSpyObj('CollectionsService',
       ['getUserCollections', 'addFlashcard', 'createCollection']);
+    audioState$ = new Subject();
+    audioProgress$ = new Subject();
+    audioStub = {
+      state$: audioState$.asObservable(),
+      progress$: audioProgress$.asObservable(),
+      speak: () => 1,
+      stop: () => {}
+    };
 
     loginServiceSpy.reqIsLogged.and.returnValue(of(null));
     loginServiceSpy.isLogged.and.returnValue(false);
@@ -74,6 +87,7 @@ describe('TextComponent', () => {
         { provide: LoginService, useValue: loginServiceSpy },
         { provide: WordsService, useValue: wordsServiceSpy },
         { provide: CollectionsService, useValue: collectionsServiceSpy },
+        { provide: AudioService, useValue: audioStub },
         provideHttpClient(),
         provideHttpClientTesting(),
         provideRouter([])
@@ -349,5 +363,40 @@ describe('TextComponent', () => {
     expect(data.teaches).toContain('每天');
 
     document.getElementById('seo-page-jsonld')?.remove();
+  });
+
+  // Karaoke: while the FULL-TEXT audio plays, the word being spoken is highlighted
+  // (position estimated from playback progress; utils/karaoke.util).
+  it('should highlight the estimated word during full-text playback and clear when it ends', () => {
+    fixture.detectChanges(); // originalText = 13 tokens (3 sentences)
+
+    component.onFullTextPlayback(42);
+    expect(component.karaokeIndex).toBe(-1); // nothing until progress arrives
+
+    audioProgress$.next({ id: 42, ratio: 0.02 });
+    expect(component.karaokeIndex).toBe(0);            // start → first word
+
+    audioProgress$.next({ id: 42, ratio: 0.5 });
+    expect(component.karaokeIndex).toBeGreaterThan(0); // mid-audio → mid-text
+    const midIndex = component.karaokeIndex;
+
+    // Progress of ANOTHER playback (e.g. a word popover audio) never moves ours.
+    audioProgress$.next({ id: 7, ratio: 0.9 });
+    expect(component.karaokeIndex).toBe(midIndex);
+
+    // Playback finished → highlight cleared.
+    audioState$.next({ id: 42, state: 'idle' });
+    expect(component.karaokeIndex).toBe(-1);
+  });
+
+  it('should render the karaoke highlight class on the active word', () => {
+    fixture.detectChanges();
+    component.onFullTextPlayback(9);
+    audioProgress$.next({ id: 9, ratio: 0.02 });
+    fixture.detectChanges();
+
+    const highlighted = fixture.nativeElement.querySelectorAll('.hover-highlight.karaoke');
+    expect(highlighted.length).toBe(1);
+    expect(highlighted[0].textContent.trim()).toBe('我');
   });
 });
