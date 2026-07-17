@@ -1195,15 +1195,15 @@
     "plans": {
       "monthly": {
         "name": "Monthly",
-        "price": "€3.99",
+        "price": "€6.99",
         "period": "/month",
         "cta": "Get Premium"
       },
       "yearly": {
         "name": "Yearly",
-        "price": "€33.50",
+        "price": "€59.99",
         "period": "/year",
-        "equivalent": "≈ €2.79/month · save 30%",
+        "equivalent": "≈ €5.00/month · save 28%",
         "cta": "Get Premium",
         "badge": "Best value"
       }
