@@ -38,7 +38,7 @@
 
       <!-- ESCUCHAR TEXTO COMPLETO -->
       <div class="listen-full">
-        <app-speak-button [text]="reader.text" size="md" [ariaLabel]="'myTextReader.listen.full' | transloco"></app-speak-button>
+        <app-speak-button [text]="reader.text" size="md" [ariaLabel]="'myTextReader.listen.full' | transloco" (playback)="onFullTextPlayback($event)"></app-speak-button>
         <span class="listen-full-label">{{ 'myTextReader.listen.full' | transloco }}</span>
       </div>
 
@@ -63,7 +63,8 @@
       <div class="words-container">
         <ng-container *ngFor="let word of originalText; let i = index">
           <div class="word-wrapper" (click)="onWordClick($event, i)">
-            <span class="hover-highlight" [class.active]="activeWordIndex === i">{{ word }}</span>
+            <span class="hover-highlight" [class.active]="activeWordIndex === i"
+                  [class.karaoke]="karaokeIndex === i">{{ word }}</span>
             <span class="pinyin" *ngIf="showPinyin">{{ wordsArray[i]?.pinyin || '' }}</span>
           </div>
           <!-- Preserva la disposición original (diálogos, líneas) -->

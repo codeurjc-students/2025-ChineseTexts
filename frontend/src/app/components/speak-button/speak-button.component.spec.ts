@@ -54,6 +54,17 @@ describe('SpeakButtonComponent', () => {
     expect(component.state).toBe('loading');
   });
 
+  it('should emit the playback id when a playback starts (karaoke hook)', () => {
+    audioSpy.speak.and.returnValue(42);
+    const emitted: number[] = [];
+    component.playback.subscribe(id => emitted.push(id));
+
+    component.state = 'idle';
+    component.toggle(new Event('click'));
+
+    expect(emitted).toEqual([42]);
+  });
+
   it('should show a sign-in notice for anonymous users instead of playing', () => {
     loginSpy.isLogged.and.returnValue(false);
     component.state = 'idle';

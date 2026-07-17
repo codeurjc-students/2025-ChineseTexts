@@ -46,7 +46,7 @@
 
     <!-- ESCUCHAR TEXTO COMPLETO -->
     <div class="listen-full">
-      <app-speak-button [text]="text.text" size="md" [ariaLabel]="'text.audio.fullText' | transloco"></app-speak-button>
+      <app-speak-button [text]="text.text" size="md" [ariaLabel]="'text.audio.fullText' | transloco" (playback)="onFullTextPlayback($event)"></app-speak-button>
       <span class="listen-full-label">{{ 'text.audio.fullText' | transloco }}</span>
     </div>
 
@@ -81,7 +81,8 @@
           class="word-wrapper"
           (click)="onWordClick($event, i)"
         >
-          <span class="hover-highlight" [class.active]="activeWordIndex === i">
+          <span class="hover-highlight" [class.active]="activeWordIndex === i"
+                [class.karaoke]="karaokeIndex === i">
             {{ word }}
           </span>
           <span class="pinyin" *ngIf="showPinyin">

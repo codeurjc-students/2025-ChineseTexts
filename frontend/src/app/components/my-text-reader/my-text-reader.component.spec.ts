@@ -2,8 +2,10 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
+import { Subject } from 'rxjs';
 
 import { MyTextReaderComponent } from './my-text-reader.component';
+import { AudioService, SpeakState } from '../../services/audio.service';
 
 import { translocoTesting } from "../../i18n/transloco-testing";
 
@@ -11,11 +13,26 @@ describe('MyTextReaderComponent', () => {
   let component: MyTextReaderComponent;
   let fixture: ComponentFixture<MyTextReaderComponent>;
   let httpMock: HttpTestingController;
+  // Stub AudioService exposing its streams as Subjects so tests can drive playback.
+  let audioState$: Subject<{ id: number; state: SpeakState }>;
+  let audioProgress$: Subject<{ id: number; ratio: number }>;
 
   beforeEach(async () => {
+    audioState$ = new Subject();
+    audioProgress$ = new Subject();
+    const audioStub: Partial<AudioService> = {
+      state$: audioState$.asObservable(),
+      progress$: audioProgress$.asObservable(),
+      speak: () => 1,
+      stop: () => {}
+    };
+
     await TestBed.configureTestingModule({
       imports: [translocoTesting(), MyTextReaderComponent],
-      providers: [provideRouter([]), provideHttpClient(), provideHttpClientTesting()]
+      providers: [
+        provideRouter([]), provideHttpClient(), provideHttpClientTesting(),
+        { provide: AudioService, useValue: audioStub }
+      ]
     }).compileComponents();
 
     httpMock = TestBed.inject(HttpTestingController);
@@ -68,5 +85,26 @@ describe('MyTextReaderComponent', () => {
   it('keeps one sentence per line when the text has no layout', () => {
     component.reader = readerWith(false);
     expect(component.displayTranslation).toBe('Hello!\nNice to meet you.\nGoodbye.');
+  });
+
+  // Karaoke: same behaviour as the public reader — the word being spoken is
+  // highlighted while the FULL-TEXT audio plays, and only for OUR playback id.
+  it('highlights the estimated word during full-text playback and clears when it ends', () => {
+    fixture.detectChanges(); // subscribes to the audio streams in ngOnInit
+    component.reader = readerWith(false);
+    component.originalText = component.reader.words.map(w => w.chinese);
+
+    component.onFullTextPlayback(42);
+    audioProgress$.next({ id: 42, ratio: 0.05 });
+    expect(component.karaokeIndex).toBe(0);   // start → 你好！
+
+    audioProgress$.next({ id: 42, ratio: 0.9 });
+    expect(component.karaokeIndex).toBe(2);   // end of audio → 再见。
+
+    audioProgress$.next({ id: 7, ratio: 0.2 }); // someone else's playback
+    expect(component.karaokeIndex).toBe(2);
+
+    audioState$.next({ id: 42, state: 'idle' });
+    expect(component.karaokeIndex).toBe(-1);
   });
 });

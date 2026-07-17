@@ -72,6 +72,8 @@ body { font-family: 'Noto Serif SC', serif; }
   transition: background-color 0.15s;
   &:hover { background-color: #fdecea; }
   &.active { background-color: #f9c6c0; }
+  // Karaoke: the word the full-text audio is speaking right now.
+  &.karaoke { background-color: #fdebd0; box-shadow: inset 0 -2px 0 #e67e22; }
 }
 .pinyin { font-size: 0.7rem; color: #888; line-height: 1.2; }
 
