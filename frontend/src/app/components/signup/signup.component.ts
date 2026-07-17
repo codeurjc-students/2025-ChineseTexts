@@ -9,6 +9,7 @@ import { Subscription } from 'rxjs';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { LocaleNavService } from '../../i18n/locale-nav.service';
 import { LocalizeLinkPipe } from '../../i18n/localize-link.pipe';
+import { ReferralService } from '../../services/referral.service';
 
 @Component({
   selector: 'app-signup',
@@ -29,7 +30,8 @@ export class SignupComponent implements OnInit, OnDestroy {
     private loginService: LoginService,
     private router: Router,
     private transloco: TranslocoService,
-    private localeNav: LocaleNavService
+    private localeNav: LocaleNavService,
+    private referral: ReferralService
   ) {
     this.signupForm = this.fb.group({
       name: ['', Validators.required],
@@ -75,11 +77,15 @@ export class SignupComponent implements OnInit, OnDestroy {
       newPassword: null,
       // Consent is validated server-side too; sent from the required checkbox.
       termsAccepted: this.signupForm.value.acceptTerms,
-      emailConsent: this.signupForm.value.emailConsent === true
+      emailConsent: this.signupForm.value.emailConsent === true,
+      // Influencer attribution: the ?ref=CODE this visitor arrived with, if any
+      // (sanitized again server-side). Cleared below once the account exists.
+      referralSource: this.referral.get()
     };
 
     this.userService.register(userDTO).subscribe({
       next: () => {
+        this.referral.clear();
         // Sign the new user in right away (like users expect): no second form.
         // If the auto-login ever fails, fall back to a clear "log in now" notice.
         this.loginService.login(userDTO.email, userDTO.password as string).subscribe({

@@ -99,6 +99,8 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.PATCH, "/api/users/**").hasAnyRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/api/users/**").hasAnyRole("ADMIN")
                 .requestMatchers(HttpMethod.POST, "/api/ai/**").hasAnyRole("ADMIN")
+                // Influencer discount codes + tracking stats: admin only (Stripe-backed)
+                .requestMatchers("/api/influencers/**").hasAnyRole("ADMIN")
                 // Perfil del creador: escritura sólo ADMIN (el GET ya es público arriba)
                 .requestMatchers(HttpMethod.POST, "/api/founder/**").hasAnyRole("ADMIN")
                 .requestMatchers(HttpMethod.PUT, "/api/founder/**").hasAnyRole("ADMIN")

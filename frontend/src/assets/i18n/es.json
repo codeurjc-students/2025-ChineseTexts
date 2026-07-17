@@ -389,6 +389,7 @@
       "language": "Idioma preferido",
       "password": "Contraseña (almacenada cifrada con BCrypt: nunca guardamos contraseñas en texto plano)",
       "payment": "Si te suscribes a PREMIUM: identificadores de facturación que vinculan tu cuenta con tu suscripción (un ID de cliente y un ID de suscripción de Stripe). Los datos de tu tarjeta se introducen directamente en Stripe y ChineseReads nunca los almacena.",
+      "referral": "Si llegaste a través de un enlace promocional o usaste un código de descuento: el código de campaña correspondiente (p. ej. el nombre del colaborador que nos recomendó), usado únicamente para medir el rendimiento de cada colaboración.",
       "analytics": "También recopilamos datos de uso anónimos a través de Google Analytics (solo con tu consentimiento), incluidas las páginas visitadas, el tiempo en el sitio y la información general del dispositivo o navegador. Las direcciones IP se anonimizan antes de enviarse a Google."
     },
     "s3": {
@@ -951,7 +952,74 @@
       "users": {
         "title": "Gestionar usuarios",
         "desc": "Lista y busca usuarios, consulta su actividad y colecciones, y bloquéalos, edítalos o elimínalos."
+      },
+      "influencers": {
+        "title": "Códigos de influencer",
+        "desc": "Crea códigos de descuento para influencers y mide los registros, canjes y suscripciones que trae cada uno."
       }
+    }
+  },
+  "influencers": {
+    "title": "Códigos de influencer",
+    "backToAdmin": "Volver a Admin Tools",
+    "hint": "Da a cada influencer su propio código de descuento y enlace de referido. Stripe aplica el descuento en el pago; esta tabla muestra lo que aporta cada código.",
+    "how": {
+      "title": "Cómo funciona",
+      "step1": "Crea un código abajo (p. ej. MARIA20 con un 20% de descuento). Se puede canjear al instante en la página de pago premium.",
+      "step2": "Dale al influencer su código y, opcionalmente, su enlace de referido:",
+      "step3": "Registros cuenta las cuentas creadas tras llegar por el enlace; Canjes es el recuento oficial de Stripe de pagos que usaron el código; Conversiones son los usuarios que canjearon identificados en nuestra base de datos, y Premium cuántos de ellos mantienen la suscripción activa."
+    },
+    "create": {
+      "title": "Nuevo código",
+      "code": "Código",
+      "percent": "Descuento (%)",
+      "duration": "El descuento se aplica a",
+      "months": "Meses",
+      "submit": "Crear código"
+    },
+    "durations": {
+      "once": "Solo el primer pago",
+      "repeating": "Varios meses",
+      "forever": "Todos los pagos",
+      "months": "{{months}} meses"
+    },
+    "table": {
+      "title": "Seguimiento por influencer",
+      "loading": "Cargando códigos y estadísticas…",
+      "empty": "Aún no hay códigos. Crea el primero arriba — se tarda diez segundos.",
+      "code": "Código",
+      "discount": "Descuento",
+      "signups": "Registros",
+      "signupsHint": "Cuentas creadas tras llegar por este enlace ?ref",
+      "redeemed": "Canjes",
+      "redeemedHint": "Recuento oficial de Stripe de pagos que usaron este código",
+      "conversions": "Conversiones",
+      "conversionsHint": "Usuarios de nuestra base de datos que pagaron con este código",
+      "premium": "Premium",
+      "premiumHint": "De esas conversiones, cuántas mantienen el premium activo",
+      "status": "Estado",
+      "active": "Activo",
+      "inactive": "Inactivo",
+      "refOnly": "Solo enlace (sin descuento)",
+      "deactivate": "Desactivar",
+      "confirm": "¿Desactivar?",
+      "yes": "Sí",
+      "no": "No"
+    },
+    "messages": {
+      "created": "Código {{code}} creado. Ya se puede canjear en el pago.",
+      "deactivated": "Código desactivado. Su historial y estadísticas se conservan."
+    },
+    "errors": {
+      "billingUnavailable": "La facturación no está configurada, así que ahora mismo no se pueden gestionar códigos.",
+      "loadFailed": "No se pudieron cargar los códigos. Inténtalo de nuevo.",
+      "createFailed": "No se pudo crear el código. Inténtalo de nuevo.",
+      "deactivateFailed": "No se pudo desactivar el código. Inténtalo de nuevo.",
+      "invalidCode": "El código debe tener 3–40 caracteres usando solo letras, números, - o _.",
+      "invalidPercent": "El descuento debe estar entre el 1 y el 100%.",
+      "invalidDuration": "Elige una duración válida para el descuento.",
+      "invalidMonths": "Indica los meses (1–36) durante los que se repite el descuento.",
+      "codeExists": "Ya existe un código activo con ese nombre. Desactívalo primero o elige otro nombre."
     }
   },
   "adminUsers": {

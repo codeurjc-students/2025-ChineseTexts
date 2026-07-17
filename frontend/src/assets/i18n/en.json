@@ -389,6 +389,7 @@
       "language": "Preferred language",
       "password": "Password (stored encrypted using BCrypt — we never store plain passwords)",
       "payment": "If you subscribe to PREMIUM: billing identifiers that link your account to your subscription (a Stripe customer ID and subscription ID). Your card details are entered directly on Stripe and are never stored by ChineseReads.",
+      "referral": "If you arrived through a promotional link or used a discount code: the campaign code involved (e.g. the name of the collaborator who recommended us), used only to measure how well each collaboration works.",
       "analytics": "We also collect anonymous usage data through Google Analytics (only with your consent), including pages visited, time on site, and general device/browser information. IP addresses are anonymized before being sent to Google."
     },
     "s3": {
@@ -951,7 +952,74 @@
       "users": {
         "title": "Manage users",
         "desc": "List and search users, view their activity and collections, and block, edit or delete them."
+      },
+      "influencers": {
+        "title": "Influencer codes",
+        "desc": "Create discount codes for influencers and track the signups, redemptions and subscriptions each one brings."
       }
+    }
+  },
+  "influencers": {
+    "title": "Influencer codes",
+    "backToAdmin": "Back to Admin Tools",
+    "hint": "Give each influencer their own discount code and referral link. Stripe applies the discount at checkout; this table shows what each code brings in.",
+    "how": {
+      "title": "How it works",
+      "step1": "Create a code below (e.g. MARIA20 with 20% off). It becomes redeemable instantly on the premium checkout page.",
+      "step2": "Give the influencer their code and, optionally, their referral link:",
+      "step3": "Signups counts accounts created after arriving through the link; Redemptions is Stripe's official count of checkouts that used the code; Conversions are the redeeming users identified in our database, and Premium how many of them still have an active subscription."
+    },
+    "create": {
+      "title": "New code",
+      "code": "Code",
+      "percent": "Discount (%)",
+      "duration": "Discount applies to",
+      "months": "Months",
+      "submit": "Create code"
+    },
+    "durations": {
+      "once": "First payment only",
+      "repeating": "Several months",
+      "forever": "Every payment",
+      "months": "{{months}} months"
+    },
+    "table": {
+      "title": "Tracking per influencer",
+      "loading": "Loading codes and stats…",
+      "empty": "No codes yet. Create the first one above — it takes ten seconds.",
+      "code": "Code",
+      "discount": "Discount",
+      "signups": "Signups",
+      "signupsHint": "Accounts created after arriving through this ?ref link",
+      "redeemed": "Redemptions",
+      "redeemedHint": "Stripe's official count of checkouts that used this code",
+      "conversions": "Conversions",
+      "conversionsHint": "Users in our database who paid with this code",
+      "premium": "Premium",
+      "premiumHint": "Of those conversions, how many still have an active premium",
+      "status": "Status",
+      "active": "Active",
+      "inactive": "Inactive",
+      "refOnly": "Link only (no discount)",
+      "deactivate": "Deactivate",
+      "confirm": "Deactivate?",
+      "yes": "Yes",
+      "no": "No"
+    },
+    "messages": {
+      "created": "Code {{code}} created. It can be redeemed at checkout right away.",
+      "deactivated": "Code deactivated. Its history and stats are kept."
+    },
+    "errors": {
+      "billingUnavailable": "Billing is not configured, so codes cannot be managed right now.",
+      "loadFailed": "Could not load the codes. Please try again.",
+      "createFailed": "Could not create the code. Please try again.",
+      "deactivateFailed": "Could not deactivate the code. Please try again.",
+      "invalidCode": "The code must be 3–40 characters using only letters, numbers, - or _.",
+      "invalidPercent": "The discount must be between 1 and 100%.",
+      "invalidDuration": "Choose a valid duration for the discount.",
+      "invalidMonths": "Enter the number of months (1–36) the discount repeats.",
+      "codeExists": "An active code with that name already exists. Deactivate it first or pick another name."
     }
   },
   "adminUsers": {

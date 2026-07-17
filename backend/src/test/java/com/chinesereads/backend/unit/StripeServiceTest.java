@@ -144,6 +144,55 @@ public class StripeServiceTest {
     }
 
     @Test
+    @DisplayName("A checkout with a promotion code stores the redeemed code id on the user")
+    public void testDispatchCheckoutStoresPromotionCode() throws Exception {
+        User user = new User("h@h.com", "H", "pass", "en", "USER");
+        user.setId(7L);
+        when(userRepository.findById(7L)).thenReturn(Optional.of(user));
+
+        // subscription null → no Stripe API lookup; discounts carry the promo code id.
+        String json = "{\"client_reference_id\":\"7\",\"customer\":\"cus_1\",\"subscription\":null,"
+                + "\"discounts\":[{\"coupon\":\"co_1\",\"promotion_code\":\"promo_abc\"}]}";
+        JsonNode data = new ObjectMapper().readTree(json);
+
+        stripeService.dispatchEvent("checkout.session.completed", data);
+
+        assertEquals("promo_abc", user.getStripePromotionCodeId());
+        verify(userRepository).save(user);
+    }
+
+    @Test
+    @DisplayName("A checkout without discounts leaves the promotion code untouched")
+    public void testDispatchCheckoutWithoutDiscounts() throws Exception {
+        User user = new User("i@i.com", "I", "pass", "en", "USER");
+        user.setId(8L);
+        when(userRepository.findById(8L)).thenReturn(Optional.of(user));
+
+        JsonNode data = new ObjectMapper().readTree(
+                "{\"client_reference_id\":\"8\",\"customer\":\"cus_2\",\"subscription\":null}");
+
+        stripeService.dispatchEvent("checkout.session.completed", data);
+
+        assertNull(user.getStripePromotionCodeId());
+        verify(userRepository).save(user);
+    }
+
+    @Test
+    @DisplayName("A renewal (no promo in the event) never erases the original attribution")
+    public void testRenewalKeepsStoredPromotionCode() {
+        User user = new User("j@j.com", "J", "pass", "en", "USER");
+        user.setStripeCustomerId("cus_3");
+        user.setStripePromotionCodeId("promo_original");
+        when(userRepository.findByStripeCustomerId("cus_3")).thenReturn(Optional.of(user));
+
+        // The 4-arg overload (renewal path) passes no promotion code.
+        stripeService.applySubscription(null, "cus_3", "sub_r", futureEpoch());
+
+        assertEquals("promo_original", user.getStripePromotionCodeId());
+        assertTrue(user.isPremiumActive());
+    }
+
+    @Test
     @DisplayName("Cancelling with no subscription id is a no-op")
     public void testCancelSubscriptionNoSubscription() {
         User user = new User("f@f.com", "F", "pass", "en", "USER");

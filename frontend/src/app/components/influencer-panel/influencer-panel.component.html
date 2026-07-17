@@ -1,0 +1,138 @@
+<div class="influencer-panel">
+
+  <div class="section-header">
+    <button class="btn-icon" (click)="goBack()" [attr.title]="'influencers.backToAdmin' | transloco">
+      <i class="bi bi-arrow-left"></i>
+    </button>
+    <h2 class="section-title">{{ 'influencers.title' | transloco }}</h2>
+  </div>
+
+  <p class="section-hint">{{ 'influencers.hint' | transloco }}</p>
+
+  <!-- ══════ CÓMO FUNCIONA ══════ -->
+  <div class="info-box">
+    <div class="info-title"><i class="bi bi-lightbulb"></i> {{ 'influencers.how.title' | transloco }}</div>
+    <ol class="info-steps">
+      <li>{{ 'influencers.how.step1' | transloco }}</li>
+      <li>
+        {{ 'influencers.how.step2' | transloco }}
+        <code>{{ shareBase }}/?ref=MARIA20</code>
+      </li>
+      <li>{{ 'influencers.how.step3' | transloco }}</li>
+    </ol>
+  </div>
+
+  <!-- ══════ CREAR CÓDIGO ══════ -->
+  <div class="form-card mt-3">
+    <h3 class="card-label">{{ 'influencers.create.title' | transloco }}</h3>
+
+    <div class="form-row mt-3">
+      <div class="form-group">
+        <label>{{ 'influencers.create.code' | transloco }} <span class="required">*</span></label>
+        <input type="text" [(ngModel)]="newCode" class="form-input" placeholder="MARIA20"
+          maxlength="40" [disabled]="creating">
+      </div>
+      <div class="form-group">
+        <label>{{ 'influencers.create.percent' | transloco }} <span class="required">*</span></label>
+        <input type="number" [(ngModel)]="newPercent" class="form-input" placeholder="20"
+          min="1" max="100" [disabled]="creating">
+      </div>
+    </div>
+
+    <div class="form-row mt-3">
+      <div class="form-group">
+        <label>{{ 'influencers.create.duration' | transloco }} <span class="required">*</span></label>
+        <select [(ngModel)]="newDuration" class="form-input" [disabled]="creating">
+          <option value="once">{{ 'influencers.durations.once' | transloco }}</option>
+          <option value="repeating">{{ 'influencers.durations.repeating' | transloco }}</option>
+          <option value="forever">{{ 'influencers.durations.forever' | transloco }}</option>
+        </select>
+      </div>
+      <div class="form-group" *ngIf="newDuration === 'repeating'">
+        <label>{{ 'influencers.create.months' | transloco }} <span class="required">*</span></label>
+        <input type="number" [(ngModel)]="newMonths" class="form-input" placeholder="3"
+          min="1" max="36" [disabled]="creating">
+      </div>
+    </div>
+
+    <div class="action-row mt-4">
+      <button class="btn-primary" (click)="create()" [disabled]="creating || !formComplete">
+        <span *ngIf="creating" class="spinner-sm"></span>
+        <i class="bi bi-plus-lg" *ngIf="!creating"></i>
+        {{ 'influencers.create.submit' | transloco }}
+      </button>
+    </div>
+  </div>
+
+  <!-- ══════ MENSAJE (éxito / error) ══════ -->
+  <div *ngIf="message" class="mt-3"
+       [ngClass]="messageType === 'success' ? 'alert-success' : 'alert-error'">
+    <i class="bi" [ngClass]="messageType === 'success' ? 'bi-check-circle' : 'bi-exclamation-circle'"></i>
+    {{ message }}
+  </div>
+
+  <!-- ══════ TABLA DE SEGUIMIENTO ══════ -->
+  <div class="form-card mt-3">
+    <h3 class="card-label">{{ 'influencers.table.title' | transloco }}</h3>
+
+    <div *ngIf="loading" class="loading-row mt-3">
+      <span class="spinner-dark"></span> {{ 'influencers.table.loading' | transloco }}
+    </div>
+
+    <p *ngIf="!loading && codes.length === 0" class="empty-hint mt-3">
+      {{ 'influencers.table.empty' | transloco }}
+    </p>
+
+    <div *ngIf="!loading && codes.length > 0" class="table-scroll mt-3">
+      <table class="stats-table">
+        <thead>
+          <tr>
+            <th>{{ 'influencers.table.code' | transloco }}</th>
+            <th>{{ 'influencers.table.discount' | transloco }}</th>
+            <th [attr.title]="'influencers.table.signupsHint' | transloco">{{ 'influencers.table.signups' | transloco }}</th>
+            <th [attr.title]="'influencers.table.redeemedHint' | transloco">{{ 'influencers.table.redeemed' | transloco }}</th>
+            <th [attr.title]="'influencers.table.conversionsHint' | transloco">{{ 'influencers.table.conversions' | transloco }}</th>
+            <th [attr.title]="'influencers.table.premiumHint' | transloco">{{ 'influencers.table.premium' | transloco }}</th>
+            <th>{{ 'influencers.table.status' | transloco }}</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let c of codes">
+            <td class="code-cell">{{ c.code }}</td>
+            <td>
+              <ng-container *ngIf="c.percentOff != null">
+                −{{ c.percentOff }}% · {{ durationLabel(c) }}
+              </ng-container>
+              <span *ngIf="c.percentOff == null" class="muted">{{ 'influencers.table.refOnly' | transloco }}</span>
+            </td>
+            <td class="num">{{ c.signups }}</td>
+            <td class="num">{{ c.timesRedeemed != null ? c.timesRedeemed : '—' }}</td>
+            <td class="num">{{ c.conversions }}</td>
+            <td class="num">{{ c.activePremium }}</td>
+            <td>
+              <span *ngIf="c.active === true" class="badge badge--active">{{ 'influencers.table.active' | transloco }}</span>
+              <span *ngIf="c.active === false" class="badge badge--inactive">{{ 'influencers.table.inactive' | transloco }}</span>
+              <span *ngIf="c.active === null" class="muted">—</span>
+            </td>
+            <td class="action-cell">
+              <ng-container *ngIf="c.id && c.active">
+                <button *ngIf="confirmingId !== c.id" class="btn-danger btn-xs"
+                  (click)="askDeactivate(c.id)" [disabled]="deactivatingId === c.id">
+                  <span *ngIf="deactivatingId === c.id" class="spinner-sm"></span>
+                  <ng-container *ngIf="deactivatingId !== c.id">{{ 'influencers.table.deactivate' | transloco }}</ng-container>
+                </button>
+                <span *ngIf="confirmingId === c.id" class="confirm-inline">
+                  {{ 'influencers.table.confirm' | transloco }}
+                  <button class="btn-danger btn-xs" (click)="confirmDeactivate(c.id)">{{ 'influencers.table.yes' | transloco }}</button>
+                  <button class="btn-secondary btn-xs" (click)="cancelDeactivate()">{{ 'influencers.table.no' | transloco }}</button>
+                </span>
+              </ng-container>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
