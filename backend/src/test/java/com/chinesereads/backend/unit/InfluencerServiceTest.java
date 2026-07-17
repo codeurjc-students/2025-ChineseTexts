@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -64,7 +65,7 @@ public class InfluencerServiceTest {
     @DisplayName("Stats join a Stripe code with its signups, conversions and active premiums")
     public void testStatsJoinSources() throws Exception {
         when(stripeService.listPromotionCodes()).thenReturn(List.of(
-                new PromoCode("promo_1", "MARIA", true, 20L, "once", null, 3L)));
+                new PromoCode("promo_1", "MARIA", true, 20L, "once", null, 3L, true)));
         // Signup matching is case-insensitive: both ref spellings count for MARIA.
         when(userRepository.findByReferralSourceIsNotNull())
                 .thenReturn(List.of(refUser("MARIA"), refUser("maria")));
@@ -87,7 +88,7 @@ public class InfluencerServiceTest {
     @DisplayName("A ?ref code with no Stripe discount behind it still gets its own row")
     public void testStatsIncludeRefOnlyCodes() throws Exception {
         when(stripeService.listPromotionCodes()).thenReturn(List.of(
-                new PromoCode("promo_1", "MARIA", true, 20L, "once", null, 0L)));
+                new PromoCode("promo_1", "MARIA", true, 20L, "once", null, 0L, true)));
         when(userRepository.findByReferralSourceIsNotNull())
                 .thenReturn(List.of(refUser("BLOG"), refUser("blog"), refUser("MARIA")));
         when(userRepository.findByStripePromotionCodeIdIsNotNull()).thenReturn(List.of());
@@ -107,47 +108,74 @@ public class InfluencerServiceTest {
     @DisplayName("Creating a code normalizes it to upper case and returns the new row")
     public void testCreateNormalizesCode() throws Exception {
         when(stripeService.listPromotionCodes()).thenReturn(List.of());
-        when(stripeService.createPromotionCode(anyString(), anyLong(), anyString(), any()))
-                .thenReturn(new PromoCode("promo_9", "MARIA20", true, 15L, "once", null, 0L));
+        when(stripeService.createPromotionCode(anyString(), anyLong(), anyString(), any(), anyBoolean()))
+                .thenReturn(new PromoCode("promo_9", "MARIA20", true, 15L, "once", null, 0L, true));
 
         InfluencerCodeDTO created = influencerService.create(
-                new InfluencerCreateDTO("maria20", 15L, "once", null));
+                new InfluencerCreateDTO("maria20", 15L, "once", null, null));
 
         assertEquals("MARIA20", created.code());
         assertEquals(0, created.signups());
-        verify(stripeService).createPromotionCode("MARIA20", 15L, "once", null);
+        verify(stripeService).createPromotionCode("MARIA20", 15L, "once", null, true);
     }
 
     @Test
     @DisplayName("Invalid inputs are rejected before any Stripe call is made")
     public void testCreateValidation() throws Exception {
         when(stripeService.listPromotionCodes()).thenReturn(List.of(
-                new PromoCode("promo_1", "TAKEN", true, 10L, "once", null, 0L)));
+                new PromoCode("promo_1", "TAKEN", true, 10L, "once", null, 0L, true)));
 
         assertThrows(IllegalArgumentException.class, () -> influencerService.create(
-                new InfluencerCreateDTO("a!", 10L, "once", null)));         // bad charset/length
+                new InfluencerCreateDTO("a!", 10L, "once", null, null)));         // bad charset/length
         assertThrows(IllegalArgumentException.class, () -> influencerService.create(
-                new InfluencerCreateDTO("VALIDO", 0L, "once", null)));      // percent out of range
+                new InfluencerCreateDTO("VALIDO", 0L, "once", null, null)));      // percent out of range
         assertThrows(IllegalArgumentException.class, () -> influencerService.create(
-                new InfluencerCreateDTO("VALIDO", 10L, "weekly", null)));   // unknown duration
+                new InfluencerCreateDTO("VALIDO", 10L, "weekly", null, null)));   // unknown duration
         assertThrows(IllegalArgumentException.class, () -> influencerService.create(
-                new InfluencerCreateDTO("VALIDO", 10L, "repeating", null))); // months missing
+                new InfluencerCreateDTO("VALIDO", 10L, "repeating", null, null))); // months missing
         assertThrows(IllegalArgumentException.class, () -> influencerService.create(
-                new InfluencerCreateDTO("taken", 10L, "once", null)));      // active duplicate
+                new InfluencerCreateDTO("taken", 10L, "once", null, null)));      // active duplicate
 
-        verify(stripeService, never()).createPromotionCode(anyString(), anyLong(), anyString(), any());
+        verify(stripeService, never()).createPromotionCode(anyString(), anyLong(), anyString(), any(), anyBoolean());
+    }
+
+    @Test
+    @DisplayName("Anti-farming guard: omitting firstTimeOnly creates a first-time-only code")
+    public void testCreateDefaultsToFirstTimeOnly() throws Exception {
+        when(stripeService.listPromotionCodes()).thenReturn(List.of());
+        when(stripeService.createPromotionCode(anyString(), anyLong(), anyString(), any(), anyBoolean()))
+                .thenReturn(new PromoCode("promo_9", "MARIA20", true, 15L, "once", null, 0L, true));
+
+        influencerService.create(new InfluencerCreateDTO("MARIA20", 15L, "once", null, null));
+
+        // Null (field omitted by an older client) must still land as TRUE in Stripe.
+        verify(stripeService).createPromotionCode("MARIA20", 15L, "once", null, true);
+    }
+
+    @Test
+    @DisplayName("Win-back campaigns: an explicit firstTimeOnly=false is passed through")
+    public void testCreateAllowsExplicitWinBackCode() throws Exception {
+        when(stripeService.listPromotionCodes()).thenReturn(List.of());
+        when(stripeService.createPromotionCode(anyString(), anyLong(), anyString(), any(), anyBoolean()))
+                .thenReturn(new PromoCode("promo_9", "VUELVE10", true, 10L, "once", null, 0L, false));
+
+        InfluencerCodeDTO created = influencerService.create(
+                new InfluencerCreateDTO("VUELVE10", 10L, "once", null, false));
+
+        verify(stripeService).createPromotionCode("VUELVE10", 10L, "once", null, false);
+        assertEquals(false, created.firstTimeOnly());
     }
 
     @Test
     @DisplayName("The string of a DEACTIVATED code can be reused for a new campaign")
     public void testCreateAllowsReusingInactiveCode() throws Exception {
         when(stripeService.listPromotionCodes()).thenReturn(List.of(
-                new PromoCode("promo_old", "MARIA", false, 10L, "once", null, 5L)));
-        when(stripeService.createPromotionCode(anyString(), anyLong(), anyString(), any()))
-                .thenReturn(new PromoCode("promo_new", "MARIA", true, 25L, "once", null, 0L));
+                new PromoCode("promo_old", "MARIA", false, 10L, "once", null, 5L, true)));
+        when(stripeService.createPromotionCode(anyString(), anyLong(), anyString(), any(), anyBoolean()))
+                .thenReturn(new PromoCode("promo_new", "MARIA", true, 25L, "once", null, 0L, true));
 
         InfluencerCodeDTO created = influencerService.create(
-                new InfluencerCreateDTO("MARIA", 25L, "once", null));
+                new InfluencerCreateDTO("MARIA", 25L, "once", null, null));
 
         assertTrue(created.active());
         assertEquals("promo_new", created.id());

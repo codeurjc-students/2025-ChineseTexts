@@ -39,6 +39,12 @@ export class InfluencerPanelComponent implements OnInit {
   newPercent: number | null = null;
   newDuration: 'once' | 'repeating' | 'forever' = 'once';
   newMonths: number | null = null;
+  /**
+   * Anti-"discount farming" guard, ON by default: the code only works for customers
+   * with no previous payment, so cancel+resubscribe cannot re-redeem a first-payment
+   * discount every cycle. Untick only for deliberate win-back campaigns.
+   */
+  newFirstTimeOnly = true;
 
   constructor(
     private influencersService: InfluencersService,
@@ -83,7 +89,8 @@ export class InfluencerPanelComponent implements OnInit {
       code: this.newCode.trim(),
       percentOff: this.newPercent as number,
       duration: this.newDuration,
-      durationInMonths: this.newDuration === 'repeating' ? this.newMonths : null
+      durationInMonths: this.newDuration === 'repeating' ? this.newMonths : null,
+      firstTimeOnly: this.newFirstTimeOnly
     }).subscribe({
       next: (created) => {
         this.creating = false;
@@ -93,6 +100,7 @@ export class InfluencerPanelComponent implements OnInit {
         this.newPercent = null;
         this.newDuration = 'once';
         this.newMonths = null;
+        this.newFirstTimeOnly = true;
         this.load();
       },
       error: (err) => {

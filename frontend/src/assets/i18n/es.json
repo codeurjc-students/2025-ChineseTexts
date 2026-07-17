@@ -975,6 +975,8 @@
       "percent": "Descuento (%)",
       "duration": "El descuento se aplica a",
       "months": "Meses",
+      "firstTimeOnly": "Solo clientes nuevos (recomendado)",
+      "firstTimeOnlyHint": "Stripe rechaza el código a quien ya haya pagado alguna vez — esto corta el truco de cancelar y re-suscribirse para canjear el descuento de primer pago en cada ciclo. Desmárcalo solo para campañas deliberadas de recuperación de ex-suscriptores.",
       "submit": "Crear código"
     },
     "durations": {
@@ -1001,6 +1003,8 @@
       "active": "Activo",
       "inactive": "Inactivo",
       "refOnly": "Solo enlace (sin descuento)",
+      "firstTime": "Clientes nuevos",
+      "firstTimeHint": "Solo pueden canjearlo clientes sin ningún pago previo",
       "deactivate": "Desactivar",
       "confirm": "¿Desactivar?",
       "yes": "Sí",

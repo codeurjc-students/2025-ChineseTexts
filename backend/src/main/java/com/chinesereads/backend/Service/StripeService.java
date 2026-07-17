@@ -363,9 +363,11 @@ public class StripeService {
      * SDK-free snapshot of a Stripe promotion code, so callers (and their unit tests)
      * never depend on Stripe model classes. {@code percentOff} is null for amount-off
      * coupons; {@code durationInMonths} is only set for "repeating" coupons.
+     * {@code firstTimeOnly} mirrors Stripe's first_time_transaction restriction (the
+     * anti-"discount farming" guard: customers with any previous payment are rejected).
      */
     public record PromoCode(String id, String code, boolean active, Long percentOff,
-            String duration, Long durationInMonths, long timesRedeemed) {
+            String duration, Long durationInMonths, long timesRedeemed, boolean firstTimeOnly) {
     }
 
     /** Lists every promotion code in the Stripe account (all pages), newest first. */
@@ -385,9 +387,15 @@ public class StripeService {
      * Creates an influencer discount: a Coupon (the discount terms) plus a Promotion
      * Code (the human-readable code typed at checkout). The coupon is named after the
      * code so the Stripe dashboard stays readable. Inputs are validated by the caller.
+     *
+     * <p>{@code firstTimeOnly} sets Stripe's first_time_transaction restriction: the
+     * code is rejected for any customer with a previous successful payment. Because
+     * checkout reuses the user's stored Stripe customer, this closes the
+     * "discount farming" loophole (cancel + re-subscribe re-redeeming a first-payment
+     * code every cycle). Off = the code also works for returning customers (win-back).
      */
     public PromoCode createPromotionCode(String code, long percentOff, String duration,
-            Long durationInMonths) throws StripeException {
+            Long durationInMonths, boolean firstTimeOnly) throws StripeException {
         ensureApiKey();
         com.stripe.param.CouponCreateParams.Builder coupon = com.stripe.param.CouponCreateParams.builder()
                 .setPercentOff(java.math.BigDecimal.valueOf(percentOff))
@@ -401,11 +409,17 @@ public class StripeService {
             coupon.setDurationInMonths(durationInMonths);
         }
         com.stripe.model.Coupon created = com.stripe.model.Coupon.create(coupon.build());
-        com.stripe.model.PromotionCode pc = com.stripe.model.PromotionCode.create(
+        com.stripe.param.PromotionCodeCreateParams.Builder pcParams =
                 com.stripe.param.PromotionCodeCreateParams.builder()
                         .setCoupon(created.getId())
-                        .setCode(code)
-                        .build());
+                        .setCode(code);
+        if (firstTimeOnly) {
+            pcParams.setRestrictions(
+                    com.stripe.param.PromotionCodeCreateParams.Restrictions.builder()
+                            .setFirstTimeTransaction(true)
+                            .build());
+        }
+        com.stripe.model.PromotionCode pc = com.stripe.model.PromotionCode.create(pcParams.build());
         return toPromoCode(pc);
     }
 
@@ -430,7 +444,9 @@ public class StripeService {
                         ? coupon.getPercentOff().longValue() : null,
                 coupon != null ? coupon.getDuration() : null,
                 coupon != null ? coupon.getDurationInMonths() : null,
-                pc.getTimesRedeemed() != null ? pc.getTimesRedeemed() : 0L);
+                pc.getTimesRedeemed() != null ? pc.getTimesRedeemed() : 0L,
+                pc.getRestrictions() != null
+                        && Boolean.TRUE.equals(pc.getRestrictions().getFirstTimeTransaction()));
     }
 
     /** Finds the user behind an event, preferring the checkout reference, then the ids. */

@@ -15,6 +15,8 @@ public record InfluencerCodeDTO(
         Long percentOff,
         String duration,
         Long durationInMonths,
+        // True when the code is restricted to first-time customers (farming guard).
+        Boolean firstTimeOnly,
         Long timesRedeemed,
         long signups,
         long conversions,
