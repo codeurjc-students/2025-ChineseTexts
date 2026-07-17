@@ -13,13 +13,13 @@ describe('InfluencerPanelComponent', () => {
 
   const stripeRow: InfluencerCode = {
     id: 'promo_1', code: 'MARIA20', active: true, percentOff: 20,
-    duration: 'once', durationInMonths: null, timesRedeemed: 3,
+    duration: 'once', durationInMonths: null, firstTimeOnly: true, timesRedeemed: 3,
     signups: 5, conversions: 2, activePremium: 1
   };
 
   const refOnlyRow: InfluencerCode = {
     id: null, code: 'BLOG', active: null, percentOff: null,
-    duration: null, durationInMonths: null, timesRedeemed: null,
+    duration: null, durationInMonths: null, firstTimeOnly: null, timesRedeemed: null,
     signups: 4, conversions: 0, activePremium: 0
   };
 
@@ -53,12 +53,27 @@ describe('InfluencerPanelComponent', () => {
 
     component.create();
 
+    // The anti-farming guard travels ON by default (checkbox pre-ticked).
     expect(serviceSpy.createCode).toHaveBeenCalledWith({
-      code: 'PEDRO10', percentOff: 10, duration: 'once', durationInMonths: null
+      code: 'PEDRO10', percentOff: 10, duration: 'once', durationInMonths: null,
+      firstTimeOnly: true
     });
     expect(serviceSpy.getStats).toHaveBeenCalledTimes(2); // init + reload
     expect(component.messageType).toBe('success');
     expect(component.newCode).toBe(''); // form reset
+    expect(component.newFirstTimeOnly).toBeTrue(); // guard resets to the safe default
+  });
+
+  it('sends firstTimeOnly=false only when the admin unticks the guard (win-back)', () => {
+    serviceSpy.createCode.and.returnValue(of({ ...stripeRow, code: 'VUELVE10', firstTimeOnly: false }));
+    component.newCode = 'VUELVE10';
+    component.newPercent = 10;
+    component.newFirstTimeOnly = false;
+
+    component.create();
+
+    expect(serviceSpy.createCode).toHaveBeenCalledWith(
+      jasmine.objectContaining({ firstTimeOnly: false }));
   });
 
   it('does not call the API while the form is incomplete', () => {

@@ -10,5 +10,9 @@ public record InfluencerCreateDTO(
         Long percentOff,
         // "once" (first payment), "repeating" (durationInMonths months) or "forever".
         String duration,
-        Long durationInMonths) {
+        Long durationInMonths,
+        // Anti-"discount farming": restrict the code to customers with no previous
+        // payment (Stripe first_time_transaction). Null defaults to TRUE — the safe
+        // choice; sending false explicitly enables win-back campaigns.
+        Boolean firstTimeOnly) {
 }

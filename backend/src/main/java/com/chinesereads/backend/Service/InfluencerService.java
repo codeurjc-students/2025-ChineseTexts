@@ -78,11 +78,14 @@ public class InfluencerService {
         if (activeDuplicate) {
             throw new IllegalArgumentException("CODE_EXISTS");
         }
+        // Anti-farming guard defaults ON: omitting the field must never create a code
+        // that a paying customer can re-redeem cycle after cycle.
+        boolean firstTimeOnly = !Boolean.FALSE.equals(request.firstTimeOnly());
         PromoCode created = stripeService.createPromotionCode(code, request.percentOff(),
-                duration, request.durationInMonths());
+                duration, request.durationInMonths(), firstTimeOnly);
         return new InfluencerCodeDTO(created.id(), created.code(), created.active(),
                 created.percentOff(), created.duration(), created.durationInMonths(),
-                created.timesRedeemed(), 0, 0, 0);
+                created.firstTimeOnly(), created.timesRedeemed(), 0, 0, 0);
     }
 
     /** Deactivates a code so it can no longer be redeemed (history is preserved). */
@@ -107,8 +110,8 @@ public class InfluencerService {
                     .filter(u -> pc.id().equals(u.getStripePromotionCodeId())).toList();
             long activePremium = conversions.stream().filter(User::isPremiumActive).count();
             rows.add(new InfluencerCodeDTO(pc.id(), pc.code(), pc.active(), pc.percentOff(),
-                    pc.duration(), pc.durationInMonths(), pc.timesRedeemed(),
-                    signups, conversions.size(), activePremium));
+                    pc.duration(), pc.durationInMonths(), pc.firstTimeOnly(),
+                    pc.timesRedeemed(), signups, conversions.size(), activePremium));
         }
         // Ref-only codes (no Stripe discount behind them), grouped case-insensitively.
         TreeMap<String, Long> refOnly = new TreeMap<>();
@@ -121,7 +124,7 @@ public class InfluencerService {
             }
         }
         refOnly.forEach((code, signups) -> rows.add(new InfluencerCodeDTO(
-                null, code, null, null, null, null, null, signups, 0, 0)));
+                null, code, null, null, null, null, null, null, signups, 0, 0)));
         rows.sort((a, b) -> a.code().compareToIgnoreCase(b.code()));
         return rows;
     }

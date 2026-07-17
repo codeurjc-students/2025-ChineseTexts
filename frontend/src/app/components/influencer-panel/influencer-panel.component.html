@@ -55,6 +55,14 @@
       </div>
     </div>
 
+    <label class="checkbox-row mt-3">
+      <input type="checkbox" [(ngModel)]="newFirstTimeOnly" [disabled]="creating">
+      <span>
+        <strong>{{ 'influencers.create.firstTimeOnly' | transloco }}</strong>
+        <small>{{ 'influencers.create.firstTimeOnlyHint' | transloco }}</small>
+      </span>
+    </label>
+
     <div class="action-row mt-4">
       <button class="btn-primary" (click)="create()" [disabled]="creating || !formComplete">
         <span *ngIf="creating" class="spinner-sm"></span>
@@ -103,6 +111,8 @@
             <td>
               <ng-container *ngIf="c.percentOff != null">
                 −{{ c.percentOff }}% · {{ durationLabel(c) }}
+                <span *ngIf="c.firstTimeOnly" class="badge badge--guard"
+                  [attr.title]="'influencers.table.firstTimeHint' | transloco">{{ 'influencers.table.firstTime' | transloco }}</span>
               </ng-container>
               <span *ngIf="c.percentOff == null" class="muted">{{ 'influencers.table.refOnly' | transloco }}</span>
             </td>

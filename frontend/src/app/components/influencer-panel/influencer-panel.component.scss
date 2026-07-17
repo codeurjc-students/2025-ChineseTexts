@@ -134,6 +134,14 @@
   letter-spacing: 0.5px; border-radius: 6px; padding: 3px 8px; white-space: nowrap;
   &--active { background: #eafaf1; color: #1e8449; }
   &--inactive { background: #f4f4f4; color: #999; }
+  &--guard { background: #eaf2f8; color: #21618c; margin-left: 6px; }
+}
+
+.checkbox-row {
+  display: flex; align-items: flex-start; gap: 10px; cursor: pointer;
+  input { margin-top: 4px; accent-color: #c0392b; }
+  span { display: flex; flex-direction: column; gap: 2px; font-size: 0.9rem; color: #444; }
+  small { color: #999; font-size: 0.8rem; line-height: 1.4; }
 }
 
 .action-cell { white-space: nowrap; }

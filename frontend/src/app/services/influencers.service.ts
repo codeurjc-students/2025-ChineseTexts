@@ -13,6 +13,8 @@ export interface InfluencerCode {
   percentOff: number | null;
   duration: string | null;
   durationInMonths: number | null;
+  /** True when restricted to first-time customers (anti-"discount farming" guard). */
+  firstTimeOnly: boolean | null;
   timesRedeemed: number | null;
   signups: number;
   conversions: number;
@@ -24,6 +26,8 @@ export interface InfluencerCreateRequest {
   percentOff: number;
   duration: 'once' | 'repeating' | 'forever';
   durationInMonths: number | null;
+  /** Default true: only customers with no previous payment can redeem the code. */
+  firstTimeOnly: boolean;
 }
 
 /** ADMIN-only API for influencer discount codes and their tracking stats. */

@@ -975,6 +975,8 @@
       "percent": "Discount (%)",
       "duration": "Discount applies to",
       "months": "Months",
+      "firstTimeOnly": "New customers only (recommended)",
+      "firstTimeOnlyHint": "Stripe rejects the code for anyone who has already paid before — this stops the cancel-and-resubscribe trick of re-redeeming a first-payment discount every cycle. Untick only for deliberate win-back campaigns aimed at former subscribers.",
       "submit": "Create code"
     },
     "durations": {
@@ -1001,6 +1003,8 @@
       "active": "Active",
       "inactive": "Inactive",
       "refOnly": "Link only (no discount)",
+      "firstTime": "New customers",
+      "firstTimeHint": "Only customers with no previous payment can redeem this code",
       "deactivate": "Deactivate",
       "confirm": "Deactivate?",
       "yes": "Yes",
