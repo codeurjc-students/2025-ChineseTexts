@@ -8,18 +8,19 @@ import { UploadTextComponent } from '../upload-text/upload-text.component';
 import { AiToolsComponent } from '../ai-tools/ai-tools.component';
 import { WordManagerComponent } from '../word-manager/word-manager.component';
 import { AdminUsersComponent } from '../admin-users/admin-users.component';
+import { InfluencerPanelComponent } from '../influencer-panel/influencer-panel.component';
 
 /**
  * Single admin entry point. Shows a menu of tools and hosts each one as a child
  * component, so every feature stays self-contained and independently testable while the
  * navigation lives in one place.
  */
-type Tool = 'menu' | 'manual' | 'ai' | 'ocr' | 'words' | 'users';
+type Tool = 'menu' | 'manual' | 'ai' | 'ocr' | 'words' | 'users' | 'influencers';
 
 @Component({
   selector: 'app-admin-tools',
   standalone: true,
-  imports: [CommonModule, TranslocoModule, UploadTextComponent, AiToolsComponent, WordManagerComponent, AdminUsersComponent],
+  imports: [CommonModule, TranslocoModule, UploadTextComponent, AiToolsComponent, WordManagerComponent, AdminUsersComponent, InfluencerPanelComponent],
   templateUrl: './admin-tools.component.html',
   styleUrl: './admin-tools.component.scss'
 })

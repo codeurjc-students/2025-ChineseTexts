@@ -81,7 +81,8 @@ public class UserControllerRest {
         // userService.save() directly, which honors the DTO's roles.
         UserDTO sanitized = new UserDTO(null, email, name, userDTO.language(),
                 userDTO.collections(), List.of("USER"), password, null,
-                userDTO.termsAccepted(), null, userDTO.emailConsent());
+                userDTO.termsAccepted(), null, userDTO.emailConsent(),
+                sanitizeReferral(userDTO.referralSource()));
         UserDTO newUser = userService.save(sanitized);
         if (newUser == null) {
             // 409 Conflict: an email-already-registered clash. The distinct STATUS lets the
@@ -92,6 +93,23 @@ public class UserControllerRest {
         }
         URI location = fromCurrentRequest().path("/{id}").buildAndExpand(newUser.id()).toUri();
         return ResponseEntity.created(location).body(newUser);
+    }
+
+    /**
+     * Normalizes the influencer ?ref code sent at signup: trims, strips everything
+     * outside [A-Za-z0-9_-], upper-cases and caps at 40 chars — so arbitrary client
+     * input can never store junk, and matching against promotion codes stays exact.
+     * Returns null when nothing meaningful remains (the common no-referral case).
+     */
+    private static String sanitizeReferral(String referral) {
+        if (referral == null) {
+            return null;
+        }
+        String clean = referral.trim().replaceAll("[^A-Za-z0-9_-]", "").toUpperCase();
+        if (clean.isEmpty()) {
+            return null;
+        }
+        return clean.length() > 40 ? clean.substring(0, 40) : clean;
     }
 
     @GetMapping("/me")

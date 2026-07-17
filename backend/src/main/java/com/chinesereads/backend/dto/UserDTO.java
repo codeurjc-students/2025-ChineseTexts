@@ -21,26 +21,38 @@ public record UserDTO (
     LocalDateTime premiumUntil,
     // OPTIONAL marketing-email consent (GDPR). Nullable on purpose: null means "not
     // provided" so callers that predate the field can never silently revoke consent.
-    Boolean emailConsent){
+    Boolean emailConsent,
+    // Influencer attribution: the ?ref=CODE the visitor arrived with, sent once at
+    // signup (sanitized server-side) and stored on the account. Nullable on purpose:
+    // most signups have none and older clients never send it.
+    String referralSource){
 
     /** Backward-compatible constructor for existing call-sites that predate consent. */
     public UserDTO(Long id, String email, String name, String language,
             List<CollectionDTO> collections, List<String> roles, String password,
             String newPassword) {
-        this(id, email, name, language, collections, roles, password, newPassword, false, null, null);
+        this(id, email, name, language, collections, roles, password, newPassword, false, null, null, null);
     }
 
     /** Backward-compatible constructor for call-sites that predate the premium field. */
     public UserDTO(Long id, String email, String name, String language,
             List<CollectionDTO> collections, List<String> roles, String password,
             String newPassword, boolean termsAccepted) {
-        this(id, email, name, language, collections, roles, password, newPassword, termsAccepted, null, null);
+        this(id, email, name, language, collections, roles, password, newPassword, termsAccepted, null, null, null);
     }
 
     /** Backward-compatible constructor for call-sites that predate email consent. */
     public UserDTO(Long id, String email, String name, String language,
             List<CollectionDTO> collections, List<String> roles, String password,
             String newPassword, boolean termsAccepted, LocalDateTime premiumUntil) {
-        this(id, email, name, language, collections, roles, password, newPassword, termsAccepted, premiumUntil, null);
+        this(id, email, name, language, collections, roles, password, newPassword, termsAccepted, premiumUntil, null, null);
+    }
+
+    /** Backward-compatible constructor for call-sites that predate referral attribution. */
+    public UserDTO(Long id, String email, String name, String language,
+            List<CollectionDTO> collections, List<String> roles, String password,
+            String newPassword, Boolean termsAccepted, LocalDateTime premiumUntil,
+            Boolean emailConsent) {
+        this(id, email, name, language, collections, roles, password, newPassword, termsAccepted, premiumUntil, emailConsent, null);
     }
 }

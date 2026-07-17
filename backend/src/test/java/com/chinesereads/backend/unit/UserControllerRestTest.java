@@ -13,6 +13,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -70,5 +71,37 @@ public class UserControllerRestTest {
 
         assertEquals(201, response.getStatusCode().value());
         verify(userService).save(any());
+    }
+
+    private UserDTO dtoWithReferral(String referral) {
+        return new UserDTO(null, "new@test.com", "New User", "en",
+                List.of(), List.of("USER"), "password123", null, true, null, null, referral);
+    }
+
+    @Test
+    @DisplayName("The signup ?ref code is sanitized (charset, case, length) before saving")
+    public void testSignupSanitizesReferral() {
+        when(userService.save(any())).thenReturn(dto(true));
+        ArgumentCaptor<UserDTO> saved = ArgumentCaptor.forClass(UserDTO.class);
+
+        controller.registerUser(dtoWithReferral("  maría-20! "));
+
+        verify(userService).save(saved.capture());
+        // Accents and '!' are stripped, the rest upper-cased: only [A-Z0-9_-] survives.
+        assertEquals("MARA-20", saved.getValue().referralSource());
+    }
+
+    @Test
+    @DisplayName("A junk-only or missing ?ref code is stored as null, never as an empty string")
+    public void testSignupDropsJunkReferral() {
+        when(userService.save(any())).thenReturn(dto(true));
+        ArgumentCaptor<UserDTO> saved = ArgumentCaptor.forClass(UserDTO.class);
+
+        controller.registerUser(dtoWithReferral("¡¡¡···!!!"));
+        controller.registerUser(dtoWithReferral(null));
+
+        verify(userService, org.mockito.Mockito.times(2)).save(saved.capture());
+        assertEquals(null, saved.getAllValues().get(0).referralSource());
+        assertEquals(null, saved.getAllValues().get(1).referralSource());
     }
 }

@@ -95,6 +95,10 @@ public class StripeService {
         SessionCreateParams params = SessionCreateParams.builder()
                 .setMode(SessionCreateParams.Mode.SUBSCRIPTION)
                 .setCustomer(customerId)
+                // Shows the "Add promotion code" field on Stripe's hosted page, so
+                // influencer discount codes can be redeemed. With no active codes the
+                // field simply accepts none — the normal flow is unaffected.
+                .setAllowPromotionCodes(true)
                 // Lets the webhook map the payment back to this user even before we know
                 // the subscription id.
                 .setClientReferenceId(String.valueOf(user.getId()))
@@ -214,11 +218,12 @@ public class StripeService {
     /** Applies one parsed event to the matching user. Exposed for testing. */
     public void dispatchEvent(String type, JsonNode data) throws StripeException {
         switch (type) {
-            // First payment: grant premium and record the Stripe ids.
+            // First payment: grant premium and record the Stripe ids (plus the promotion
+            // code redeemed, if any, for influencer attribution).
             case "checkout.session.completed" -> {
                 String subscriptionId = text(data, "subscription");
                 applySubscription(text(data, "client_reference_id"), text(data, "customer"),
-                        subscriptionId, periodEndOf(subscriptionId));
+                        subscriptionId, periodEndOf(subscriptionId), promotionCodeIdFromJson(data));
             }
             // Renewals AND status changes carry the subscription object (its period end
             // advances on each successful renewal) — read the period end straight from
@@ -277,6 +282,21 @@ public class StripeService {
         return (value == null || value.isNull()) ? null : value.asText();
     }
 
+    /**
+     * Reads the redeemed promotion code id ({@code promo_...}) from a checkout session's
+     * raw JSON ({@code discounts[0].promotion_code}), or null when no code was used.
+     * Only the id is stored — the human-readable code is resolved later by the
+     * influencer stats, which list all promotion codes anyway, so the webhook needs no
+     * extra Stripe call and keeps working even if a code is later deactivated.
+     */
+    static String promotionCodeIdFromJson(JsonNode session) {
+        JsonNode discounts = session.path("discounts");
+        if (!discounts.isArray() || discounts.isEmpty()) {
+            return null;
+        }
+        return text(discounts.get(0), "promotion_code");
+    }
+
     // ——— Pure state mutations (unit-tested without the Stripe SDK) ———
 
     /**
@@ -287,6 +307,19 @@ public class StripeService {
     @Transactional
     public void applySubscription(String clientReferenceUserId, String customerId,
             String subscriptionId, Long periodEndEpochSeconds) {
+        applySubscription(clientReferenceUserId, customerId, subscriptionId,
+                periodEndEpochSeconds, null);
+    }
+
+    /**
+     * Same as {@link #applySubscription(String, String, String, Long)} but also records
+     * the Stripe promotion code redeemed at checkout (influencer attribution). A null
+     * code leaves any previously stored one untouched, so renewals never erase the
+     * attribution of the original purchase.
+     */
+    @Transactional
+    public void applySubscription(String clientReferenceUserId, String customerId,
+            String subscriptionId, Long periodEndEpochSeconds, String promotionCodeId) {
         User user = resolveUser(clientReferenceUserId, customerId, subscriptionId);
         if (user == null) {
             log.warn("Stripe event could not be matched to a user (ref={}, customer={}, sub={})",
@@ -302,6 +335,9 @@ public class StripeService {
         if (periodEndEpochSeconds != null) {
             user.setPremiumUntil(LocalDateTime.ofInstant(
                     Instant.ofEpochSecond(periodEndEpochSeconds), ZoneId.systemDefault()));
+        }
+        if (promotionCodeId != null && !promotionCodeId.isBlank()) {
+            user.setStripePromotionCodeId(promotionCodeId);
         }
         userRepository.save(user);
     }
@@ -319,6 +355,82 @@ public class StripeService {
             user.setStripeSubscriptionId(null);
             userRepository.save(user);
         });
+    }
+
+    // ————————————————— Influencer promotion codes —————————————————
+
+    /**
+     * SDK-free snapshot of a Stripe promotion code, so callers (and their unit tests)
+     * never depend on Stripe model classes. {@code percentOff} is null for amount-off
+     * coupons; {@code durationInMonths} is only set for "repeating" coupons.
+     */
+    public record PromoCode(String id, String code, boolean active, Long percentOff,
+            String duration, Long durationInMonths, long timesRedeemed) {
+    }
+
+    /** Lists every promotion code in the Stripe account (all pages), newest first. */
+    public java.util.List<PromoCode> listPromotionCodes() throws StripeException {
+        ensureApiKey();
+        java.util.List<PromoCode> codes = new java.util.ArrayList<>();
+        com.stripe.param.PromotionCodeListParams params =
+                com.stripe.param.PromotionCodeListParams.builder().setLimit(100L).build();
+        for (com.stripe.model.PromotionCode pc :
+                com.stripe.model.PromotionCode.list(params).autoPagingIterable()) {
+            codes.add(toPromoCode(pc));
+        }
+        return codes;
+    }
+
+    /**
+     * Creates an influencer discount: a Coupon (the discount terms) plus a Promotion
+     * Code (the human-readable code typed at checkout). The coupon is named after the
+     * code so the Stripe dashboard stays readable. Inputs are validated by the caller.
+     */
+    public PromoCode createPromotionCode(String code, long percentOff, String duration,
+            Long durationInMonths) throws StripeException {
+        ensureApiKey();
+        com.stripe.param.CouponCreateParams.Builder coupon = com.stripe.param.CouponCreateParams.builder()
+                .setPercentOff(java.math.BigDecimal.valueOf(percentOff))
+                .setName(code)
+                .setDuration(switch (duration) {
+                    case "forever" -> com.stripe.param.CouponCreateParams.Duration.FOREVER;
+                    case "repeating" -> com.stripe.param.CouponCreateParams.Duration.REPEATING;
+                    default -> com.stripe.param.CouponCreateParams.Duration.ONCE;
+                });
+        if ("repeating".equals(duration) && durationInMonths != null) {
+            coupon.setDurationInMonths(durationInMonths);
+        }
+        com.stripe.model.Coupon created = com.stripe.model.Coupon.create(coupon.build());
+        com.stripe.model.PromotionCode pc = com.stripe.model.PromotionCode.create(
+                com.stripe.param.PromotionCodeCreateParams.builder()
+                        .setCoupon(created.getId())
+                        .setCode(code)
+                        .build());
+        return toPromoCode(pc);
+    }
+
+    /**
+     * Deactivates a promotion code so it can no longer be redeemed (Stripe does not
+     * allow deleting codes; past redemptions and stats are preserved on purpose).
+     */
+    public void deactivatePromotionCode(String promotionCodeId) throws StripeException {
+        ensureApiKey();
+        com.stripe.model.PromotionCode.retrieve(promotionCodeId).update(
+                com.stripe.param.PromotionCodeUpdateParams.builder().setActive(false).build());
+    }
+
+    /** Maps the SDK promotion code (with its embedded coupon) to the plain snapshot. */
+    private static PromoCode toPromoCode(com.stripe.model.PromotionCode pc) {
+        com.stripe.model.Coupon coupon = pc.getCoupon();
+        return new PromoCode(
+                pc.getId(),
+                pc.getCode(),
+                Boolean.TRUE.equals(pc.getActive()),
+                coupon != null && coupon.getPercentOff() != null
+                        ? coupon.getPercentOff().longValue() : null,
+                coupon != null ? coupon.getDuration() : null,
+                coupon != null ? coupon.getDurationInMonths() : null,
+                pc.getTimesRedeemed() != null ? pc.getTimesRedeemed() : 0L);
     }
 
     /** Finds the user behind an event, preferring the checkout reference, then the ids. */

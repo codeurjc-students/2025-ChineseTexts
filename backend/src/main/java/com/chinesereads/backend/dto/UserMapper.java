@@ -48,6 +48,9 @@ public interface UserMapper {
     @Mapping(target = "unsubscribeToken", ignore = true)
     @Mapping(target = "stripeCustomerId", ignore = true)
     @Mapping(target = "stripeSubscriptionId", ignore = true)
+    // referralSource is NOT ignored: it is a legitimate signup input (sanitized in the
+    // controller); stripePromotionCodeId is set only by the Stripe webhook.
+    @Mapping(target = "stripePromotionCodeId", ignore = true)
     User toDomain(UserDTO userWithPasswordDTO);
 
     List<User> toDomain(List<UserDTO> users);

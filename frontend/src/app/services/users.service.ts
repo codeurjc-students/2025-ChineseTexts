@@ -17,6 +17,8 @@ export interface UserDTO {
   premiumUntil?: string | null;
   /** OPTIONAL marketing-email consent (GDPR). null/absent = leave unchanged. */
   emailConsent?: boolean | null;
+  /** Influencer attribution: the ?ref=CODE the visitor arrived with (signup only). */
+  referralSource?: string | null;
 }
 
 /** One row of the admin user list. */

@@ -94,6 +94,14 @@ public class User {
     private String stripeCustomerId;
     private String stripeSubscriptionId;
 
+    // Atribución de marketing (campañas de influencers). referralSource es el código
+    // del enlace ?ref=CODIGO con el que el usuario llegó al registrarse (saneado en el
+    // controlador); stripePromotionCodeId es el id del código promocional de Stripe
+    // (promo_...) canjeado en su checkout, guardado por el webhook. Ambos null cuando
+    // no aplica — juntos permiten medir registros y conversiones por influencer.
+    private String referralSource;
+    private String stripePromotionCodeId;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Collection> collections = new ArrayList<>();
 
@@ -370,5 +378,21 @@ public class User {
 
     public void setStripeSubscriptionId(String stripeSubscriptionId) {
         this.stripeSubscriptionId = stripeSubscriptionId;
+    }
+
+    public String getReferralSource() {
+        return referralSource;
+    }
+
+    public void setReferralSource(String referralSource) {
+        this.referralSource = referralSource;
+    }
+
+    public String getStripePromotionCodeId() {
+        return stripePromotionCodeId;
+    }
+
+    public void setStripePromotionCodeId(String stripePromotionCodeId) {
+        this.stripePromotionCodeId = stripePromotionCodeId;
     }
 }

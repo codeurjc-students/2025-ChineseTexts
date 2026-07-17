@@ -9,6 +9,7 @@ import { HomeComponent } from './components/home/home.component';
 import { CookieBannerComponent } from './components/cookie-banner/cookie-banner.component';
 import { ToastComponent } from './components/toast/toast.component';
 import { SeoService } from './services/seo.service';
+import { ReferralService } from './services/referral.service';
 import { resolveSeo } from './services/seo.config';
 import { langFromUrl, stripLangPrefix } from './i18n/locale.util';
 
@@ -22,7 +23,8 @@ import { langFromUrl, stripLangPrefix } from './i18n/locale.util';
 export class AppComponent {
   title = 'chinesereads';
 
-  constructor(private router: Router, private seo: SeoService, private transloco: TranslocoService) {
+  constructor(private router: Router, private seo: SeoService, private transloco: TranslocoService,
+      private referral: ReferralService) {
     // Set the active language from the URL prefix BEFORE the target component
     // renders (NavigationStart fires first, on both server and client). The
     // inline loader is synchronous, so the correct dictionary is applied in the
@@ -43,6 +45,11 @@ export class AppComponent {
         const url = e.urlAfterRedirects;
         const lang = langFromUrl(url);
         this.seo.update(resolveSeo(stripLangPrefix(url), lang), lang);
+        // Influencer attribution: remember the ?ref=CODE an inbound campaign link
+        // carries, so a later signup can credit it. Browser-only inside the service;
+        // canonicals/SEO ignore query params, so these URLs never leak into metadata.
+        const ref = this.router.parseUrl(url).queryParams['ref'];
+        if (ref) this.referral.capture(ref);
       });
   }
 }

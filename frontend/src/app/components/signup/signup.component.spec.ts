@@ -8,6 +8,7 @@ import { NO_ERRORS_SCHEMA, Component } from '@angular/core';
 import { SignupComponent } from './signup.component';
 import { UserService, UserDTO } from '../../services/users.service';
 import { LoginService } from '../../services/login.service';
+import { ReferralService } from '../../services/referral.service';
 
 @Component({ template: '' })
 class DummyComponent {}
@@ -19,12 +20,15 @@ describe('SignupComponent', () => {
   let fixture: ComponentFixture<SignupComponent>;
   let userServiceSpy: jasmine.SpyObj<UserService>;
   let loginServiceSpy: jasmine.SpyObj<LoginService>;
+  let referralServiceSpy: jasmine.SpyObj<ReferralService>;
   let router: Router;
   let loggedInSubject: BehaviorSubject<boolean>;
 
   beforeEach(async () => {
     loggedInSubject = new BehaviorSubject<boolean>(false);
     userServiceSpy = jasmine.createSpyObj('UserService', ['register']);
+    referralServiceSpy = jasmine.createSpyObj('ReferralService', ['get', 'clear']);
+    referralServiceSpy.get.and.returnValue(null);
     loginServiceSpy = jasmine.createSpyObj('LoginService',
       ['isLogged', 'reqIsLogged', 'login'],
       { loggedIn$: loggedInSubject.asObservable() }
@@ -39,6 +43,7 @@ describe('SignupComponent', () => {
       providers: [
         { provide: UserService, useValue: userServiceSpy },
         { provide: LoginService, useValue: loginServiceSpy },
+        { provide: ReferralService, useValue: referralServiceSpy },
         provideHttpClient(),
         provideHttpClientTesting(),
         provideRouter([
@@ -176,6 +181,37 @@ describe('SignupComponent', () => {
     component.submitSignup();
 
     expect(navigateSpy).toHaveBeenCalledWith(['/error'], jasmine.any(Object));
+  });
+
+  it('should send the stored referral code with the signup and clear it on success', () => {
+    referralServiceSpy.get.and.returnValue('MARIA20');
+    userServiceSpy.register.and.returnValue(of({} as UserDTO));
+
+    component.signupForm.setValue({
+      name: 'Test', email: 'test@test.com',
+      password: 'pass123', language: 'en', acceptTerms: true, emailConsent: false
+    });
+    component.submitSignup();
+
+    expect(userServiceSpy.register).toHaveBeenCalledWith(
+      jasmine.objectContaining({ referralSource: 'MARIA20' }));
+    expect(referralServiceSpy.clear).toHaveBeenCalled();
+  });
+
+  it('should send a null referral and keep storage untouched when signup fails', () => {
+    userServiceSpy.register.and.returnValue(throwError(() => ({ status: 500, error: {} })));
+    spyOn(router, 'navigate').and.resolveTo(true);
+
+    component.signupForm.setValue({
+      name: 'Test', email: 'test@test.com',
+      password: 'pass123', language: 'en', acceptTerms: true, emailConsent: false
+    });
+    component.submitSignup();
+
+    expect(userServiceSpy.register).toHaveBeenCalledWith(
+      jasmine.objectContaining({ referralSource: null }));
+    // The code must survive a failed attempt so a retry still credits the influencer.
+    expect(referralServiceSpy.clear).not.toHaveBeenCalled();
   });
 
   it('should redirect to home if user is already logged in', () => {

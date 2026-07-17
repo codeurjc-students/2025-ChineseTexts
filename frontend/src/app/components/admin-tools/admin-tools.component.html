@@ -37,6 +37,12 @@
         <p class="tool-desc">{{ 'adminTools.cards.users.desc' | transloco }}</p>
       </div>
 
+      <div class="tool-card" (click)="select('influencers')">
+        <div class="tool-icon"><i class="bi bi-megaphone"></i></div>
+        <h3 class="tool-title">{{ 'adminTools.cards.influencers.title' | transloco }}</h3>
+        <p class="tool-desc">{{ 'adminTools.cards.influencers.desc' | transloco }}</p>
+      </div>
+
     </div>
   </div>
 
@@ -46,5 +52,6 @@
   <app-ai-tools     *ngIf="tool === 'ocr'"    [forcedMode]="'ocr'"      (exit)="backToMenu()"></app-ai-tools>
   <app-word-manager *ngIf="tool === 'words'"                            (exit)="backToMenu()"></app-word-manager>
   <app-admin-users  *ngIf="tool === 'users'"                            (exit)="backToMenu()"></app-admin-users>
+  <app-influencer-panel *ngIf="tool === 'influencers'"                  (exit)="backToMenu()"></app-influencer-panel>
 
 </div>

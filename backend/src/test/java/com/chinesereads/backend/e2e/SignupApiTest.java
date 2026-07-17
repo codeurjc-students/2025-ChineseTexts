@@ -79,6 +79,31 @@ public class SignupApiTest {
     }
 
     @Test
+    @DisplayName("A ?ref referral code is sanitized and persisted with the new account")
+    public void referralCodeIsSanitizedAndStored() {
+        Map<String, Object> body = payload("ref@b.com", "test1234", true);
+        body.put("referralSource", "  maria-20! ");
+
+        given().contentType(ContentType.JSON).body(body)
+            .when().post("/api/users/signup")
+            .then().statusCode(201);
+
+        org.junit.jupiter.api.Assertions.assertEquals("MARIA-20",
+                userRepository.findByEmail("ref@b.com").orElseThrow().getReferralSource());
+    }
+
+    @Test
+    @DisplayName("A signup without a referral code stores null (the normal case)")
+    public void signupWithoutReferralStoresNull() {
+        given().contentType(ContentType.JSON).body(payload("noref@b.com", "test1234", true))
+            .when().post("/api/users/signup")
+            .then().statusCode(201);
+
+        org.junit.jupiter.api.Assertions.assertNull(
+                userRepository.findByEmail("noref@b.com").orElseThrow().getReferralSource());
+    }
+
+    @Test
     @DisplayName("A duplicate email is a 409 Conflict")
     public void duplicateEmailReturnsConflict() {
         given().contentType(ContentType.JSON).body(payload("dup@b.com", "test1234", true))

@@ -22,6 +22,12 @@ public interface UserRepository extends JpaRepository<User, Long>{
 
     Optional<User> findByStripeSubscriptionId(String stripeSubscriptionId);
 
+    /** Users who signed up through a ?ref=CODE link (influencer attribution). */
+    List<User> findByReferralSourceIsNotNull();
+
+    /** Users who redeemed a Stripe promotion code at checkout (influencer attribution). */
+    List<User> findByStripePromotionCodeIdIsNotNull();
+
     Page<User> findByEmailContainingIgnoreCaseOrNameContainingIgnoreCase(
             String email, String name, Pageable pageable);
 }
