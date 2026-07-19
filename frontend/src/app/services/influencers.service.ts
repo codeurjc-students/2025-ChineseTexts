@@ -30,6 +30,40 @@ export interface InfluencerCreateRequest {
   firstTimeOnly: boolean;
 }
 
+/** One customer inside a settlement row (status is relative to the requested period). */
+export interface SettlementCustomer {
+  userId: number | null;
+  username: string | null;
+  plan: 'monthly' | 'yearly' | string | null;
+  status: 'new' | 'renewal' | 'churned' | 'active';
+  charges: number;
+  payoutCents: number;
+  firstPaidOn: string;
+  lastPaidOn: string;
+  coveredUntil: string;
+}
+
+/** One influencer's commission settlement for the requested period. */
+export interface SettlementRow {
+  code: string;
+  newCustomers: number;
+  renewals: number;
+  churned: number;
+  active: number;
+  monthlyCharges: number;
+  yearlyCharges: number;
+  payoutCents: number;
+  customers: SettlementCustomer[];
+}
+
+export interface Settlements {
+  from: string;
+  to: string;
+  payoutMonthlyCents: number;
+  payoutYearlyCents: number;
+  rows: SettlementRow[];
+}
+
 /** ADMIN-only API for influencer discount codes and their tracking stats. */
 @Injectable({ providedIn: 'root' })
 export class InfluencersService {
@@ -49,5 +83,14 @@ export class InfluencersService {
   /** Deactivates the code in Stripe (history preserved; it can never be redeemed again). */
   deactivateCode(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`, { withCredentials: true });
+  }
+
+  /**
+   * Commission settlement for an inclusive date range (ISO dates). Computed on demand
+   * from the immutable payment ledger, so any past period returns identical results.
+   */
+  getSettlements(from: string, to: string): Observable<Settlements> {
+    return this.http.get<Settlements>(`${this.apiUrl}/settlements`,
+      { params: { from, to }, withCredentials: true });
   }
 }

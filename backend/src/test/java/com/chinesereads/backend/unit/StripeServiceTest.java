@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -21,6 +22,7 @@ import org.junit.jupiter.api.Test;
 
 import com.chinesereads.backend.Model.User;
 import com.chinesereads.backend.Repository.UserRepository;
+import com.chinesereads.backend.Service.InfluencerPaymentService;
 import com.chinesereads.backend.Service.StripeService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -34,12 +36,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class StripeServiceTest {
 
     private UserRepository userRepository;
+    private InfluencerPaymentService influencerPaymentService;
     private StripeService stripeService;
 
     @BeforeEach
     public void setUp() {
         userRepository = mock(UserRepository.class);
-        stripeService = new StripeService(userRepository);
+        influencerPaymentService = mock(InfluencerPaymentService.class);
+        stripeService = new StripeService(userRepository, influencerPaymentService);
         injectField(stripeService, "priceMonthly", "price_month");
         injectField(stripeService, "priceYearly", "price_year");
     }
@@ -190,6 +194,77 @@ public class StripeServiceTest {
 
         assertEquals("promo_original", user.getStripePromotionCodeId());
         assertTrue(user.isPremiumActive());
+    }
+
+    @Test
+    @DisplayName("A subscription_cycle invoice records a renewal charge in the ledger")
+    public void testInvoicePaidCycleRecordsRenewal() throws Exception {
+        User user = new User("k@k.com", "K", "pass", "en", "USER");
+        user.setStripeCustomerId("cus_5");
+        user.setStripePromotionCodeId("promo_maria");
+        when(userRepository.findByStripeCustomerId("cus_5")).thenReturn(Optional.of(user));
+
+        long periodStart = Instant.now().getEpochSecond();
+        long periodEnd = periodStart + 30L * 24 * 3600;
+        String json = "{\"id\":\"in_77\",\"customer\":\"cus_5\",\"subscription\":\"sub_5\","
+                + "\"billing_reason\":\"subscription_cycle\",\"amount_paid\":699,"
+                + "\"created\":" + periodStart + ","
+                + "\"lines\":{\"data\":[{\"price\":{\"recurring\":{\"interval\":\"month\"}},"
+                + "\"period\":{\"start\":" + periodStart + ",\"end\":" + periodEnd + "}}]}}";
+        JsonNode data = new ObjectMapper().readTree(json);
+
+        stripeService.dispatchEvent("invoice.paid", data);
+
+        verify(influencerPaymentService).record(org.mockito.ArgumentMatchers.eq(user),
+                org.mockito.ArgumentMatchers.eq("in_77"),
+                org.mockito.ArgumentMatchers.eq("monthly"),
+                org.mockito.ArgumentMatchers.eq(699L),
+                any(), any());
+    }
+
+    @Test
+    @DisplayName("The FIRST invoice (subscription_create) is NOT recorded via invoice.paid")
+    public void testInvoicePaidCreateIsIgnored() throws Exception {
+        // The first charge is recorded by checkout.session.completed, which carries the
+        // promo attribution; recording it here too would race that write.
+        JsonNode data = new ObjectMapper().readTree(
+                "{\"id\":\"in_1\",\"customer\":\"cus_5\",\"billing_reason\":\"subscription_create\","
+                        + "\"amount_paid\":699}");
+
+        stripeService.dispatchEvent("invoice.paid", data);
+
+        verify(influencerPaymentService, never()).record(any(), anyString(), anyString(),
+                org.mockito.ArgumentMatchers.anyLong(), any(), any());
+    }
+
+    @Test
+    @DisplayName("The invoice plan is read from the interval, with a period-length fallback")
+    public void testPlanFromInvoiceJson() throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        // Current API: price.recurring.interval
+        assertEquals("yearly", StripeService.planFromInvoiceJson(mapper.readTree(
+                "{\"lines\":{\"data\":[{\"price\":{\"recurring\":{\"interval\":\"year\"}}}]}}")));
+        // Older API: plan.interval
+        assertEquals("monthly", StripeService.planFromInvoiceJson(mapper.readTree(
+                "{\"lines\":{\"data\":[{\"plan\":{\"interval\":\"month\"}}]}}")));
+        // No interval anywhere: a ~365-day billed period means yearly
+        long start = 1700000000L;
+        assertEquals("yearly", StripeService.planFromInvoiceJson(mapper.readTree(
+                "{\"lines\":{\"data\":[{\"period\":{\"start\":" + start + ",\"end\":"
+                        + (start + 365L * 24 * 3600) + "}}]}}")));
+        // Nothing to go on: defaults to monthly (the cheaper commission — never over-pays)
+        assertEquals("monthly", StripeService.planFromInvoiceJson(mapper.readTree("{}")));
+    }
+
+    @Test
+    @DisplayName("The invoice's subscription id is found on old and new API shapes")
+    public void testSubscriptionIdFromInvoiceJson() throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        assertEquals("sub_1", StripeService.subscriptionIdFromInvoiceJson(
+                mapper.readTree("{\"subscription\":\"sub_1\"}")));
+        assertEquals("sub_2", StripeService.subscriptionIdFromInvoiceJson(mapper.readTree(
+                "{\"parent\":{\"subscription_details\":{\"subscription\":\"sub_2\"}}}")));
+        assertNull(StripeService.subscriptionIdFromInvoiceJson(mapper.readTree("{}")));
     }
 
     @Test

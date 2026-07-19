@@ -1,6 +1,7 @@
 package com.chinesereads.backend.Service;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
@@ -57,9 +58,12 @@ public class StripeService {
     private String publicUrl;
 
     private final UserRepository userRepository;
+    private final InfluencerPaymentService influencerPaymentService;
 
-    public StripeService(UserRepository userRepository) {
+    public StripeService(UserRepository userRepository,
+            InfluencerPaymentService influencerPaymentService) {
         this.userRepository = userRepository;
+        this.influencerPaymentService = influencerPaymentService;
     }
 
     /** True only when a Stripe secret key is present, so billing endpoints can operate. */
@@ -219,12 +223,23 @@ public class StripeService {
     public void dispatchEvent(String type, JsonNode data) throws StripeException {
         switch (type) {
             // First payment: grant premium and record the Stripe ids (plus the promotion
-            // code redeemed, if any, for influencer attribution).
+            // code redeemed, if any, for influencer attribution) — and, once the
+            // attribution is stored, write the FIRST charge into the commission ledger.
             case "checkout.session.completed" -> {
                 String subscriptionId = text(data, "subscription");
+                SubscriptionSnapshot snapshot = subscriptionSnapshot(subscriptionId);
                 applySubscription(text(data, "client_reference_id"), text(data, "customer"),
-                        subscriptionId, periodEndOf(subscriptionId), promotionCodeIdFromJson(data));
+                        subscriptionId, snapshot == null ? null : snapshot.periodEnd(),
+                        promotionCodeIdFromJson(data));
+                recordCheckoutPayment(data, snapshot);
             }
+            // Renewal charges: every subscription-cycle invoice with money collected
+            // adds one row to the influencer commission ledger. The subscription_create
+            // invoice is deliberately NOT handled here — the first charge is recorded by
+            // checkout.session.completed above, which carries the promo attribution
+            // (handling both would race: this event can arrive before the attribution
+            // is stored). The invoiceId unique constraint backs all of this up anyway.
+            case "invoice.paid" -> recordRenewalPayment(data);
             // Renewals AND status changes carry the subscription object (its period end
             // advances on each successful renewal) — read the period end straight from
             // the payload, no extra API call.
@@ -243,8 +258,12 @@ public class StripeService {
         }
     }
 
-    /** Retrieves a subscription by id and reads its current period end, or null. */
-    private Long periodEndOf(String subscriptionId) throws StripeException {
+    /** Period end + billing interval of a subscription, read in one Stripe call. */
+    record SubscriptionSnapshot(Long periodEnd, String interval) {
+    }
+
+    /** Retrieves a subscription and reads its current period end and interval, or null. */
+    private SubscriptionSnapshot subscriptionSnapshot(String subscriptionId) throws StripeException {
         if (subscriptionId == null || subscriptionId.isBlank()) {
             return null;
         }
@@ -253,7 +272,10 @@ public class StripeService {
                 || subscription.getItems().getData().isEmpty()) {
             return null;
         }
-        return subscription.getItems().getData().get(0).getCurrentPeriodEnd();
+        com.stripe.model.SubscriptionItem item = subscription.getItems().getData().get(0);
+        String interval = item.getPrice() != null && item.getPrice().getRecurring() != null
+                ? item.getPrice().getRecurring().getInterval() : null;
+        return new SubscriptionSnapshot(item.getCurrentPeriodEnd(), interval);
     }
 
     /**
@@ -295,6 +317,104 @@ public class StripeService {
             return null;
         }
         return text(discounts.get(0), "promotion_code");
+    }
+
+    // ————————————— Influencer commission ledger (webhook writes) —————————————
+
+    /**
+     * Writes the FIRST charge of a completed checkout into the commission ledger.
+     * Runs after {@link #applySubscription}, so the user's promo/ref attribution is
+     * already stored when the ledger snapshots it. Sessions without an invoice or an
+     * interval (non-subscription flows, test payloads) are skipped silently.
+     */
+    private void recordCheckoutPayment(JsonNode session, SubscriptionSnapshot snapshot) {
+        String invoiceId = text(session, "invoice");
+        if (invoiceId == null || snapshot == null || snapshot.interval() == null) {
+            return;
+        }
+        User user = resolveUser(text(session, "client_reference_id"),
+                text(session, "customer"), text(session, "subscription"));
+        String plan = "year".equals(snapshot.interval()) ? "yearly" : "monthly";
+        LocalDate coveredUntil = snapshot.periodEnd() == null ? null
+                : LocalDate.ofInstant(Instant.ofEpochSecond(snapshot.periodEnd()), ZoneId.systemDefault());
+        influencerPaymentService.record(user, invoiceId, plan,
+                longOf(session, "amount_total"), paidOnFromJson(session), coveredUntil);
+    }
+
+    /**
+     * Writes a RENEWAL charge (an {@code invoice.paid} event with billing_reason
+     * {@code subscription_cycle}) into the commission ledger. Every field is read from
+     * the raw JSON — no extra Stripe calls — and any missing piece just skips the row.
+     */
+    private void recordRenewalPayment(JsonNode invoice) {
+        if (!"subscription_cycle".equals(text(invoice, "billing_reason"))) {
+            return; // first charges come from checkout.session.completed (see dispatch)
+        }
+        User user = resolveUser(null, text(invoice, "customer"),
+                subscriptionIdFromInvoiceJson(invoice));
+        Long periodEnd = invoicePeriodEndFromJson(invoice);
+        LocalDate coveredUntil = periodEnd == null ? null
+                : LocalDate.ofInstant(Instant.ofEpochSecond(periodEnd), ZoneId.systemDefault());
+        influencerPaymentService.record(user, text(invoice, "id"),
+                planFromInvoiceJson(invoice), longOf(invoice, "amount_paid"),
+                paidOnFromJson(invoice), coveredUntil);
+    }
+
+    /** Null-safe numeric field read (returns 0 when missing). */
+    private static long longOf(JsonNode node, String field) {
+        JsonNode value = node.get(field);
+        return value != null && value.isNumber() ? value.asLong() : 0L;
+    }
+
+    /** The event object's creation time as a local date, or today when absent. */
+    private static LocalDate paidOnFromJson(JsonNode node) {
+        JsonNode created = node.get("created");
+        if (created != null && created.isNumber()) {
+            return LocalDate.ofInstant(Instant.ofEpochSecond(created.asLong()), ZoneId.systemDefault());
+        }
+        return LocalDate.now();
+    }
+
+    /**
+     * The subscription id behind an invoice: top-level {@code subscription} on older
+     * API versions, {@code parent.subscription_details.subscription} on current ones.
+     */
+    public static String subscriptionIdFromInvoiceJson(JsonNode invoice) {
+        String top = text(invoice, "subscription");
+        if (top != null) {
+            return top;
+        }
+        return text(invoice.path("parent").path("subscription_details"), "subscription");
+    }
+
+    /**
+     * Whether an invoice charges the monthly or the yearly plan. Tries the price/plan
+     * interval fields first; falls back to the invoice line's billed period length
+     * (&gt; 45 days → yearly), which exists on every API version. Defaults to monthly —
+     * the cheaper commission — so a parsing surprise can never over-pay an influencer.
+     */
+    public static String planFromInvoiceJson(JsonNode invoice) {
+        JsonNode line = invoice.path("lines").path("data").path(0);
+        String interval = text(line.path("price").path("recurring"), "interval");
+        if (interval == null) {
+            interval = text(line.path("plan"), "interval");
+        }
+        if (interval != null) {
+            return "year".equals(interval) ? "yearly" : "monthly";
+        }
+        JsonNode period = line.path("period");
+        if (period.get("start") != null && period.get("end") != null
+                && period.get("start").isNumber() && period.get("end").isNumber()) {
+            long days = (period.get("end").asLong() - period.get("start").asLong()) / 86400;
+            return days > 45 ? "yearly" : "monthly";
+        }
+        return "monthly";
+    }
+
+    /** The invoice line's period end (epoch seconds) — the date the charge pays up to. */
+    static Long invoicePeriodEndFromJson(JsonNode invoice) {
+        JsonNode end = invoice.path("lines").path("data").path(0).path("period").get("end");
+        return end != null && end.isNumber() ? end.asLong() : null;
     }
 
     // ——— Pure state mutations (unit-tested without the Stripe SDK) ———
