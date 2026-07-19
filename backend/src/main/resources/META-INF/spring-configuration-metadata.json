@@ -149,6 +149,18 @@
       "type": "java.lang.String",
       "description": "Stripe recurring Price ID of the yearly PREMIUM plan.",
       "defaultValue": ""
+    },
+    {
+      "name": "influencer.payout.monthly-cents",
+      "type": "java.lang.Long",
+      "description": "Influencer commission per COLLECTED monthly charge, in cents (settlements view).",
+      "defaultValue": 200
+    },
+    {
+      "name": "influencer.payout.yearly-cents",
+      "type": "java.lang.Long",
+      "description": "Influencer commission per COLLECTED yearly charge, in cents (settlements view).",
+      "defaultValue": 1800
     }
   ]
 }
