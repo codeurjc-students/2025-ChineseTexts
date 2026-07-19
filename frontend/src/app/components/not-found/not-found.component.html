@@ -1,0 +1,26 @@
+<div class="container my-5">
+
+  <div class="not-found-box text-center">
+
+    <div class="code">404</div>
+
+    <h1 class="mb-3 title">
+      {{ 'notFound.title' | transloco }}
+    </h1>
+
+    <p class="subtitle mb-4">
+      {{ 'notFound.subtitle' | transloco }}
+    </p>
+
+    <div class="actions">
+      <button class="btn-main" (click)="goHome()">
+        <i class="bi bi-house-door me-1"></i>{{ 'notFound.backHome' | transloco }}
+      </button>
+      <button class="btn-alt" (click)="goTexts()">
+        <i class="bi bi-book me-1"></i>{{ 'notFound.browseTexts' | transloco }}
+      </button>
+    </div>
+
+  </div>
+
+</div>

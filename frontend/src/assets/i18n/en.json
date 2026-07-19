@@ -359,6 +359,12 @@
       "description": "The page you are looking for cannot be found or is temporarily unavailable. Return to ChineseReads to continue learning Chinese through reading."
     }
   },
+  "notFound": {
+    "title": "Page not found",
+    "subtitle": "The page you are looking for does not exist or has been moved.",
+    "backHome": "Back to Home",
+    "browseTexts": "Browse texts"
+  },
   "success": {
     "title": "Success",
     "backHome": "Back to Home",

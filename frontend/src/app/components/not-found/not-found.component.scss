@@ -1,0 +1,72 @@
+.not-found-box {
+  font-family: 'Noto Serif SC', serif;
+  background: #fff;
+  border-radius: 10px;
+  padding: 45px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+  max-width: 600px;
+  margin: auto;
+  animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.code {
+  font-size: 5rem;
+  font-weight: 700;
+  color: #c0392b;
+  line-height: 1;
+  margin-bottom: 12px;
+  animation: pop 0.4s ease-out;
+}
+
+@keyframes pop {
+  0%   { transform: scale(0.5); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.title {
+  color: #c0392b;
+  font-weight: 700;
+}
+
+.subtitle {
+  font-size: 1.1rem;
+  color: #6c757d;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn-main {
+  background-color: #c0392b;
+  color: #fff;
+  padding: 12px 28px;
+  border-radius: 6px;
+  border: none;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  &:hover { background-color: #e74c3c; }
+}
+
+.btn-alt {
+  background-color: #fff;
+  color: #c0392b;
+  padding: 12px 28px;
+  border-radius: 6px;
+  border: 1.5px solid #c0392b;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  &:hover { background-color: #fdf0ee; }
+}
