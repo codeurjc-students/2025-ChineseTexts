@@ -55,8 +55,39 @@
 .field-label { font-size: 0.88rem; font-weight: 600; color: #444; display: block; margin-bottom: 6px; }
 
 .ocr-controls {
-  display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+  display: flex; flex-direction: column; gap: 10px;
   padding-bottom: 1rem; margin-bottom: 0.5rem; border-bottom: 1px solid #f0f0f0;
+}
+
+// Zona de subida clicable con previsualización — mismo patrón visual que el
+// OCR de administración (ai-tools), para mantener una estética coherente.
+.image-upload-area {
+  border: 2px dashed #ddd; border-radius: 12px;
+  min-height: 140px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: border-color 0.15s; overflow: hidden;
+  &:hover { border-color: #c0392b; }
+}
+
+.image-preview {
+  width: 100%; max-height: 280px; object-fit: contain;
+}
+
+.image-placeholder {
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  color: #bbb; font-size: 0.9rem; text-align: center; padding: 12px;
+  i { font-size: 2rem; }
+}
+
+.ocr-actions {
+  display: flex; gap: 10px; align-items: center; justify-content: flex-end; flex-wrap: wrap;
+}
+
+.btn-ghost {
+  background: none; border: none; color: #999; cursor: pointer;
+  font-size: 0.88rem; font-family: inherit; padding: 6px 10px;
+  transition: color 0.15s;
+  &:hover { color: #c0392b; }
 }
 
 .paste-area {
@@ -66,7 +97,6 @@
   &:focus { border-color: #c0392b; }
 }
 
-.file-input { display: block; font-size: 0.95rem; }
 .hint { font-size: 0.82rem; color: #999; }
 
 .btn-primary {

@@ -710,6 +710,8 @@
     },
     "create": {
       "photoLabel": "¿Tienes una foto? Extrae primero el texto",
+      "uploadPrompt": "Haz clic para subir una foto con texto en chino",
+      "removePhoto": "Quitar foto",
       "reading": "Leyendo…",
       "extract": "Extraer texto",
       "chineseTextLabel": "Texto en chino",

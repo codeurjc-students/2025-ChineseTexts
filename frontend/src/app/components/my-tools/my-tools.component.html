@@ -25,11 +25,23 @@
     <!-- Extraer de una foto (OCR) -->
     <label class="field-label"><i class="bi bi-camera me-1"></i>{{ 'myTools.create.photoLabel' | transloco }}</label>
     <div class="ocr-controls">
-      <input class="file-input" type="file" accept="image/*" (change)="onFileSelected($event)">
-      <button class="btn-secondary" (click)="extract()" [disabled]="extracting || !selectedFile">
-        <span *ngIf="extracting" class="spinner-sm-dark"></span>
-        {{ (extracting ? 'myTools.create.reading' : 'myTools.create.extract') | transloco }}
-      </button>
+      <div class="image-upload-area" (click)="fileInput.click()">
+        <img *ngIf="imagePreview" [src]="imagePreview" class="image-preview" alt="">
+        <div *ngIf="!imagePreview" class="image-placeholder">
+          <i class="bi bi-camera"></i>
+          <span>{{ 'myTools.create.uploadPrompt' | transloco }}</span>
+        </div>
+      </div>
+      <input #fileInput type="file" accept="image/*" (change)="onFileSelected($event)" style="display:none">
+      <div class="ocr-actions">
+        <button class="btn-ghost" *ngIf="selectedFile && !extracting" (click)="clearImage()">
+          <i class="bi bi-x-circle me-1"></i>{{ 'myTools.create.removePhoto' | transloco }}
+        </button>
+        <button class="btn-secondary" (click)="extract()" [disabled]="extracting || !selectedFile">
+          <span *ngIf="extracting" class="spinner-sm-dark"></span>
+          {{ (extracting ? 'myTools.create.reading' : 'myTools.create.extract') | transloco }}
+        </button>
+      </div>
     </div>
 
     <!-- Texto editable -->

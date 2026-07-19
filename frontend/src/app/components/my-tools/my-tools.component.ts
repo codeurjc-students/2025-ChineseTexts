@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, Inject, PLATFORM_ID, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -33,8 +33,12 @@ export class MyToolsComponent implements OnInit {
 
   pasteText = '';
   selectedFile: File | null = null;
+  /** Data-URL of the chosen photo, shown inside the upload area. */
+  imagePreview: string | null = null;
   extracting = false;
   creating = false;
+
+  @ViewChild('fileInput') fileInput?: ElementRef<HTMLInputElement>;
 
   message = '';
   messageType: 'success' | 'error' | 'info' | '' = '';
@@ -97,6 +101,17 @@ export class MyToolsComponent implements OnInit {
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     this.selectedFile = input.files && input.files.length ? input.files[0] : null;
+    if (!this.selectedFile) { this.imagePreview = null; return; }
+    const reader = new FileReader();
+    reader.onload = () => { this.imagePreview = reader.result as string; };
+    reader.readAsDataURL(this.selectedFile);
+  }
+
+  /** Clears the chosen photo (and the native input, so re-picking the same file fires `change`). */
+  clearImage(): void {
+    this.selectedFile = null;
+    this.imagePreview = null;
+    if (this.fileInput) this.fileInput.nativeElement.value = '';
   }
 
   extract(): void {
@@ -110,7 +125,7 @@ export class MyToolsComponent implements OnInit {
       next: (res) => {
         this.extracting = false;
         this.pasteText = res.text || '';
-        this.selectedFile = null;
+        this.clearImage();
         this.showInfo(this.transloco.translate('myTools.messages.extracted'));
       },
       error: (err) => {
