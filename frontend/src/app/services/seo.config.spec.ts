@@ -1,0 +1,27 @@
+import { resolveSeo } from './seo.config';
+
+describe('resolveSeo', () => {
+
+  it('resolves known static routes normally', () => {
+    expect(resolveSeo('/texts', 'en').title).toContain('HSK');
+    expect(resolveSeo('/', 'en').noindex).toBeUndefined();
+  });
+
+  it('returns noindex soft-404 metadata for unknown routes', () => {
+    const en = resolveSeo('/rutanoexistente', 'en');
+    expect(en.noindex).toBeTrue();
+    expect(en.title).toContain('Page Not Found');
+
+    const es = resolveSeo('/rutanoexistente', 'es');
+    expect(es.noindex).toBeTrue();
+    expect(es.title).toContain('Página no encontrada');
+  });
+
+  it('keeps the canonical of an unknown route self-referential (never a real page)', () => {
+    expect(resolveSeo('/rutanoexistente', 'en').path).toBe('/rutanoexistente');
+  });
+
+  it('still falls back to the texts listing for unknown HSK levels', () => {
+    expect(resolveSeo('/texts/HSK9', 'en').path).toBe('/texts');
+  });
+});

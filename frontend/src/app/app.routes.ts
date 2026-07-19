@@ -18,6 +18,7 @@ import { MyTextReaderComponent } from './components/my-text-reader/my-text-reade
 import { PremiumComponent } from './components/premium/premium.component';
 import { PremiumSuccessComponent } from './components/premium-success/premium-success.component';
 import { LevelTestComponent } from './components/level-test/level-test.component';
+import { NotFoundComponent } from './components/not-found/not-found.component';
 
 /**
  * The application's routes, defined once. English is served from the root and
@@ -51,5 +52,10 @@ export const routes: Routes = [
   ...appRoutes,
   // Spanish locale: same components, prefixed URLs (`/es`, `/es/texts`, …).
   // The active language is resolved from this prefix in AppComponent.
-  { path: 'es', children: appRoutes },
+  // Each level gets its own `**` wildcard (a not-found page) so unknown URLs
+  // render a proper 404 page instead of failing to navigate. The Spanish one
+  // must live INSIDE the `es` children: a top-level wildcard placed before
+  // `es` would swallow every /es URL.
+  { path: 'es', children: [...appRoutes, { path: '**', component: NotFoundComponent }] },
+  { path: '**', component: NotFoundComponent },
 ];

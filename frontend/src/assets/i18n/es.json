@@ -359,6 +359,12 @@
       "description": "La página que buscas no se encuentra o no está disponible temporalmente. Vuelve a ChineseReads para seguir aprendiendo chino a través de la lectura."
     }
   },
+  "notFound": {
+    "title": "Página no encontrada",
+    "subtitle": "La página que buscas no existe o ha cambiado de dirección.",
+    "backHome": "Volver al inicio",
+    "browseTexts": "Explorar textos"
+  },
   "success": {
     "title": "¡Todo listo!",
     "backHome": "Volver al inicio",

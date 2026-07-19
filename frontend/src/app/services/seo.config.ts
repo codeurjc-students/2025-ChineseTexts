@@ -176,6 +176,29 @@ function localizedPrivate(enTitle: string, enDesc: string, esTitle: string, esDe
   };
 }
 
+/**
+ * Unknown routes (the `**` wildcard → NotFoundComponent). The static hosting
+ * always answers 200, so this is a "soft 404": noindex keeps the bad URL out
+ * of the index and the canonical points at the URL itself (never at a real
+ * page, which would wrongly consolidate garbage URLs into it).
+ */
+const NOT_FOUND: LocalizedSeo = {
+  en: {
+    title: 'Page Not Found | ChineseReads',
+    description:
+      'This page does not exist or has been moved. Browse free graded Chinese ' +
+      'reading texts by HSK level on ChineseReads.',
+    noindex: true
+  },
+  es: {
+    title: 'Página no encontrada | ChineseReads',
+    description:
+      'Esta página no existe o ha cambiado de dirección. Explora textos de lectura ' +
+      'en chino graduados por nivel HSK en ChineseReads.',
+    noindex: true
+  }
+};
+
 const HSK_LEVELS = ['HSK1', 'HSK2', 'HSK3', 'HSK4', 'HSK5', 'HSK6'];
 
 function hskConfig(level: string, lang: Lang): SeoConfig {
@@ -221,7 +244,8 @@ const TEXT_DEFAULT: LocalizedSeo = {
 /**
  * Resolves the SEO config for a given un-prefixed URL path (the caller strips any
  * `/es` prefix and passes the language separately). Query string / fragment
- * already stripped by the caller. Unknown routes fall back to the home metadata.
+ * already stripped by the caller. Unknown routes resolve to the not-found
+ * (soft-404, noindex) metadata, mirroring the router's `**` wildcard.
  */
 export function resolveSeo(path: string, lang: Lang = 'en'): SeoConfig {
   const clean = path.split('?')[0].split('#')[0] || '/';
@@ -242,5 +266,5 @@ export function resolveSeo(path: string, lang: Lang = 'en'): SeoConfig {
   // /text/:id — the TextComponent refines this with the actual text title.
   if (/^\/text\/[^/]+$/.test(clean)) return { ...TEXT_DEFAULT[lang], path: clean };
 
-  return HOME[lang];
+  return { ...NOT_FOUND[lang], path: clean };
 }
