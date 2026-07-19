@@ -86,6 +86,36 @@ public class InfluencerApiTest {
     }
 
     @Test
+    @DisplayName("Settlements are ADMIN-only and work even without Stripe configured")
+    public void settlementsSecurityAndAvailability() {
+        // The settlement is computed from the LOCAL payment ledger, so unlike the other
+        // influencer endpoints it must answer even with billing down/unconfigured —
+        // past settlements stay reachable no matter what.
+        given().when().get("/api/influencers/settlements?from=2026-07-01&to=2026-07-31")
+                .then().statusCode(401);
+        given().cookies(userCookies)
+                .when().get("/api/influencers/settlements?from=2026-07-01&to=2026-07-31")
+                .then().statusCode(403);
+        given().cookies(adminCookies)
+                .when().get("/api/influencers/settlements?from=2026-07-01&to=2026-07-31")
+                .then().statusCode(200)
+                .body("from", equalTo("2026-07-01"))
+                .body("payoutMonthlyCents", equalTo(200))
+                .body("rows.size()", equalTo(0));
+    }
+
+    @Test
+    @DisplayName("A malformed or inverted settlement range is a clean 400 INVALID_RANGE")
+    public void settlementsInvalidRange() {
+        given().cookies(adminCookies)
+                .when().get("/api/influencers/settlements?from=notadate&to=2026-07-31")
+                .then().statusCode(400).body("code", equalTo("INVALID_RANGE"));
+        given().cookies(adminCookies)
+                .when().get("/api/influencers/settlements?from=2026-08-01&to=2026-07-01")
+                .then().statusCode(400).body("code", equalTo("INVALID_RANGE"));
+    }
+
+    @Test
     @DisplayName("Without Stripe configured an ADMIN gets a clean 503 BILLING_UNAVAILABLE")
     public void adminWithoutStripeGets503() {
         given().cookies(adminCookies).when().get("/api/influencers")

@@ -1,5 +1,7 @@
 package com.chinesereads.backend.Controller;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Map;
 
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.chinesereads.backend.Service.InfluencerService;
@@ -30,6 +33,9 @@ import com.stripe.exception.StripeException;
  *   <li>{@code POST /api/influencers} — create a discount code in Stripe.</li>
  *   <li>{@code DELETE /api/influencers/{id}} — deactivate a code (Stripe keeps its
  *       redemption history; the code can never be redeemed again).</li>
+ *   <li>{@code GET /api/influencers/settlements?from=&to=} — the commission settlement
+ *       for a date range, computed from the local payment ledger (works even with
+ *       Stripe down, so past settlements are always reachable).</li>
  * </ul>
  *
  * Mirrors PremiumController's error contract: stable machine-readable codes, 503 when
@@ -79,6 +85,27 @@ public class InfluencerController {
             log.error("Stripe promotion code creation failed", e);
             return stripeFailed();
         }
+    }
+
+    @GetMapping("/settlements")
+    public ResponseEntity<?> settlements(@RequestParam String from, @RequestParam String to) {
+        LocalDate fromDate;
+        LocalDate toDate;
+        try {
+            fromDate = LocalDate.parse(from);
+            toDate = LocalDate.parse(to);
+        } catch (DateTimeParseException e) {
+            return invalidRange();
+        }
+        if (fromDate.isAfter(toDate)) {
+            return invalidRange();
+        }
+        return ResponseEntity.ok(influencerService.settlements(fromDate, toDate));
+    }
+
+    private ResponseEntity<?> invalidRange() {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(Map.of("code", "INVALID_RANGE", "message", "Invalid settlement date range"));
     }
 
     @DeleteMapping("/{id}")

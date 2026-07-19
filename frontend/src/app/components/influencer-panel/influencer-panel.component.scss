@@ -135,6 +135,49 @@
   &--active { background: #eafaf1; color: #1e8449; }
   &--inactive { background: #f4f4f4; color: #999; }
   &--guard { background: #eaf2f8; color: #21618c; margin-left: 6px; }
+  // Estados de cliente en la liquidación
+  &--new { background: #eafaf1; color: #1e8449; }
+  &--renewal { background: #eaf2f8; color: #21618c; }
+  &--churned { background: #fdecea; color: #c0392b; }
+}
+
+// ——— Liquidaciones ———
+.settle-controls {
+  display: flex; flex-direction: column; gap: 12px; margin-top: 1rem;
+}
+
+.settle-mode { display: flex; gap: 18px; flex-wrap: wrap; }
+
+.radio-row {
+  display: inline-flex; align-items: center; gap: 7px; cursor: pointer;
+  font-size: 0.9rem; color: #444;
+  input { accent-color: #c0392b; }
+}
+
+.settle-inputs {
+  display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+}
+
+.range-sep { color: #999; }
+
+.settle-row { cursor: pointer; }
+.settle-row:hover td { background: #fff8f7; }
+
+.payout-cell { font-weight: 700; color: #1e8449; }
+
+.customers-cell { background: #fafafa; padding: 12px 16px; }
+
+.customers-table { font-size: 0.85rem; }
+
+.total-label {
+  text-align: right; font-weight: 700; color: #444;
+  text-transform: uppercase; font-size: 0.78rem; letter-spacing: 0.5px;
+}
+
+.alert-open {
+  background: #fef9e7; color: #6d5407; border-radius: 10px;
+  padding: 12px 16px; font-size: 0.9rem;
+  display: flex; align-items: center; gap: 8px;
 }
 
 .checkbox-row {

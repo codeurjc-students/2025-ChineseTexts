@@ -145,4 +145,132 @@
     </div>
   </div>
 
+  <!-- ══════ LIQUIDACIONES (comisiones por cobro) ══════ -->
+  <div class="form-card mt-3">
+    <h3 class="card-label">{{ 'influencers.settlements.title' | transloco }}</h3>
+    <p class="section-hint mt-2">{{ 'influencers.settlements.hint' | transloco }}</p>
+
+    <!-- Selector de periodo -->
+    <div class="settle-controls">
+      <div class="settle-mode">
+        <label class="radio-row">
+          <input type="radio" name="settleMode" value="month" [(ngModel)]="settleMode">
+          <span>{{ 'influencers.settlements.modeMonth' | transloco }}</span>
+        </label>
+        <label class="radio-row">
+          <input type="radio" name="settleMode" value="range" [(ngModel)]="settleMode">
+          <span>{{ 'influencers.settlements.modeRange' | transloco }}</span>
+        </label>
+      </div>
+
+      <div class="settle-inputs">
+        <input *ngIf="settleMode === 'month'" type="month" class="form-input"
+          [(ngModel)]="settleMonth" [disabled]="settleLoading">
+        <ng-container *ngIf="settleMode === 'range'">
+          <input type="date" class="form-input" [(ngModel)]="settleFrom" [disabled]="settleLoading">
+          <span class="range-sep">→</span>
+          <input type="date" class="form-input" [(ngModel)]="settleTo" [disabled]="settleLoading">
+        </ng-container>
+        <button class="btn-primary" (click)="loadSettlements()"
+          [disabled]="settleLoading || !settleRangeValid">
+          <span *ngIf="settleLoading" class="spinner-sm"></span>
+          <i class="bi bi-calculator" *ngIf="!settleLoading"></i>
+          {{ 'influencers.settlements.compute' | transloco }}
+        </button>
+      </div>
+    </div>
+
+    <div *ngIf="settleError" class="alert-error mt-3">
+      <i class="bi bi-exclamation-circle"></i> {{ settleError }}
+    </div>
+
+    <ng-container *ngIf="settlements && !settleLoading">
+
+      <!-- Aviso de periodo abierto (incluye hoy → cifras aún crecientes) -->
+      <div *ngIf="settlePeriodOpen" class="alert-open mt-3">
+        <i class="bi bi-hourglass-split"></i>
+        {{ 'influencers.settlements.openPeriod' | transloco }}
+      </div>
+
+      <p *ngIf="settlements.rows.length === 0" class="empty-hint mt-3">
+        {{ 'influencers.settlements.empty' | transloco }}
+      </p>
+
+      <div *ngIf="settlements.rows.length > 0" class="table-scroll mt-3">
+        <table class="stats-table">
+          <thead>
+            <tr>
+              <th>{{ 'influencers.table.code' | transloco }}</th>
+              <th [attr.title]="'influencers.settlements.newHint' | transloco">{{ 'influencers.settlements.new' | transloco }}</th>
+              <th [attr.title]="'influencers.settlements.renewalsHint' | transloco">{{ 'influencers.settlements.renewals' | transloco }}</th>
+              <th [attr.title]="'influencers.settlements.churnedHint' | transloco">{{ 'influencers.settlements.churned' | transloco }}</th>
+              <th [attr.title]="'influencers.settlements.activeHint' | transloco">{{ 'influencers.settlements.activeCol' | transloco }}</th>
+              <th [attr.title]="'influencers.settlements.chargesHint' | transloco">{{ 'influencers.settlements.charges' | transloco }}</th>
+              <th [attr.title]="'influencers.settlements.payoutHint' | transloco">{{ 'influencers.settlements.payout' | transloco }}</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngFor="let r of settlements.rows">
+              <tr class="settle-row" (click)="toggleExpand(r.code)">
+                <td class="code-cell">{{ r.code }}</td>
+                <td class="num">{{ r.newCustomers }}</td>
+                <td class="num">{{ r.renewals }}</td>
+                <td class="num">{{ r.churned }}</td>
+                <td class="num">{{ r.active }}</td>
+                <td class="num">{{ r.monthlyCharges }} + {{ r.yearlyCharges }}</td>
+                <td class="num payout-cell">{{ euros(r.payoutCents) }}</td>
+                <td class="action-cell">
+                  <i class="bi" [ngClass]="expandedCode === r.code ? 'bi-chevron-up' : 'bi-chevron-down'"></i>
+                </td>
+              </tr>
+              <tr *ngIf="expandedCode === r.code">
+                <td colspan="8" class="customers-cell">
+                  <table class="stats-table customers-table">
+                    <thead>
+                      <tr>
+                        <th>{{ 'influencers.settlements.customer' | transloco }}</th>
+                        <th>{{ 'influencers.settlements.plan' | transloco }}</th>
+                        <th>{{ 'influencers.settlements.statusCol' | transloco }}</th>
+                        <th>{{ 'influencers.settlements.charges' | transloco }}</th>
+                        <th>{{ 'influencers.settlements.payout' | transloco }}</th>
+                        <th>{{ 'influencers.settlements.firstPaidOn' | transloco }}</th>
+                        <th>{{ 'influencers.settlements.coveredUntil' | transloco }}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let c of r.customers">
+                        <td>{{ c.username || '—' }}</td>
+                        <td>{{ 'influencers.settlements.plans.' + (c.plan || 'monthly') | transloco }}</td>
+                        <td><span class="badge" [ngClass]="'badge--' + c.status">{{ statusLabel(c.status) }}</span></td>
+                        <td class="num">{{ c.charges }}</td>
+                        <td class="num">{{ euros(c.payoutCents) }}</td>
+                        <td class="num">{{ c.firstPaidOn }}</td>
+                        <td class="num">{{ c.coveredUntil }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+            </ng-container>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td class="total-label" colspan="6">{{ 'influencers.settlements.total' | transloco }}</td>
+              <td class="num payout-cell">{{ euros(settleTotalCents) }}</td>
+              <td></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <div class="action-row mt-3" *ngIf="settlements.rows.length > 0">
+        <button class="btn-secondary" (click)="exportCsv()">
+          <i class="bi bi-download"></i> {{ 'influencers.settlements.exportCsv' | transloco }}
+        </button>
+      </div>
+
+    </ng-container>
+  </div>
+
 </div>

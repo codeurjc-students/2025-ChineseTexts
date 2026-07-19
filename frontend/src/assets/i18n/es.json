@@ -1010,6 +1010,66 @@
       "yes": "Sí",
       "no": "No"
     },
+    "settlements": {
+      "title": "Liquidaciones (comisiones)",
+      "hint": "Cuánto debes a cada influencer en un periodo: la comisión es por cobro realizado (importes mensual y anual configurables). Se calcula al momento sobre el registro inmutable de cobros — cualquier periodo pasado se puede recalcular cuando quieras con resultados idénticos.",
+      "modeMonth": "Mes completo",
+      "modeRange": "Rango personalizado (por días)",
+      "compute": "Calcular",
+      "openPeriod": "Este periodo incluye hoy: sus cifras aún están creciendo. Para pagar a un influencer, usa un periodo completamente cerrado.",
+      "empty": "No hay cobros que generen comisión en este periodo.",
+      "new": "Altas",
+      "newHint": "Clientes cuyo primer cobro cae dentro de este periodo",
+      "renewals": "Renovaciones",
+      "renewalsHint": "Clientes existentes con cobro dentro de este periodo",
+      "churned": "Bajas",
+      "churnedHint": "Clientes cuya cobertura pagada terminó dentro de este periodo sin renovar",
+      "activeCol": "Activos",
+      "activeHint": "Clientes aún cubiertos más allá del fin del periodo (un cliente anual a mitad de año cuenta como activo, nunca como baja)",
+      "charges": "Cobros (m + a)",
+      "chargesHint": "Cobros realizados en este periodo: mensuales + anuales",
+      "payout": "A pagar",
+      "payoutHint": "Cobros × comisión por cobro. Cada euro de aquí ya está ingresado",
+      "customer": "Cliente",
+      "plan": "Plan",
+      "statusCol": "Estado",
+      "firstPaidOn": "Primer pago",
+      "coveredUntil": "Cubierto hasta",
+      "total": "Total a pagar",
+      "exportCsv": "Exportar CSV",
+      "plans": {
+        "monthly": "Mensual",
+        "yearly": "Anual"
+      },
+      "status": {
+        "new": "Alta",
+        "renewal": "Renueva",
+        "churned": "Baja",
+        "active": "Activo"
+      },
+      "errors": {
+        "invalidRange": "Rango de fechas no válido: revisa las fechas desde/hasta.",
+        "loadFailed": "No se pudo calcular la liquidación. Inténtalo de nuevo."
+      },
+      "csv": {
+        "period": "Periodo",
+        "code": "Código",
+        "newCustomers": "Altas",
+        "renewals": "Renovaciones",
+        "churned": "Bajas",
+        "active": "Activos",
+        "monthlyCharges": "Cobros mensuales",
+        "yearlyCharges": "Cobros anuales",
+        "payout": "A pagar (EUR)",
+        "customer": "Cliente",
+        "plan": "Plan",
+        "statusCol": "Estado",
+        "charges": "Cobros",
+        "firstPaidOn": "Primer pago",
+        "lastPaidOn": "Último pago",
+        "coveredUntil": "Cubierto hasta"
+      }
+    },
     "messages": {
       "created": "Código {{code}} creado. Ya se puede canjear en el pago.",
       "deactivated": "Código desactivado. Su historial y estadísticas se conservan."

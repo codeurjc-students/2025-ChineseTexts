@@ -1,18 +1,31 @@
 package com.chinesereads.backend.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.chinesereads.backend.Model.InfluencerPayment;
 import com.chinesereads.backend.Model.User;
+import com.chinesereads.backend.Repository.InfluencerPaymentRepository;
 import com.chinesereads.backend.Repository.UserRepository;
 import com.chinesereads.backend.Service.StripeService.PromoCode;
 import com.chinesereads.backend.dto.InfluencerCodeDTO;
 import com.chinesereads.backend.dto.InfluencerCreateDTO;
+import com.chinesereads.backend.dto.InfluencerSettlementCustomerDTO;
+import com.chinesereads.backend.dto.InfluencerSettlementRowDTO;
+import com.chinesereads.backend.dto.InfluencerSettlementsDTO;
 import com.stripe.exception.StripeException;
 
 /**
@@ -32,15 +45,26 @@ import com.stripe.exception.StripeException;
 @Service
 public class InfluencerService {
 
+    private static final Logger log = LoggerFactory.getLogger(InfluencerService.class);
+
     /** Codes are shared verbally and in video captions: short, unambiguous charset. */
     private static final Pattern CODE_PATTERN = Pattern.compile("[A-Za-z0-9_-]{3,40}");
 
     private final StripeService stripeService;
     private final UserRepository userRepository;
+    private final InfluencerPaymentRepository paymentRepository;
+    private final long payoutMonthlyCents;
+    private final long payoutYearlyCents;
 
-    public InfluencerService(StripeService stripeService, UserRepository userRepository) {
+    public InfluencerService(StripeService stripeService, UserRepository userRepository,
+            InfluencerPaymentRepository paymentRepository,
+            @Value("${influencer.payout.monthly-cents:200}") long payoutMonthlyCents,
+            @Value("${influencer.payout.yearly-cents:1800}") long payoutYearlyCents) {
         this.stripeService = stripeService;
         this.userRepository = userRepository;
+        this.paymentRepository = paymentRepository;
+        this.payoutMonthlyCents = payoutMonthlyCents;
+        this.payoutYearlyCents = payoutYearlyCents;
     }
 
     /** The full tracking table: every Stripe code plus every ref-only code seen at signup. */
@@ -126,6 +150,132 @@ public class InfluencerService {
         refOnly.forEach((code, signups) -> rows.add(new InfluencerCodeDTO(
                 null, code, null, null, null, null, null, null, signups, 0, 0)));
         rows.sort((a, b) -> a.code().compareToIgnoreCase(b.code()));
+        return rows;
+    }
+
+    // ————————————————————————— Settlements —————————————————————————
+
+    /**
+     * The commission settlement for a date range (inclusive), computed on demand from
+     * the immutable payment ledger — any past period is reproducible at any time,
+     * always with the same result. Stripe is only consulted to translate promotion
+     * code ids into their human-readable codes; if that fails the raw ids are shown,
+     * so settlements keep working even with billing down.
+     */
+    public InfluencerSettlementsDTO settlements(LocalDate from, LocalDate to) {
+        List<PromoCode> stripeCodes = List.of();
+        if (stripeService.isConfigured()) {
+            try {
+                stripeCodes = stripeService.listPromotionCodes();
+            } catch (StripeException e) {
+                log.warn("Stripe code listing failed; settlements will show raw promo ids", e);
+            }
+        }
+        return new InfluencerSettlementsDTO(from, to, payoutMonthlyCents, payoutYearlyCents,
+                settle(paymentRepository.findAll(), stripeCodes, from, to,
+                        payoutMonthlyCents, payoutYearlyCents));
+    }
+
+    /**
+     * Pure settlement computation over the payment ledger. Per influencer code and per
+     * customer within [from, to]:
+     *
+     * <ul>
+     *   <li><b>new</b> — the customer's first-ever charge falls inside the range.</li>
+     *   <li><b>renewal</b> — charged inside the range, but was already a customer.</li>
+     *   <li><b>churned</b> — no charge in range and the paid coverage ran out inside it.</li>
+     *   <li><b>active</b> — no charge in range but still covered past its end (e.g. a
+     *       yearly customer mid-period) — never a false churn.</li>
+     * </ul>
+     *
+     * The payout is per CHARGE in range (monthly/yearly rate), so a customer who is
+     * charged every month generates commission every month — while a charge can never
+     * be paid twice because each ledger row is unique per Stripe invoice.
+     */
+    static List<InfluencerSettlementRowDTO> settle(List<InfluencerPayment> payments,
+            List<PromoCode> stripeCodes, LocalDate from, LocalDate to,
+            long monthlyCents, long yearlyCents) {
+        Map<String, String> codeById = new HashMap<>();
+        for (PromoCode pc : stripeCodes) {
+            codeById.put(pc.id(), pc.code().toUpperCase(Locale.ROOT));
+        }
+
+        // influencer code → customer id → that customer's charges (all time)
+        Map<String, Map<Long, List<InfluencerPayment>>> byCode = new TreeMap<>();
+        for (InfluencerPayment p : payments) {
+            String key = p.getPromotionCodeId() != null && !p.getPromotionCodeId().isBlank()
+                    ? codeById.getOrDefault(p.getPromotionCodeId(), p.getPromotionCodeId())
+                    : p.getReferralSource().toUpperCase(Locale.ROOT);
+            byCode.computeIfAbsent(key, k -> new LinkedHashMap<>())
+                    .computeIfAbsent(p.getUserId(), k -> new ArrayList<>()).add(p);
+        }
+
+        List<InfluencerSettlementRowDTO> rows = new ArrayList<>();
+        for (Map.Entry<String, Map<Long, List<InfluencerPayment>>> codeEntry : byCode.entrySet()) {
+            int newCustomers = 0, renewals = 0, churned = 0, active = 0;
+            int monthlyCharges = 0, yearlyCharges = 0;
+            long payout = 0;
+            List<InfluencerSettlementCustomerDTO> customers = new ArrayList<>();
+
+            for (Map.Entry<Long, List<InfluencerPayment>> customerEntry : codeEntry.getValue().entrySet()) {
+                List<InfluencerPayment> all = new ArrayList<>(customerEntry.getValue());
+                all.sort(Comparator.comparing(InfluencerPayment::getPaidOn));
+                InfluencerPayment latest = all.get(all.size() - 1);
+                LocalDate first = all.get(0).getPaidOn();
+                LocalDate covered = all.stream().map(InfluencerPayment::getCoveredUntil)
+                        .max(Comparator.naturalOrder()).orElse(first);
+                List<InfluencerPayment> inRange = all.stream()
+                        .filter(p -> !p.getPaidOn().isBefore(from) && !p.getPaidOn().isAfter(to))
+                        .toList();
+                boolean coveredThrough = covered.isAfter(to);
+
+                String status;
+                if (!inRange.isEmpty()) {
+                    status = !first.isBefore(from) ? "new" : "renewal";
+                } else if (!covered.isBefore(from) && !covered.isAfter(to)) {
+                    status = "churned";
+                } else if (coveredThrough && first.isBefore(from)) {
+                    status = "active";
+                } else {
+                    continue; // not a customer within this window
+                }
+
+                long customerPayout = 0;
+                int monthly = 0, yearly = 0;
+                for (InfluencerPayment p : inRange) {
+                    if ("yearly".equals(p.getPlan())) {
+                        yearly++;
+                        customerPayout += yearlyCents;
+                    } else {
+                        monthly++;
+                        customerPayout += monthlyCents;
+                    }
+                }
+
+                switch (status) {
+                    case "new" -> newCustomers++;
+                    case "renewal" -> renewals++;
+                    case "churned" -> churned++;
+                    default -> { }
+                }
+                if (coveredThrough) {
+                    active++;
+                }
+                monthlyCharges += monthly;
+                yearlyCharges += yearly;
+                payout += customerPayout;
+                customers.add(new InfluencerSettlementCustomerDTO(customerEntry.getKey(),
+                        latest.getUsername(), latest.getPlan(), status, inRange.size(),
+                        customerPayout, first, latest.getPaidOn(), covered));
+            }
+
+            if (customers.isEmpty()) {
+                continue;
+            }
+            customers.sort(Comparator.comparing(InfluencerSettlementCustomerDTO::firstPaidOn));
+            rows.add(new InfluencerSettlementRowDTO(codeEntry.getKey(), newCustomers, renewals,
+                    churned, active, monthlyCharges, yearlyCharges, payout, customers));
+        }
         return rows;
     }
 }

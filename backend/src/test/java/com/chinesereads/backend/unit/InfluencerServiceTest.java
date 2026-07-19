@@ -13,6 +13,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -20,13 +21,16 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import com.chinesereads.backend.Model.InfluencerPayment;
 import com.chinesereads.backend.Model.User;
+import com.chinesereads.backend.Repository.InfluencerPaymentRepository;
 import com.chinesereads.backend.Repository.UserRepository;
 import com.chinesereads.backend.Service.InfluencerService;
 import com.chinesereads.backend.Service.StripeService;
 import com.chinesereads.backend.Service.StripeService.PromoCode;
 import com.chinesereads.backend.dto.InfluencerCodeDTO;
 import com.chinesereads.backend.dto.InfluencerCreateDTO;
+import com.chinesereads.backend.dto.InfluencerSettlementRowDTO;
 
 /**
  * Influencer tracking: merging Stripe promotion codes with the locally-attributed
@@ -37,13 +41,16 @@ public class InfluencerServiceTest {
 
     private StripeService stripeService;
     private UserRepository userRepository;
+    private InfluencerPaymentRepository paymentRepository;
     private InfluencerService influencerService;
 
     @BeforeEach
     public void setUp() {
         stripeService = mock(StripeService.class);
         userRepository = mock(UserRepository.class);
-        influencerService = new InfluencerService(stripeService, userRepository);
+        paymentRepository = mock(InfluencerPaymentRepository.class);
+        influencerService = new InfluencerService(stripeService, userRepository,
+                paymentRepository, 200L, 1800L);
     }
 
     private User refUser(String ref) {
@@ -164,6 +171,99 @@ public class InfluencerServiceTest {
 
         verify(stripeService).createPromotionCode("VUELVE10", 10L, "once", null, false);
         assertEquals(false, created.firstTimeOnly());
+    }
+
+    // ————————————————————— Settlements —————————————————————
+
+    private InfluencerPayment payment(long userId, String promoId, String ref, String plan,
+            long amountCents, String invoiceId, LocalDate paidOn, LocalDate coveredUntil) {
+        return new InfluencerPayment(userId, "User" + userId, promoId, ref, plan,
+                amountCents, invoiceId, paidOn, coveredUntil);
+    }
+
+    @Test
+    @DisplayName("A month's settlement classifies new / renewal / churned / active correctly")
+    public void testSettlementStatuses() {
+        LocalDate from = LocalDate.of(2026, 7, 1);
+        LocalDate to = LocalDate.of(2026, 7, 31);
+        when(stripeService.isConfigured()).thenReturn(false);
+        when(paymentRepository.findAll()).thenReturn(List.of(
+                // C1: paid June AND July → renewal in July, covered past July → active.
+                payment(1, null, "maria", "monthly", 699, "in_1",
+                        LocalDate.of(2026, 6, 5), LocalDate.of(2026, 7, 5)),
+                payment(1, null, "maria", "monthly", 699, "in_2",
+                        LocalDate.of(2026, 7, 5), LocalDate.of(2026, 8, 5)),
+                // C2: first-ever charge inside July → new.
+                payment(2, null, "maria", "monthly", 699, "in_3",
+                        LocalDate.of(2026, 7, 10), LocalDate.of(2026, 8, 10)),
+                // C3: paid June only; coverage ran out July 20 → churned (no commission).
+                payment(3, null, "maria", "monthly", 699, "in_4",
+                        LocalDate.of(2026, 6, 20), LocalDate.of(2026, 7, 20)),
+                // C4: yearly customer mid-period → active, NEVER a false churn.
+                payment(4, null, "maria", "yearly", 5999, "in_5",
+                        LocalDate.of(2026, 2, 1), LocalDate.of(2027, 2, 1))));
+
+        List<InfluencerSettlementRowDTO> rows =
+                influencerService.settlements(from, to).rows();
+
+        assertEquals(1, rows.size());
+        InfluencerSettlementRowDTO row = rows.get(0);
+        assertEquals("MARIA", row.code());
+        assertEquals(1, row.newCustomers());
+        assertEquals(1, row.renewals());
+        assertEquals(1, row.churned());
+        assertEquals(3, row.active()); // C1 + C2 + C4 covered past July 31
+        assertEquals(2, row.monthlyCharges()); // C1 July + C2 July
+        assertEquals(0, row.yearlyCharges());
+        assertEquals(400L, row.payoutCents()); // 2 × €2 — churn and mid-year cost nothing
+        assertEquals(4, row.customers().size());
+    }
+
+    @Test
+    @DisplayName("Promo-id charges and ?ref charges of the same influencer merge into one row")
+    public void testSettlementMergesPromoAndRefAttribution() throws Exception {
+        when(stripeService.isConfigured()).thenReturn(true);
+        when(stripeService.listPromotionCodes()).thenReturn(List.of(
+                new PromoCode("promo_1", "MARIA", true, 20L, "once", null, 1L, true)));
+        when(paymentRepository.findAll()).thenReturn(List.of(
+                payment(1, "promo_1", null, "monthly", 699, "in_1",
+                        LocalDate.of(2026, 7, 3), LocalDate.of(2026, 8, 3)),
+                payment(2, null, "maria", "monthly", 699, "in_2",
+                        LocalDate.of(2026, 7, 4), LocalDate.of(2026, 8, 4)),
+                // A code deleted from Stripe still settles, under its raw promo id.
+                payment(3, "promo_gone", null, "monthly", 699, "in_3",
+                        LocalDate.of(2026, 7, 5), LocalDate.of(2026, 8, 5))));
+
+        List<InfluencerSettlementRowDTO> rows = influencerService
+                .settlements(LocalDate.of(2026, 7, 1), LocalDate.of(2026, 7, 31)).rows();
+
+        assertEquals(2, rows.size());
+        InfluencerSettlementRowDTO maria = rows.stream()
+                .filter(r -> r.code().equals("MARIA")).findFirst().orElseThrow();
+        assertEquals(2, maria.newCustomers());
+        assertEquals(400L, maria.payoutCents());
+        assertTrue(rows.stream().anyMatch(r -> r.code().equals("promo_gone")));
+    }
+
+    @Test
+    @DisplayName("A yearly charge pays the yearly commission; a day-range only counts its days")
+    public void testSettlementYearlyPayoutAndDayRange() {
+        when(stripeService.isConfigured()).thenReturn(false);
+        when(paymentRepository.findAll()).thenReturn(List.of(
+                payment(1, null, "blog", "yearly", 5999, "in_1",
+                        LocalDate.of(2026, 7, 15), LocalDate.of(2027, 7, 15)),
+                payment(2, null, "blog", "monthly", 699, "in_2",
+                        LocalDate.of(2026, 7, 20), LocalDate.of(2026, 8, 20))));
+
+        // Custom day range covering only the yearly charge.
+        List<InfluencerSettlementRowDTO> rows = influencerService
+                .settlements(LocalDate.of(2026, 7, 15), LocalDate.of(2026, 7, 15)).rows();
+
+        assertEquals(1, rows.size());
+        assertEquals(1, rows.get(0).yearlyCharges());
+        assertEquals(0, rows.get(0).monthlyCharges());
+        assertEquals(1800L, rows.get(0).payoutCents());
+        assertEquals(1, rows.get(0).customers().size()); // the July-20 customer is outside
     }
 
     @Test

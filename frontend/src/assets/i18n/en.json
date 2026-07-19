@@ -1010,6 +1010,66 @@
       "yes": "Yes",
       "no": "No"
     },
+    "settlements": {
+      "title": "Settlements (commissions)",
+      "hint": "How much you owe each influencer for a period: the commission is per collected charge (monthly and yearly rates are configurable). Computed live from the immutable payment record — any past period can be recomputed at any time with identical results.",
+      "modeMonth": "Whole month",
+      "modeRange": "Custom range (by day)",
+      "compute": "Compute",
+      "openPeriod": "This period includes today: its numbers are still growing. To pay an influencer, use a fully closed period.",
+      "empty": "No commission-generating charges in this period.",
+      "new": "New",
+      "newHint": "Customers whose first-ever charge falls inside this period",
+      "renewals": "Renewals",
+      "renewalsHint": "Existing customers charged again inside this period",
+      "churned": "Churned",
+      "churnedHint": "Customers whose paid coverage ran out inside this period without renewing",
+      "activeCol": "Active",
+      "activeHint": "Customers still covered beyond the end of this period (a mid-year yearly customer counts as active, never as churned)",
+      "charges": "Charges (m + y)",
+      "chargesHint": "Collected charges in this period: monthly + yearly",
+      "payout": "To pay",
+      "payoutHint": "Charges × per-charge commission. Every euro here was already collected",
+      "customer": "Customer",
+      "plan": "Plan",
+      "statusCol": "Status",
+      "firstPaidOn": "First payment",
+      "coveredUntil": "Covered until",
+      "total": "Total to pay",
+      "exportCsv": "Export CSV",
+      "plans": {
+        "monthly": "Monthly",
+        "yearly": "Yearly"
+      },
+      "status": {
+        "new": "New",
+        "renewal": "Renewal",
+        "churned": "Churned",
+        "active": "Active"
+      },
+      "errors": {
+        "invalidRange": "Invalid date range: check the from/to dates.",
+        "loadFailed": "Could not compute the settlement. Please try again."
+      },
+      "csv": {
+        "period": "Period",
+        "code": "Code",
+        "newCustomers": "New customers",
+        "renewals": "Renewals",
+        "churned": "Churned",
+        "active": "Active",
+        "monthlyCharges": "Monthly charges",
+        "yearlyCharges": "Yearly charges",
+        "payout": "To pay (EUR)",
+        "customer": "Customer",
+        "plan": "Plan",
+        "statusCol": "Status",
+        "charges": "Charges",
+        "firstPaidOn": "First payment",
+        "lastPaidOn": "Last payment",
+        "coveredUntil": "Covered until"
+      }
+    },
     "messages": {
       "created": "Code {{code}} created. It can be redeemed at checkout right away.",
       "deactivated": "Code deactivated. Its history and stats are kept."
