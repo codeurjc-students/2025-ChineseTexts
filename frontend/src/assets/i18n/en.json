@@ -716,6 +716,8 @@
     },
     "create": {
       "photoLabel": "Have a photo? Extract the text first",
+      "uploadPrompt": "Click to upload a photo of Chinese text",
+      "removePhoto": "Remove photo",
       "reading": "Reading…",
       "extract": "Extract text",
       "chineseTextLabel": "Chinese text",

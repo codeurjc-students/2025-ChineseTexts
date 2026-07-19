@@ -45,4 +45,28 @@ describe('MyToolsComponent', () => {
     expect(component.messageType).toBe('error');
     httpMock.expectNone('/api/my-texts/extract');
   });
+
+  it('shows the upload placeholder (no preview) until a photo is chosen', () => {
+    fixture.detectChanges();
+    const el: HTMLElement = fixture.nativeElement;
+    expect(el.querySelector('.image-placeholder')).toBeTruthy();
+    expect(el.querySelector('.image-preview')).toBeFalsy();
+  });
+
+  it('renders the photo preview inside the upload area once loaded', () => {
+    fixture.detectChanges();
+    component.imagePreview = 'data:image/png;base64,AAAA';
+    fixture.detectChanges();
+    const el: HTMLElement = fixture.nativeElement;
+    expect(el.querySelector('.image-preview')).toBeTruthy();
+    expect(el.querySelector('.image-placeholder')).toBeFalsy();
+  });
+
+  it('clearImage resets the selected photo and its preview', () => {
+    component.selectedFile = new File(['x'], 'foto.png', { type: 'image/png' });
+    component.imagePreview = 'data:image/png;base64,AAAA';
+    component.clearImage();
+    expect(component.selectedFile).toBeNull();
+    expect(component.imagePreview).toBeNull();
+  });
 });
