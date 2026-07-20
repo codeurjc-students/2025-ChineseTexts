@@ -298,7 +298,9 @@
       "item1": "Read graded HSK texts with word-by-word pinyin and translations (audio requires a free account).",
       "item2": "Save words into personal vocabulary collections and study them as flashcards.",
       "item3": "Create your own texts from typed text or from images (OCR).",
-      "item4": "Listen to text, sentences and words with text-to-speech audio."
+      "item4": "Listen to text, sentences and words with text-to-speech audio.",
+      "item5": "Ask the AI tutor about any word in the context where you are reading it.",
+      "item6": "Track your reading streaks and progress, and review saved words with spaced repetition."
     },
     "s3": {
       "title": "3. Your account",
@@ -311,7 +313,8 @@
       "item2": "Upload content that is illegal or infringes the rights of others.",
       "item3": "Attempt to break, overload or gain unauthorized access to the service or its infrastructure.",
       "item4": "Abuse the AI, OCR or audio features, for example through automated or mass requests.",
-      "item5": "Resell or redistribute the service without permission."
+      "item5": "Resell or redistribute the service without permission.",
+      "item6": "Abuse discount or referral codes, for example by creating multiple accounts or redeeming codes through self-referral."
     },
     "s5": {
       "title": "5. Your content",
@@ -335,19 +338,35 @@
       "item4": "You can cancel at any time from the billing portal (\"Manage subscription\"). Your premium access stays active until the end of the period already paid and is simply not renewed afterwards.",
       "item5": "Consumers in the EU/EEA normally have a 14-day right of withdrawal for online purchases. Because premium features are digital content made available to you immediately, by subscribing you expressly request immediate access and acknowledge that you lose this right of withdrawal once your premium access has started.",
       "item6": "Except where the law requires otherwise, payments for a period that has already started are non-refundable. If you believe you were charged in error, contact us at the address below.",
-      "item7": "We may change the plans, their prices or their limits. Changes apply to future billing periods and, where legally required, you will be notified in advance."
+      "item7": "We may change the plans, their prices or their limits. Changes apply to future billing periods and, where legally required, you will be notified in advance.",
+      "item8": "If a renewal payment fails or a charge is disputed with your bank (a chargeback), we may suspend your premium access while the issue is being resolved."
+    },
+    "promo": {
+      "title": "9. Discount codes and referrals",
+      "body": "We sometimes run promotions through discount codes or referral links, often together with collaborators. Codes have no cash value, cannot be exchanged for money and may be modified or deactivated at any time; unless stated otherwise, each code can be used once per customer and applies only to the charges it describes. If we detect fraudulent use of a code or referral link (for example multiple accounts, self-referrals or automated redemptions), we may withdraw the discount or the premium access obtained with it and close the accounts involved."
     },
     "s8": {
-      "title": "9. Availability and changes to the service",
-      "body": "The service is provided \"as is\", without warranties of any kind beyond those that cannot be excluded by law. Free and premium features, usage limits and availability may change or be interrupted at any time (paid subscriptions are governed by the section above). AI-generated translations and descriptions may contain errors and should not be relied upon as professional translation."
+      "title": "10. Availability and changes to the service",
+      "body": "The service is provided \"as is\", without warranties of any kind beyond those that cannot be excluded by law. Free and premium features, usage limits and availability may change or be interrupted at any time (paid subscriptions are governed by the section above). AI-generated translations and descriptions may contain errors and should not be relied upon as professional translation. ChineseReads also depends on third-party providers (payments, AI, OCR, audio and email); we are not responsible for interruptions caused by those providers or by other events beyond our reasonable control."
+    },
+    "termination": {
+      "title": "11. Suspension and termination",
+      "item1": "We may suspend or close an account, with immediate effect where justified, if it breaches these terms or if we have reasonable grounds to suspect fraud or a breach (for example payment fraud or abuse of usage limits or promotional codes).",
+      "item2": "We may also stop offering the service, or close accounts, for operational reasons. In that case no further payments will be charged, and any premium period already paid will either remain usable until its end date or be refunded in proportion to the unused time.",
+      "item3": "Free accounts that have been inactive for more than 24 months may be deleted after prior notice by email.",
+      "item4": "You can delete your own account at any time from your profile. Doing so automatically cancels any active subscription, so no further charges are made."
     },
     "s9": {
-      "title": "10. Limitation of liability",
-      "body": "To the extent permitted by law, the creator of ChineseReads is not liable for any indirect or incidental damages arising from your use of the service. We may suspend or delete accounts that break these terms. You can delete your own account at any time from your profile."
+      "title": "12. Limitation of liability",
+      "body": "To the extent permitted by law, the creator of ChineseReads is not liable for indirect or incidental damages arising from your use of the service, and total liability for any claim related to the service is limited to the greater of the amount you paid us in the 12 months before the claim or €50. Nothing in these terms limits the rights that consumer law grants you or any liability that cannot be excluded by law."
+    },
+    "law": {
+      "title": "13. Governing law",
+      "body": "These terms are governed by Spanish law. If you use ChineseReads as a consumer, you also keep the protection of the mandatory consumer rules of your country of residence, and you may bring any dispute before the courts of your own domicile."
     },
     "s10": {
-      "title": "11. Changes and contact",
-      "body": "We may update these terms; the \"last updated\" date above will change, and continued use of the service means you accept the new version. If you have questions about these terms, contact us at:"
+      "title": "14. Changes and contact",
+      "body": "We may update these terms; the \"last updated\" date above will change, and material changes will be announced on the site or by email before they take effect. Continued use of the service after that means you accept the new version. If you have questions about these terms, contact us at:"
     }
   },
   "error": {
@@ -389,11 +408,12 @@
     },
     "s2": {
       "title": "2. What data we collect",
-      "intro": "We collect the following personal data when you register:",
+      "intro": "We collect the following personal data when you register and while you use the service:",
       "email": "Email address",
       "name": "Name",
       "language": "Preferred language",
       "password": "Password (stored encrypted using BCrypt — we never store plain passwords)",
+      "activity": "Your learning activity (texts read, reading streaks, saved words and flashcard reviews), used to show your progress and to power optional reminders.",
       "payment": "If you subscribe to PREMIUM: billing identifiers that link your account to your subscription (a Stripe customer ID and subscription ID). Your card details are entered directly on Stripe and are never stored by ChineseReads.",
       "referral": "If you arrived through a promotional link or used a discount code: the campaign code involved (e.g. the name of the collaborator who recommended us), used only to measure how well each collaboration works.",
       "analytics": "We also collect anonymous usage data through Google Analytics (only with your consent), including pages visited, time on site, and general device/browser information. IP addresses are anonymized before being sent to Google."
@@ -427,7 +447,7 @@
     },
     "s6": {
       "title": "6. Data retention",
-      "body": "Account data is retained as long as your account is active. You can request deletion of your account and all associated data at any time by contacting us. Analytics data is retained for 26 months as per Google Analytics default settings. Records related to payments and subscriptions may be kept for longer where necessary to comply with tax, accounting and anti-fraud obligations."
+      "body": "Account data is retained as long as your account is active. You can request deletion of your account and all associated data at any time by contacting us. Analytics data is retained for 26 months as per Google Analytics default settings. Records related to payments and subscriptions may be kept for longer where necessary to comply with tax, accounting and anti-fraud obligations, even after the account they belong to has been deleted."
     },
     "s7": {
       "title": "7. Your rights (GDPR)",
