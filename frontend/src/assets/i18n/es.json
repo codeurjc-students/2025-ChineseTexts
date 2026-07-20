@@ -298,7 +298,9 @@
       "item1": "Leer textos graduados HSK con pinyin palabra por palabra y traducciones (el audio requiere una cuenta gratuita).",
       "item2": "Guardar palabras en colecciones de vocabulario personales y estudiarlas como tarjetas.",
       "item3": "Crear tus propios textos a partir de texto escrito o de imágenes (OCR).",
-      "item4": "Escuchar textos, frases y palabras con audio de síntesis de voz."
+      "item4": "Escuchar textos, frases y palabras con audio de síntesis de voz.",
+      "item5": "Preguntar al tutor de IA sobre cualquier palabra en el contexto en el que la estás leyendo.",
+      "item6": "Seguir tus rachas y tu progreso de lectura, y repasar las palabras guardadas con repetición espaciada."
     },
     "s3": {
       "title": "3. Tu cuenta",
@@ -311,7 +313,8 @@
       "item2": "Subir contenido ilegal o que vulnere los derechos de terceros.",
       "item3": "Intentar romper, sobrecargar o acceder sin autorización al servicio o a su infraestructura.",
       "item4": "Abusar de las funciones de IA, OCR o audio, por ejemplo mediante peticiones automatizadas o masivas.",
-      "item5": "Revender o redistribuir el servicio sin permiso."
+      "item5": "Revender o redistribuir el servicio sin permiso.",
+      "item6": "Abusar de los códigos de descuento o de referido, por ejemplo creando varias cuentas o canjeando códigos mediante autorreferencia."
     },
     "s5": {
       "title": "5. Tu contenido",
@@ -335,19 +338,35 @@
       "item4": "Puedes cancelar en cualquier momento desde el portal de facturación (\"Gestionar suscripción\"). Tu acceso premium se mantiene activo hasta el final del periodo ya pagado y simplemente no se renueva después.",
       "item5": "Los consumidores de la UE/EEE disponen normalmente de un derecho de desistimiento de 14 días en las compras online. Dado que las funciones premium son contenido digital que se te facilita de inmediato, al suscribirte solicitas expresamente el acceso inmediato y reconoces que pierdes este derecho de desistimiento una vez iniciado tu acceso premium.",
       "item6": "Salvo que la ley exija otra cosa, los pagos de un periodo ya iniciado no son reembolsables. Si crees que se te ha cobrado por error, contáctanos en la dirección indicada más abajo.",
-      "item7": "Podemos modificar los planes, sus precios o sus límites. Los cambios se aplican a los periodos de facturación futuros y, cuando la ley lo exija, se te avisará con antelación."
+      "item7": "Podemos modificar los planes, sus precios o sus límites. Los cambios se aplican a los periodos de facturación futuros y, cuando la ley lo exija, se te avisará con antelación.",
+      "item8": "Si falla el cobro de una renovación o disputas un cargo con tu banco (un contracargo), podemos suspender tu acceso premium mientras se resuelve la incidencia."
+    },
+    "promo": {
+      "title": "9. Códigos de descuento y referidos",
+      "body": "En ocasiones lanzamos promociones mediante códigos de descuento o enlaces de referido, a menudo junto a colaboradores. Los códigos no tienen valor en efectivo, no son canjeables por dinero y pueden modificarse o desactivarse en cualquier momento; salvo que se indique lo contrario, cada código es de un solo uso por cliente y se aplica únicamente a los cobros que describe. Si detectamos un uso fraudulento de un código o enlace de referido (por ejemplo varias cuentas, autorreferencias o canjes automatizados), podemos retirar el descuento o el acceso premium obtenido con él y cerrar las cuentas implicadas."
     },
     "s8": {
-      "title": "9. Disponibilidad y cambios en el servicio",
-      "body": "El servicio se ofrece \"tal cual\", sin garantías de ningún tipo más allá de las que no pueden excluirse por ley. Las funciones gratuitas y premium, los límites de uso y la disponibilidad pueden cambiar o interrumpirse en cualquier momento (las suscripciones de pago se rigen por el apartado anterior). Las traducciones y descripciones generadas por IA pueden contener errores y no deben considerarse una traducción profesional."
+      "title": "10. Disponibilidad y cambios en el servicio",
+      "body": "El servicio se ofrece \"tal cual\", sin garantías de ningún tipo más allá de las que no pueden excluirse por ley. Las funciones gratuitas y premium, los límites de uso y la disponibilidad pueden cambiar o interrumpirse en cualquier momento (las suscripciones de pago se rigen por el apartado anterior). Las traducciones y descripciones generadas por IA pueden contener errores y no deben considerarse una traducción profesional. ChineseReads depende además de proveedores externos (pagos, IA, OCR, audio y correo electrónico); no respondemos de las interrupciones causadas por dichos proveedores ni de otros acontecimientos fuera de nuestro control razonable."
+    },
+    "termination": {
+      "title": "11. Suspensión y terminación",
+      "item1": "Podemos suspender o cerrar una cuenta, con efecto inmediato cuando esté justificado, si incumple estos términos o si tenemos motivos razonables para sospechar un fraude o un incumplimiento (por ejemplo fraude en los pagos o abuso de los límites de uso o de los códigos promocionales).",
+      "item2": "También podemos dejar de ofrecer el servicio, o cerrar cuentas, por razones operativas. En ese caso no se realizarán más cobros, y cualquier periodo premium ya pagado seguirá siendo utilizable hasta su fecha de fin o se reembolsará en proporción al tiempo no disfrutado.",
+      "item3": "Las cuentas gratuitas inactivas durante más de 24 meses podrán eliminarse tras un aviso previo por correo electrónico.",
+      "item4": "Puedes eliminar tu propia cuenta en cualquier momento desde tu perfil. Al hacerlo se cancela automáticamente cualquier suscripción activa, de modo que no se producen más cobros."
     },
     "s9": {
-      "title": "10. Limitación de responsabilidad",
-      "body": "En la medida permitida por la ley, el creador de ChineseReads no se hace responsable de daños indirectos o incidentales derivados del uso del servicio. Podemos suspender o eliminar las cuentas que incumplan estos términos. Puedes eliminar tu propia cuenta en cualquier momento desde tu perfil."
+      "title": "12. Limitación de responsabilidad",
+      "body": "En la medida permitida por la ley, el creador de ChineseReads no se hace responsable de daños indirectos o incidentales derivados del uso del servicio, y la responsabilidad total por cualquier reclamación relacionada con el servicio se limita a la mayor de estas cantidades: lo que nos hayas pagado en los 12 meses anteriores a la reclamación o 50 €. Nada en estos términos limita los derechos que te reconoce la legislación de consumo ni ninguna responsabilidad que no pueda excluirse por ley."
+    },
+    "law": {
+      "title": "13. Ley aplicable",
+      "body": "Estos términos se rigen por la legislación española. Si usas ChineseReads como consumidor, conservas además la protección de las normas imperativas de consumo de tu país de residencia y puedes plantear cualquier disputa ante los tribunales de tu propio domicilio."
     },
     "s10": {
-      "title": "11. Cambios y contacto",
-      "body": "Podemos actualizar estos términos; la fecha de \"última actualización\" de arriba cambiará y el uso continuado del servicio implica que aceptas la nueva versión. Si tienes dudas sobre estos términos, contacta con nosotros en:"
+      "title": "14. Cambios y contacto",
+      "body": "Podemos actualizar estos términos; la fecha de \"última actualización\" de arriba cambiará y los cambios sustanciales se anunciarán en el sitio o por correo electrónico antes de entrar en vigor. El uso continuado del servicio a partir de entonces implica que aceptas la nueva versión. Si tienes dudas sobre estos términos, contacta con nosotros en:"
     }
   },
   "error": {
@@ -389,11 +408,12 @@
     },
     "s2": {
       "title": "2. Qué datos recopilamos",
-      "intro": "Cuando te registras, recopilamos los siguientes datos personales:",
+      "intro": "Cuando te registras y mientras usas el servicio, recopilamos los siguientes datos personales:",
       "email": "Dirección de correo electrónico",
       "name": "Nombre",
       "language": "Idioma preferido",
       "password": "Contraseña (almacenada cifrada con BCrypt: nunca guardamos contraseñas en texto plano)",
+      "activity": "Tu actividad de aprendizaje (textos leídos, rachas de lectura, palabras guardadas y repasos de tarjetas), usada para mostrarte tu progreso y para los recordatorios opcionales.",
       "payment": "Si te suscribes a PREMIUM: identificadores de facturación que vinculan tu cuenta con tu suscripción (un ID de cliente y un ID de suscripción de Stripe). Los datos de tu tarjeta se introducen directamente en Stripe y ChineseReads nunca los almacena.",
       "referral": "Si llegaste a través de un enlace promocional o usaste un código de descuento: el código de campaña correspondiente (p. ej. el nombre del colaborador que nos recomendó), usado únicamente para medir el rendimiento de cada colaboración.",
       "analytics": "También recopilamos datos de uso anónimos a través de Google Analytics (solo con tu consentimiento), incluidas las páginas visitadas, el tiempo en el sitio y la información general del dispositivo o navegador. Las direcciones IP se anonimizan antes de enviarse a Google."
@@ -427,7 +447,7 @@
     },
     "s6": {
       "title": "6. Conservación de los datos",
-      "body": "Los datos de la cuenta se conservan mientras tu cuenta esté activa. Puedes solicitar la eliminación de tu cuenta y de todos los datos asociados en cualquier momento contactando con nosotros. Los datos analíticos se conservan durante 26 meses, según la configuración predeterminada de Google Analytics. Los registros relacionados con pagos y suscripciones pueden conservarse durante más tiempo cuando sea necesario para cumplir obligaciones fiscales, contables y de prevención del fraude."
+      "body": "Los datos de la cuenta se conservan mientras tu cuenta esté activa. Puedes solicitar la eliminación de tu cuenta y de todos los datos asociados en cualquier momento contactando con nosotros. Los datos analíticos se conservan durante 26 meses, según la configuración predeterminada de Google Analytics. Los registros relacionados con pagos y suscripciones pueden conservarse durante más tiempo cuando sea necesario para cumplir obligaciones fiscales, contables y de prevención del fraude, incluso después de que la cuenta a la que pertenecen se haya eliminado."
     },
     "s7": {
       "title": "7. Tus derechos (RGPD)",
