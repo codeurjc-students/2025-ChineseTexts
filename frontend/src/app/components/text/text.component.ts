@@ -342,6 +342,17 @@ export class TextComponent implements OnInit, OnDestroy {
   private getText(id: number): void {
     this.textService.getText(id).subscribe({
       next: (text) => {
+        // The API answers 200 with an empty body when the id does not exist.
+        // Treat that authoritative "no such text" as a 404: the wildcard route
+        // renders the localized noindex page (proper soft-404 for crawlers) and
+        // the reader never touches a null text — which used to crash the page,
+        // most visibly under server-side rendering. Network/server errors keep
+        // the old behavior on purpose: a transient failure must never serve a
+        // noindex page for a text that does exist.
+        if (!text) {
+          this.localeNav.navigate(['/not-found'], { skipLocationChange: true });
+          return;
+        }
         this.text = text;
         this.applySentencePairsIfAny();
         this.updateSeo();
