@@ -151,6 +151,12 @@
       "defaultValue": ""
     },
     {
+      "name": "jwt.secret",
+      "type": "java.lang.String",
+      "description": "JWT signing secret (>= 32 chars; e.g. `openssl rand -base64 48`). SECRET: lives in docker/.env, never committed. When set, sessions survive redeploys; empty generates a random key per boot.",
+      "defaultValue": ""
+    },
+    {
       "name": "influencer.payout.monthly-cents",
       "type": "java.lang.Long",
       "description": "Influencer commission per COLLECTED monthly charge, in cents (settlements view).",
