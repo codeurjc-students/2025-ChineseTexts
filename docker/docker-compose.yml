@@ -50,6 +50,23 @@ services:
       REMINDER_ENABLED: ${REMINDER_ENABLED:-true}
       REMINDER_CRON: ${REMINDER_CRON:-0 0 18 * * *}
       REMINDER_ZONE: ${REMINDER_ZONE:-Europe/Madrid}
+      # Cost limits and fuses, tunable from docker/.env without touching code (same
+      # convention as REMINDER_*: delete the .env line to restore these defaults).
+      # The global generation fuse runs at 500/day here (app default is 200) as the
+      # campaign posture: headroom for influencer publish days without a redeploy —
+      # raise it further from .env (e.g. 1000) if a video takes off. Per-user free
+      # limits are the freemium design: change them only as a business decision.
+      USAGE_GLOBAL_DAILY_LIMIT: ${USAGE_GLOBAL_DAILY_LIMIT:-500}
+      USAGE_USER_MONTHLY_LIMIT: ${USAGE_USER_MONTHLY_LIMIT:-10}
+      USAGE_PREMIUM_DAILY_LIMIT: ${USAGE_PREMIUM_DAILY_LIMIT:-100}
+      USAGE_TEXT_MAX_CHARS: ${USAGE_TEXT_MAX_CHARS:-1500}
+      USAGE_AUDIO_WORD_MONTHLY_LIMIT: ${USAGE_AUDIO_WORD_MONTHLY_LIMIT:-100}
+      USAGE_AUDIO_PHRASE_MONTHLY_LIMIT: ${USAGE_AUDIO_PHRASE_MONTHLY_LIMIT:-15}
+      USAGE_CHAT_MONTHLY_LIMIT: ${USAGE_CHAT_MONTHLY_LIMIT:-10}
+      TTS_MAX_CHARS: ${TTS_MAX_CHARS:-1600}
+      TTS_RATE_LIMIT_PER_MINUTE: ${TTS_RATE_LIMIT_PER_MINUTE:-60}
+      TTS_CACHE_MAX_ENTRIES: ${TTS_CACHE_MAX_ENTRIES:-1000}
+      TTS_CACHE_TTL_DAYS: ${TTS_CACHE_TTL_DAYS:-30}
     depends_on:
       db:
         condition: service_healthy
