@@ -1,9 +1,11 @@
 package com.chinesereads.backend.Security.jwt;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 import javax.crypto.SecretKey;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -20,13 +22,24 @@ import jakarta.servlet.http.HttpServletRequest;
 @Component
 public class JwtTokenProvider {
 
-	// Generar clave segura con HS256
-	private final SecretKey jwtSecret = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+	// Clave de firma HS256. Con jwt.secret configurado la clave es estable entre
+	// arranques, así que las sesiones sobreviven a los redeploys; sin configurar
+	// se genera una aleatoria por arranque (suficiente en desarrollo y tests).
+	private final SecretKey jwtSecret;
 
 	// Crear parser con la clave
-	private final JwtParser jwtParser = Jwts.parserBuilder()
-        .setSigningKey(jwtSecret)
-        .build();
+	private final JwtParser jwtParser;
+
+	public JwtTokenProvider(@Value("${jwt.secret:}") String configuredSecret) {
+		this.jwtSecret = (configuredSecret == null || configuredSecret.isBlank())
+				? Keys.secretKeyFor(SignatureAlgorithm.HS256)
+				// hmacShaKeyFor exige >= 256 bits (32 bytes): un secreto corto
+				// aborta el arranque en vez de firmar con una clave débil.
+				: Keys.hmacShaKeyFor(configuredSecret.trim().getBytes(StandardCharsets.UTF_8));
+		this.jwtParser = Jwts.parserBuilder()
+				.setSigningKey(jwtSecret)
+				.build();
+	}
 
 	public String tokenStringFromHeaders(HttpServletRequest req){
 		String bearerToken = req.getHeader(HttpHeaders.AUTHORIZATION);

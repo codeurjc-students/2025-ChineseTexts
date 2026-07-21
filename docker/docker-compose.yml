@@ -37,6 +37,9 @@ services:
       MAIL_FROM_NAME: ${MAIL_FROM_NAME:-ChineseReads}
       STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:-}
       STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:-}
+      # JWT signing secret (docker/.env; generate with `openssl rand -base64 48`).
+      # With it set, sessions survive redeploys; empty = new random key per boot.
+      JWT_SECRET: ${JWT_SECRET:-}
       STRIPE_PRICE_MONTHLY: ${STRIPE_PRICE_MONTHLY:-}
       STRIPE_PRICE_YEARLY: ${STRIPE_PRICE_YEARLY:-}
       APP_PUBLIC_URL: ${APP_PUBLIC_URL:-https://chinesereads.com}
