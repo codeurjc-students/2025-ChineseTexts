@@ -416,7 +416,7 @@
       "activity": "Tu actividad de aprendizaje (textos leídos, rachas de lectura, palabras guardadas y repasos de tarjetas), usada para mostrarte tu progreso y para los recordatorios opcionales.",
       "payment": "Si te suscribes a PREMIUM: identificadores de facturación que vinculan tu cuenta con tu suscripción (un ID de cliente y un ID de suscripción de Stripe). Los datos de tu tarjeta se introducen directamente en Stripe y ChineseReads nunca los almacena.",
       "referral": "Si llegaste a través de un enlace promocional o usaste un código de descuento: el código de campaña correspondiente (p. ej. el nombre del colaborador que nos recomendó), usado únicamente para medir el rendimiento de cada colaboración.",
-      "analytics": "También recopilamos datos de uso anónimos a través de Google Analytics (solo con tu consentimiento), incluidas las páginas visitadas, el tiempo en el sitio y la información general del dispositivo o navegador. Las direcciones IP se anonimizan antes de enviarse a Google."
+      "analytics": "También recopilamos datos de uso anónimos a través de Google Analytics (solo con tu consentimiento), incluidas las páginas visitadas, el tiempo en el sitio y la información general del dispositivo o navegador. Las direcciones IP se anonimizan antes de enviarse a Google. Con independencia de ese consentimiento, medimos el tráfico agregado con Umami, una herramienta de analítica sin cookies que no almacena datos personales y no puede identificarte."
     },
     "s3": {
       "title": "3. Cómo usamos tus datos",
@@ -440,6 +440,7 @@
       "privacyPolicyLabel": "Política de privacidad",
       "stripe": "para procesar los pagos de las suscripciones de forma segura. Los datos de tu tarjeta y de pago los gestiona Stripe como procesador de pagos; ChineseReads no recibe ni almacena los números completos de tarjeta.",
       "ga": "para el análisis de tráfico anónimo.",
+      "umami": "para estadísticas agregadas de tráfico sin cookies (páginas visitadas y procedencia de las visitas). No instala cookies ni almacena datos personales, por lo que no requiere consentimiento.",
       "deepseek": "para generar textos de aprendizaje en chino y para el tutor IA (preguntar sobre palabras y contexto). Solo se procesa el texto que envías, ningún dato de cuenta ni personal.",
       "vision": "para extraer texto de las imágenes subidas. Las imágenes se procesan y no se almacenan.",
       "tts": "para generar la pronunciación en audio de textos, palabras y frases en chino. Solo se envía el texto en chino que se va a leer en voz alta, ningún dato personal. El audio se genera bajo demanda y no se almacena.",

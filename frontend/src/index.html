@@ -111,6 +111,12 @@
       'anonymize_ip': true
     });
   </script>
+  <!-- Umami (cookie-less, anonymous aggregate analytics). Unlike GA above it needs no
+       consent, so it also counts the visitors who decline cookies — the campaign
+       traffic numbers come from here. data-domains keeps localhost/dev out. -->
+  <script defer src="https://cloud.umami.is/script.js"
+    data-website-id="61aa90b2-30c4-402b-a18d-03c41aeafb45"
+    data-domains="chinesereads.com,www.chinesereads.com"></script>
 </head>
 <body>
   <app-root></app-root>
