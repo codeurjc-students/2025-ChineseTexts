@@ -3,7 +3,7 @@ import { of, throwError } from 'rxjs';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 import { InfluencerPanelComponent } from './influencer-panel.component';
-import { InfluencersService, InfluencerCode, Settlements } from '../../services/influencers.service';
+import { InfluencersService, InfluencerCode, Settlements, ActivationMetrics } from '../../services/influencers.service';
 import { translocoTesting } from '../../i18n/transloco-testing';
 
 describe('InfluencerPanelComponent', () => {
@@ -25,7 +25,7 @@ describe('InfluencerPanelComponent', () => {
 
   beforeEach(async () => {
     serviceSpy = jasmine.createSpyObj('InfluencersService',
-      ['getStats', 'createCode', 'deactivateCode', 'getSettlements']);
+      ['getStats', 'createCode', 'deactivateCode', 'getSettlements', 'getMetrics']);
     serviceSpy.getStats.and.returnValue(of([stripeRow, refOnlyRow]));
 
     await TestBed.configureTestingModule({
@@ -180,5 +180,49 @@ describe('InfluencerPanelComponent', () => {
 
     expect(component.settlements).toBeNull();
     expect(component.settleError).toContain('Invalid date range');
+  });
+
+  // ——— Activation metrics ———
+
+  const metricsFixture: ActivationMetrics = {
+    from: '2026-06-21', to: '2026-07-21', signups: 10, activatedDay1: 6,
+    savedWord: 4, measurableD7: 8, retainedD7: 2, activePremium: 1,
+    bySource: [{ source: 'MARIA20', signups: 7 }, { source: null, signups: 3 }]
+  };
+
+  it('defaults the metrics range to the last 30 days, ready to consult', () => {
+    expect(component.metricsFrom < component.metricsTo).toBeTrue();
+    expect(component.metricsRangeValid).toBeTrue();
+    // Consulting is on demand: nothing is fetched on init.
+    expect(serviceSpy.getMetrics).not.toHaveBeenCalled();
+  });
+
+  it('computes the metrics for the selected range and formats count (share)', () => {
+    serviceSpy.getMetrics.and.returnValue(of(metricsFixture));
+    component.metricsFrom = '2026-06-21';
+    component.metricsTo = '2026-07-21';
+
+    component.loadMetrics();
+
+    expect(serviceSpy.getMetrics).toHaveBeenCalledWith('2026-06-21', '2026-07-21');
+    expect(component.metrics).toEqual(metricsFixture);
+    // D7 share is judged over the measurable users, not over all signups.
+    expect(component.countPct(metricsFixture.retainedD7, metricsFixture.measurableD7)).toBe('2 (25%)');
+    expect(component.countPct(3, 0)).toBe('3'); // no share without a denominator
+  });
+
+  it('an inverted metrics range is invalid and never calls the API', () => {
+    component.metricsFrom = '2026-08-01';
+    component.metricsTo = '2026-07-01';
+    expect(component.metricsRangeValid).toBeFalse();
+    component.loadMetrics();
+    expect(serviceSpy.getMetrics).not.toHaveBeenCalled();
+  });
+
+  it('maps a metrics load failure to its error message and clears stale data', () => {
+    serviceSpy.getMetrics.and.returnValue(throwError(() => ({ status: 500, error: {} })));
+    component.loadMetrics();
+    expect(component.metrics).toBeNull();
+    expect(component.metricsError).toContain('Could not compute the metrics');
   });
 });

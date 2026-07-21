@@ -64,6 +64,29 @@ export interface Settlements {
   rows: SettlementRow[];
 }
 
+/** Signups per acquisition source; source is null for organic/direct signups. */
+export interface MetricsSourceRow {
+  source: string | null;
+  signups: number;
+}
+
+/**
+ * Activation metrics of the signup cohort registered in the range: did new users
+ * read on day 1, save words, come back within a week and hold premium today.
+ * D7 retention is judged only on `measurableD7` users (day-7 window elapsed).
+ */
+export interface ActivationMetrics {
+  from: string;
+  to: string;
+  signups: number;
+  activatedDay1: number;
+  savedWord: number;
+  measurableD7: number;
+  retainedD7: number;
+  activePremium: number;
+  bySource: MetricsSourceRow[];
+}
+
 /** ADMIN-only API for influencer discount codes and their tracking stats. */
 @Injectable({ providedIn: 'root' })
 export class InfluencersService {
@@ -91,6 +114,12 @@ export class InfluencersService {
    */
   getSettlements(from: string, to: string): Observable<Settlements> {
     return this.http.get<Settlements>(`${this.apiUrl}/settlements`,
+      { params: { from, to }, withCredentials: true });
+  }
+
+  /** Activation metrics of the signup cohort of an inclusive date range (local DB only). */
+  getMetrics(from: string, to: string): Observable<ActivationMetrics> {
+    return this.http.get<ActivationMetrics>(`${this.apiUrl}/metrics`,
       { params: { from, to }, withCredentials: true });
   }
 }
