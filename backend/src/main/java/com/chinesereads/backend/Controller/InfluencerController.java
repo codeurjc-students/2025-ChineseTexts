@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.chinesereads.backend.Service.ActivationMetricsService;
 import com.chinesereads.backend.Service.InfluencerService;
 import com.chinesereads.backend.Service.StripeService;
 import com.chinesereads.backend.dto.InfluencerCodeDTO;
@@ -36,6 +37,9 @@ import com.stripe.exception.StripeException;
  *   <li>{@code GET /api/influencers/settlements?from=&to=} — the commission settlement
  *       for a date range, computed from the local payment ledger (works even with
  *       Stripe down, so past settlements are always reachable).</li>
+ *   <li>{@code GET /api/influencers/metrics?from=&to=} — activation metrics of the
+ *       signup cohort of a date range (day-1 activation, D7 retention, premium),
+ *       computed entirely from the local database.</li>
  * </ul>
  *
  * Mirrors PremiumController's error contract: stable machine-readable codes, 503 when
@@ -49,10 +53,13 @@ public class InfluencerController {
 
     private final InfluencerService influencerService;
     private final StripeService stripeService;
+    private final ActivationMetricsService activationMetricsService;
 
-    public InfluencerController(InfluencerService influencerService, StripeService stripeService) {
+    public InfluencerController(InfluencerService influencerService, StripeService stripeService,
+            ActivationMetricsService activationMetricsService) {
         this.influencerService = influencerService;
         this.stripeService = stripeService;
+        this.activationMetricsService = activationMetricsService;
     }
 
     @GetMapping("")
@@ -101,6 +108,23 @@ public class InfluencerController {
             return invalidRange();
         }
         return ResponseEntity.ok(influencerService.settlements(fromDate, toDate));
+    }
+
+    /** No Stripe involved: pure local-database cohort metrics, always available. */
+    @GetMapping("/metrics")
+    public ResponseEntity<?> metrics(@RequestParam String from, @RequestParam String to) {
+        LocalDate fromDate;
+        LocalDate toDate;
+        try {
+            fromDate = LocalDate.parse(from);
+            toDate = LocalDate.parse(to);
+        } catch (DateTimeParseException e) {
+            return invalidRange();
+        }
+        if (fromDate.isAfter(toDate)) {
+            return invalidRange();
+        }
+        return ResponseEntity.ok(activationMetricsService.metrics(fromDate, toDate, LocalDate.now()));
     }
 
     private ResponseEntity<?> invalidRange() {

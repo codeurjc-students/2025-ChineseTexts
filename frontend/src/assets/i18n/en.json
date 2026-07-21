@@ -1098,6 +1098,29 @@
         "coveredUntil": "Covered until"
       }
     },
+    "metrics": {
+      "title": "Activation metrics",
+      "hint": "Funnel of the accounts REGISTERED in the range: did they read on day 1, save words, come back within a week and hold premium today? Computed from our own database — check it the days after each influencer publishes.",
+      "compute": "Compute",
+      "empty": "No signups in this range.",
+      "signups": "Signups",
+      "activatedDay1": "Read on day 1",
+      "activatedDay1Hint": "Users with reading activity on their registration day. Low = onboarding friction",
+      "savedWord": "Saved a word",
+      "savedWordHint": "Users who saved at least one flashcard — the first sign of real engagement",
+      "retainedD7": "D7 retention",
+      "retainedD7Hint": "Users who came back to read between days 1 and 7 after signup. Only users whose 7-day window has fully elapsed are counted",
+      "activePremium": "Premium now",
+      "activePremiumHint": "Users of this cohort holding an active premium today (paid or gifted)",
+      "d7Pending": "{{pending}} signup(s) too recent to measure D7 yet (their 7-day window is still open).",
+      "bySource": "Signups by source",
+      "source": "Source",
+      "organic": "Organic / direct",
+      "errors": {
+        "invalidRange": "Invalid date range: check the from/to dates.",
+        "loadFailed": "Could not compute the metrics. Please try again."
+      }
+    },
     "messages": {
       "created": "Code {{code}} created. It can be redeemed at checkout right away.",
       "deactivated": "Code deactivated. Its history and stats are kept."

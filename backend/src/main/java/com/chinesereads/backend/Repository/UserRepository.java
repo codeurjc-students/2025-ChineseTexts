@@ -1,5 +1,6 @@
 package com.chinesereads.backend.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,6 +25,9 @@ public interface UserRepository extends JpaRepository<User, Long>{
 
     /** Users who signed up through a ?ref=CODE link (influencer attribution). */
     List<User> findByReferralSourceIsNotNull();
+
+    /** Signup cohort of a date range (inclusive), for the activation metrics. */
+    List<User> findByRegistrationDateBetween(LocalDate from, LocalDate to);
 
     /** Users who redeemed a Stripe promotion code at checkout (influencer attribution). */
     List<User> findByStripePromotionCodeIdIsNotNull();

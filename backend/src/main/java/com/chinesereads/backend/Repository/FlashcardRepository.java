@@ -2,6 +2,7 @@ package com.chinesereads.backend.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -23,4 +24,8 @@ public interface FlashcardRepository extends JpaRepository<Flashcard, Long> {
 
     @Query("SELECT COUNT(f) FROM Flashcard f WHERE f.collection.user = :user AND (f.srsDueDate IS NULL OR f.srsDueDate <= :day)")
     long countDue(@Param("user") User user, @Param("day") LocalDate day);
+
+    /** Of the given users, the ones who saved at least one flashcard (activation metric). */
+    @Query("SELECT DISTINCT f.collection.user.id FROM Flashcard f WHERE f.collection.user.id IN :userIds")
+    Set<Long> findUserIdsWithAnyCard(@Param("userIds") java.util.Collection<Long> userIds);
 }

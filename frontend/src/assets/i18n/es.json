@@ -1098,6 +1098,29 @@
         "coveredUntil": "Cubierto hasta"
       }
     },
+    "metrics": {
+      "title": "Métricas de activación",
+      "hint": "Embudo de las cuentas REGISTRADAS en el rango: ¿leyeron el día 1, guardaron palabras, volvieron en la primera semana y tienen premium hoy? Calculado desde nuestra propia base de datos — consúltalo los días posteriores a cada publicación de un influencer.",
+      "compute": "Calcular",
+      "empty": "No hay registros en este rango.",
+      "signups": "Registros",
+      "activatedDay1": "Leyeron el día 1",
+      "activatedDay1Hint": "Usuarios con actividad de lectura el mismo día de su registro. Bajo = fricción en el onboarding",
+      "savedWord": "Guardaron una palabra",
+      "savedWordHint": "Usuarios que guardaron al menos una flashcard — la primera señal de interés real",
+      "retainedD7": "Retención D7",
+      "retainedD7Hint": "Usuarios que volvieron a leer entre los días 1 y 7 tras registrarse. Solo cuentan los usuarios cuya ventana de 7 días ya se ha completado",
+      "activePremium": "Premium ahora",
+      "activePremiumHint": "Usuarios de esta cohorte con premium activo hoy (de pago o regalado)",
+      "d7Pending": "{{pending}} registro(s) demasiado recientes para medir D7 (su ventana de 7 días sigue abierta).",
+      "bySource": "Registros por origen",
+      "source": "Origen",
+      "organic": "Orgánico / directo",
+      "errors": {
+        "invalidRange": "Rango de fechas no válido: revisa las fechas desde/hasta.",
+        "loadFailed": "No se pudieron calcular las métricas. Inténtalo de nuevo."
+      }
+    },
     "messages": {
       "created": "Código {{code}} creado. Ya se puede canjear en el pago.",
       "deactivated": "Código desactivado. Su historial y estadísticas se conservan."

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 
-import { InfluencersService, InfluencerCode, Settlements } from '../../services/influencers.service';
+import { InfluencersService, InfluencerCode, Settlements, ActivationMetrics } from '../../services/influencers.service';
 
 /**
  * Admin tool for influencer campaigns: create/deactivate Stripe discount codes and
@@ -58,6 +58,13 @@ export class InfluencerPanelComponent implements OnInit {
   /** Influencer code whose customer detail list is currently expanded, if any. */
   expandedCode: string | null = null;
 
+  // ——— Activation metrics (signup-cohort funnel) ———
+  metricsFrom = '';
+  metricsTo = '';
+  metrics: ActivationMetrics | null = null;
+  metricsLoading = false;
+  metricsError = '';
+
   constructor(
     private influencersService: InfluencersService,
     private transloco: TranslocoService
@@ -68,6 +75,10 @@ export class InfluencerPanelComponent implements OnInit {
     // Default the settlement pickers to the current month, ready to consult.
     const now = new Date();
     this.settleMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+    // Default the metrics cohort to the last 30 days, ready to consult.
+    const iso = (d: Date) => d.toISOString().slice(0, 10);
+    this.metricsTo = iso(now);
+    this.metricsFrom = iso(new Date(now.getTime() - 30 * 24 * 3600 * 1000));
   }
 
   /** Base for the shareable links shown in the help box (empty during prerender). */
@@ -276,6 +287,37 @@ export class InfluencerPanelComponent implements OnInit {
     link.download = `chinesereads-influencers-${this.settlements.from}_${this.settlements.to}.csv`;
     link.click();
     URL.revokeObjectURL(link.href);
+  }
+
+  // ——— Activation metrics ———
+
+  get metricsRangeValid(): boolean {
+    return !!(this.metricsFrom && this.metricsTo && this.metricsFrom <= this.metricsTo);
+  }
+
+  loadMetrics(): void {
+    if (!this.metricsRangeValid) return;
+    this.metricsLoading = true;
+    this.metricsError = '';
+    this.influencersService.getMetrics(this.metricsFrom, this.metricsTo).subscribe({
+      next: (metrics) => {
+        this.metricsLoading = false;
+        this.metrics = metrics;
+      },
+      error: (err) => {
+        this.metricsLoading = false;
+        this.metrics = null;
+        this.metricsError = this.transloco.translate(err.error?.code === 'INVALID_RANGE'
+          ? 'influencers.metrics.errors.invalidRange'
+          : 'influencers.metrics.errors.loadFailed');
+      }
+    });
+  }
+
+  /** "3 (30%)" — a count with its share of the given total; just the count if total is 0. */
+  countPct(count: number, total: number): string {
+    if (total <= 0) return String(count);
+    return `${count} (${Math.round((count / total) * 100)}%)`;
   }
 
   goBack(): void {

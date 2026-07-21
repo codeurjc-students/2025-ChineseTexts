@@ -273,4 +273,93 @@
     </ng-container>
   </div>
 
+  <!-- ══════ MÉTRICAS DE ACTIVACIÓN (cohorte de registros) ══════ -->
+  <div class="form-card mt-3">
+    <h3 class="card-label">{{ 'influencers.metrics.title' | transloco }}</h3>
+    <p class="section-hint mt-2">{{ 'influencers.metrics.hint' | transloco }}</p>
+
+    <div class="settle-controls">
+      <div class="settle-inputs">
+        <input type="date" class="form-input" [(ngModel)]="metricsFrom" [disabled]="metricsLoading">
+        <span class="range-sep">→</span>
+        <input type="date" class="form-input" [(ngModel)]="metricsTo" [disabled]="metricsLoading">
+        <button class="btn-primary" (click)="loadMetrics()"
+          [disabled]="metricsLoading || !metricsRangeValid">
+          <span *ngIf="metricsLoading" class="spinner-sm"></span>
+          <i class="bi bi-graph-up" *ngIf="!metricsLoading"></i>
+          {{ 'influencers.metrics.compute' | transloco }}
+        </button>
+      </div>
+    </div>
+
+    <div *ngIf="metricsError" class="alert-error mt-3">
+      <i class="bi bi-exclamation-circle"></i> {{ metricsError }}
+    </div>
+
+    <ng-container *ngIf="metrics && !metricsLoading">
+
+      <p *ngIf="metrics.signups === 0" class="empty-hint mt-3">
+        {{ 'influencers.metrics.empty' | transloco }}
+      </p>
+
+      <ng-container *ngIf="metrics.signups > 0">
+        <div class="table-scroll mt-3">
+          <table class="stats-table">
+            <tbody>
+              <tr>
+                <td>{{ 'influencers.metrics.signups' | transloco }}</td>
+                <td class="num">{{ metrics.signups }}</td>
+              </tr>
+              <tr>
+                <td [attr.title]="'influencers.metrics.activatedDay1Hint' | transloco">{{ 'influencers.metrics.activatedDay1' | transloco }}</td>
+                <td class="num">{{ countPct(metrics.activatedDay1, metrics.signups) }}</td>
+              </tr>
+              <tr>
+                <td [attr.title]="'influencers.metrics.savedWordHint' | transloco">{{ 'influencers.metrics.savedWord' | transloco }}</td>
+                <td class="num">{{ countPct(metrics.savedWord, metrics.signups) }}</td>
+              </tr>
+              <tr>
+                <td [attr.title]="'influencers.metrics.retainedD7Hint' | transloco">{{ 'influencers.metrics.retainedD7' | transloco }}</td>
+                <td class="num">
+                  <ng-container *ngIf="metrics.measurableD7 > 0">{{ countPct(metrics.retainedD7, metrics.measurableD7) }}</ng-container>
+                  <ng-container *ngIf="metrics.measurableD7 === 0">—</ng-container>
+                </td>
+              </tr>
+              <tr>
+                <td [attr.title]="'influencers.metrics.activePremiumHint' | transloco">{{ 'influencers.metrics.activePremium' | transloco }}</td>
+                <td class="num">{{ countPct(metrics.activePremium, metrics.signups) }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p *ngIf="metrics.measurableD7 < metrics.signups" class="empty-hint mt-2">
+          {{ 'influencers.metrics.d7Pending' | transloco: { pending: metrics.signups - metrics.measurableD7 } }}
+        </p>
+
+        <h4 class="card-label mt-3">{{ 'influencers.metrics.bySource' | transloco }}</h4>
+        <div class="table-scroll mt-2">
+          <table class="stats-table">
+            <thead>
+              <tr>
+                <th>{{ 'influencers.metrics.source' | transloco }}</th>
+                <th>{{ 'influencers.metrics.signups' | transloco }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let s of metrics.bySource">
+                <td class="code-cell">
+                  <ng-container *ngIf="s.source">{{ s.source }}</ng-container>
+                  <span *ngIf="!s.source" class="muted">{{ 'influencers.metrics.organic' | transloco }}</span>
+                </td>
+                <td class="num">{{ s.signups }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </ng-container>
+
+    </ng-container>
+  </div>
+
 </div>
