@@ -28,6 +28,12 @@ docker compose --env-file .env up -d --build
 echo "Recreating Caddy to pick up Caddyfile changes..."
 docker compose --env-file .env up -d --force-recreate --no-deps caddy
 
+# 2c. Recrear el contenedor SSR por el mismo motivo: monta ../frontend/dist/frontend
+#     y `npm run build` regenera ese directorio, así que el contenedor en marcha
+#     puede quedarse apuntando a inodos viejos del build anterior.
+echo "Recreating frontend-ssr to pick up the new build..."
+docker compose --env-file .env up -d --force-recreate --no-deps frontend-ssr
+
 # 3. Reclamar espacio: caché de build + imágenes huérfanas (versiones antiguas
 #    de backend/frontend que quedan sin etiqueta tras el --build).
 #    Seguro: no toca imágenes en uso, contenedores ni volúmenes (la BD MySQL).

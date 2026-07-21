@@ -16,6 +16,29 @@ services:
     networks:
       - app-network
 
+  # Angular SSR for the individual text pages (/text/:id and /es/text/:id): the only
+  # public routes with dynamic content, so the only ones Caddy proxies here — every
+  # other page keeps being served as static/prerendered files exactly as before.
+  # Runs the server bundle produced by `npm run build` (same dist/ Caddy mounts), so
+  # deploy.sh needs no extra build step — it only force-recreates this container
+  # (same stale-mount reason as Caddy). If this container is down, Caddy falls back
+  # to the SPA shell: worst case equals the pre-SSR behavior.
+  frontend-ssr:
+    image: node:20-alpine
+    restart: unless-stopped
+    working_dir: /app
+    command: ["node", "server/server.mjs"]
+    volumes:
+      - ../frontend/dist/frontend:/app:ro
+    environment:
+      PORT: "4000"
+      # Where the SSR render resolves relative /api calls (ssrBaseUrlInterceptor).
+      API_BASE_URL: http://backend:8080
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
   backend:
     build:
       context: ../backend

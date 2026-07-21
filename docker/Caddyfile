@@ -15,6 +15,20 @@ chinesereads.com, www.chinesereads.com {
         reverse_proxy backend:8080
     }
 
+    # Páginas de texto individuales (/text/:id y /es/text/:id): las únicas rutas
+    # públicas con contenido dinámico, así que son las únicas que se renderizan en
+    # el servidor (contenedor frontend-ssr). Así Google recibe el HTML completo
+    # (texto chino, título y metas propios) en la primera pasada, en vez del shell
+    # vacío del SPA. El resto de páginas no cambia: prerender y estáticos como
+    # siempre. Los assets (*.js, *.css…) no entran aquí: los pide el navegador por
+    # su ruta real y los sirve el handle estático de abajo.
+    @textPages path /text/* /es/text/*
+    handle @textPages {
+        # HTML dinámico: revalidar siempre, igual que el HTML estático de abajo.
+        header Cache-Control "no-cache"
+        reverse_proxy frontend-ssr:4000
+    }
+
     handle {
         root * /srv
 
@@ -37,6 +51,20 @@ chinesereads.com, www.chinesereads.com {
         # prerenderizadas (p. ej. /text/:id, /texts/HSK1).
         try_files {path} {path}/index.html /index.html
         file_server
+    }
+
+    # Red de seguridad del SSR: si el contenedor frontend-ssr está caído o falla
+    # (502/503/504 del reverse_proxy), servir el shell del SPA como se hacía antes
+    # de tener SSR — la página funciona igual para las personas (el navegador
+    # ejecuta el JS) y solo se pierde temporalmente la mejora SEO. El peor caso
+    # queda acotado al comportamiento pre-SSR, nunca peor.
+    handle_errors {
+        @ssrDown expression `{err.status_code} in [502, 503, 504]`
+        handle @ssrDown {
+            root * /srv
+            rewrite * /index.html
+            file_server
+        }
     }
 }
 

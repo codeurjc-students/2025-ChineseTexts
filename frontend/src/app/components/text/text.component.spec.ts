@@ -1,7 +1,7 @@
 import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { provideRouter } from '@angular/router';
+import { provideRouter, Router } from '@angular/router';
 import { of, Subject } from 'rxjs';
 
 import { TextComponent } from './text.component';
@@ -102,6 +102,19 @@ describe('TextComponent', () => {
   it('should create', () => {
     fixture.detectChanges();
     expect(component).toBeTruthy();
+  });
+
+  // The API answers 200 with an empty body for ids that do not exist; the reader
+  // must serve the soft-404 page (keeping the URL) instead of rendering a null
+  // text — which used to crash the page, most visibly under SSR.
+  it('redirects to the soft-404 page when the API returns no text for the id', () => {
+    textsServiceSpy.getText.and.returnValue(of(null as unknown as TextItem));
+    const navigate = spyOn(TestBed.inject(Router), 'navigate').and.resolveTo(true);
+
+    fixture.detectChanges();
+
+    expect(navigate).toHaveBeenCalledWith(['/not-found'],
+      jasmine.objectContaining({ skipLocationChange: true }));
   });
 
   // Test 2: El texto chino se divide en palabras correctamente
