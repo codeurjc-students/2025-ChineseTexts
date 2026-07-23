@@ -64,6 +64,7 @@ public class SecurityConfig {
                 // PUBLIC
                 .requestMatchers(HttpMethod.GET, "/api/words/textWords").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/texts/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/health").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/founder/**").permitAll()
                 // One-click email unsubscribe: the visitor comes from a mail client with
                 // no session; the token IS the authentication. Must precede the ADMIN
