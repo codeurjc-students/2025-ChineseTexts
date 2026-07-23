@@ -9,6 +9,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
 import com.chinesereads.backend.Model.Text;
+import com.chinesereads.backend.Model.TextTopics;
 import com.chinesereads.backend.Model.User;
 import com.chinesereads.backend.Model.Word;
 import com.chinesereads.backend.dto.UserMapper;
@@ -657,6 +658,14 @@ public class DatabaseInitializer {
                 null // imagen
             ),
         };
+
+        // Etiquetas temáticas de los textos semilla (claves de TextTopics.ALLOWED)
+        texts[0].setTopics(TextTopics.normalize(java.util.List.of("daily-life", "nature")));
+        texts[1].setTopics(TextTopics.normalize(java.util.List.of("entertainment", "food")));
+        texts[2].setTopics(TextTopics.normalize(java.util.List.of("family", "daily-life")));
+        texts[3].setTopics(TextTopics.normalize(java.util.List.of("daily-life", "school")));
+        texts[4].setTopics(TextTopics.normalize(java.util.List.of("family", "daily-life")));
+        texts[5].setTopics(TextTopics.normalize(java.util.List.of("food", "family")));
 
         String[] images = new String[]{
             "/static/img/two_good_friends.png",

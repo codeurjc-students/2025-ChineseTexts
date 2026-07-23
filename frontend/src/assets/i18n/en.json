@@ -164,12 +164,36 @@
       "terms": "Terms of Use"
     }
   },
+  "topics": {
+    "daily-life": "Daily life",
+    "family": "Family",
+    "food": "Food",
+    "travel": "Travel",
+    "culture": "Culture",
+    "history": "History",
+    "school": "School",
+    "work": "Work",
+    "sports": "Sports",
+    "games": "Games",
+    "nature": "Nature",
+    "animals": "Animals",
+    "science": "Science",
+    "technology": "Technology",
+    "health": "Health",
+    "society": "Society",
+    "politics": "Politics",
+    "entertainment": "Entertainment"
+  },
   "texts": {
     "title": "Texts",
     "intro": "Click on one of the following texts to start reading.",
+    "filter": {
+      "all": "All topics"
+    },
     "meta": {
       "level": "level:",
       "likeTitle": "Like",
+      "editTitle": "Edit",
       "deleteTitle": "Delete"
     },
     "delete": {
@@ -179,10 +203,33 @@
       "cancel": "Cancel",
       "confirm": "Delete"
     },
+    "edit": {
+      "title": "Edit text",
+      "titleEnglish": "Title (English)",
+      "titleSpanish": "Title (Spanish)",
+      "englishDescription": "Description (English)",
+      "spanishDescription": "Description (Spanish)",
+      "level": "Level",
+      "topics": "Topics",
+      "image": "Image",
+      "imageHint": "Click to change the image",
+      "cancel": "Cancel",
+      "save": "Save",
+      "saving": "Saving…",
+      "errors": {
+        "titleExists": "A text with this title already exists.",
+        "saveFailed": "Could not save the changes. Please try again.",
+        "imageFailed": "The changes were saved, but the image could not be updated. Try again."
+      }
+    },
     "loadMore": "Load more",
     "noMore": {
       "title": "No more texts available",
       "subtitle": "Discover all our stories. New content will be added soon."
+    },
+    "emptyFilter": {
+      "title": "No texts match this filter",
+      "subtitle": "Try another topic or level, or view all topics."
     }
   },
   "text": {
@@ -816,6 +863,8 @@
       "titleEnglish": "Title (English)",
       "titleSpanish": "Title (Spanish)",
       "level": "Level",
+      "topics": "Topics (optional)",
+      "topicsHint": "Tag the text so readers can filter by topic (max 5).",
       "date": "Date"
     },
     "chinese": {
@@ -916,6 +965,7 @@
       "titleEnglish": "Title (English)",
       "titleSpanish": "Title (Spanish)",
       "level": "Level",
+      "topics": "Topics",
       "date": "Date",
       "chineseText": "Chinese text",
       "translations": "Translations",

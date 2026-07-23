@@ -34,4 +34,13 @@ public interface TextRepository extends JpaRepository<Text, Long> {
 
     // Nuevo: obtener textos filtrados por nivel con paginación
     Page<Text> findByLevel(String level, Pageable pageable);
+
+    // Filtro por etiqueta temática (solo o combinado con el nivel). MEMBER OF
+    // consulta la tabla de colección text_topic sin cargar los @Lob de más filas
+    // de las que pide la página.
+    @Query("SELECT t FROM Text t WHERE :topic MEMBER OF t.topics")
+    Page<Text> findByTopic(String topic, Pageable pageable);
+
+    @Query("SELECT t FROM Text t WHERE t.level = :level AND :topic MEMBER OF t.topics")
+    Page<Text> findByLevelAndTopic(String level, String topic, Pageable pageable);
 }

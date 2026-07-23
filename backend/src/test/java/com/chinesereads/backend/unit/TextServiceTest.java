@@ -168,7 +168,7 @@ public class TextServiceTest {
 
         TextDTO data = new TextDTO(null, "Dialogue", "Diálogo", "你好！很高兴。",
                 "¡Hola! Encantado.", "Hello! Nice to meet you.",
-                "HSK1", "Desc", "Desc", LocalDate.now(), null);
+                "HSK1", null, "Desc", "Desc", LocalDate.now(), null);
 
         TextDTO saved = service.uploadText(data, null);
 
@@ -192,10 +192,178 @@ public class TextServiceTest {
 
         TextDTO data = new TextDTO(null, "Dialogue", "Diálogo", "你好！很高兴。",
                 "¡Hola!", "Hello! Nice to meet you.",
-                "HSK1", "Desc", "Desc", LocalDate.now(), null);
+                "HSK1", null, "Desc", "Desc", LocalDate.now(), null);
 
         org.junit.jupiter.api.Assertions.assertThrows(IllegalArgumentException.class,
                 () -> service.uploadText(data, null));
+        verify(textRepository, never()).save(any(Text.class));
+    }
+
+    // Test unitario 11: uploadText guarda las etiquetas válidas normalizadas
+    // (orden canónico, duplicados fuera) y las incluye en el DTO devuelto
+    @Test
+    @DisplayName("uploadText stores validated topics in canonical order")
+    public void testUploadTextStoresTopics() throws Exception {
+        TextService service = new TextService(textRepository, textMapper,
+                new com.chinesereads.backend.Service.JiebaService(), dictionaryService, wordRepository);
+        when(textRepository.findByTitleEnglish(any())).thenReturn(Optional.empty());
+        when(textRepository.findByTitleSpanish(any())).thenReturn(Optional.empty());
+        when(textRepository.save(any(Text.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        TextDTO data = new TextDTO(null, "Dialogue", "Diálogo", "你好！",
+                "¡Hola!", "Hello!",
+                "HSK1", java.util.List.of("sports", "food", "sports"),
+                "Desc", "Desc", LocalDate.now(), null);
+
+        TextDTO saved = service.uploadText(data, null);
+
+        assertNotNull(saved);
+        // "food" precede a "sports" en el orden canónico de TextTopics.ALLOWED
+        assertEquals(java.util.List.of("food", "sports"), saved.topics());
+    }
+
+    // Test unitario 12: uploadText rechaza etiquetas fuera del vocabulario cerrado
+    @Test
+    @DisplayName("uploadText rejects unknown topic keys")
+    public void testUploadTextRejectsUnknownTopic() {
+        TextService service = new TextService(textRepository, textMapper,
+                new com.chinesereads.backend.Service.JiebaService(), dictionaryService, wordRepository);
+
+        TextDTO data = new TextDTO(null, "Dialogue", "Diálogo", "你好！",
+                "¡Hola!", "Hello!",
+                "HSK1", java.util.List.of("dragons"),
+                "Desc", "Desc", LocalDate.now(), null);
+
+        org.junit.jupiter.api.Assertions.assertThrows(IllegalArgumentException.class,
+                () -> service.uploadText(data, null));
+        verify(textRepository, never()).save(any(Text.class));
+    }
+
+    // Test unitario 13: el filtro por etiqueta delega en la query correcta
+    // (solo tema / tema + nivel), y sin tema usa las consultas de siempre
+    @Test
+    @DisplayName("Listing with a topic filter uses the topic queries")
+    public void testGetTextsWithTopicUsesTopicQueries() {
+        when(textRepository.findByTopic(any(), any()))
+                .thenReturn(new org.springframework.data.domain.PageImpl<>(java.util.List.of()));
+        when(textRepository.findByLevelAndTopic(any(), any(), any()))
+                .thenReturn(new org.springframework.data.domain.PageImpl<>(java.util.List.of()));
+        when(textRepository.findAll(any(org.springframework.data.domain.Pageable.class)))
+                .thenReturn(new org.springframework.data.domain.PageImpl<>(java.util.List.of()));
+
+        textService.getTexts(0, 10, "sports");
+        verify(textRepository, times(1)).findByTopic(any(), any());
+
+        textService.getTextsByLevel("HSK2", 0, 10, "food");
+        verify(textRepository, times(1)).findByLevelAndTopic(any(), any(), any());
+
+        textService.getTexts(0, 10, null);
+        verify(textRepository, times(1)).findAll(any(org.springframework.data.domain.Pageable.class));
+    }
+
+    // Test unitario 14: updateTextMetadata aplica solo los campos presentes
+    // (los null quedan intactos) y devuelve el DTO actualizado
+    @Test
+    @DisplayName("updateTextMetadata applies only the provided fields")
+    public void testUpdateTextMetadataPartial() {
+        Text text = new Text("Old Title", "Título Viejo", "你好。", "Hello.", "Hola.",
+                "Description", "Descripción", "HSK1", LocalDate.now(), null);
+        when(textRepository.findById(1L)).thenReturn(Optional.of(text));
+        when(textRepository.findByTitleEnglish("New Title")).thenReturn(Optional.empty());
+        when(textRepository.save(any(Text.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        var patch = new com.chinesereads.backend.dto.TextMetadataUpdateDTO(
+                "New Title", null, null, null, "HSK3", java.util.List.of("travel"));
+
+        TextDTO result = textService.updateTextMetadata(1L, patch);
+
+        assertNotNull(result);
+        assertEquals("New Title", result.titleEnglish());
+        assertEquals("Título Viejo", result.titleSpanish());
+        assertEquals("HSK3", result.level());
+        assertEquals(java.util.List.of("travel"), result.topics());
+        assertEquals("Description", result.englishDescription());
+    }
+
+    // Test unitario 15: updateTextMetadata devuelve null (409 en el controlador)
+    // si el nuevo título ya pertenece a OTRO texto, pero no protesta si el
+    // título "nuevo" es el propio (guardar sin renombrar)
+    @Test
+    @DisplayName("updateTextMetadata detects title conflicts with other texts only")
+    public void testUpdateTextMetadataTitleConflict() {
+        Text mine = new Text("My Title", "Mi Título", "你好。", "Hello.", "Hola.",
+                "Description", "Descripción", "HSK1", LocalDate.now(), null);
+        mine.setId(1L);
+        Text other = new Text("Taken", "Ocupado", "你好。", "Hello.", "Hola.",
+                "Description", "Descripción", "HSK1", LocalDate.now(), null);
+        other.setId(2L);
+
+        when(textRepository.findById(1L)).thenReturn(Optional.of(mine));
+        when(textRepository.findByTitleEnglish("Taken")).thenReturn(Optional.of(other));
+        when(textRepository.findByTitleEnglish("My Title")).thenReturn(Optional.of(mine));
+        when(textRepository.save(any(Text.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        var conflict = new com.chinesereads.backend.dto.TextMetadataUpdateDTO(
+                "Taken", null, null, null, null, null);
+        assertNull(textService.updateTextMetadata(1L, conflict));
+        verify(textRepository, never()).save(any(Text.class));
+
+        var sameTitle = new com.chinesereads.backend.dto.TextMetadataUpdateDTO(
+                "My Title", null, null, null, null, null);
+        assertNotNull(textService.updateTextMetadata(1L, sameTitle));
+    }
+
+    // Test unitario 16: updateTextMetadata rechaza niveles fuera de HSK1–6
+    @Test
+    @DisplayName("updateTextMetadata rejects unknown levels")
+    public void testUpdateTextMetadataRejectsUnknownLevel() {
+        Text text = new Text("Title", "Título", "你好。", "Hello.", "Hola.",
+                "Description", "Descripción", "HSK1", LocalDate.now(), null);
+        when(textRepository.findById(1L)).thenReturn(Optional.of(text));
+
+        var patch = new com.chinesereads.backend.dto.TextMetadataUpdateDTO(
+                null, null, null, null, "HSK9", null);
+
+        org.junit.jupiter.api.Assertions.assertThrows(IllegalArgumentException.class,
+                () -> textService.updateTextMetadata(1L, patch));
+        verify(textRepository, never()).save(any(Text.class));
+    }
+
+    // Test unitario 17: updateTextImage sustituye la imagen y persiste el texto
+    @Test
+    @DisplayName("updateTextImage replaces the cover image")
+    public void testUpdateTextImage() throws Exception {
+        Text text = new Text("Title", "Título", "你好。", "Hello.", "Hola.",
+                "Description", "Descripción", "HSK1", LocalDate.now(), null);
+        when(textRepository.findById(1L)).thenReturn(Optional.of(text));
+        when(textRepository.save(any(Text.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        var image = new org.springframework.mock.web.MockMultipartFile(
+                "image", "cover.jpg", "image/jpeg", new byte[] {1, 2, 3});
+
+        textService.updateTextImage(1L, image);
+
+        assertNotNull(text.getImage());
+        verify(textRepository, times(1)).save(text);
+    }
+
+    // Test unitario 18: updateTextImage rechaza id inexistente y fichero vacío
+    @Test
+    @DisplayName("updateTextImage rejects unknown ids and empty files")
+    public void testUpdateTextImageRejections() {
+        when(textRepository.findById(99L)).thenReturn(Optional.empty());
+        var image = new org.springframework.mock.web.MockMultipartFile(
+                "image", "cover.jpg", "image/jpeg", new byte[] {1});
+        org.junit.jupiter.api.Assertions.assertThrows(java.util.NoSuchElementException.class,
+                () -> textService.updateTextImage(99L, image));
+
+        Text text = new Text("Title", "Título", "你好。", "Hello.", "Hola.",
+                "Description", "Descripción", "HSK1", LocalDate.now(), null);
+        when(textRepository.findById(1L)).thenReturn(Optional.of(text));
+        var empty = new org.springframework.mock.web.MockMultipartFile(
+                "image", "cover.jpg", "image/jpeg", new byte[0]);
+        org.junit.jupiter.api.Assertions.assertThrows(IllegalArgumentException.class,
+                () -> textService.updateTextImage(1L, empty));
         verify(textRepository, never()).save(any(Text.class));
     }
 

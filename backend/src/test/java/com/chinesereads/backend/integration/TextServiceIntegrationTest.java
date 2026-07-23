@@ -96,12 +96,65 @@ public class TextServiceIntegrationTest {
         textService.save(hsk1);
         textService.save(hsk2);
 
-        var hsk1Results = textService.getTextsByLevel("HSK1", 0, 10);
-        var hsk2Results = textService.getTextsByLevel("HSK2", 0, 10);
+        var hsk1Results = textService.getTextsByLevel("HSK1", 0, 10, null);
+        var hsk2Results = textService.getTextsByLevel("HSK2", 0, 10, null);
 
         assertEquals(1, hsk1Results.size());
         assertEquals("HSK1 Text", hsk1Results.get(0).titleEnglish());
         assertEquals(1, hsk2Results.size());
         assertEquals("HSK2 Text", hsk2Results.get(0).titleEnglish());
+    }
+
+    // Test de integración 5: las etiquetas persisten en la tabla de colección y
+    // el filtro por etiqueta (solo y combinado con nivel) devuelve solo los
+    // textos etiquetados — round-trip real contra la base de datos
+    @Test
+    @DisplayName("Topics persist and the topic filter returns only tagged texts")
+    public void testTopicsPersistAndFilter() {
+        Text tagged = new Text("Sports Text", "Texto Deportes", "你好。",
+                "Hello.", "Hola.", "Desc", "Desc ES", "HSK1", LocalDate.now(), null);
+        tagged.setTopics(new java.util.LinkedHashSet<>(java.util.List.of("sports", "health")));
+        Text untagged = new Text("Plain Text", "Texto Plano", "再见。",
+                "Bye.", "Adiós.", "Desc", "Desc ES", "HSK1", LocalDate.now(), null);
+
+        textService.save(tagged);
+        textService.save(untagged);
+
+        TextDTO reloaded = textService.getText(
+                textRepository.findByTitleEnglish("Sports Text").get().getId());
+        assertNotNull(reloaded.topics());
+        assertEquals(2, reloaded.topics().size());
+        assertTrue(reloaded.topics().contains("sports"));
+
+        var bySports = textService.getTexts(0, 10, "sports");
+        assertEquals(1, bySports.size());
+        assertEquals("Sports Text", bySports.get(0).titleEnglish());
+
+        var byLevelAndTopic = textService.getTextsByLevel("HSK1", 0, 10, "sports");
+        assertEquals(1, byLevelAndTopic.size());
+
+        var noMatch = textService.getTexts(0, 10, "travel");
+        assertEquals(0, noMatch.size());
+    }
+
+    // Test de integración 6: la edición de metadatos persiste las etiquetas y el
+    // nivel nuevos sin tocar el contenido
+    @Test
+    @DisplayName("updateTextMetadata persists new topics and level")
+    public void testUpdateTextMetadataPersists() {
+        Text text = new Text("Edit Me", "Edítame", "你好。",
+                "Hello.", "Hola.", "Desc", "Desc ES", "HSK1", LocalDate.now(), null);
+        TextDTO saved = textService.save(text);
+
+        var patch = new com.chinesereads.backend.dto.TextMetadataUpdateDTO(
+                null, null, null, null, "HSK2", java.util.List.of("food", "family"));
+        TextDTO updated = textService.updateTextMetadata(saved.id(), patch);
+
+        assertNotNull(updated);
+        TextDTO reloaded = textService.getText(saved.id());
+        assertEquals("HSK2", reloaded.level());
+        assertEquals(2, reloaded.topics().size());
+        assertEquals("Edit Me", reloaded.titleEnglish());
+        assertEquals("你好。", reloaded.text());
     }
 }

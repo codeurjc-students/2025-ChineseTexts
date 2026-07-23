@@ -49,6 +49,21 @@
           <input type="date" [(ngModel)]="creationDate" class="form-input">
         </div>
       </div>
+      <div class="form-group mt-3">
+        <label>{{ 'uploadText.fields.topics' | transloco }}
+          <span class="topics-count">({{ topics.length }}/{{ maxTopics }})</span>
+        </label>
+        <p class="section-hint">{{ 'uploadText.fields.topicsHint' | transloco }}</p>
+        <div class="topic-picker">
+          <button type="button" class="topic-chip"
+                  *ngFor="let key of topicsList"
+                  [class.topic-chip--active]="topics.includes(key)"
+                  [disabled]="!topics.includes(key) && topics.length >= maxTopics"
+                  (click)="toggleTopic(key)">
+            {{ ('topics.' + key) | transloco }}
+          </button>
+        </div>
+      </div>
     </div>
 
     <!-- Texto chino -->
