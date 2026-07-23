@@ -401,6 +401,12 @@ def chat_word():
     return jsonify({"reply": reply})
 
 
+# Sonda de vida para el agregador /api/health del backend. Solo confirma que el
+# proceso Flask responde: NO llama a ninguna API externa (no cuesta dinero).
+@app.route("/health", methods=["GET"])
+def health():
+    return jsonify({"status": "ok"})
+
 if __name__ == "__main__":
     # Debug (auto-reload + Werkzeug debugger) only when explicitly requested in
     # local development; the Docker container must never run with it enabled.
