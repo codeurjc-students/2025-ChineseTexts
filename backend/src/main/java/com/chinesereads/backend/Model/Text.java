@@ -3,14 +3,20 @@ package com.chinesereads.backend.Model;
 import java.sql.Blob;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
@@ -32,6 +38,15 @@ public class Text {
     private String englishTranslation;
     
     private String level;
+
+    // Topic tags (stable English keys from TextTopics.ALLOWED, e.g. "sports").
+    // Labels are translated in the frontend. EAGER for the same reason as
+    // sentences: TextDTO always includes them, and listings render them per
+    // card. LinkedHashSet keeps the canonical order set at save time.
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "text_topic", joinColumns = @JoinColumn(name = "text_id"))
+    @Column(name = "topic")
+    private Set<String> topics = new LinkedHashSet<>();
 
     @Lob
     private String englishDescription;
@@ -103,6 +118,14 @@ public class Text {
 
     public String getLevel(){
         return this.level;
+    }
+
+    public Set<String> getTopics() {
+        return this.topics;
+    }
+
+    public void setTopics(Set<String> topics) {
+        this.topics = topics != null ? topics : new LinkedHashSet<>();
     }
 
     public LocalDate getCreationDate() {

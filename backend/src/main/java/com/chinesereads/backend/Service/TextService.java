@@ -18,14 +18,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.chinesereads.backend.Model.Text;
+import com.chinesereads.backend.Model.TextTopics;
 import com.chinesereads.backend.Repository.TextRepository;
 import com.chinesereads.backend.Repository.WordRepository;
 import com.chinesereads.backend.dto.TextDTO;
 import com.chinesereads.backend.dto.TextMapper;
+import com.chinesereads.backend.dto.TextMetadataUpdateDTO;
 import com.chinesereads.backend.dto.ValidationResultDTO;
 
 @Service
 public class TextService {
+
+    private static final java.util.Set<String> HSK_LEVELS =
+            java.util.Set.of("HSK1", "HSK2", "HSK3", "HSK4", "HSK5", "HSK6");
 
     private final TextRepository textRepository;
 
@@ -59,23 +64,27 @@ public class TextService {
         return textRepository.findSitemapRows();
     }
 
-    public List<TextDTO> getTexts(int page, int size) {
+    public List<TextDTO> getTexts(int page, int size, String topic) {
         Pageable pageable = PageRequest.of(
                 page,
                 size,
                 Sort.by("creationDate").descending().and(Sort.by("id").descending())
         );
-        Page<Text> result = textRepository.findAll(pageable);
+        Page<Text> result = (topic == null || topic.isBlank())
+                ? textRepository.findAll(pageable)
+                : textRepository.findByTopic(topic, pageable);
         return textMapper.toDTO(result.getContent());
     }
 
-    public List<TextDTO> getTextsByLevel(String level, int page, int size) {
+    public List<TextDTO> getTextsByLevel(String level, int page, int size, String topic) {
         Pageable pageable = PageRequest.of(
                 page,
                 size,
                 Sort.by("creationDate").descending().and(Sort.by("id").descending())
         );
-        Page<Text> result = textRepository.findByLevel(level, pageable);
+        Page<Text> result = (topic == null || topic.isBlank())
+                ? textRepository.findByLevel(level, pageable)
+                : textRepository.findByLevelAndTopic(level, topic, pageable);
         return textMapper.toDTO(result.getContent());
     }
 
@@ -140,11 +149,55 @@ public class TextService {
                 data.creationDate() != null ? data.creationDate() : LocalDate.now(),
                 null
         );
+        text.setTopics(TextTopics.normalize(data.topics()));
         buildAlignedSentences(text);
         if (image != null && !image.isEmpty()) {
             text.setImage(BlobProxy.generateProxy(image.getInputStream(), image.getSize()));
         }
         return save(text);
+    }
+
+    /**
+     * Partial metadata update (titles, descriptions, level, topics): null
+     * fields stay unchanged. Content (Chinese body, translations, sentences)
+     * is deliberately NOT editable here — see TextMetadataUpdateDTO. Returns
+     * null on a title conflict with ANOTHER text (mirrors save()); throws
+     * NoSuchElementException for unknown ids and IllegalArgumentException for
+     * invalid levels/topics.
+     */
+    public TextDTO updateTextMetadata(long id, TextMetadataUpdateDTO patch) {
+        Text text = textRepository.findById(id).orElseThrow();
+
+        if (patch.titleEnglish() != null && !patch.titleEnglish().isBlank()) {
+            Optional<Text> other = textRepository.findByTitleEnglish(patch.titleEnglish().trim());
+            if (other.isPresent() && other.get().getId() != id) {
+                return null;
+            }
+            text.setTitleEnglish(patch.titleEnglish().trim());
+        }
+        if (patch.titleSpanish() != null && !patch.titleSpanish().isBlank()) {
+            Optional<Text> other = textRepository.findByTitleSpanish(patch.titleSpanish().trim());
+            if (other.isPresent() && other.get().getId() != id) {
+                return null;
+            }
+            text.setTitleSpanish(patch.titleSpanish().trim());
+        }
+        if (patch.englishDescription() != null) {
+            text.setEnglishDescription(patch.englishDescription());
+        }
+        if (patch.spanishDescription() != null) {
+            text.setSpanishDescription(patch.spanishDescription());
+        }
+        if (patch.level() != null) {
+            if (!HSK_LEVELS.contains(patch.level())) {
+                throw new IllegalArgumentException("Unknown level: " + patch.level());
+            }
+            text.setLevel(patch.level());
+        }
+        if (patch.topics() != null) {
+            text.setTopics(TextTopics.normalize(patch.topics()));
+        }
+        return textMapper.toDTO(textRepository.save(text));
     }
 
     /**

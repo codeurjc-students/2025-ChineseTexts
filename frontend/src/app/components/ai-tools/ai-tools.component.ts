@@ -5,7 +5,7 @@ import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 
 import { AiService, AiTextResult } from '../../services/ai.service';
 import { LoginService } from '../../services/login.service';
-import { TextsService } from '../../services/texts.service';
+import { TextsService, TEXT_TOPICS, MAX_TOPICS_PER_TEXT } from '../../services/texts.service';
 import { WordsService } from '../../services/words.service';
 import { LocaleNavService } from '../../i18n/locale-nav.service';
 import { splitChineseSentences, splitTranslatedSentences } from '../../utils/sentence.util';
@@ -55,6 +55,7 @@ export class AiToolsComponent implements OnInit {
   spanishDescription = '';
   level = 'HSK1';
   topic = '';
+  topics: string[] = [];
   creationDate = new Date().toISOString().split('T')[0];
   imageFile: File | null = null;
   imagePreview: string | null = null;
@@ -68,6 +69,8 @@ export class AiToolsComponent implements OnInit {
   ocrImagePreview: string | null = null;
 
   levels = ['HSK1', 'HSK2', 'HSK3', 'HSK4', 'HSK5', 'HSK6'];
+  readonly topicsList = TEXT_TOPICS;
+  readonly maxTopics = MAX_TOPICS_PER_TEXT;
 
   // Validación
   validationError = '';
@@ -331,6 +334,7 @@ export class AiToolsComponent implements OnInit {
       englishDescription: this.englishDescription.trim(),
       spanishDescription: this.spanishDescription.trim(),
       level: this.level,
+      topics: this.topics,
       creationDate: this.creationDate
     };
 
@@ -355,6 +359,14 @@ export class AiToolsComponent implements OnInit {
     this.localeNav.navigate(['/texts']);
   }
 
+  toggleTopic(key: string): void {
+    if (this.topics.includes(key)) {
+      this.topics = this.topics.filter(t => t !== key);
+    } else if (this.topics.length < this.maxTopics) {
+      this.topics = [...this.topics, key];
+    }
+  }
+
   reset(): void {
     this.status = 'idle';
     this.errorMessage = '';
@@ -367,6 +379,7 @@ export class AiToolsComponent implements OnInit {
     this.englishDescription = '';
     this.spanishDescription = '';
     this.topic = '';
+    this.topics = [];
     this.imageFile = null;
     this.imagePreview = null;
     this.ocrImageFile = null;

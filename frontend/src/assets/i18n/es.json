@@ -164,12 +164,36 @@
       "terms": "Condiciones de uso"
     }
   },
+  "topics": {
+    "daily-life": "Vida diaria",
+    "family": "Familia",
+    "food": "Comida",
+    "travel": "Viajes",
+    "culture": "Cultura",
+    "history": "Historia",
+    "school": "Escuela",
+    "work": "Trabajo",
+    "sports": "Deportes",
+    "games": "Juegos",
+    "nature": "Naturaleza",
+    "animals": "Animales",
+    "science": "Ciencia",
+    "technology": "Tecnología",
+    "health": "Salud",
+    "society": "Sociedad",
+    "politics": "Política",
+    "entertainment": "Entretenimiento"
+  },
   "texts": {
     "title": "Textos",
     "intro": "Haz clic en uno de los siguientes textos para empezar a leer.",
+    "filter": {
+      "all": "Todos los temas"
+    },
     "meta": {
       "level": "nivel:",
       "likeTitle": "Me gusta",
+      "editTitle": "Editar",
       "deleteTitle": "Eliminar"
     },
     "delete": {
@@ -179,10 +203,30 @@
       "cancel": "Cancelar",
       "confirm": "Eliminar"
     },
+    "edit": {
+      "title": "Editar texto",
+      "titleEnglish": "Título (inglés)",
+      "titleSpanish": "Título (español)",
+      "englishDescription": "Descripción (inglés)",
+      "spanishDescription": "Descripción (español)",
+      "level": "Nivel",
+      "topics": "Temas",
+      "cancel": "Cancelar",
+      "save": "Guardar",
+      "saving": "Guardando…",
+      "errors": {
+        "titleExists": "Ya existe un texto con este título.",
+        "saveFailed": "No se pudieron guardar los cambios. Inténtalo de nuevo."
+      }
+    },
     "loadMore": "Cargar más",
     "noMore": {
       "title": "No hay más textos disponibles",
       "subtitle": "Descubre todas nuestras historias. Pronto añadiremos contenido nuevo."
+    },
+    "emptyFilter": {
+      "title": "Ningún texto coincide con este filtro",
+      "subtitle": "Prueba con otro tema u otro nivel, o vuelve a todos los temas."
     }
   },
   "text": {
@@ -816,6 +860,8 @@
       "titleEnglish": "Título (inglés)",
       "titleSpanish": "Título (español)",
       "level": "Nivel",
+      "topics": "Temas (opcional)",
+      "topicsHint": "Etiqueta el texto para que los lectores puedan filtrar por tema (máx. 5).",
       "date": "Fecha"
     },
     "chinese": {
@@ -916,6 +962,7 @@
       "titleEnglish": "Título (inglés)",
       "titleSpanish": "Título (español)",
       "level": "Nivel",
+      "topics": "Temas",
       "date": "Fecha",
       "chineseText": "Texto en chino",
       "translations": "Traducciones",

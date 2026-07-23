@@ -9,6 +9,31 @@ export interface TextSentencePair {
   spanish: string;
 }
 
+/**
+ * Closed vocabulary of topic tags, in display order. Keys are the stable
+ * identifiers stored in the database; the visible labels live in the i18n
+ * dictionaries under topics.*. Keep in sync with TextTopics.ALLOWED in
+ * backend/.../Model/TextTopics.java.
+ */
+export const TEXT_TOPICS = [
+  'daily-life', 'family', 'food', 'travel', 'culture', 'history',
+  'school', 'work', 'sports', 'games', 'nature', 'animals',
+  'science', 'technology', 'health', 'society', 'politics',
+  'entertainment'
+] as const;
+
+export const MAX_TOPICS_PER_TEXT = 5;
+
+/** Partial metadata edit for PATCH /api/texts/:id (admin). Omitted fields stay unchanged. */
+export interface TextMetadataUpdate {
+  titleEnglish?: string;
+  titleSpanish?: string;
+  englishDescription?: string;
+  spanishDescription?: string;
+  level?: string;
+  topics?: string[];
+}
+
 export interface TextItem {
   id: number;
   titleEnglish: string;
@@ -17,6 +42,8 @@ export interface TextItem {
   spanishTranslation: string;
   englishTranslation: string;
   level: string;
+  // Topic tag keys (TEXT_TOPICS); absent/empty on texts that were never tagged.
+  topics?: string[];
   englishDescription: string;
   spanishDescription: string;
   creationDate: string;
@@ -39,12 +66,14 @@ export class TextsService {
 
   constructor(private http: HttpClient) {}
 
-  getTexts(page: number, size: number): Observable<TextItem[]> {
-    return this.http.get<TextItem[]>(`${this.apiUrl}?page=${page}&size=${size}`);
+  getTexts(page: number, size: number, topic?: string): Observable<TextItem[]> {
+    const topicParam = topic ? `&topic=${encodeURIComponent(topic)}` : '';
+    return this.http.get<TextItem[]>(`${this.apiUrl}?page=${page}&size=${size}${topicParam}`);
   }
 
-  getTextsByLevel(level: string, page: number, size: number): Observable<TextItem[]> {
-    return this.http.get<TextItem[]>(`${this.apiUrl}/level/${level}?page=${page}&size=${size}`);
+  getTextsByLevel(level: string, page: number, size: number, topic?: string): Observable<TextItem[]> {
+    const topicParam = topic ? `&topic=${encodeURIComponent(topic)}` : '';
+    return this.http.get<TextItem[]>(`${this.apiUrl}/level/${level}?page=${page}&size=${size}${topicParam}`);
   }
 
   getText(id: number): Observable<TextItem> {
@@ -71,5 +100,10 @@ export class TextsService {
 
   deleteText(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`, { withCredentials: true });
+  }
+
+  /** Admin: partial metadata edit (titles, descriptions, level, topics). */
+  updateTextMetadata(id: number, patch: TextMetadataUpdate): Observable<TextItem> {
+    return this.http.patch<TextItem>(`${this.apiUrl}/${id}`, patch, { withCredentials: true });
   }
 }

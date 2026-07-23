@@ -11,6 +11,9 @@ public record TextDTO(
     String spanishTranslation,
     String englishTranslation,
     String level,
+    // Topic tag keys from TextTopics.ALLOWED (nullable: pre-topics clients and
+    // texts created before topics existed simply omit the field).
+    List<String> topics,
     String englishDescription,
     String spanishDescription,
     LocalDate creationDate,

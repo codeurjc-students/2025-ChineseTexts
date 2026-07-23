@@ -3,6 +3,21 @@
   <h1 class="page-title text-center mb-5">{{ 'texts.title' | transloco }}</h1>
   <p class="text-center my-4 intro-text">{{ 'texts.intro' | transloco }}</p>
 
+  <!-- FILTRO POR TEMA -->
+  <div class="topic-filter mb-4">
+    <button class="topic-chip"
+            [class.topic-chip--active]="!currentTopic"
+            (click)="selectTopic(null)">
+      {{ 'texts.filter.all' | transloco }}
+    </button>
+    <button class="topic-chip"
+            *ngFor="let key of topics"
+            [class.topic-chip--active]="currentTopic === key"
+            (click)="selectTopic(currentTopic === key ? null : key)">
+      {{ ('topics.' + key) | transloco }}
+    </button>
+  </div>
+
   <!-- MODAL BORRAR -->
   <div class="modal-overlay" *ngIf="showDeleteModal" (click)="cancelDelete()">
     <div class="modal-box" (click)="$event.stopPropagation()">
@@ -14,6 +29,66 @@
       <div class="modal-actions">
         <button class="btn-cancel-modal" (click)="cancelDelete()">{{ 'texts.delete.cancel' | transloco }}</button>
         <button class="btn-danger-modal" (click)="confirmDeleteText()">{{ 'texts.delete.confirm' | transloco }}</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL EDITAR (solo admin: títulos, descripciones, nivel y temas) -->
+  <div class="modal-overlay" *ngIf="showEditModal" (click)="cancelEdit()">
+    <div class="modal-box modal-box--wide" (click)="$event.stopPropagation()">
+      <h3 class="modal-title">{{ 'texts.edit.title' | transloco }}</h3>
+
+      <div class="edit-form">
+        <div class="edit-row">
+          <div class="edit-group">
+            <label>{{ 'texts.edit.titleEnglish' | transloco }}</label>
+            <input type="text" [(ngModel)]="editTitleEnglish" class="edit-input">
+          </div>
+          <div class="edit-group">
+            <label>{{ 'texts.edit.titleSpanish' | transloco }}</label>
+            <input type="text" [(ngModel)]="editTitleSpanish" class="edit-input">
+          </div>
+        </div>
+
+        <div class="edit-group">
+          <label>{{ 'texts.edit.englishDescription' | transloco }}</label>
+          <textarea [(ngModel)]="editEnglishDescription" class="edit-input" rows="2"></textarea>
+        </div>
+        <div class="edit-group">
+          <label>{{ 'texts.edit.spanishDescription' | transloco }}</label>
+          <textarea [(ngModel)]="editSpanishDescription" class="edit-input" rows="2"></textarea>
+        </div>
+
+        <div class="edit-group">
+          <label>{{ 'texts.edit.level' | transloco }}</label>
+          <select [(ngModel)]="editLevel" class="edit-input">
+            <option *ngFor="let l of levels" [value]="l">{{ l }}</option>
+          </select>
+        </div>
+
+        <div class="edit-group">
+          <label>{{ 'texts.edit.topics' | transloco }}
+            <span class="topics-count">({{ editTopics.length }}/{{ maxTopics }})</span>
+          </label>
+          <div class="topic-picker">
+            <button type="button" class="topic-chip"
+                    *ngFor="let key of topics"
+                    [class.topic-chip--active]="editTopics.includes(key)"
+                    [disabled]="!editTopics.includes(key) && editTopics.length >= maxTopics"
+                    (click)="toggleEditTopic(key)">
+              {{ ('topics.' + key) | transloco }}
+            </button>
+          </div>
+        </div>
+
+        <p class="edit-error" *ngIf="editError">{{ editError }}</p>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-cancel-modal" (click)="cancelEdit()">{{ 'texts.edit.cancel' | transloco }}</button>
+        <button class="btn-primary-modal" [disabled]="editSaving" (click)="saveEdit()">
+          {{ (editSaving ? 'texts.edit.saving' : 'texts.edit.save') | transloco }}
+        </button>
       </div>
     </div>
   </div>
@@ -34,6 +109,13 @@
         <div><strong>{{ 'texts.meta.level' | transloco }}</strong> {{ t.level }}</div>
 
         <button *ngIf="isAdmin"
+          class="btn btn-sm p-0 border-0 bg-transparent text-primary edit-btn"
+          [title]="'texts.meta.editTitle' | transloco"
+          (click)="openEditModal(t, $event)">
+          <i class="bi bi-pencil"></i>
+        </button>
+
+        <button *ngIf="isAdmin"
           class="btn btn-sm p-0 border-0 bg-transparent text-danger delete-btn"
           [title]="'texts.meta.deleteTitle' | transloco"
           (click)="openDeleteModal(t, $event)">
@@ -43,6 +125,12 @@
     </div>
 
     <h3 class="text-dark fw-semibold mb-3">{{ displayTitle(t) }}</h3>
+
+    <div class="card-topics mb-2" *ngIf="displayTopics(t).length">
+      <span class="card-topic-tag" *ngFor="let key of displayTopics(t)">
+        {{ ('topics.' + key) | transloco }}
+      </span>
+    </div>
 
     <img
       [src]="'/api/texts/' + t.id + '/image'"
@@ -58,10 +146,17 @@
     <button class="load-more-btn" (click)="loadMore()">{{ 'texts.loadMore' | transloco }}</button>
   </div>
 
-  <div class="no-more-texts mt-5 text-center" *ngIf="!hasMore">
+  <div class="no-more-texts mt-5 text-center" *ngIf="!hasMore && texts.length">
     <div class="no-more-box">
       📚 <strong>{{ 'texts.noMore.title' | transloco }}</strong><br>
       {{ 'texts.noMore.subtitle' | transloco }}
+    </div>
+  </div>
+
+  <div class="no-more-texts mt-5 text-center" *ngIf="!hasMore && !texts.length">
+    <div class="no-more-box">
+      🔍 <strong>{{ 'texts.emptyFilter.title' | transloco }}</strong><br>
+      {{ 'texts.emptyFilter.subtitle' | transloco }}
     </div>
   </div>
 

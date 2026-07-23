@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 
-import { TextsService, ValidationResult } from '../../services/texts.service';
+import { TextsService, ValidationResult, TEXT_TOPICS, MAX_TOPICS_PER_TEXT } from '../../services/texts.service';
 import { WordsService, Word } from '../../services/words.service';
 import { LoginService } from '../../services/login.service';
 import { LocaleNavService } from '../../i18n/locale-nav.service';
@@ -42,6 +42,7 @@ export class UploadTextComponent implements OnInit {
   englishDescription = '';
   spanishDescription = '';
   level = 'HSK1';
+  topics: string[] = [];
   creationDate = new Date().toISOString().split('T')[0];
   imageFile: File | null = null;
   imagePreview: string | null = null;
@@ -53,6 +54,8 @@ export class UploadTextComponent implements OnInit {
   missingWordsOpen = true;
 
   levels = ['HSK1', 'HSK2', 'HSK3', 'HSK4', 'HSK5', 'HSK6'];
+  readonly topicsList = TEXT_TOPICS;
+  readonly maxTopics = MAX_TOPICS_PER_TEXT;
 
   constructor(
     private textsService: TextsService,
@@ -71,6 +74,14 @@ export class UploadTextComponent implements OnInit {
       },
       error: () => this.localeNav.navigate(['/'])
     });
+  }
+
+  toggleTopic(key: string): void {
+    if (this.topics.includes(key)) {
+      this.topics = this.topics.filter(t => t !== key);
+    } else if (this.topics.length < this.maxTopics) {
+      this.topics = [...this.topics, key];
+    }
   }
 
   onImageChange(event: Event): void {
@@ -210,6 +221,7 @@ export class UploadTextComponent implements OnInit {
       englishDescription: this.englishDescription.trim(),
       spanishDescription: this.spanishDescription.trim(),
       level: this.level,
+      topics: this.topics,
       creationDate: this.creationDate
     };
 
@@ -247,6 +259,7 @@ export class UploadTextComponent implements OnInit {
     this.englishDescription = '';
     this.spanishDescription = '';
     this.level = 'HSK1';
+    this.topics = [];
     this.creationDate = new Date().toISOString().split('T')[0];
     this.imageFile = null;
     this.imagePreview = null;
