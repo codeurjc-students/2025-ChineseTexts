@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -37,5 +38,18 @@ public class HealthControllerRest {
                 "services", services);
         return ResponseEntity.status(allUp ? HttpStatus.OK : HttpStatus.SERVICE_UNAVAILABLE)
                 .body(body);
+    }
+
+    /**
+     * Per-dependency probe (database | ai | ocr | tts) so each one can have its
+     * own named uptime monitor. Same contract as the aggregate: 200 up, 503 down.
+     */
+    @GetMapping("/{service}")
+    public ResponseEntity<Map<String, Object>> healthOne(@PathVariable String service) {
+        String status = healthService.checkOne(service);
+        if (status == null) return ResponseEntity.notFound().build();
+        boolean up = "UP".equals(status);
+        return ResponseEntity.status(up ? HttpStatus.OK : HttpStatus.SERVICE_UNAVAILABLE)
+                .body(Map.of("service", service, "status", status));
     }
 }

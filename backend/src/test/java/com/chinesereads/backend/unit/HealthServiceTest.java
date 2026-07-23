@@ -70,6 +70,22 @@ public class HealthServiceTest {
         assertFalse(healthService.allUp(services));
     }
 
+    // Test unitario 4: checkOne sondea una sola dependencia por clave y
+    // devuelve null para claves desconocidas (el controlador responde 404)
+    @Test
+    @DisplayName("checkOne probes a single dependency; unknown keys return null")
+    public void testCheckOne() {
+        when(textRepository.count()).thenReturn(5L);
+        when(restTemplate.getForEntity(contains("/health"), eq(String.class)))
+                .thenThrow(new ResourceAccessException("connection refused"));
+
+        assertEquals("UP", healthService.checkOne("database"));
+        assertEquals("DOWN", healthService.checkOne("ai"));
+        assertEquals("DOWN", healthService.checkOne("ocr"));
+        assertEquals("DOWN", healthService.checkOne("tts"));
+        org.junit.jupiter.api.Assertions.assertNull(healthService.checkOne("caddy"));
+    }
+
     // Test unitario 3: la base de datos caída también se reporta DOWN
     @Test
     @DisplayName("Database failure -> database DOWN")

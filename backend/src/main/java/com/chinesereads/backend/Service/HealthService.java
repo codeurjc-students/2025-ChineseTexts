@@ -68,6 +68,20 @@ public class HealthService {
         return services.values().stream().allMatch("UP"::equals);
     }
 
+    /**
+     * Probes a single dependency, for the per-service monitor endpoints
+     * (GET /api/health/{service}). Returns null for unknown keys (-> 404).
+     */
+    public String checkOne(String service) {
+        return switch (service) {
+            case "database" -> checkDatabase();
+            case "ai" -> checkHttp(aiServiceUrl);
+            case "ocr" -> checkHttp(ocrServiceUrl);
+            case "tts" -> checkHttp(ttsServiceUrl);
+            default -> null;
+        };
+    }
+
     private String checkDatabase() {
         try {
             textRepository.count();
