@@ -42,8 +42,14 @@ export class TextsComponent implements OnInit {
   editSpanishDescription = '';
   editLevel = 'HSK1';
   editTopics: string[] = [];
+  editImageFile: File | null = null;
+  editImagePreview: string | null = null;
   editSaving = false;
   editError = '';
+  // Rompe la caché del navegador para la portada de un texto cuya imagen se
+  // acaba de cambiar (el src es estable por id, así que sin esto seguiría
+  // mostrándose la imagen antigua hasta un refresco duro).
+  private imageBust: Record<number, number> = {};
   readonly levels = ['HSK1', 'HSK2', 'HSK3', 'HSK4', 'HSK5', 'HSK6'];
   readonly maxTopics = MAX_TOPICS_PER_TEXT;
 
@@ -75,6 +81,12 @@ export class TextsComponent implements OnInit {
   displayTopics(t: TextItem): string[] {
     if (!t.topics?.length) return [];
     return this.topics.filter(key => t.topics!.includes(key));
+  }
+
+  /** Cover image URL, with a cache-buster if the image was edited this session. */
+  imageSrc(t: TextItem): string {
+    const bust = this.imageBust[t.id];
+    return `/api/texts/${t.id}/image${bust ? '?v=' + bust : ''}`;
   }
 
   ngOnInit(): void {
@@ -181,9 +193,20 @@ export class TextsComponent implements OnInit {
     this.editSpanishDescription = text.spanishDescription || '';
     this.editLevel = text.level || 'HSK1';
     this.editTopics = [...(text.topics || [])];
+    this.editImageFile = null;
+    this.editImagePreview = null;
     this.editError = '';
     this.editSaving = false;
     this.showEditModal = true;
+  }
+
+  onEditImageChange(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (!input.files?.length) return;
+    this.editImageFile = input.files[0];
+    const reader = new FileReader();
+    reader.onload = () => this.editImagePreview = reader.result as string;
+    reader.readAsDataURL(this.editImageFile);
   }
 
   toggleEditTopic(key: string): void {
@@ -211,7 +234,22 @@ export class TextsComponent implements OnInit {
     this.textsService.updateTextMetadata(this.textToEdit.id, patch).subscribe({
       next: (updated) => {
         this.texts = this.texts.map(t => t.id === updated.id ? { ...t, ...updated } : t);
-        this.cancelEdit();
+        // Los metadatos ya están guardados; si además hay imagen nueva, se sube
+        // ahora. Si fallara, el modal queda abierto mostrando solo ese error.
+        if (this.editImageFile) {
+          this.textsService.updateTextImage(updated.id, this.editImageFile).subscribe({
+            next: () => {
+              this.imageBust[updated.id] = Date.now();
+              this.cancelEdit();
+            },
+            error: () => {
+              this.editSaving = false;
+              this.editError = this.transloco.translate('texts.edit.errors.imageFailed');
+            }
+          });
+        } else {
+          this.cancelEdit();
+        }
       },
       error: (err) => {
         this.editSaving = false;
@@ -224,6 +262,8 @@ export class TextsComponent implements OnInit {
   cancelEdit(): void {
     this.showEditModal = false;
     this.textToEdit = null;
+    this.editImageFile = null;
+    this.editImagePreview = null;
     this.editSaving = false;
     this.editError = '';
   }

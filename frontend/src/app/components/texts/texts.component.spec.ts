@@ -37,7 +37,7 @@ describe('TextsComponent', () => {
 
   beforeEach(async () => {
     textsServiceSpy = jasmine.createSpyObj('TextsService',
-      ['getTexts', 'getTextsByLevel', 'deleteText', 'updateTextMetadata']);
+      ['getTexts', 'getTextsByLevel', 'deleteText', 'updateTextMetadata', 'updateTextImage']);
     loginServiceSpy = jasmine.createSpyObj('LoginService',
       ['isLogged', 'isRoleAdmin', 'reqIsLogged'],
       { loggedIn$: new BehaviorSubject<boolean>(false).asObservable() }
@@ -150,6 +150,36 @@ describe('TextsComponent', () => {
     expect(component.texts[0].level).toBe('HSK3');
     expect(component.texts[0].topics).toEqual(['travel']);
     expect(component.showEditModal).toBeFalse();
+  });
+
+  it('saveEdit with a new image should also upload it and bust the image cache', () => {
+    textsServiceSpy.getTexts.and.returnValue(of(mockTexts));
+    fixture.detectChanges();
+
+    const updated: TextItem = { ...mockTexts[0] };
+    textsServiceSpy.updateTextMetadata.and.returnValue(of(updated));
+    textsServiceSpy.updateTextImage.and.returnValue(of(void 0));
+
+    component.openEditModal(component.texts[0], new MouseEvent('click'));
+    const file = new File(['x'], 'cover.jpg', { type: 'image/jpeg' });
+    component.editImageFile = file;
+    component.saveEdit();
+
+    expect(textsServiceSpy.updateTextImage).toHaveBeenCalledWith(1, file);
+    expect(component.imageSrc(component.texts[0])).toContain('?v=');
+    expect(component.showEditModal).toBeFalse();
+  });
+
+  it('saveEdit without a new image should not call updateTextImage', () => {
+    textsServiceSpy.getTexts.and.returnValue(of(mockTexts));
+    fixture.detectChanges();
+    textsServiceSpy.updateTextMetadata.and.returnValue(of({ ...mockTexts[0] }));
+
+    component.openEditModal(component.texts[0], new MouseEvent('click'));
+    component.saveEdit();
+
+    expect(textsServiceSpy.updateTextImage).not.toHaveBeenCalled();
+    expect(component.imageSrc(component.texts[0])).toBe('/api/texts/1/image');
   });
 
   it('toggleEditTopic should enforce the maximum number of topics', () => {

@@ -211,12 +211,15 @@
       "spanishDescription": "Descripción (español)",
       "level": "Nivel",
       "topics": "Temas",
+      "image": "Imagen",
+      "imageHint": "Haz clic para cambiar la imagen",
       "cancel": "Cancelar",
       "save": "Guardar",
       "saving": "Guardando…",
       "errors": {
         "titleExists": "Ya existe un texto con este título.",
-        "saveFailed": "No se pudieron guardar los cambios. Inténtalo de nuevo."
+        "saveFailed": "No se pudieron guardar los cambios. Inténtalo de nuevo.",
+        "imageFailed": "Los cambios se guardaron, pero la imagen no se pudo actualizar. Inténtalo de nuevo."
       }
     },
     "loadMore": "Cargar más",

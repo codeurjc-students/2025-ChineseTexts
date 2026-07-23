@@ -81,6 +81,18 @@
           </div>
         </div>
 
+        <div class="edit-group">
+          <label>{{ 'texts.edit.image' | transloco }}</label>
+          <div class="edit-image-area" (click)="editImageInput.click()">
+            <img [src]="editImagePreview || (textToEdit ? imageSrc(textToEdit) : '')"
+                 [alt]="'texts.edit.image' | transloco"
+                 class="edit-image-preview">
+            <span class="edit-image-hint">{{ 'texts.edit.imageHint' | transloco }}</span>
+          </div>
+          <input #editImageInput type="file" accept="image/*"
+                 (change)="onEditImageChange($event)" style="display:none">
+        </div>
+
         <p class="edit-error" *ngIf="editError">{{ editError }}</p>
       </div>
 
@@ -133,7 +145,7 @@
     </div>
 
     <img
-      [src]="'/api/texts/' + t.id + '/image'"
+      [src]="imageSrc(t)"
       [alt]="displayTitle(t)"
       class="img-fluid rounded mb-3"
       style="max-height: 250px; object-fit: cover;"

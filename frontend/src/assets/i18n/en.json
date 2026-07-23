@@ -211,12 +211,15 @@
       "spanishDescription": "Description (Spanish)",
       "level": "Level",
       "topics": "Topics",
+      "image": "Image",
+      "imageHint": "Click to change the image",
       "cancel": "Cancel",
       "save": "Save",
       "saving": "Saving…",
       "errors": {
         "titleExists": "A text with this title already exists.",
-        "saveFailed": "Could not save the changes. Please try again."
+        "saveFailed": "Could not save the changes. Please try again.",
+        "imageFailed": "The changes were saved, but the image could not be updated. Try again."
       }
     },
     "loadMore": "Load more",

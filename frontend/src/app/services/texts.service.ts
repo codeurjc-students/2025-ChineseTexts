@@ -106,4 +106,11 @@ export class TextsService {
   updateTextMetadata(id: number, patch: TextMetadataUpdate): Observable<TextItem> {
     return this.http.patch<TextItem>(`${this.apiUrl}/${id}`, patch, { withCredentials: true });
   }
+
+  /** Admin: replace the cover image of a text. */
+  updateTextImage(id: number, image: File): Observable<void> {
+    const formData = new FormData();
+    formData.append('image', image);
+    return this.http.put<void>(`${this.apiUrl}/${id}/image`, formData, { withCredentials: true });
+  }
 }

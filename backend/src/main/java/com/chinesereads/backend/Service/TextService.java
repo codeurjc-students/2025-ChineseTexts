@@ -201,6 +201,21 @@ public class TextService {
     }
 
     /**
+     * Replaces the cover image of an existing text. Kept apart from
+     * updateTextMetadata because the image travels as multipart, not JSON —
+     * and unlike the Chinese body, swapping it is safe: nothing else (sentences,
+     * flashcards, segmentation) depends on it.
+     */
+    public void updateTextImage(long id, MultipartFile image) throws IOException {
+        Text text = textRepository.findById(id).orElseThrow();
+        if (image == null || image.isEmpty()) {
+            throw new IllegalArgumentException("Image file is required.");
+        }
+        text.setImage(BlobProxy.generateProxy(image.getInputStream(), image.getSize()));
+        textRepository.save(text);
+    }
+
+    /**
      * Builds the aligned sentence pairs for a NEW public text and validates them:
      * the Chinese sentences (shared segmentation + terminators) must match the
      * sentence count of BOTH submitted translations. This is what guarantees the

@@ -329,6 +329,44 @@ public class TextServiceTest {
         verify(textRepository, never()).save(any(Text.class));
     }
 
+    // Test unitario 17: updateTextImage sustituye la imagen y persiste el texto
+    @Test
+    @DisplayName("updateTextImage replaces the cover image")
+    public void testUpdateTextImage() throws Exception {
+        Text text = new Text("Title", "Título", "你好。", "Hello.", "Hola.",
+                "Description", "Descripción", "HSK1", LocalDate.now(), null);
+        when(textRepository.findById(1L)).thenReturn(Optional.of(text));
+        when(textRepository.save(any(Text.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        var image = new org.springframework.mock.web.MockMultipartFile(
+                "image", "cover.jpg", "image/jpeg", new byte[] {1, 2, 3});
+
+        textService.updateTextImage(1L, image);
+
+        assertNotNull(text.getImage());
+        verify(textRepository, times(1)).save(text);
+    }
+
+    // Test unitario 18: updateTextImage rechaza id inexistente y fichero vacío
+    @Test
+    @DisplayName("updateTextImage rejects unknown ids and empty files")
+    public void testUpdateTextImageRejections() {
+        when(textRepository.findById(99L)).thenReturn(Optional.empty());
+        var image = new org.springframework.mock.web.MockMultipartFile(
+                "image", "cover.jpg", "image/jpeg", new byte[] {1});
+        org.junit.jupiter.api.Assertions.assertThrows(java.util.NoSuchElementException.class,
+                () -> textService.updateTextImage(99L, image));
+
+        Text text = new Text("Title", "Título", "你好。", "Hello.", "Hola.",
+                "Description", "Descripción", "HSK1", LocalDate.now(), null);
+        when(textRepository.findById(1L)).thenReturn(Optional.of(text));
+        var empty = new org.springframework.mock.web.MockMultipartFile(
+                "image", "cover.jpg", "image/jpeg", new byte[0]);
+        org.junit.jupiter.api.Assertions.assertThrows(IllegalArgumentException.class,
+                () -> textService.updateTextImage(1L, empty));
+        verify(textRepository, never()).save(any(Text.class));
+    }
+
     // Test unitario 8: El lector público conserva los saltos como tokens "\n" alineados
     // 1:1 con las traducciones por palabra
     @Test
