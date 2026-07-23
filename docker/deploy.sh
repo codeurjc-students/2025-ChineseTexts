@@ -26,7 +26,10 @@ fi
 
 DOCKER_DIR="$(pwd)"
 if ! crontab -l 2>/dev/null | grep -qF "backup-db.sh"; then
-    ( crontab -l 2>/dev/null; \
+    # El `|| true` es imprescindible: en un servidor SIN crontab previo,
+    # `crontab -l` falla, y bajo `set -e` mataría el subshell antes del echo —
+    # instalando un crontab vacío en lugar de la línea del backup.
+    ( crontab -l 2>/dev/null || true; \
       echo "15 4 * * * mkdir -p \$HOME/backups/chinesereads && cd $DOCKER_DIR && ./backup-db.sh >> \$HOME/backups/chinesereads/backup.log 2>&1" \
     ) | crontab -
     echo "Installed daily 04:15 database backup in cron"
