@@ -5,12 +5,12 @@ set -e
 #
 # Vuelca la base de datos del contenedor `db` a un .sql.gz fechado, verifica
 # que el volcado está completo y borra los backups más antiguos que
-# RETENTION_DAYS. Pensado para ejecutarse desde este directorio (docker/),
-# a mano o desde cron.
+# RETENTION_DAYS. Se ejecuta desde este directorio (docker/).
 #
-# Instalación en el VPS (una vez):
-#   crontab -e
-#   15 4 * * * cd /ruta/al/repo/docker && ./backup-db.sh >> $HOME/backups/chinesereads/backup.log 2>&1
+# NO hay que instalar nada a mano: deploy.sh lo lanza antes de cada despliegue
+# (backup pre-deploy) y da de alta él mismo, una sola vez, la tarea cron que lo
+# ejecuta cada madrugada a las 04:15. Comprobar que corre: `crontab -l` y el
+# fichero $HOME/backups/chinesereads/backup.log.
 #
 # IMPORTANTE: un backup que solo vive en el propio servidor no protege contra
 # la pérdida del servidor. Copia fuera periódicamente, por ejemplo desde tu

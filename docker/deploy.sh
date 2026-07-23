@@ -9,6 +9,29 @@ export NG_CLI_ANALYTICS=false
 
 echo "=== ChineseReads Deploy ==="
 
+# 0. Red de seguridad de la base de datos, sin pasos manuales:
+#    a) Backup PREVIO al despliegue: si la BD está en marcha, se vuelca antes de
+#       tocar nada. Si este despliegue rompiera algo (p. ej. un cambio de
+#       esquema), existe una foto de justo antes. Si el backup falla, el deploy
+#       SE ABORTA: desplegar sin red es exactamente lo que queremos evitar.
+#    b) Alta (idempotente) del backup diario en cron: cada madrugada a las
+#       04:15 se guarda una copia; la rotación conserva los últimos 14 días.
+#       Se instala sola en el primer deploy; los siguientes no la duplican.
+if [ -n "$(docker compose --env-file .env ps -q --status running db 2>/dev/null)" ]; then
+    echo "Pre-deploy database backup..."
+    ./backup-db.sh
+else
+    echo "(db container not running yet - skipping pre-deploy backup)"
+fi
+
+DOCKER_DIR="$(pwd)"
+if ! crontab -l 2>/dev/null | grep -qF "backup-db.sh"; then
+    ( crontab -l 2>/dev/null; \
+      echo "15 4 * * * mkdir -p \$HOME/backups/chinesereads && cd $DOCKER_DIR && ./backup-db.sh >> \$HOME/backups/chinesereads/backup.log 2>&1" \
+    ) | crontab -
+    echo "Installed daily 04:15 database backup in cron"
+fi
+
 # 1. Build frontend
 echo "Building Angular frontend..."
 cd ../frontend
