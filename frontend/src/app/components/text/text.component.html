@@ -1,5 +1,7 @@
 <div class="container my-5">
 
+  <app-heart-burst #heartBurst></app-heart-burst>
+
   <!-- MODAL BORRAR TEXTO -->
   <div class="popover-overlay" *ngIf="showDeleteTextModal" (click)="cancelDeleteText()">
     <div class="custom-popover" style="max-width:380px" (click)="$event.stopPropagation()">
@@ -23,7 +25,7 @@
         (click)="openDeleteTextModal()">
         <i class="bi bi-trash"></i>
       </button>
-      <button class="like-btn" (click)="toggleLike()">
+      <button class="like-btn" (click)="toggleLike($event)">
         <i [ngClass]="liked ? 'bi bi-heart-fill' : 'bi bi-heart'"></i>
       </button>
     </div>

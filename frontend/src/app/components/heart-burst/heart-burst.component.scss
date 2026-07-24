@@ -1,0 +1,107 @@
+.heart-burst-overlay {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 3000;
+}
+
+.heart-particle {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+  animation-name: heart-float;
+  animation-timing-function: ease-out;
+  animation-fill-mode: forwards;
+}
+
+@keyframes heart-float {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.4);
+  }
+  12% {
+    opacity: 1;
+    transform: translate(-50%, -60%) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(calc(-50% + var(--dx, 0px)), calc(-50% - 55vh)) scale(0.9) rotate(12deg);
+  }
+}
+
+.phrase-layer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 18%;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 3001;
+}
+
+.phrase-card {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.18);
+  padding: 14px 22px;
+  text-align: center;
+  max-width: min(90vw, 420px);
+  animation: phrase-pop 3.2s ease forwards;
+}
+
+.phrase-chinese {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #222;
+}
+
+.phrase-pinyin {
+  font-size: 0.95rem;
+  color: #888;
+  margin-top: 2px;
+}
+
+.phrase-translation {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #c0392b;
+  margin-top: 6px;
+}
+
+@keyframes phrase-pop {
+  0% {
+    opacity: 0;
+    transform: translateY(8px) scale(0.9);
+  }
+  8% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  82% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .heart-particle {
+    animation: none;
+  }
+
+  .phrase-card {
+    animation-name: phrase-fade;
+  }
+
+  @keyframes phrase-fade {
+    0% { opacity: 0; }
+    8% { opacity: 1; }
+    82% { opacity: 1; }
+    100% { opacity: 0; }
+  }
+}

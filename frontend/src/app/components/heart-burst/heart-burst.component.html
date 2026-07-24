@@ -1,0 +1,19 @@
+<div class="heart-burst-overlay" aria-hidden="true" *ngIf="particles.length > 0">
+  <i *ngFor="let p of particles; trackBy: trackById"
+     class="bi bi-heart-fill heart-particle"
+     [style.left.px]="p.x"
+     [style.top.px]="p.y"
+     [style.color]="p.color"
+     [style.font-size.rem]="p.size"
+     [style.--dx]="p.dx + 'px'"
+     [style.animation-duration]="p.duration + 's'"
+     [style.animation-delay]="p.delay + 's'"></i>
+</div>
+
+<div class="phrase-layer" aria-live="polite">
+  <div class="phrase-card" *ngFor="let box of phraseBox; trackBy: trackById">
+    <div class="phrase-chinese">{{ box.phrase.chinese }}</div>
+    <div class="phrase-pinyin">{{ box.phrase.pinyin }}</div>
+    <div class="phrase-translation">{{ activeLang === 'es' ? box.phrase.spanish : box.phrase.english }}</div>
+  </div>
+</div>
