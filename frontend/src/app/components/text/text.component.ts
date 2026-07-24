@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID, ViewChild } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -10,6 +10,7 @@ import { WordsService, Word } from '../../services/words.service';
 import { CollectionsService, CollectionDTO } from '../../services/collections.service';
 import { SpeakButtonComponent } from '../speak-button/speak-button.component';
 import { WordChatComponent } from '../word-chat/word-chat.component';
+import { HeartBurstComponent } from '../heart-burst/heart-burst.component';
 import { SeoService, SITE_URL } from '../../services/seo.service';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { Lang } from '../../i18n/locale.util';
@@ -22,7 +23,7 @@ import { karaokeIndexAt } from '../../utils/karaoke.util';
 @Component({
   selector: 'app-text',
   standalone: true,
-  imports: [CommonModule, FormsModule, SpeakButtonComponent, WordChatComponent, TranslocoModule],
+  imports: [CommonModule, FormsModule, SpeakButtonComponent, WordChatComponent, TranslocoModule, HeartBurstComponent],
   templateUrl: './text.component.html',
   styleUrl: './text.component.scss'
 })
@@ -43,6 +44,9 @@ export class TextComponent implements OnInit, OnDestroy {
   originalTextSeparatedBySentences: string[] = [];
   translatedSpanishTextSeparatedBySentences: string[] = [];
   translatedEnglishTextSeparatedBySentences: string[] = [];
+
+  // La sorpresa del "me gusta": lluvia de corazones + frase china aleatoria
+  @ViewChild('heartBurst') heartBurst?: HeartBurstComponent;
 
   liked = false;
   showTranslation = true;
@@ -305,8 +309,11 @@ export class TextComponent implements OnInit, OnDestroy {
     this.activeSentenceIndex = null;
   }
 
-  toggleLike(): void {
+  toggleLike(event?: MouseEvent): void {
     this.liked = !this.liked;
+    if (this.liked && event) {
+      this.heartBurst?.burstFromEvent(event);
+    }
   }
 
   goBack(): void {

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
@@ -7,11 +7,12 @@ import { TextsService, TextItem, TextMetadataUpdate, TEXT_TOPICS, MAX_TOPICS_PER
 import { LoginService } from '../../services/login.service';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { LocalizeLinkPipe } from '../../i18n/localize-link.pipe';
+import { HeartBurstComponent } from '../heart-burst/heart-burst.component';
 
 @Component({
   selector: 'app-texts',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, TranslocoModule, LocalizeLinkPipe],
+  imports: [CommonModule, FormsModule, RouterModule, TranslocoModule, LocalizeLinkPipe, HeartBurstComponent],
   templateUrl: './texts.component.html',
   styleUrl: './texts.component.scss'
 })
@@ -34,6 +35,9 @@ export class TextsComponent implements OnInit {
   // Edición admin de metadatos (títulos, descripciones, nivel, temas). El
   // contenido chino y las traducciones NO se editan aquí: cambiarlos exige
   // revalidar las frases alineadas, así que siguen el camino borrar + resubir.
+  // La sorpresa del "me gusta": lluvia de corazones + frase china aleatoria
+  @ViewChild('heartBurst') heartBurst?: HeartBurstComponent;
+
   showEditModal = false;
   textToEdit: TextItem | null = null;
   editTitleEnglish = '';
@@ -160,6 +164,9 @@ export class TextsComponent implements OnInit {
   toggleLike(text: TextItem, event: Event): void {
     event.stopPropagation();
     text.liked = !text.liked;
+    if (text.liked) {
+      this.heartBurst?.burstFromEvent(event as MouseEvent);
+    }
   }
 
   openDeleteModal(text: TextItem, event: Event): void {
