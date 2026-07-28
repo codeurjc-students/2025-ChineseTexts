@@ -6,7 +6,6 @@ import { TranslocoService } from '@jsverse/transloco';
 import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { HomeComponent } from './components/home/home.component';
-import { CookieBannerComponent } from './components/cookie-banner/cookie-banner.component';
 import { ToastComponent } from './components/toast/toast.component';
 import { SeoService } from './services/seo.service';
 import { ReferralService } from './services/referral.service';
@@ -16,7 +15,7 @@ import { langFromUrl, stripLangPrefix } from './i18n/locale.util';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, HeaderComponent, FooterComponent, HomeComponent, CookieBannerComponent, ToastComponent],
+  imports: [CommonModule, RouterOutlet, HeaderComponent, FooterComponent, HomeComponent, ToastComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })

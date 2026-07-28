@@ -440,12 +440,6 @@
       "description": "Your ChineseReads Premium subscription is now active. Start learning Chinese through reading with instant translations, AI tools, and personalized statistics."
     }
   },
-  "cookieBanner": {
-    "text": "We use cookies to analyze traffic and improve your experience. You can accept or reject non-essential cookies. For more information see our",
-    "privacyPolicy": "Privacy Policy",
-    "reject": "Reject",
-    "accept": "Accept cookies"
-  },
   "privacyPolicy": {
     "title": "Privacy Policy",
     "lastUpdated": "Last updated: July 2026",
@@ -463,30 +457,27 @@
       "activity": "Your learning activity (texts read, reading streaks, saved words and flashcard reviews), used to show your progress and to power optional reminders.",
       "payment": "If you subscribe to PREMIUM: billing identifiers that link your account to your subscription (a Stripe customer ID and subscription ID). Your card details are entered directly on Stripe and are never stored by ChineseReads.",
       "referral": "If you arrived through a promotional link or used a discount code: the campaign code involved (e.g. the name of the collaborator who recommended us), used only to measure how well each collaboration works.",
-      "analytics": "We also collect anonymous usage data through Google Analytics (only with your consent), including pages visited, time on site, and general device/browser information. IP addresses are anonymized before being sent to Google. Independently of that consent, we measure aggregate traffic with Umami, a cookie-less analytics tool that stores no personal data and cannot identify you."
+      "analytics": "We also measure aggregate traffic with Umami, a cookie-less analytics tool. It collects anonymous, aggregated statistics only (pages visited and where visitors come from), stores no personal data and cannot identify you, so it requires no consent."
     },
     "s3": {
       "title": "3. How we use your data",
       "item1": "To provide and maintain the ChineseReads service.",
       "item2": "To manage your account and personalize your experience.",
-      "item3": "To analyze usage patterns and improve the application (only with consent).",
+      "item3": "To analyze anonymous, aggregate usage patterns and improve the application.",
       "note": "We do not sell, rent, or share your personal data with third parties for marketing purposes."
     },
     "s4": {
       "title": "4. Cookies",
-      "intro": "We use the following types of cookies:",
+      "intro": "We only use essential cookies:",
       "essentialLabel": "Essential cookies",
       "essentialBody": "necessary for authentication (JWT token stored in HttpOnly cookie). These cannot be disabled as the service cannot function without them.",
-      "analyticsLabel": "Analytics cookies",
-      "analyticsBody": "used by Google Analytics to collect anonymous traffic data. These are only set after you give your explicit consent.",
-      "withdraw": "You can withdraw your consent at any time by clearing your browser cookies or contacting us at the email address below."
+      "withdraw": "We do not use advertising, analytics or any other non-essential cookies, so no cookie consent is required. Our traffic statistics come from Umami, a cookie-less tool (see section 5)."
     },
     "s5": {
       "title": "5. Third-party services",
       "intro": "ChineseReads uses the following third-party services:",
       "privacyPolicyLabel": "Privacy policy",
       "stripe": "to process subscription payments securely. Your card and payment details are handled by Stripe as the payment processor; ChineseReads does not receive or store full card numbers.",
-      "ga": "for anonymous traffic analysis.",
       "umami": "for cookie-less aggregate traffic statistics (pages visited and where visitors come from). It sets no cookies and stores no personal data, so it needs no consent.",
       "deepseek": "to generate Chinese learning texts and to power the AI tutor (asking about words and context). Only the text you send is processed, no account or personal data.",
       "vision": "to extract text from uploaded images. Images are processed and not stored.",
@@ -495,7 +486,7 @@
     },
     "s6": {
       "title": "6. Data retention",
-      "body": "Account data is retained as long as your account is active. You can request deletion of your account and all associated data at any time by contacting us. Analytics data is retained for 26 months as per Google Analytics default settings. Records related to payments and subscriptions may be kept for longer where necessary to comply with tax, accounting and anti-fraud obligations, even after the account they belong to has been deleted."
+      "body": "Account data is retained as long as your account is active. You can request deletion of your account and all associated data at any time by contacting us. Traffic statistics are anonymous and aggregated and contain no personal data. Records related to payments and subscriptions may be kept for longer where necessary to comply with tax, accounting and anti-fraud obligations, even after the account they belong to has been deleted."
     },
     "s7": {
       "title": "7. Your rights (GDPR)",

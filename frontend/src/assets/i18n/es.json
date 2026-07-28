@@ -440,12 +440,6 @@
       "description": "Tu suscripción ChineseReads Premium ya está activa. Empieza a aprender chino a través de la lectura con traducciones instantáneas, herramientas de IA y estadísticas personalizadas."
     }
   },
-  "cookieBanner": {
-    "text": "Usamos cookies para analizar el tráfico y mejorar tu experiencia. Puedes aceptar o rechazar las cookies no esenciales. Para más información, consulta nuestra",
-    "privacyPolicy": "Política de Privacidad",
-    "reject": "Rechazar",
-    "accept": "Aceptar cookies"
-  },
   "privacyPolicy": {
     "title": "Política de Privacidad",
     "lastUpdated": "Última actualización: julio de 2026",
@@ -463,30 +457,27 @@
       "activity": "Tu actividad de aprendizaje (textos leídos, rachas de lectura, palabras guardadas y repasos de tarjetas), usada para mostrarte tu progreso y para los recordatorios opcionales.",
       "payment": "Si te suscribes a PREMIUM: identificadores de facturación que vinculan tu cuenta con tu suscripción (un ID de cliente y un ID de suscripción de Stripe). Los datos de tu tarjeta se introducen directamente en Stripe y ChineseReads nunca los almacena.",
       "referral": "Si llegaste a través de un enlace promocional o usaste un código de descuento: el código de campaña correspondiente (p. ej. el nombre del colaborador que nos recomendó), usado únicamente para medir el rendimiento de cada colaboración.",
-      "analytics": "También recopilamos datos de uso anónimos a través de Google Analytics (solo con tu consentimiento), incluidas las páginas visitadas, el tiempo en el sitio y la información general del dispositivo o navegador. Las direcciones IP se anonimizan antes de enviarse a Google. Con independencia de ese consentimiento, medimos el tráfico agregado con Umami, una herramienta de analítica sin cookies que no almacena datos personales y no puede identificarte."
+      "analytics": "También medimos el tráfico agregado con Umami, una herramienta de analítica sin cookies. Solo recopila estadísticas anónimas y agregadas (páginas visitadas y procedencia de las visitas), no almacena datos personales y no puede identificarte, por lo que no requiere consentimiento."
     },
     "s3": {
       "title": "3. Cómo usamos tus datos",
       "item1": "Para proporcionar y mantener el servicio ChineseReads.",
       "item2": "Para gestionar tu cuenta y personalizar tu experiencia.",
-      "item3": "Para analizar los patrones de uso y mejorar la aplicación (solo con consentimiento).",
+      "item3": "Para analizar patrones de uso anónimos y agregados y mejorar la aplicación.",
       "note": "No vendemos, alquilamos ni compartimos tus datos personales con terceros con fines de marketing."
     },
     "s4": {
       "title": "4. Cookies",
-      "intro": "Usamos los siguientes tipos de cookies:",
+      "intro": "Solo usamos cookies esenciales:",
       "essentialLabel": "Cookies esenciales",
       "essentialBody": "necesarias para la autenticación (token JWT almacenado en una cookie HttpOnly). No se pueden desactivar, ya que el servicio no puede funcionar sin ellas.",
-      "analyticsLabel": "Cookies analíticas",
-      "analyticsBody": "utilizadas por Google Analytics para recopilar datos de tráfico anónimos. Solo se activan después de que des tu consentimiento explícito.",
-      "withdraw": "Puedes retirar tu consentimiento en cualquier momento borrando las cookies de tu navegador o contactando con nosotros en la dirección de correo electrónico que aparece más abajo."
+      "withdraw": "No usamos cookies publicitarias, analíticas ni de ningún otro tipo no esencial, por lo que no se requiere consentimiento de cookies. Nuestras estadísticas de tráfico provienen de Umami, una herramienta sin cookies (ver sección 5)."
     },
     "s5": {
       "title": "5. Servicios de terceros",
       "intro": "ChineseReads utiliza los siguientes servicios de terceros:",
       "privacyPolicyLabel": "Política de privacidad",
       "stripe": "para procesar los pagos de las suscripciones de forma segura. Los datos de tu tarjeta y de pago los gestiona Stripe como procesador de pagos; ChineseReads no recibe ni almacena los números completos de tarjeta.",
-      "ga": "para el análisis de tráfico anónimo.",
       "umami": "para estadísticas agregadas de tráfico sin cookies (páginas visitadas y procedencia de las visitas). No instala cookies ni almacena datos personales, por lo que no requiere consentimiento.",
       "deepseek": "para generar textos de aprendizaje en chino y para el tutor IA (preguntar sobre palabras y contexto). Solo se procesa el texto que envías, ningún dato de cuenta ni personal.",
       "vision": "para extraer texto de las imágenes subidas. Las imágenes se procesan y no se almacenan.",
@@ -495,7 +486,7 @@
     },
     "s6": {
       "title": "6. Conservación de los datos",
-      "body": "Los datos de la cuenta se conservan mientras tu cuenta esté activa. Puedes solicitar la eliminación de tu cuenta y de todos los datos asociados en cualquier momento contactando con nosotros. Los datos analíticos se conservan durante 26 meses, según la configuración predeterminada de Google Analytics. Los registros relacionados con pagos y suscripciones pueden conservarse durante más tiempo cuando sea necesario para cumplir obligaciones fiscales, contables y de prevención del fraude, incluso después de que la cuenta a la que pertenecen se haya eliminado."
+      "body": "Los datos de la cuenta se conservan mientras tu cuenta esté activa. Puedes solicitar la eliminación de tu cuenta y de todos los datos asociados en cualquier momento contactando con nosotros. Las estadísticas de tráfico son anónimas y agregadas y no contienen datos personales. Los registros relacionados con pagos y suscripciones pueden conservarse durante más tiempo cuando sea necesario para cumplir obligaciones fiscales, contables y de prevención del fraude, incluso después de que la cuenta a la que pertenecen se haya eliminado."
     },
     "s7": {
       "title": "7. Tus derechos (RGPD)",
