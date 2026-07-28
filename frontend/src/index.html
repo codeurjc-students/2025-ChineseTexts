@@ -95,25 +95,10 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-M6LFWC8Z2H"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-
-    // Consentimiento denegado por defecto hasta que el usuario acepte (RGPD)
-    gtag('consent', 'default', {
-      'analytics_storage': 'denied'
-    });
-
-    gtag('js', new Date());
-    gtag('config', 'G-M6LFWC8Z2H', {
-      'anonymize_ip': true
-    });
-  </script>
-  <!-- Umami (cookie-less, anonymous aggregate analytics). Unlike GA above it needs no
-       consent, so it also counts the visitors who decline cookies — the campaign
-       traffic numbers come from here. data-domains keeps localhost/dev out. -->
+  <!-- Umami (cookie-less, anonymous aggregate analytics) — the ONLY analytics on the
+       site. It sets no cookies and stores no personal data, so no consent banner is
+       needed (GDPR) and it counts 100% of visitors — the campaign traffic numbers
+       come from here. data-domains keeps localhost/dev out. -->
   <script defer src="https://cloud.umami.is/script.js"
     data-website-id="61aa90b2-30c4-402b-a18d-03c41aeafb45"
     data-domains="chinesereads.com,www.chinesereads.com"></script>
