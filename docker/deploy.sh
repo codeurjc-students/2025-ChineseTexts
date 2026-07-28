@@ -4,7 +4,7 @@ set -e
 # Desactiva la telemetría del Angular CLI de forma no interactiva, en cualquier
 # máquina. Evita que `ng build` pregunte y escriba `cli.analytics` en angular.json
 # (lo que "ensuciaría" el repo y haría fallar el `git pull` del siguiente deploy).
-# OJO: esto NO afecta a Google Analytics de la web; solo a la telemetría del CLI.
+# OJO: esto NO afecta a la analítica de la web (Umami); solo a la telemetría del CLI.
 export NG_CLI_ANALYTICS=false
 
 echo "=== ChineseReads Deploy ==="
