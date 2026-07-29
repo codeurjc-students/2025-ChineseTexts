@@ -13,6 +13,7 @@ import { AdminToolsComponent } from './components/admin-tools/admin-tools.compon
 import { PrivacyPolicyComponent } from './components/privacy-policy/privacy-policy.component';
 import { TermsOfUseComponent } from './components/terms-of-use/terms-of-use.component';
 import { FounderComponent } from './components/founder/founder.component';
+import { HallOfFameComponent } from './components/hall-of-fame/hall-of-fame.component';
 import { MyToolsComponent } from './components/my-tools/my-tools.component';
 import { MyTextReaderComponent } from './components/my-text-reader/my-text-reader.component';
 import { PremiumComponent } from './components/premium/premium.component';
@@ -47,6 +48,7 @@ const appRoutes: Routes = [
   { path: 'privacy-policy', component: PrivacyPolicyComponent },
   { path: 'terms-of-use', component: TermsOfUseComponent },
   { path: 'founder', component: FounderComponent },
+  { path: 'hall-of-fame', component: HallOfFameComponent },
   { path: 'premium', component: PremiumComponent },
   { path: 'premium/success', component: PremiumSuccessComponent },
   { path: 'level-test', component: LevelTestComponent },

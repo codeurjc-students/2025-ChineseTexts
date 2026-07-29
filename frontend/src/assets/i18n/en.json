@@ -270,6 +270,7 @@
     "links": {
       "learn": "Learn Chinese from Zero",
       "creator": "About the Creator",
+      "hallOfFame": "Hall of Fame",
       "privacy": "Privacy Policy",
       "terms": "Terms of Use"
     }
@@ -692,6 +693,88 @@
       "newLink": "New link",
       "newSection": "New section",
       "newEntry": "New entry"
+    }
+  },
+  "hallOfFame": {
+    "title": "Hall of Fame",
+    "subtitle": "The creators, teachers and partners helping people learn Chinese with ChineseReads.",
+    "loading": "Loading…",
+    "empty": "Our first members are on their way. Come back soon!",
+    "emptyAdmin": "No members yet. Press \"Edit page\" and add the first one.",
+    "adminView": "Admin view — only you can see these controls",
+    "editPage": "Edit page",
+    "done": "Done",
+    "code": "Discount code",
+    "uploadPhoto": "Photo",
+    "removePhoto": "Remove photo",
+    "addEntry": "Add member",
+    "save": "Save",
+    "delete": "Delete",
+    "confirmDelete": "Delete this member?",
+    "deleteYes": "Yes, delete",
+    "cancel": "Cancel",
+    "badgesHeading": "Badges",
+    "linksHeading": "Links",
+    "addLink": "Add link",
+    "ph": {
+      "name": "Name",
+      "slug": "Slug (URL identifier, optional)",
+      "tagline": "Short tagline (e.g. Chinese teacher & creator)",
+      "bioEn": "Bio in English",
+      "bioEs": "Bio in Spanish",
+      "code": "Discount code (e.g. MARIA10)",
+      "linkLabel": "Label",
+      "linkIcon": "Icon (e.g. bi-instagram)",
+      "linkUrl": "https://…"
+    },
+    "feedback": {
+      "loadError": "Could not load the Hall of Fame.",
+      "entryAdded": "Member added.",
+      "entryAddError": "Could not add the member.",
+      "entrySaved": "Member saved.",
+      "entrySaveError": "Could not save the member.",
+      "entryRemoved": "Member removed.",
+      "entryRemoveError": "Could not remove the member.",
+      "photoUpdated": "Photo updated.",
+      "photoUploadError": "Could not upload the photo.",
+      "photoRemoved": "Photo removed.",
+      "photoRemoveError": "Could not remove the photo.",
+      "linkAdded": "Link added.",
+      "linkAddError": "Could not add the link.",
+      "linkSaved": "Link saved.",
+      "linkSaveError": "Could not save the link.",
+      "linkRemoved": "Link removed.",
+      "linkRemoveError": "Could not remove the link."
+    },
+    "defaults": {
+      "newMember": "New member",
+      "newLink": "New link"
+    }
+  },
+  "hofBadges": {
+    "pioneer": {
+      "label": "Pioneer",
+      "desc": "Joined ChineseReads at the very beginning"
+    },
+    "star": {
+      "label": "Star",
+      "desc": "Outstanding reach and impact with their audience"
+    },
+    "prolific": {
+      "label": "Prolific creator",
+      "desc": "Publishes content about ChineseReads regularly"
+    },
+    "collaborator": {
+      "label": "Super collaborator",
+      "desc": "Goes the extra mile helping ChineseReads grow"
+    },
+    "educator": {
+      "label": "Educator",
+      "desc": "Teaches Chinese and helps learners every day"
+    },
+    "community": {
+      "label": "Community soul",
+      "desc": "Brings the ChineseReads community to life"
     }
   },
   "profile": {

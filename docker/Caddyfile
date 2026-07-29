@@ -15,15 +15,16 @@ chinesereads.com, www.chinesereads.com {
         reverse_proxy backend:8080
     }
 
-    # Páginas de texto individuales (/text/:id y /es/text/:id): las únicas rutas
-    # públicas con contenido dinámico, así que son las únicas que se renderizan en
-    # el servidor (contenedor frontend-ssr). Así Google recibe el HTML completo
-    # (texto chino, título y metas propios) en la primera pasada, en vez del shell
-    # vacío del SPA. El resto de páginas no cambia: prerender y estáticos como
-    # siempre. Los assets (*.js, *.css…) no entran aquí: los pide el navegador por
-    # su ruta real y los sirve el handle estático de abajo.
-    @textPages path /text/* /es/text/*
-    handle @textPages {
+    # Páginas públicas con contenido dinámico (textos /text/:id y el Hall of
+    # Fame): son las únicas que se renderizan en el servidor (contenedor
+    # frontend-ssr). Así Google recibe el HTML completo (contenido, título y
+    # metas propios) en la primera pasada, en vez del shell vacío del SPA. El
+    # resto de páginas no cambia: prerender y estáticos como siempre. Los
+    # assets (*.js, *.css…) no entran aquí: los pide el navegador por su ruta
+    # real y los sirve el handle estático de abajo. Los paths sin * son match
+    # exacto (p. ej. /hall-of-fame/otra-cosa NO entra y cae al shell SPA).
+    @ssrPages path /text/* /es/text/* /hall-of-fame /es/hall-of-fame
+    handle @ssrPages {
         # HTML dinámico: revalidar siempre, igual que el HTML estático de abajo.
         header Cache-Control "no-cache"
         reverse_proxy frontend-ssr:4000
