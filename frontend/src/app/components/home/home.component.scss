@@ -185,8 +185,8 @@ body {
 
 /* Los dos CTA del hero, lado a lado (se apilan solos en pantallas estrechas) */
 /* En móvil los CTAs se apilan con el principal arriba (orden del DOM); en
-   escritorio pasan a fila y el test se adelanta (order:-1) para que el
-   principal quede en el centro. */
+   escritorio pasan a fila y el tutorial se adelanta (order:-1) para quedar
+   [aprende] [principal] [test], con el principal en el centro. */
 .hero-ctas {
   display: flex;
   flex-direction: column;
@@ -198,7 +198,7 @@ body {
     flex-direction: row;
     flex-wrap: wrap;
 
-    .btn-test { order: -1; }
+    .btn-learn { order: -1; }
   }
 }
 
