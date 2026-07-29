@@ -1,0 +1,173 @@
+<main class="hof">
+
+  <!-- ============ Barra de admin ============ -->
+  <div *ngIf="isAdmin" class="hof-adminbar">
+    <div class="container d-flex align-items-center justify-content-between py-2">
+      <span class="small text-muted">
+        <i class="bi bi-shield-lock me-1"></i>{{ 'hallOfFame.adminView' | transloco }}
+      </span>
+      <button class="btn btn-sm rounded-pill px-3"
+              [class.btn-danger]="!editing" [class.btn-outline-secondary]="editing"
+              (click)="toggleEdit()">
+        <i class="bi me-1" [class.bi-pencil-square]="!editing" [class.bi-check2]="editing"></i>
+        {{ editing ? ('hallOfFame.done' | transloco) : ('hallOfFame.editPage' | transloco) }}
+      </button>
+    </div>
+  </div>
+
+  <!-- ============ Mensaje de feedback ============ -->
+  <div *ngIf="feedback" class="container mt-2">
+    <div class="alert py-2 mb-0" [class.alert-success]="!feedbackError" [class.alert-danger]="feedbackError" role="alert">
+      <i class="bi me-1" [class.bi-check-circle]="!feedbackError" [class.bi-exclamation-triangle]="feedbackError"></i>{{ feedback }}
+    </div>
+  </div>
+
+  <!-- ============ Cargando ============ -->
+  <div *ngIf="loading" class="container py-5 text-center text-muted">
+    <div class="spinner-border text-danger" role="status"><span class="visually-hidden">{{ 'hallOfFame.loading' | transloco }}</span></div>
+  </div>
+
+  <ng-container *ngIf="!loading">
+
+    <!-- ============ Cabecera ============ -->
+    <header class="hof-header text-center">
+      <div class="container py-5">
+        <h1 class="fw-bold mb-2"><i class="bi bi-trophy-fill text-warning me-2"></i>{{ 'hallOfFame.title' | transloco }}</h1>
+        <p class="lead text-muted mb-0">{{ 'hallOfFame.subtitle' | transloco }}</p>
+      </div>
+    </header>
+
+    <div class="container pb-5">
+
+      <!-- ============ Estado vacío ============ -->
+      <div *ngIf="!entries.length && !editing" class="py-5 text-center text-muted">
+        <i class="bi bi-stars display-4 d-block mb-3"></i>
+        <p class="mb-0" *ngIf="!isAdmin">{{ 'hallOfFame.empty' | transloco }}</p>
+        <p class="mb-0" *ngIf="isAdmin">{{ 'hallOfFame.emptyAdmin' | transloco }}</p>
+      </div>
+
+      <!-- ============ Tarjetas ============ -->
+      <div class="row g-4">
+        <div *ngFor="let e of entries; let i = index"
+             class="col-12" [class.col-md-6]="!editing" [class.col-lg-4]="!editing">
+          <article class="hof-card h-100">
+
+            <!-- Foto / avatar -->
+            <div class="text-center">
+              <img *ngIf="e.hasPhoto" [src]="photoUrl(e)" [alt]="e.name" class="hof-photo shadow-sm" />
+              <div *ngIf="!e.hasPhoto" class="hof-avatar shadow-sm" aria-hidden="true">{{ initialsOf(e) }}</div>
+
+              <div *ngIf="editing" class="mt-2 d-flex flex-column align-items-center gap-1">
+                <label class="btn btn-sm btn-outline-danger rounded-pill px-3 mb-0">
+                  <i class="bi bi-upload me-1"></i>{{ 'hallOfFame.uploadPhoto' | transloco }}
+                  <input type="file" accept="image/*" hidden (change)="onPhotoSelected(e, $event)" />
+                </label>
+                <button *ngIf="e.hasPhoto" class="btn btn-sm btn-link text-muted p-0" (click)="removePhoto(e)">{{ 'hallOfFame.removePhoto' | transloco }}</button>
+              </div>
+            </div>
+
+            <!-- ============ Vista ============ -->
+            <ng-container *ngIf="!editing">
+              <h2 class="h4 fw-bold text-center mt-3 mb-1">{{ e.name }}</h2>
+              <p *ngIf="e.tagline" class="text-danger fw-semibold text-center mb-2">{{ e.tagline }}</p>
+
+              <!-- Badges -->
+              <div *ngIf="e.badges.length" class="d-flex flex-wrap justify-content-center gap-2 mb-3">
+                <span *ngFor="let key of e.badges" class="hof-badge-chip"
+                      [title]="('hofBadges.' + key + '.desc') | transloco">
+                  <i class="bi {{ badgeIcon(key) }} me-1"></i>{{ ('hofBadges.' + key + '.label') | transloco }}
+                </span>
+              </div>
+
+              <p *ngIf="bioOf(e)" class="hof-bio mb-3">{{ bioOf(e) }}</p>
+
+              <!-- Redes -->
+              <div *ngIf="e.socials.length" class="d-flex flex-wrap justify-content-center gap-2 mb-3">
+                <a *ngFor="let s of e.socials" [href]="s.url" target="_blank" rel="noopener noreferrer"
+                   class="btn btn-sm btn-outline-danger rounded-pill px-3">
+                  <i class="bi {{ s.icon }} me-1"></i>{{ s.label }}
+                </a>
+              </div>
+
+              <!-- Código de descuento -->
+              <div *ngIf="e.discountCode" class="hof-code text-center">
+                <span class="hof-code-label">{{ 'hallOfFame.code' | transloco }}</span>
+                <span class="hof-code-value">{{ e.discountCode }}</span>
+              </div>
+            </ng-container>
+
+            <!-- ============ Edición ============ -->
+            <div *ngIf="editing" class="hof-edit-grid mt-3">
+              <input class="form-control fw-bold" [(ngModel)]="e.name" placeholder="{{ 'hallOfFame.ph.name' | transloco }}" />
+              <input class="form-control" [(ngModel)]="e.slug" placeholder="{{ 'hallOfFame.ph.slug' | transloco }}" />
+              <input class="form-control" [(ngModel)]="e.tagline" placeholder="{{ 'hallOfFame.ph.tagline' | transloco }}" />
+              <textarea class="form-control" rows="3" [(ngModel)]="e.bioEn" placeholder="{{ 'hallOfFame.ph.bioEn' | transloco }}"></textarea>
+              <textarea class="form-control" rows="3" [(ngModel)]="e.bioEs" placeholder="{{ 'hallOfFame.ph.bioEs' | transloco }}"></textarea>
+              <input class="form-control" [(ngModel)]="e.discountCode" placeholder="{{ 'hallOfFame.ph.code' | transloco }}" />
+
+              <!-- Chip-picker de badges -->
+              <div>
+                <label class="small fw-semibold text-muted d-block mb-1">{{ 'hallOfFame.badgesHeading' | transloco }}</label>
+                <div class="hof-badge-picker">
+                  <button type="button" class="hof-chip" *ngFor="let b of badgeCatalog"
+                          [class.hof-chip--active]="e.badges.includes(b.key)"
+                          [title]="('hofBadges.' + b.key + '.desc') | transloco"
+                          (click)="toggleBadge(e, b.key)">
+                    <i class="bi {{ b.icon }} me-1"></i>{{ ('hofBadges.' + b.key + '.label') | transloco }}
+                  </button>
+                </div>
+              </div>
+
+              <!-- Redes (edición) -->
+              <div>
+                <label class="small fw-semibold text-muted d-block mb-1">{{ 'hallOfFame.linksHeading' | transloco }}</label>
+                <div class="d-flex flex-column gap-2">
+                  <div *ngFor="let s of e.socials" class="d-flex flex-wrap gap-2 align-items-center">
+                    <input class="form-control form-control-sm" style="max-width: 8rem;" [(ngModel)]="s.label" placeholder="{{ 'hallOfFame.ph.linkLabel' | transloco }}" />
+                    <input class="form-control form-control-sm" style="max-width: 10rem;" [(ngModel)]="s.icon" placeholder="{{ 'hallOfFame.ph.linkIcon' | transloco }}" />
+                    <input class="form-control form-control-sm flex-grow-1" [(ngModel)]="s.url" placeholder="{{ 'hallOfFame.ph.linkUrl' | transloco }}" />
+                    <button class="btn btn-sm btn-danger rounded-pill px-2" (click)="saveSocial(s)"><i class="bi bi-save"></i></button>
+                    <button class="btn btn-sm btn-outline-danger rounded-pill px-2" (click)="deleteSocial(e, s)"><i class="bi bi-trash"></i></button>
+                  </div>
+                </div>
+                <button class="btn btn-sm btn-outline-danger rounded-pill px-3 mt-2" (click)="addSocial(e)">
+                  <i class="bi bi-plus-lg me-1"></i>{{ 'hallOfFame.addLink' | transloco }}
+                </button>
+              </div>
+
+              <!-- Acciones -->
+              <div class="d-flex gap-2 flex-wrap align-items-center">
+                <button class="btn btn-sm btn-danger rounded-pill px-3" (click)="saveEntry(e)">
+                  <i class="bi bi-save me-1"></i>{{ 'hallOfFame.save' | transloco }}
+                </button>
+                <button class="btn btn-sm btn-outline-secondary rounded-pill px-2" (click)="move(i, -1)" [disabled]="i === 0"><i class="bi bi-arrow-up"></i></button>
+                <button class="btn btn-sm btn-outline-secondary rounded-pill px-2" (click)="move(i, 1)" [disabled]="i === entries.length - 1"><i class="bi bi-arrow-down"></i></button>
+                <button *ngIf="confirmingId !== e.id" class="btn btn-sm btn-outline-danger rounded-pill px-3" (click)="askDelete(e)">
+                  <i class="bi bi-trash me-1"></i>{{ 'hallOfFame.delete' | transloco }}
+                </button>
+              </div>
+
+              <!-- Confirmación de borrado -->
+              <div *ngIf="confirmingId === e.id" class="hof-confirm">
+                <span><i class="bi bi-exclamation-triangle-fill me-1"></i>{{ 'hallOfFame.confirmDelete' | transloco }}</span>
+                <div class="d-flex gap-2 mt-2">
+                  <button class="btn btn-sm btn-danger rounded-pill px-3" (click)="confirmDelete(e)">{{ 'hallOfFame.deleteYes' | transloco }}</button>
+                  <button class="btn btn-sm btn-outline-secondary rounded-pill px-3" (click)="cancelDelete()">{{ 'hallOfFame.cancel' | transloco }}</button>
+                </div>
+              </div>
+            </div>
+
+          </article>
+        </div>
+      </div>
+
+      <!-- ============ Añadir miembro (edición) ============ -->
+      <div *ngIf="editing" class="text-center mt-4">
+        <button class="btn btn-danger rounded-pill px-4" (click)="addEntry()">
+          <i class="bi bi-plus-circle me-1"></i>{{ 'hallOfFame.addEntry' | transloco }}
+        </button>
+      </div>
+
+    </div>
+  </ng-container>
+</main>

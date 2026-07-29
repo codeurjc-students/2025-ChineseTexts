@@ -1,0 +1,144 @@
+$brand: #c0392b;
+$brand-hover: #e74c3c;
+$brand-soft: #fdecea;
+
+.hof {
+  min-height: 60vh;
+
+  // ---------- Barra de admin (sticky, sólo visible para el ADMIN) ----------
+  .hof-adminbar {
+    position: sticky;
+    top: 0;
+    z-index: 1020;
+    background: #fffdf7;
+    border-bottom: 1px solid #f0e6d2;
+  }
+
+  .hof-header h1 {
+    color: #2c3e50;
+  }
+
+  // ---------- Tarjeta de miembro ----------
+  .hof-card {
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+    }
+  }
+
+  .hof-photo,
+  .hof-avatar {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .hof-avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: $brand-soft;
+    color: $brand;
+    font-size: 2rem;
+    font-weight: 700;
+  }
+
+  .hof-bio {
+    color: #555;
+    white-space: pre-line;
+  }
+
+  // ---------- Chips de badges (vista) ----------
+  .hof-badge-chip {
+    display: inline-flex;
+    align-items: center;
+    background: $brand-soft;
+    color: $brand;
+    border-radius: 50px;
+    padding: 3px 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: help;
+  }
+
+  // ---------- Código de descuento ----------
+  .hof-code {
+    border: 1px dashed $brand;
+    border-radius: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background: #fffdfc;
+
+    .hof-code-label {
+      display: block;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #888;
+    }
+
+    .hof-code-value {
+      font-family: monospace;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: $brand;
+      letter-spacing: 1px;
+    }
+  }
+
+  // ---------- Edición ----------
+  .hof-edit-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  // Chip-picker de badges (mismo lenguaje visual que .topic-chip de /texts).
+  .hof-badge-picker {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .hof-chip {
+    background: #fff;
+    color: #555;
+    border: 1px solid #ddd;
+    border-radius: 50px;
+    padding: 6px 14px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.15s ease;
+
+    &:hover {
+      border-color: $brand;
+      color: $brand;
+    }
+  }
+
+  .hof-chip--active {
+    background: $brand;
+    color: #fff;
+    border-color: $brand;
+
+    &:hover {
+      background: $brand-hover;
+      color: #fff;
+    }
+  }
+
+  .hof-confirm {
+    background: $brand-soft;
+    border-radius: 0.5rem;
+    padding: 0.75rem 1rem;
+    color: $brand;
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+}

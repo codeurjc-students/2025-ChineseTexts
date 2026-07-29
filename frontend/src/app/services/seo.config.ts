@@ -119,6 +119,25 @@ const STATIC_SEO: Record<string, LocalizedSeo> = {
     }
   },
 
+  // Hall of Fame — served by real SSR (frontend-ssr via Caddy, like /text/*);
+  // this entry is the base/fallback and the component refines it with live data.
+  '/hall-of-fame': {
+    en: {
+      title: 'Hall of Fame — Creators & Partners of ChineseReads',
+      description:
+        'Meet the creators, teachers and partners helping people learn Chinese with ChineseReads: ' +
+        'who they are, what they do, and their exclusive discount codes.',
+      path: '/hall-of-fame'
+    },
+    es: {
+      title: 'Salón de la Fama — Creadores y colaboradores de ChineseReads',
+      description:
+        'Conoce a los creadores, profesores y colaboradores que ayudan a aprender chino con ' +
+        'ChineseReads: quiénes son, qué hacen y sus códigos de descuento exclusivos.',
+      path: '/hall-of-fame'
+    }
+  },
+
   // Premium plan — public marketing page, indexable.
   '/premium': {
     en: {

@@ -181,6 +181,24 @@
     <priority>0.5</priority>
   </url>
 
+  <!-- Hall of Fame -->
+  <url>
+    <loc>https://chinesereads.com/hall-of-fame</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://chinesereads.com/hall-of-fame"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://chinesereads.com/es/hall-of-fame"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chinesereads.com/hall-of-fame"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://chinesereads.com/es/hall-of-fame</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://chinesereads.com/hall-of-fame"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://chinesereads.com/es/hall-of-fame"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chinesereads.com/hall-of-fame"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
   <!-- Privacy policy -->
   <url>
     <loc>https://chinesereads.com/privacy-policy</loc>

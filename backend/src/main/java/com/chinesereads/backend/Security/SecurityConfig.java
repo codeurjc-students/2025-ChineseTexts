@@ -66,6 +66,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/api/texts/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/health", "/api/health/*").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/founder/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/hall-of-fame/**").permitAll()
                 // One-click email unsubscribe: the visitor comes from a mail client with
                 // no session; the token IS the authentication. Must precede the ADMIN
                 // GET /api/users/* wildcard below (first match wins).
@@ -108,6 +109,11 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/api/founder/**").hasAnyRole("ADMIN")
                 .requestMatchers(HttpMethod.PUT, "/api/founder/**").hasAnyRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/api/founder/**").hasAnyRole("ADMIN")
+                // Hall of Fame (página pública de influencers; NO es el dominio Stripe
+                // /api/influencers de arriba): escritura sólo ADMIN, el GET ya es público
+                .requestMatchers(HttpMethod.POST, "/api/hall-of-fame/**").hasAnyRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/api/hall-of-fame/**").hasAnyRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/api/hall-of-fame/**").hasAnyRole("ADMIN")
                 // Stripe: the webhook is called by Stripe (unauthenticated; verified by
                 // signature) so it must be public — it MUST precede the authed matcher below.
                 .requestMatchers(HttpMethod.POST, "/api/premium/webhook").permitAll()
