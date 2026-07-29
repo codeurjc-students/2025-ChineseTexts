@@ -1,0 +1,104 @@
+.learn-hub {
+  max-width: 900px;
+  font-family: 'Noto Serif SC', serif;
+}
+
+.lh-title {
+  color: #c0392b;
+  font-weight: 700;
+  font-size: 2rem;
+}
+.lh-subtitle {
+  color: #555;
+  max-width: 620px;
+  margin: 12px auto 0;
+  line-height: 1.7;
+}
+.lh-facts {
+  list-style: none;
+  padding: 0;
+  margin: 22px auto 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px 26px;
+
+  li { color: #444; font-size: 0.95rem; }
+  i { color: #27ae60; margin-right: 6px; }
+}
+
+.lh-roadmap-heading {
+  color: #2c3e50;
+  font-weight: 700;
+  font-size: 1.4rem;
+  margin: 40px 0 24px;
+}
+
+.lh-step {
+  display: block;
+  height: 100%;
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 24px 22px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+  text-decoration: none;
+  transition: transform 0.15s, box-shadow 0.15s;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+  }
+
+  h3 {
+    color: #2c3e50;
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin: 12px 0 6px;
+  }
+  p {
+    color: #555;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  &--test {
+    border-color: #27ae60;
+  }
+}
+
+.lh-step-number {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #c0392b;
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &--test { background: #27ae60; }
+}
+
+.lh-step-cta {
+  display: inline-block;
+  margin-top: 10px;
+  color: #27ae60;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.lh-start {
+  background: #27ae60;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 30px;
+  font-size: 1.15rem;
+  font-weight: 600;
+  cursor: pointer;
+  &:hover { background: #2ecc71; }
+}

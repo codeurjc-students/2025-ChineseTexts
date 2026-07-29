@@ -1,0 +1,53 @@
+<div class="container my-5 learn-hub">
+
+  <header class="text-center">
+    <h1 class="lh-title">{{ 'learn.hub.title' | transloco }}</h1>
+    <p class="lh-subtitle">{{ 'learn.hub.subtitle' | transloco }}</p>
+    <ul class="lh-facts">
+      <li><i class="bi bi-clock"></i> {{ 'learn.hub.fact1' | transloco }}</li>
+      <li><i class="bi bi-volume-up"></i> {{ 'learn.hub.fact2' | transloco }}</li>
+      <li><i class="bi bi-gift"></i> {{ 'learn.hub.fact3' | transloco }}</li>
+    </ul>
+  </header>
+
+  <h2 class="lh-roadmap-heading text-center">{{ 'learn.hub.roadmapHeading' | transloco }}</h2>
+
+  <div class="row g-4">
+    <div class="col-md-6">
+      <a class="lh-step" [routerLink]="'/learn/pinyin' | localizeLink">
+        <div class="lh-step-number">1</div>
+        <h3>{{ 'learn.hub.step1.title' | transloco }}</h3>
+        <p>{{ 'learn.hub.step1.text' | transloco }}</p>
+      </a>
+    </div>
+    <div class="col-md-6">
+      <a class="lh-step" [routerLink]="'/learn/tones' | localizeLink">
+        <div class="lh-step-number">2</div>
+        <h3>{{ 'learn.hub.step2.title' | transloco }}</h3>
+        <p>{{ 'learn.hub.step2.text' | transloco }}</p>
+      </a>
+    </div>
+    <div class="col-md-6">
+      <a class="lh-step" [routerLink]="'/learn/characters' | localizeLink">
+        <div class="lh-step-number">3</div>
+        <h3>{{ 'learn.hub.step3.title' | transloco }}</h3>
+        <p>{{ 'learn.hub.step3.text' | transloco }}</p>
+      </a>
+    </div>
+    <div class="col-md-6">
+      <a class="lh-step lh-step--test" [routerLink]="'/level-test' | localizeLink">
+        <div class="lh-step-number lh-step-number--test">4</div>
+        <h3>{{ 'learn.hub.step4.title' | transloco }}</h3>
+        <p>{{ 'learn.hub.step4.text' | transloco }}</p>
+        <span class="lh-step-cta">{{ 'learn.hub.step4Cta' | transloco }} <i class="bi bi-arrow-right"></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="text-center mt-5">
+    <button class="lh-start" [routerLink]="'/learn/pinyin' | localizeLink">
+      {{ 'learn.hub.startCta' | transloco }}
+    </button>
+  </div>
+
+</div>

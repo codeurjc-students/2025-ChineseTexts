@@ -1,0 +1,25 @@
+.audio-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid #c0392b;
+  background: #fff;
+  color: #c0392b;
+  font-size: 1.05rem;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+
+  &:hover {
+    background: #c0392b;
+    color: #fff;
+  }
+
+  &--sm {
+    width: 28px;
+    height: 28px;
+    font-size: 0.9rem;
+  }
+}

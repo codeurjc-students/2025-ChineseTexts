@@ -22,3 +22,11 @@
 /es/texts/HSK6
 /level-test
 /es/level-test
+/learn
+/learn/pinyin
+/learn/tones
+/learn/characters
+/es/learn
+/es/learn/pinyin
+/es/learn/tones
+/es/learn/characters

@@ -1,0 +1,127 @@
+<div class="container my-5 learn-pinyin">
+
+  <p class="lp-breadcrumb">
+    <a [routerLink]="'/learn' | localizeLink"><i class="bi bi-arrow-left"></i> {{ 'learn.common.backToHub' | transloco }}</a>
+    <span class="lp-badge">{{ 'learn.common.lesson1Badge' | transloco }}</span>
+  </p>
+
+  <h1 class="lp-title">{{ 'learn.pinyin.title' | transloco }}</h1>
+  <p class="lp-intro">{{ 'learn.pinyin.intro1' | transloco }}</p>
+  <p class="lp-intro">{{ 'learn.pinyin.intro2' | transloco }}</p>
+
+  <!-- Anatomy of a syllable: nǐ hǎo broken into initial + final (+ tone mark) -->
+  <section>
+    <h2>{{ 'learn.pinyin.syllableHeading' | transloco }}</h2>
+    <p>{{ 'learn.pinyin.syllableP' | transloco }}</p>
+
+    <div class="lp-syllable-demo">
+      <div class="lp-syllables">
+        <div class="lp-syl">
+          <span class="lp-part lp-part--initial">n</span><span class="lp-part lp-part--final">ǐ</span>
+        </div>
+        <div class="lp-syl">
+          <span class="lp-part lp-part--initial">h</span><span class="lp-part lp-part--final">ǎo</span>
+        </div>
+        <app-audio-button [src]="audioBase + 'ni3hao3.mp3'" [label]="'learn.common.listen' | transloco"></app-audio-button>
+      </div>
+      <div class="lp-hanzi">你好 — {{ 'learn.pinyin.syllableExample' | transloco }}</div>
+      <div class="lp-legend">
+        <span><span class="lp-dot lp-dot--initial"></span>{{ 'learn.pinyin.partInitial' | transloco }}</span>
+        <span><span class="lp-dot lp-dot--final"></span>{{ 'learn.pinyin.partFinal' | transloco }}</span>
+        <span><span class="lp-tone-mark">ˇ</span>{{ 'learn.pinyin.partTone' | transloco }}</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sample initials -->
+  <section>
+    <h2>{{ 'learn.pinyin.initialsHeading' | transloco }}</h2>
+    <p>{{ 'learn.pinyin.initialsIntro' | transloco }}</p>
+    <div class="table-responsive">
+      <table class="lp-table">
+        <thead>
+          <tr>
+            <th>{{ 'learn.pinyin.tableSymbol' | transloco }}</th>
+            <th>{{ 'learn.pinyin.tableSoundsLike' | transloco }}</th>
+            <th>{{ 'learn.pinyin.tableExample' | transloco }}</th>
+            <th class="text-center"><i class="bi bi-volume-up"></i></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let s of initials">
+            <td class="lp-symbol">{{ s.symbol }}</td>
+            <td class="lp-sounds">{{ es ? s.soundsLikeEs : s.soundsLikeEn }}</td>
+            <td>
+              <span class="lp-ex-pinyin">{{ s.exampleSyllable }}</span>
+              <span class="lp-ex-hanzi">{{ s.exampleHanzi }}</span>
+              <span class="lp-ex-meaning">({{ es ? s.exampleMeaningEs : s.exampleMeaningEn }})</span>
+            </td>
+            <td class="text-center">
+              <app-audio-button size="sm" [src]="audioBase + s.audio" [label]="'learn.common.listen' | transloco"></app-audio-button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Sample finals -->
+  <section>
+    <h2>{{ 'learn.pinyin.finalsHeading' | transloco }}</h2>
+    <p>{{ 'learn.pinyin.finalsIntro' | transloco }}</p>
+    <div class="table-responsive">
+      <table class="lp-table">
+        <thead>
+          <tr>
+            <th>{{ 'learn.pinyin.tableSymbol' | transloco }}</th>
+            <th>{{ 'learn.pinyin.tableSoundsLike' | transloco }}</th>
+            <th>{{ 'learn.pinyin.tableExample' | transloco }}</th>
+            <th class="text-center"><i class="bi bi-volume-up"></i></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let s of finals">
+            <td class="lp-symbol">{{ s.symbol }}</td>
+            <td class="lp-sounds">{{ es ? s.soundsLikeEs : s.soundsLikeEn }}</td>
+            <td>
+              <span class="lp-ex-pinyin">{{ s.exampleSyllable }}</span>
+              <span class="lp-ex-hanzi">{{ s.exampleHanzi }}</span>
+              <span class="lp-ex-meaning">({{ es ? s.exampleMeaningEs : s.exampleMeaningEn }})</span>
+            </td>
+            <td class="text-center">
+              <app-audio-button size="sm" [src]="audioBase + s.audio" [label]="'learn.common.listen' | transloco"></app-audio-button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Common pitfalls -->
+  <section>
+    <h2>{{ 'learn.pinyin.pitfallsHeading' | transloco }}</h2>
+    <p>{{ 'learn.pinyin.pitfallsIntro' | transloco }}</p>
+    <div class="row g-3">
+      <div class="col-sm-6" *ngFor="let s of pitfalls">
+        <div class="lp-pitfall">
+          <div class="lp-pitfall-head">
+            <span class="lp-symbol">{{ s.symbol }}</span>
+            <app-audio-button size="sm" [src]="audioBase + s.audio" [label]="'learn.common.listen' | transloco"></app-audio-button>
+          </div>
+          <p>{{ es ? s.soundsLikeEs : s.soundsLikeEn }}</p>
+          <p class="lp-ex-meaning">{{ s.exampleSyllable }} {{ s.exampleHanzi }} — {{ es ? s.exampleMeaningEs : s.exampleMeaningEn }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Next lesson CTA -->
+  <div class="lp-next">
+    <h3>{{ 'learn.pinyin.nextTitle' | transloco }}</h3>
+    <p>{{ 'learn.pinyin.nextText' | transloco }}</p>
+    <button class="lp-next-btn" [routerLink]="'/learn/tones' | localizeLink">
+      {{ 'learn.pinyin.nextCta' | transloco }} <i class="bi bi-arrow-right"></i>
+    </button>
+  </div>
+
+</div>

@@ -26,6 +26,7 @@
     <div class="collapse navbar-collapse" id="navbarNav">
 
       <ul class="navbar-nav me-auto mb-2 mb-lg-0 fs-5">
+        <li class="nav-item"><a class="nav-link text-dark fw-semibold" [routerLink]="'/learn' | localizeLink"><i class="bi bi-mortarboard me-1"></i>{{ 'header.nav.learn' | transloco }}</a></li>
         <li class="nav-item"><a class="nav-link text-dark fw-semibold" [routerLink]="['/texts', 'HSK1'] | localizeLink">HSK1</a></li>
         <li class="nav-item"><a class="nav-link text-dark fw-semibold" [routerLink]="['/texts', 'HSK2'] | localizeLink">HSK2</a></li>
         <li class="nav-item"><a class="nav-link text-dark fw-semibold" [routerLink]="['/texts', 'HSK3'] | localizeLink">HSK3</a></li>
