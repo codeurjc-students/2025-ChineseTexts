@@ -252,4 +252,70 @@
     <priority>0.8</priority>
   </url>
 
+  <!-- Beginner tutorial: /learn hub + 3 lessons, EN + ES -->
+  <url>
+    <loc>https://chinesereads.com/learn</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://chinesereads.com/learn"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://chinesereads.com/es/learn"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chinesereads.com/learn"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://chinesereads.com/es/learn</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://chinesereads.com/learn"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://chinesereads.com/es/learn"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chinesereads.com/learn"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://chinesereads.com/learn/pinyin</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://chinesereads.com/learn/pinyin"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://chinesereads.com/es/learn/pinyin"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chinesereads.com/learn/pinyin"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://chinesereads.com/es/learn/pinyin</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://chinesereads.com/learn/pinyin"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://chinesereads.com/es/learn/pinyin"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chinesereads.com/learn/pinyin"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://chinesereads.com/learn/tones</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://chinesereads.com/learn/tones"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://chinesereads.com/es/learn/tones"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chinesereads.com/learn/tones"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://chinesereads.com/es/learn/tones</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://chinesereads.com/learn/tones"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://chinesereads.com/es/learn/tones"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chinesereads.com/learn/tones"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://chinesereads.com/learn/characters</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://chinesereads.com/learn/characters"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://chinesereads.com/es/learn/characters"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chinesereads.com/learn/characters"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://chinesereads.com/es/learn/characters</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://chinesereads.com/learn/characters"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://chinesereads.com/es/learn/characters"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chinesereads.com/learn/characters"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
 </urlset>

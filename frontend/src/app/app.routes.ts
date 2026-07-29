@@ -18,6 +18,10 @@ import { MyTextReaderComponent } from './components/my-text-reader/my-text-reade
 import { PremiumComponent } from './components/premium/premium.component';
 import { PremiumSuccessComponent } from './components/premium-success/premium-success.component';
 import { LevelTestComponent } from './components/level-test/level-test.component';
+import { LearnHubComponent } from './components/learn-hub/learn-hub.component';
+import { LearnPinyinComponent } from './components/learn-pinyin/learn-pinyin.component';
+import { LearnTonesComponent } from './components/learn-tones/learn-tones.component';
+import { LearnCharactersComponent } from './components/learn-characters/learn-characters.component';
 import { NotFoundComponent } from './components/not-found/not-found.component';
 
 /**
@@ -46,6 +50,10 @@ const appRoutes: Routes = [
   { path: 'premium', component: PremiumComponent },
   { path: 'premium/success', component: PremiumSuccessComponent },
   { path: 'level-test', component: LevelTestComponent },
+  { path: 'learn', component: LearnHubComponent },
+  { path: 'learn/pinyin', component: LearnPinyinComponent },
+  { path: 'learn/tones', component: LearnTonesComponent },
+  { path: 'learn/characters', component: LearnCharactersComponent },
 ];
 
 export const routes: Routes = [

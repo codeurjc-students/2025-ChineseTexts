@@ -1,0 +1,131 @@
+<div class="container my-5 learn-tones">
+
+  <p class="lt2-breadcrumb">
+    <a [routerLink]="'/learn' | localizeLink"><i class="bi bi-arrow-left"></i> {{ 'learn.common.backToHub' | transloco }}</a>
+    <span class="lt2-badge">{{ 'learn.common.lesson2Badge' | transloco }}</span>
+  </p>
+
+  <h1 class="lt2-title">{{ 'learn.tones.title' | transloco }}</h1>
+  <p class="lt2-intro">{{ 'learn.tones.intro1' | transloco }}</p>
+  <p class="lt2-intro">{{ 'learn.tones.intro2' | transloco }}</p>
+
+  <!-- Why tones matter -->
+  <section>
+    <h2>{{ 'learn.tones.whyHeading' | transloco }}</h2>
+    <p>{{ 'learn.tones.whyP' | transloco }}</p>
+  </section>
+
+  <!-- The classic "ma" table -->
+  <section>
+    <div class="table-responsive">
+      <table class="lt2-table">
+        <thead>
+          <tr>
+            <th>{{ 'learn.tones.tableTone' | transloco }}</th>
+            <th>{{ 'learn.tones.tableHanzi' | transloco }}</th>
+            <th>{{ 'learn.tones.tableMeaning' | transloco }}</th>
+            <th>{{ 'learn.tones.tableContour' | transloco }}</th>
+            <th>{{ 'learn.tones.tableWord' | transloco }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let t of tones" class="lt2-row" [class.lt2-row--neutral]="t.tone === 5">
+            <td class="lt2-tone-cell">
+              <span class="lt2-tone-num" [ngClass]="'lt2-tone-num--' + t.tone">{{ t.tone === 5 ? '·' : t.tone }}</span>
+              <span class="lt2-arrow">{{ arrows[t.tone] }}</span>
+            </td>
+            <td>
+              <div class="lt2-hanzi-cell">
+                <span class="lt2-hanzi">{{ t.hanzi }}</span>
+                <span class="lt2-syllable">{{ t.syllable }}</span>
+                <app-audio-button size="sm" [src]="audioBase + t.audio" [label]="'learn.common.listen' | transloco"></app-audio-button>
+              </div>
+            </td>
+            <td class="lt2-meaning">{{ es ? t.meaningEs : t.meaningEn }}</td>
+            <td class="lt2-contour">{{ es ? t.contourEs : t.contourEn }}</td>
+            <td>
+              <div class="lt2-hanzi-cell">
+                <span class="lt2-ex-hanzi">{{ t.exampleHanzi }}</span>
+                <span class="lt2-syllable">{{ t.examplePinyin }}</span>
+                <app-audio-button size="sm" [src]="audioBase + t.exampleAudio" [label]="'learn.common.listen' | transloco"></app-audio-button>
+              </div>
+              <div class="lt2-ex-meaning">{{ es ? t.exampleMeaningEs : t.exampleMeaningEn }}</div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="lt2-neutral-note">{{ 'learn.tones.neutralNote' | transloco }}</p>
+  </section>
+
+  <!-- Tips -->
+  <section>
+    <h2>{{ 'learn.tones.tipsHeading' | transloco }}</h2>
+    <ul class="lt2-tips">
+      <li><i class="bi bi-lightbulb"></i> {{ 'learn.tones.tip1' | transloco }}</li>
+      <li><i class="bi bi-lightbulb"></i> {{ 'learn.tones.tip2' | transloco }}</li>
+    </ul>
+  </section>
+
+  <!-- Ear-training mini-quiz -->
+  <section class="lt2-quiz">
+    <h2>{{ 'learn.quiz.heading' | transloco }}</h2>
+
+    <!-- Idle: intro + start -->
+    <div *ngIf="quizPhase === 'idle'" class="lt2-quiz-card text-center">
+      <p>{{ 'learn.quiz.intro' | transloco }}</p>
+      <button class="lt2-btn-green" (click)="startQuiz()">
+        <i class="bi bi-headphones"></i> {{ 'learn.quiz.start' | transloco }}
+      </button>
+    </div>
+
+    <!-- Question -->
+    <div *ngIf="quizPhase === 'question' && current" class="lt2-quiz-card">
+      <div class="lt2-progress">
+        <div class="lt2-progress-bar" [style.width.%]="progressPercent"></div>
+      </div>
+      <p class="lt2-counter">{{ quizIndex }} / {{ totalQuestions }}</p>
+
+      <p class="lt2-question-label">{{ 'learn.quiz.question' | transloco }}</p>
+
+      <div class="lt2-quiz-audio">
+        <app-audio-button #quizAudio [src]="audioBase + current.audio" [label]="'learn.quiz.replay' | transloco"></app-audio-button>
+        <span class="lt2-quiz-base" [class.lt2-quiz-base--revealed]="answered">
+          {{ answered ? current.syllable + ' ' + current.hanzi : current.base }}
+        </span>
+      </div>
+
+      <div class="lt2-options">
+        <button *ngFor="let tone of toneOptions" class="lt2-option"
+          [class.lt2-option--correct]="answered && tone === current.tone"
+          [class.lt2-option--wrong]="answered && selectedTone === tone && tone !== current.tone"
+          [disabled]="answered"
+          (click)="answerTone(tone)">
+          <span class="lt2-option-arrow">{{ arrows[tone] }}</span>
+          {{ 'learn.quiz.tone' + tone | transloco }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Result -->
+    <div *ngIf="quizPhase === 'result'" class="lt2-quiz-card text-center">
+      <i class="bi bi-award lt2-award"></i>
+      <h3 class="lt2-result-title">{{ 'learn.quiz.resultHeading' | transloco }}</h3>
+      <div class="lt2-score">{{ score }} / {{ totalQuestions }}</div>
+      <p class="lt2-result-text">{{ 'learn.quiz.result.' + resultKey | transloco }}</p>
+      <button class="lt2-retry" (click)="startQuiz()">
+        <i class="bi bi-arrow-repeat"></i> {{ 'learn.quiz.retry' | transloco }}
+      </button>
+    </div>
+  </section>
+
+  <!-- Next lesson CTA -->
+  <div class="lt2-next">
+    <h3>{{ 'learn.tones.nextTitle' | transloco }}</h3>
+    <p>{{ 'learn.tones.nextText' | transloco }}</p>
+    <button class="lt2-btn-green" [routerLink]="'/learn/characters' | localizeLink">
+      {{ 'learn.tones.nextCta' | transloco }} <i class="bi bi-arrow-right"></i>
+    </button>
+  </div>
+
+</div>

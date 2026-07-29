@@ -1,0 +1,148 @@
+.learn-pinyin {
+  max-width: 780px;
+  font-family: 'Noto Serif SC', serif;
+
+  h1 { color: #c0392b; font-weight: 700; font-size: 1.9rem; }
+  h2 { color: #2c3e50; font-weight: 700; font-size: 1.3rem; margin-top: 36px; }
+  p  { color: #555; line-height: 1.7; }
+
+  section {
+    padding-bottom: 8px;
+    border-bottom: 1px solid #f0f0f0;
+    &:last-of-type { border-bottom: none; }
+  }
+}
+
+.lp-breadcrumb {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.9rem;
+
+  a { color: #888; text-decoration: none; &:hover { color: #c0392b; } }
+}
+.lp-badge {
+  background: rgba(192, 57, 43, 0.08);
+  color: #c0392b;
+  border-radius: 999px;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.lp-intro { margin-bottom: 8px; }
+
+/* ——— Syllable anatomy demo ——— */
+.lp-syllable-demo {
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 24px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+  margin: 18px 0;
+}
+.lp-syllables {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+}
+.lp-syl { font-size: 2.6rem; line-height: 1.2; }
+.lp-part {
+  &--initial { color: #c0392b; font-weight: 700; }
+  &--final   { color: #2c3e50; font-weight: 700; }
+}
+.lp-hanzi { font-size: 1.15rem; color: #555; margin-top: 10px; }
+.lp-legend {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px 22px;
+  margin-top: 14px;
+  font-size: 0.88rem;
+  color: #666;
+}
+.lp-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 6px;
+
+  &--initial { background: #c0392b; }
+  &--final   { background: #2c3e50; }
+}
+.lp-tone-mark { color: #27ae60; font-weight: 700; margin-right: 6px; font-size: 1.05rem; }
+
+/* ——— Sound tables ——— */
+.lp-table {
+  width: 100%;
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow: hidden;
+  font-size: 0.95rem;
+
+  th {
+    background: #faf9f7;
+    color: #666;
+    font-weight: 600;
+    padding: 10px 14px;
+    border-bottom: 1px solid #eee;
+  }
+  td {
+    padding: 10px 14px;
+    border-bottom: 1px solid #f4f4f4;
+    vertical-align: middle;
+  }
+  tr:last-child td { border-bottom: none; }
+}
+.lp-symbol { color: #c0392b; font-weight: 700; font-size: 1.15rem; }
+.lp-sounds { color: #555; }
+.lp-ex-pinyin { color: #c0392b; margin-right: 6px; }
+.lp-ex-hanzi { color: #2c3e50; font-size: 1.15rem; margin-right: 6px; }
+.lp-ex-meaning { color: #888; font-size: 0.88rem; }
+
+/* ——— Pitfalls ——— */
+.lp-pitfall {
+  height: 100%;
+  background: #fff;
+  border: 1px solid #eee;
+  border-left: 4px solid #c0392b;
+  border-radius: 8px;
+  padding: 16px 18px;
+
+  p { margin: 8px 0 0; font-size: 0.92rem; }
+}
+.lp-pitfall-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* ——— Next lesson CTA ——— */
+.lp-next {
+  background: #fff;
+  border: 1px solid #27ae60;
+  border-radius: 12px;
+  padding: 24px;
+  text-align: center;
+  margin-top: 36px;
+
+  h3 { color: #2c3e50; font-weight: 700; font-size: 1.2rem; }
+  p  { max-width: 480px; margin: 8px auto 16px; }
+}
+.lp-next-btn {
+  background: #27ae60;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 28px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  cursor: pointer;
+  &:hover { background: #2ecc71; }
+}

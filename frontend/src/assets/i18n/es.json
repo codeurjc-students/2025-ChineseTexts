@@ -20,6 +20,7 @@
     "brand": "Inicio",
     "nav": {
       "toggle": "Alternar navegación",
+      "learn": "Aprende",
       "myCollections": "Mis colecciones",
       "myTools": "Mis herramientas",
       "adminTools": "Administración",
@@ -52,7 +53,8 @@
       "title": "Aprende chino leyendo",
       "subtitle": "Mejora tu vocabulario y tu comprensión del chino con relatos cortos adaptados a tu nivel HSK. Disfruta de traducciones instantáneas gratuitas y desbloquea herramientas de aprendizaje avanzadas al registrarte.",
       "cta": "Empieza a leer gratis",
-      "levelTestLink": "Haz el test de nivel gratis (3 min)"
+      "levelTestLink": "Haz el test de nivel gratis (3 min)",
+      "learnLink": "¿Nuevo en chino? Empieza desde cero"
     },
     "donation": {
       "bottom": "ChineseReads se desarrolla de forma independiente. Si quieres seguirlo de cerca y ayudarlo a crecer, encuéntranos en Instagram:",
@@ -156,9 +158,117 @@
     "browseInstead": "O explora todos los textos sin cuenta",
     "retry": "Repetir el test"
   },
+  "learn": {
+    "common": {
+      "backToHub": "Índice del tutorial",
+      "lesson1Badge": "Lección 1 de 3",
+      "lesson2Badge": "Lección 2 de 3",
+      "lesson3Badge": "Lección 3 de 3",
+      "listen": "Escuchar"
+    },
+    "hub": {
+      "title": "Aprende a leer chino desde cero",
+      "subtitle": "Sin conocimientos previos: en unos 15 minutos entenderás cómo se escribe el chino, escucharás los cuatro tonos y leerás tus primeros caracteres reales.",
+      "fact1": "Unos 15 minutos",
+      "fact2": "3 lecciones cortas con audio",
+      "fact3": "100% gratis, sin registro",
+      "roadmapHeading": "Qué vas a aprender",
+      "step1": {
+        "title": "Pinyin — el chino en letras latinas",
+        "text": "Cómo se escribe y se lee cada sílaba china con el alfabeto que ya conoces."
+      },
+      "step2": {
+        "title": "Los cuatro tonos",
+        "text": "Escucha cómo el tono cambia el significado y entrena el oído con un mini-quiz."
+      },
+      "step3": {
+        "title": "Tus primeros 12 caracteres",
+        "text": "Lee palabras reales en chino como 你好 y 中国 — con pinyin, significado y audio."
+      },
+      "step4": {
+        "title": "Descubre tu nivel",
+        "text": "Haz el test gratuito de 3 minutos y empieza a leer textos de tu nivel exacto."
+      },
+      "step4Cta": "Haz el test de nivel",
+      "startCta": "Empieza con la lección 1 — Pinyin"
+    },
+    "pinyin": {
+      "title": "¿Qué es el pinyin?",
+      "intro1": "El pinyin es el sistema oficial para escribir los sonidos del chino con letras latinas. No es como se escribe el chino \"de verdad\" — para eso están los caracteres —, pero es como todo estudiante (y todo niño chino) aprende primero a pronunciar el idioma.",
+      "intro2": "La buena noticia: el pinyin tiene reglas claras, y una vez las conoces puedes leer la pronunciación de cualquier palabra china.",
+      "syllableHeading": "Anatomía de una sílaba",
+      "syllableP": "Cada sílaba china tiene hasta tres partes: una inicial (la consonante inicial), una final (la parte vocálica) y un tono (la pequeña marca sobre una vocal). Aquí tienes el saludo más famoso del mundo, desglosado:",
+      "syllableExample": "hola",
+      "partInitial": "Inicial",
+      "partFinal": "Final",
+      "partTone": "Marca de tono",
+      "initialsHeading": "Algunas iniciales para empezar",
+      "initialsIntro": "Hay 21 iniciales en total. Con estas ocho basta para ver cómo funcionan — incluidas algunas que no existen en español:",
+      "finalsHeading": "Algunas finales",
+      "finalsIntro": "Las finales son los sonidos vocálicos que siguen a la inicial. Hay unas 36 combinaciones; aquí tienes seis de las más comunes:",
+      "tableSymbol": "Pinyin",
+      "tableSoundsLike": "Suena como",
+      "tableExample": "Ejemplo",
+      "pitfallsHeading": "Los cuatro sonidos que confunden a todo el mundo",
+      "pitfallsIntro": "Estas letras no suenan como esperarías. Escúchalas varias veces — reconocerlas es la mitad del camino:",
+      "nextTitle": "¿Listo para la parte divertida?",
+      "nextText": "Quizá te hayas fijado en las pequeñas marcas sobre las vocales (ǐ, ǎo). Son los tonos — y cambian por completo el significado de una palabra.",
+      "nextCta": "Lección 2: Los cuatro tonos"
+    },
+    "tones": {
+      "title": "Los cuatro tonos del chino",
+      "intro1": "El mandarín es una lengua tonal: la entonación forma parte de cada palabra, igual que las vocales forman parte de las palabras en español.",
+      "intro2": "Hay cuatro tonos más un tono neutro breve. La forma clásica de escucharlos es la sílaba «ma», que significa cinco cosas completamente distintas según el tono:",
+      "whyHeading": "Por qué importan los tonos",
+      "whyP": "Di «ma» con el tono equivocado y puedes llamar caballo a tu madre. Los tonos no son decoración: son la diferencia entre palabras. La buena noticia: el oído los aprende más rápido de lo que crees, sobre todo con audio.",
+      "tableTone": "Tono",
+      "tableHanzi": "Carácter",
+      "tableMeaning": "Significado",
+      "tableContour": "Cómo suena",
+      "tableWord": "Otro ejemplo",
+      "neutralNote": "La quinta fila es el tono neutro: corto, ligero y sin acento — simplemente «cuelga» de la sílaba anterior.",
+      "tipsHeading": "Dos consejos rápidos",
+      "tip1": "La marca de tono siempre va sobre una vocal, y su forma dibuja la entonación: ā plana, á ascendente, ǎ en valle, à descendente.",
+      "tip2": "En el habla real el tercer tono suele quedarse solo en la bajada, sin la subida — no te preocupes por perfeccionarlo ahora.",
+      "nextTitle": "Queda un paso",
+      "nextText": "Ya sabes descifrar el pinyin y oír los tonos. Toca lo de verdad: tus primeros caracteres chinos.",
+      "nextCta": "Lección 3: Tus primeros caracteres"
+    },
+    "quiz": {
+      "heading": "Entrena el oído",
+      "intro": "Vas a escuchar 10 sílabas, de una en una. Tras cada una, elige el tono que has oído. ¿Preparado?",
+      "start": "Empezar el quiz",
+      "question": "¿Qué tono escuchas?",
+      "replay": "Volver a escuchar la sílaba",
+      "tone1": "1er tono (plano)",
+      "tone2": "2º tono (ascendente)",
+      "tone3": "3er tono (en valle)",
+      "tone4": "4º tono (descendente)",
+      "resultHeading": "Tu puntuación",
+      "result": {
+        "perfect": "¡Qué oído! Estás más que listo para el chino de verdad.",
+        "good": "Muy bien — la mayoría tarda semanas en distinguir los tonos así.",
+        "keep": "Totalmente normal al principio: los tonos requieren entrenar el oído. Vuelve a escuchar la tabla de arriba e inténtalo otra vez."
+      },
+      "retry": "Intentar de nuevo"
+    },
+    "characters": {
+      "title": "Tus primeros 12 caracteres chinos",
+      "intro1": "Los caracteres son el destino; el pinyin es el puente. Cada carácter es una sílaba y tiene significado — y muchas palabras son solo dos caracteres combinados.",
+      "intro2": "Estos 12 caracteres de HSK1 están elegidos porque se combinan entre sí formando palabras reales. Pulsa el audio para escuchar cada uno:",
+      "exampleLabel": "En una palabra",
+      "payoffHeading": "Ya estás leyendo chino",
+      "payoffText": "Mira esta frase — conoces todos sus caracteres:",
+      "ctaTitle": "¿Y ahora? Descubre tu nivel",
+      "ctaText": "Ya has leído tus primeros caracteres. Haz el test gratuito de 3 minutos para conocer tu nivel exacto y empieza a leer textos completos con pinyin, traducción y audio.",
+      "ctaTest": "Haz el test de nivel gratis",
+      "ctaTexts": "O ve directo a los textos de HSK1"
+    }
+  },
   "footer": {
     "copyright": "© 2026 ChineseReads. Todos los derechos reservados",
     "links": {
+      "learn": "Aprende chino desde cero",
       "creator": "Sobre el creador",
       "privacy": "Política de privacidad",
       "terms": "Condiciones de uso"

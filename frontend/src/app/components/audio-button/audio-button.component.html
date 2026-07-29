@@ -1,0 +1,4 @@
+<button type="button" class="audio-btn" [class.audio-btn--sm]="size === 'sm'"
+  (click)="play()" [attr.aria-label]="label || null">
+  <i class="bi" [ngClass]="playing ? 'bi-volume-up-fill' : 'bi-volume-up'"></i>
+</button>

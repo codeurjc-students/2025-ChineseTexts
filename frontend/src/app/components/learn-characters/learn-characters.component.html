@@ -1,0 +1,56 @@
+<div class="container my-5 learn-characters">
+
+  <p class="lc-breadcrumb">
+    <a [routerLink]="'/learn' | localizeLink"><i class="bi bi-arrow-left"></i> {{ 'learn.common.backToHub' | transloco }}</a>
+    <span class="lc-badge">{{ 'learn.common.lesson3Badge' | transloco }}</span>
+  </p>
+
+  <h1 class="lc-title">{{ 'learn.characters.title' | transloco }}</h1>
+  <p class="lc-intro">{{ 'learn.characters.intro1' | transloco }}</p>
+  <p class="lc-intro">{{ 'learn.characters.intro2' | transloco }}</p>
+
+  <!-- The 12 starter characters -->
+  <div class="row g-3 mt-2">
+    <div class="col-6 col-md-4 col-lg-3" *ngFor="let c of characters">
+      <article class="lc-card">
+        <div class="lc-hanzi">{{ c.hanzi }}</div>
+        <div class="lc-pinyin">{{ c.pinyin }}</div>
+        <div class="lc-meaning">{{ es ? c.meaningEs : c.meaningEn }}</div>
+        <app-audio-button size="sm" [src]="audioBase + c.audio" [label]="'learn.common.listen' | transloco"></app-audio-button>
+        <div class="lc-example">
+          <span class="lc-example-label">{{ 'learn.characters.exampleLabel' | transloco }}</span>
+          <div class="lc-example-word">
+            <span class="lc-example-hanzi">{{ c.exampleHanzi }}</span>
+            <app-audio-button size="sm" [src]="audioBase + c.exampleAudio" [label]="'learn.common.listen' | transloco"></app-audio-button>
+          </div>
+          <div class="lc-example-pinyin">{{ c.examplePinyin }}</div>
+          <div class="lc-example-meaning">{{ es ? c.exampleMeaningEs : c.exampleMeaningEn }}</div>
+        </div>
+      </article>
+    </div>
+  </div>
+
+  <!-- Payoff: you can already read real Chinese -->
+  <section class="lc-payoff">
+    <h2>{{ 'learn.characters.payoffHeading' | transloco }}</h2>
+    <p>{{ 'learn.characters.payoffText' | transloco }}</p>
+    <div class="lc-payoff-sentence">
+      <span class="lc-payoff-hanzi">我是中国人</span>
+      <span class="lc-payoff-pinyin">wǒ shì Zhōngguórén</span>
+      <app-audio-button [src]="audioBase + 'zhong1guo2ren2.mp3'" [label]="'learn.common.listen' | transloco"></app-audio-button>
+    </div>
+  </section>
+
+  <!-- Funnel: level test → graded texts -->
+  <div class="lc-next">
+    <h3>{{ 'learn.characters.ctaTitle' | transloco }}</h3>
+    <p>{{ 'learn.characters.ctaText' | transloco }}</p>
+    <button class="lc-next-btn" [routerLink]="'/level-test' | localizeLink">
+      <i class="bi bi-clipboard-check"></i> {{ 'learn.characters.ctaTest' | transloco }}
+    </button>
+    <p class="lc-alt">
+      <a [routerLink]="['/texts', 'HSK1'] | localizeLink">{{ 'learn.characters.ctaTexts' | transloco }}</a>
+    </p>
+  </div>
+
+</div>

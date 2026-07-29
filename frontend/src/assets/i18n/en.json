@@ -20,6 +20,7 @@
     "brand": "Home",
     "nav": {
       "toggle": "Toggle navigation",
+      "learn": "Learn",
       "myCollections": "My Collections",
       "myTools": "My Tools",
       "adminTools": "Admin Tools",
@@ -52,7 +53,8 @@
       "title": "Learn Chinese Through Reading",
       "subtitle": "Improve your Chinese vocabulary and comprehension with short stories adapted to your HSK level. Enjoy free instant translations and unlock advanced learning tools by registering.",
       "cta": "Start Reading for Free",
-      "levelTestLink": "Take the free level test (3 min)"
+      "levelTestLink": "Take the free level test (3 min)",
+      "learnLink": "New to Chinese? Start from zero"
     },
     "donation": {
       "bottom": "ChineseReads is developed independently. If you'd like to follow along and help it grow, find us on Instagram:",
@@ -156,9 +158,117 @@
     "browseInstead": "Or browse all texts without an account",
     "retry": "Take the test again"
   },
+  "learn": {
+    "common": {
+      "backToHub": "Tutorial overview",
+      "lesson1Badge": "Lesson 1 of 3",
+      "lesson2Badge": "Lesson 2 of 3",
+      "lesson3Badge": "Lesson 3 of 3",
+      "listen": "Listen"
+    },
+    "hub": {
+      "title": "Learn to Read Chinese from Zero",
+      "subtitle": "No prior knowledge needed: in about 15 minutes you'll understand how Chinese is written, hear the four tones, and read your first real characters.",
+      "fact1": "About 15 minutes",
+      "fact2": "3 short lessons with audio",
+      "fact3": "100% free, no sign-up",
+      "roadmapHeading": "What you'll learn",
+      "step1": {
+        "title": "Pinyin — Chinese in Latin letters",
+        "text": "How every Chinese syllable is written and read with the alphabet you already know."
+      },
+      "step2": {
+        "title": "The four tones",
+        "text": "Hear how pitch changes meaning, then train your ear with a mini-quiz."
+      },
+      "step3": {
+        "title": "Your first 12 characters",
+        "text": "Read real Chinese words like 你好 and 中国 — with pinyin, meaning and audio."
+      },
+      "step4": {
+        "title": "Find your level",
+        "text": "Take the free 3-minute test and start reading texts at exactly your level."
+      },
+      "step4Cta": "Take the level test",
+      "startCta": "Start with Lesson 1 — Pinyin"
+    },
+    "pinyin": {
+      "title": "What is pinyin?",
+      "intro1": "Pinyin is the official system for writing Chinese sounds with Latin letters. It's not how Chinese is \"really written\" — that's what characters are for — but it's how every learner (and every Chinese child) first learns to pronounce the language.",
+      "intro2": "The good news: pinyin has clear rules, and once you know them you can read the pronunciation of any Chinese word.",
+      "syllableHeading": "Anatomy of a syllable",
+      "syllableP": "Every Chinese syllable has up to three parts: an initial (the starting consonant), a final (the vowel part), and a tone (the little mark over a vowel). Here is the most famous greeting in the world, broken down:",
+      "syllableExample": "hello",
+      "partInitial": "Initial",
+      "partFinal": "Final",
+      "partTone": "Tone mark",
+      "initialsHeading": "Some initials to get you started",
+      "initialsIntro": "There are 21 initials in total. These eight are enough to see how they work — including a few that don't exist in English:",
+      "finalsHeading": "Some finals",
+      "finalsIntro": "Finals are the vowel sounds that follow the initial. There are around 36 combinations; here are six of the most common:",
+      "tableSymbol": "Pinyin",
+      "tableSoundsLike": "Sounds like",
+      "tableExample": "Example",
+      "pitfallsHeading": "The four sounds that trip everyone up",
+      "pitfallsIntro": "These letters don't sound like you'd expect from English. Listen to them a few times — recognizing them is half the battle:",
+      "nextTitle": "Ready for the fun part?",
+      "nextText": "You may have noticed the little marks over the vowels (ǐ, ǎo). Those are tones — and they completely change a word's meaning.",
+      "nextCta": "Lesson 2: The four tones"
+    },
+    "tones": {
+      "title": "The four tones of Chinese",
+      "intro1": "Mandarin is a tonal language: the pitch of your voice is part of each word, exactly like vowels are part of words in English.",
+      "intro2": "There are four tones plus a short neutral tone. The classic way to hear them is the syllable \"ma\", which means five completely different things depending on the tone:",
+      "whyHeading": "Why tones matter",
+      "whyP": "Say \"ma\" with the wrong tone and you might call your mother a horse. Tones aren't decoration — they're the difference between words. The good news: your ear learns them faster than you think, especially with audio.",
+      "tableTone": "Tone",
+      "tableHanzi": "Character",
+      "tableMeaning": "Meaning",
+      "tableContour": "How it sounds",
+      "tableWord": "Another example",
+      "neutralNote": "The fifth row is the neutral tone: short, light and unstressed — it simply hangs off the syllable before it.",
+      "tipsHeading": "Two quick tips",
+      "tip1": "The tone mark always sits on a vowel, and its shape draws the pitch: ā flat, á rising, ǎ dipping, à falling.",
+      "tip2": "In real speech the third tone is usually just the low dip, without the rise — don't worry about perfecting it now.",
+      "nextTitle": "One step left",
+      "nextText": "You can now decode pinyin and hear the tones. Time for the real thing: your first Chinese characters.",
+      "nextCta": "Lesson 3: Your first characters"
+    },
+    "quiz": {
+      "heading": "Train your ear",
+      "intro": "You'll hear 10 syllables, one at a time. After each one, pick the tone you heard. Ready?",
+      "start": "Start the quiz",
+      "question": "Which tone do you hear?",
+      "replay": "Play the syllable again",
+      "tone1": "1st tone (flat)",
+      "tone2": "2nd tone (rising)",
+      "tone3": "3rd tone (dipping)",
+      "tone4": "4th tone (falling)",
+      "resultHeading": "Your score",
+      "result": {
+        "perfect": "Incredible ear! You're more than ready for real Chinese.",
+        "good": "Great job — most learners need weeks to hear tones this well.",
+        "keep": "Totally normal at the start: tones take a little ear training. Listen to the table above again and retry."
+      },
+      "retry": "Try again"
+    },
+    "characters": {
+      "title": "Your first 12 Chinese characters",
+      "intro1": "Characters are the destination; pinyin is the bridge. Each character is one syllable and carries meaning — and many words are just two characters combined.",
+      "intro2": "These 12 HSK1 characters were chosen because they combine with each other into real words. Tap the audio to hear each one:",
+      "exampleLabel": "In a word",
+      "payoffHeading": "You're already reading Chinese",
+      "payoffText": "Look at this sentence — you know every character in it:",
+      "ctaTitle": "What now? Find your level",
+      "ctaText": "You've read your first characters. Take the free 3-minute test to find your exact level, and start reading full texts with pinyin, translation and audio.",
+      "ctaTest": "Take the free level test",
+      "ctaTexts": "Or jump straight into HSK1 texts"
+    }
+  },
   "footer": {
     "copyright": "© 2026 ChineseReads. All rights reserved",
     "links": {
+      "learn": "Learn Chinese from Zero",
       "creator": "About the Creator",
       "privacy": "Privacy Policy",
       "terms": "Terms of Use"

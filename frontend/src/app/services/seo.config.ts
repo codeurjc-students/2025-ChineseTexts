@@ -155,6 +155,75 @@ const STATIC_SEO: Record<string, LocalizedSeo> = {
     }
   },
 
+  // Beginner tutorial (/learn hub + 3 lessons) — public, prerendered SEO pages.
+  '/learn': {
+    en: {
+      title: 'Learn to Read Chinese from Zero — Free Beginner Tutorial | ChineseReads',
+      description:
+        'Start reading Chinese from absolute zero: understand pinyin, master the 4 Mandarin tones with audio, ' +
+        'and read your first 12 Chinese characters. A free 3-lesson tutorial for complete beginners — no sign-up needed.',
+      path: '/learn'
+    },
+    es: {
+      title: 'Aprende a leer chino desde cero — Tutorial gratis para principiantes | ChineseReads',
+      description:
+        'Empieza a leer chino desde cero: entiende el pinyin, domina los 4 tonos del mandarín con audio y lee ' +
+        'tus primeros 12 caracteres chinos. Un tutorial gratuito de 3 lecciones para principiantes, sin registro.',
+      path: '/learn'
+    }
+  },
+
+  '/learn/pinyin': {
+    en: {
+      title: 'What Is Pinyin? Learn Pinyin Basics with Audio (Lesson 1) | ChineseReads',
+      description:
+        'Learn pinyin from zero: how every Chinese syllable is built from an initial, a final and a tone, with ' +
+        'audio examples and the sounds that trip up beginners (x, q, zh, c). Free lesson 1 of 3.',
+      path: '/learn/pinyin'
+    },
+    es: {
+      title: '¿Qué es el pinyin? Aprende pinyin desde cero con audio (Lección 1) | ChineseReads',
+      description:
+        'Aprende pinyin desde cero: cómo cada sílaba china se forma con una inicial, una final y un tono, con ' +
+        'ejemplos de audio y los sonidos que más confunden (x, q, zh, c). Lección 1 de 3, gratis.',
+      path: '/learn/pinyin'
+    }
+  },
+
+  '/learn/tones': {
+    en: {
+      title: 'Chinese Tones Explained — The 4 Mandarin Tones with Audio & Quiz | ChineseReads',
+      description:
+        'Master the 4 Chinese tones (plus the neutral tone) with the classic “ma” example, audio for every tone ' +
+        'and example word, and a free 10-question ear-training quiz. Free lesson 2 of 3.',
+      path: '/learn/tones'
+    },
+    es: {
+      title: 'Los tonos del chino — Los 4 tonos del mandarín con audio y quiz | ChineseReads',
+      description:
+        'Domina los 4 tonos del chino (y el tono neutro) con el ejemplo clásico de «ma», audio de cada tono y ' +
+        'palabra de ejemplo, y un quiz gratuito de 10 preguntas para entrenar el oído. Lección 2 de 3, gratis.',
+      path: '/learn/tones'
+    }
+  },
+
+  '/learn/characters': {
+    en: {
+      title: 'Your First 12 Chinese Characters with Pinyin & Audio (Lesson 3) | ChineseReads',
+      description:
+        'Read your first 12 HSK1 Chinese characters — 我, 你, 好, 水 and more — each with pinyin, meaning, an ' +
+        'example word and audio. Then take the free level test and start reading real texts.',
+      path: '/learn/characters'
+    },
+    es: {
+      title: 'Tus primeros 12 caracteres chinos con pinyin y audio (Lección 3) | ChineseReads',
+      description:
+        'Lee tus primeros 12 caracteres chinos de HSK1 — 我, 你, 好, 水 y más — con pinyin, significado, palabra ' +
+        'de ejemplo y audio. Después haz el test de nivel gratis y empieza a leer textos reales.',
+      path: '/learn/characters'
+    }
+  },
+
   // Authenticated / transactional pages — kept out of the search index.
   '/premium/success': localizedPrivate('Welcome to Premium', 'Your ChineseReads Premium subscription is active.', 'Bienvenido a Premium', 'Tu suscripción Premium de ChineseReads está activa.', '/premium/success'),
   '/collections': localizedPrivate('My Collections', 'Your saved Chinese vocabulary collections and flashcards.', 'Mis colecciones', 'Tus colecciones de vocabulario chino y tarjetas guardadas.', '/collections'),
