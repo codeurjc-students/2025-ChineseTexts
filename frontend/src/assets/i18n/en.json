@@ -20,7 +20,7 @@
     "brand": "Home",
     "nav": {
       "toggle": "Toggle navigation",
-      "learn": "Learn",
+      "hallOfFame": "Hall of Fame",
       "myCollections": "My Collections",
       "myTools": "My Tools",
       "adminTools": "Admin Tools",
@@ -268,9 +268,7 @@
   "footer": {
     "copyright": "© 2026 ChineseReads. All rights reserved",
     "links": {
-      "learn": "Learn Chinese from Zero",
       "creator": "About the Creator",
-      "hallOfFame": "Hall of Fame",
       "privacy": "Privacy Policy",
       "terms": "Terms of Use"
     }

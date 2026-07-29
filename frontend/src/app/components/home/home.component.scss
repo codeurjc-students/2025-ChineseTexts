@@ -52,18 +52,29 @@ body {
   justify-content: center;
 }
 
+/* CTA principal del hero: el único botón sólido (y el único verde) para que
+   destaque con claridad sobre los dos secundarios outline. */
 .btn-main {
+  display: inline-block;
+  text-decoration: none;
   background-color: #27ae60;
   color: #fff;
-  padding: 12px 28px;
+  padding: 14px 32px;
   border-radius: 6px;
   border: none;
-  font-size: 1.2rem;
+  font-size: 1.25rem;
+  font-weight: 700;
   cursor: pointer;
+  box-shadow: 0 4px 14px rgba(39, 174, 96, 0.35);
+  transition: background 0.15s, transform 0.15s, box-shadow 0.15s;
+
+  i { margin-right: 8px; }
 }
 
 .btn-main:hover {
   background-color: #2ecc71;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(39, 174, 96, 0.4);
 }
 
 .premium-badge {
@@ -173,16 +184,30 @@ body {
 }
 
 /* Los dos CTA del hero, lado a lado (se apilan solos en pantallas estrechas) */
+/* En móvil los CTAs se apilan con el principal arriba (orden del DOM); en
+   escritorio pasan a fila y el test se adelanta (order:-1) para que el
+   principal quede en el centro. */
 .hero-ctas {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   gap: 14px;
-  flex-wrap: wrap;
+
+  @media (min-width: 576px) {
+    flex-direction: row;
+    flex-wrap: wrap;
+
+    .btn-test { order: -1; }
+  }
 }
 
-/* CTA secundario del hero: el test de nivel, con aspecto claramente pulsable */
-.btn-test {
+/* CTAs secundarios del hero (test de nivel y tutorial): mismo estilo outline
+   rojo de marca para los dos, de modo que el verde sólido del principal sea
+   la única llamada fuerte. */
+.btn-hero-secondary {
+  display: inline-block;
+  text-decoration: none;
   background: transparent;
   color: #c0392b;
   border: 2px solid #c0392b;
@@ -197,17 +222,3 @@ body {
   &:hover { background: #c0392b; color: #fff; }
 }
 
-.btn-learn {
-  background: transparent;
-  color: #27ae60;
-  border: 2px solid #27ae60;
-  border-radius: 6px;
-  padding: 10px 24px;
-  font-size: 1.05rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.15s, color 0.15s;
-
-  i { margin-right: 6px; }
-  &:hover { background: #27ae60; color: #fff; }
-}

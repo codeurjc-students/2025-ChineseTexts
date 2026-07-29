@@ -7,16 +7,22 @@
       {{ 'home.hero.subtitle' | transloco }}
     </p>
 
+    <!-- CTA principal (verde sólido) en el centro en escritorio y primero en móvil
+         (orden del DOM = móvil; en escritorio .btn-test se adelanta con order:-1).
+         Los dos secundarios comparten el mismo estilo outline rojo de marca.
+         Son <a> (no <button>) a propósito: routerLink en un enlace emite href
+         real en el HTML prerenderizado, y desde aquí es el único enlace
+         rastreable del sitio hacia /learn. -->
     <div class="hero-ctas mt-3">
-      <button class="btn-main" [routerLink]="'/texts' | localizeLink">
-        {{ 'home.hero.cta' | transloco }}
-      </button>
-      <button class="btn-test" [routerLink]="'/level-test' | localizeLink">
+      <a class="btn-main" [routerLink]="'/texts' | localizeLink">
+        <i class="bi bi-book-half"></i> {{ 'home.hero.cta' | transloco }}
+      </a>
+      <a class="btn-hero-secondary btn-test" [routerLink]="'/level-test' | localizeLink">
         <i class="bi bi-clipboard-check"></i> {{ 'home.hero.levelTestLink' | transloco }}
-      </button>
-      <button class="btn-learn" [routerLink]="'/learn' | localizeLink">
+      </a>
+      <a class="btn-hero-secondary btn-learn" [routerLink]="'/learn' | localizeLink">
         <i class="bi bi-mortarboard"></i> {{ 'home.hero.learnLink' | transloco }}
-      </button>
+      </a>
     </div>
   </header>
 
