@@ -20,7 +20,7 @@
     "brand": "Inicio",
     "nav": {
       "toggle": "Alternar navegación",
-      "learn": "Aprende",
+      "hallOfFame": "Salón de la Fama",
       "myCollections": "Mis colecciones",
       "myTools": "Mis herramientas",
       "adminTools": "Administración",
@@ -268,9 +268,7 @@
   "footer": {
     "copyright": "© 2026 ChineseReads. Todos los derechos reservados",
     "links": {
-      "learn": "Aprende chino desde cero",
       "creator": "Sobre el creador",
-      "hallOfFame": "Salón de la Fama",
       "privacy": "Política de privacidad",
       "terms": "Condiciones de uso"
     }
