@@ -7,18 +7,23 @@
  * tutorial sounds identical to the readers. The files are committed to git and
  * served as static assets — zero per-visit API cost, no login needed.
  *
- * Usage (from frontend/):
- *   GOOGLE_TTS_API_KEY=<your-key> node scripts/generate-learn-audio.mjs
+ * Usage (from frontend/), with either credential type:
+ *   - Service account JSON (the usual credentials.json):
+ *       GOOGLE_TTS_CREDENTIALS=/path/to/credentials.json node scripts/generate-learn-audio.mjs
+ *   - Or a plain API key:
+ *       GOOGLE_TTS_API_KEY=<your-key> node scripts/generate-learn-audio.mjs
  *
  * Idempotent: existing files are skipped, so a partial run can just be re-run.
  */
 
-import { mkdir, writeFile, access } from 'node:fs/promises';
+import { mkdir, writeFile, access, readFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { createSign } from 'node:crypto';
 
 const OUT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..', 'src', 'assets', 'audio', 'learn');
 const API_KEY = process.env.GOOGLE_TTS_API_KEY;
+const CREDENTIALS_FILE = process.env.GOOGLE_TTS_CREDENTIALS;
 
 // Filename = pinyin without diacritics + tone digit per syllable (neutral = 5).
 // Text is always hanzi so Google resolves pronunciation (incl. tone sandhi) itself.
@@ -76,10 +81,52 @@ async function exists(path) {
   try { await access(path); return true; } catch { return false; }
 }
 
-async function synthesize(text) {
-  const res = await fetch(`https://texttospeech.googleapis.com/v1/text:synthesize?key=${API_KEY}`, {
+/**
+ * Exchanges a service-account JSON for a short-lived OAuth2 access token
+ * (standard JWT-bearer flow, no dependencies needed).
+ */
+async function accessTokenFromServiceAccount(file) {
+  const sa = JSON.parse(await readFile(file, 'utf8'));
+  if (!sa.client_email || !sa.private_key) {
+    throw new Error(`${file} does not look like a service-account JSON (missing client_email/private_key)`);
+  }
+  const b64url = (obj) => Buffer.from(JSON.stringify(obj)).toString('base64url');
+  const iat = Math.floor(Date.now() / 1000);
+  const unsigned =
+    b64url({ alg: 'RS256', typ: 'JWT' }) + '.' +
+    b64url({
+      iss: sa.client_email,
+      scope: 'https://www.googleapis.com/auth/cloud-platform',
+      aud: 'https://oauth2.googleapis.com/token',
+      iat,
+      exp: iat + 3600,
+    });
+  const signature = createSign('RSA-SHA256').update(unsigned).sign(sa.private_key, 'base64url');
+  const res = await fetch('https://oauth2.googleapis.com/token', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({
+      grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+      assertion: `${unsigned}.${signature}`,
+    }),
+  });
+  if (!res.ok) {
+    throw new Error(`Token exchange failed (HTTP ${res.status}): ${(await res.text()).slice(0, 300)}`);
+  }
+  return (await res.json()).access_token;
+}
+
+let accessToken = null;
+
+async function synthesize(text) {
+  const url = API_KEY
+    ? `https://texttospeech.googleapis.com/v1/text:synthesize?key=${API_KEY}`
+    : 'https://texttospeech.googleapis.com/v1/text:synthesize';
+  const headers = { 'Content-Type': 'application/json' };
+  if (!API_KEY) headers['Authorization'] = `Bearer ${accessToken}`;
+  const res = await fetch(url, {
+    method: 'POST',
+    headers,
     body: JSON.stringify({
       input: { text },
       voice: { languageCode: 'cmn-CN', name: 'cmn-CN-Wavenet-A' },
@@ -93,10 +140,15 @@ async function synthesize(text) {
   return Buffer.from(audioContent, 'base64');
 }
 
-if (!API_KEY) {
-  console.error('Missing GOOGLE_TTS_API_KEY environment variable.');
-  console.error('Usage: GOOGLE_TTS_API_KEY=<your-key> node scripts/generate-learn-audio.mjs');
+if (!API_KEY && !CREDENTIALS_FILE) {
+  console.error('Missing credentials. Provide ONE of:');
+  console.error('  GOOGLE_TTS_CREDENTIALS=/path/to/credentials.json node scripts/generate-learn-audio.mjs');
+  console.error('  GOOGLE_TTS_API_KEY=<your-key> node scripts/generate-learn-audio.mjs');
   process.exit(1);
+}
+if (!API_KEY) {
+  accessToken = await accessTokenFromServiceAccount(CREDENTIALS_FILE);
+  console.log('Authenticated with service account.\n');
 }
 
 await mkdir(OUT_DIR, { recursive: true });
