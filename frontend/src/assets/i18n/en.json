@@ -714,6 +714,8 @@
     "badgesHeading": "Badges",
     "linksHeading": "Links",
     "addLink": "Add link",
+    "pickNetwork": "Choose a network or add a custom link:",
+    "customLink": "Custom link",
     "ph": {
       "name": "Name",
       "slug": "Slug (URL identifier, optional)",

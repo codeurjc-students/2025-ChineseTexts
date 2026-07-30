@@ -85,4 +85,45 @@ describe('HallOfFameComponent', () => {
     expect(component.initialsOf({ ...mockEntry, name: 'José Víctor' })).toBe('JV');
     expect(component.initialsOf({ ...mockEntry, name: '' })).toBe('?');
   });
+
+  it('addSocial with a preset pre-fills the network icon and label and closes the picker', () => {
+    const entry = { ...mockEntry, socials: [] };
+    const instagram = component.socialPresets.find(p => p.key === 'instagram')!;
+    component.socialPickerFor = entry.id!;
+
+    component.addSocial(entry, instagram);
+    const req = httpMock.expectOne('/api/hall-of-fame/1/socials');
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body.icon).toBe('bi-instagram');
+    expect(req.request.body.label).toBe('Instagram');
+    req.flush({ id: 5, label: 'Instagram', icon: 'bi-instagram', url: '', displayOrder: 0 });
+
+    expect(entry.socials.length).toBe(1);
+    expect(component.socialPickerFor).toBeNull();
+  });
+
+  it('addSocial without a preset keeps the generic custom-link draft', () => {
+    const entry = { ...mockEntry, socials: [] };
+
+    component.addSocial(entry);
+    const req = httpMock.expectOne('/api/hall-of-fame/1/socials');
+    expect(req.request.body.icon).toBe('bi-link-45deg');
+    req.flush({ id: 6, label: 'New link', icon: 'bi-link-45deg', url: '', displayOrder: 0 });
+
+    expect(entry.socials.length).toBe(1);
+  });
+
+  it('auto-detects the network from the URL while the icon is still generic', () => {
+    const social = { id: 5, label: 'New link', icon: 'bi-link-45deg', url: 'https://www.tiktok.com/@user', displayOrder: 0 };
+    component.onSocialUrlChange(social);
+    expect(social.icon).toBe('bi-tiktok');
+    expect(social.label).toBe('TikTok');
+  });
+
+  it('never overrides an explicitly chosen icon on URL change', () => {
+    const social = { id: 6, label: 'Mi canal', icon: 'bi-youtube', url: 'https://instagram.com/user', displayOrder: 1 };
+    component.onSocialUrlChange(social);
+    expect(social.icon).toBe('bi-youtube');
+    expect(social.label).toBe('Mi canal');
+  });
 });

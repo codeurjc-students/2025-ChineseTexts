@@ -9,8 +9,14 @@ import { SeoService, SITE_URL } from '../../services/seo.service';
 import { Lang, addLangPrefix } from '../../i18n/locale.util';
 import { HALL_OF_FAME_BADGES } from '../../data/hall-of-fame-badges';
 import {
+  SOCIAL_LINK_PRESETS, SocialLinkPreset, detectSocialPreset
+} from '../../data/social-link-presets';
+import {
   HallOfFameService, HallOfFameEntry, HallOfFameSocial
 } from '../../services/hall-of-fame.service';
+
+/** Icono por defecto de un link recién creado sin red elegida. */
+const GENERIC_LINK_ICON = 'bi-link-45deg';
 
 /**
  * Salón de la Fama (/hall-of-fame): tarjetas públicas de los influencers y
@@ -44,6 +50,12 @@ export class HallOfFameComponent implements OnInit {
 
   /** Catálogo cerrado de badges (chips + picker del admin). */
   readonly badgeCatalog = HALL_OF_FAME_BADGES;
+
+  /** Redes conocidas para el picker de links (icono+label prefijados). */
+  readonly socialPresets = SOCIAL_LINK_PRESETS;
+
+  /** Entrada con el picker de redes abierto (null = ninguno). */
+  socialPickerFor: number | null = null;
 
   /** Entrada con la confirmación de borrado abierta (null = ninguna). */
   confirmingId: number | null = null;
@@ -97,6 +109,7 @@ export class HallOfFameComponent implements OnInit {
     this.editing = !this.editing;
     this.feedback = '';
     this.confirmingId = null;
+    this.socialPickerFor = null;
   }
 
   // ---------- Helpers de renderizado ----------
@@ -205,15 +218,39 @@ export class HallOfFameComponent implements OnInit {
 
   // ---------- Redes sociales ----------
 
-  addSocial(e: HallOfFameEntry): void {
+  toggleSocialPicker(e: HallOfFameEntry): void {
+    this.socialPickerFor = this.socialPickerFor === e.id ? null : (e.id ?? null);
+  }
+
+  /** Crea un link: con preset (red conocida, icono+label prefijados) o genérico. */
+  addSocial(e: HallOfFameEntry, preset?: SocialLinkPreset): void {
     const draft: HallOfFameSocial = {
-      label: this.transloco.translate('hallOfFame.defaults.newLink'),
-      icon: 'bi-link-45deg', url: '', displayOrder: e.socials.length
+      label: preset?.label ?? this.transloco.translate('hallOfFame.defaults.newLink'),
+      icon: preset?.icon ?? GENERIC_LINK_ICON,
+      url: '', displayOrder: e.socials.length
     };
     this.hallOfFameService.addSocial(e.id!, draft).subscribe({
-      next: (created) => { e.socials.push(created); this.showOk(this.transloco.translate('hallOfFame.feedback.linkAdded')); },
+      next: (created) => {
+        e.socials.push(created);
+        this.socialPickerFor = null;
+        this.showOk(this.transloco.translate('hallOfFame.feedback.linkAdded'));
+      },
       error: () => this.showError(this.transloco.translate('hallOfFame.feedback.linkAddError'))
     });
+  }
+
+  /**
+   * Autodetecta la red al teclear/pegar la URL, sólo mientras el icono siga
+   * siendo el genérico — una elección explícita nunca se pisa. No persiste
+   * nada: como el resto de la fila, se guarda con su botón de guardar.
+   */
+  onSocialUrlChange(s: HallOfFameSocial): void {
+    if (s.icon !== GENERIC_LINK_ICON) return;
+    const preset = detectSocialPreset(s.url);
+    if (preset) {
+      s.icon = preset.icon;
+      s.label = preset.label;
+    }
   }
 
   saveSocial(social: HallOfFameSocial): void {

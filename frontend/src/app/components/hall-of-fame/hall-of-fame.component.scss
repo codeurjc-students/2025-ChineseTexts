@@ -133,6 +133,20 @@ $brand-soft: #fdecea;
     }
   }
 
+  // Cuadradito con el icono del link en vivo en cada fila del editor.
+  .hof-icon-preview {
+    width: 31px;
+    height: 31px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 0.375rem;
+    color: #555;
+  }
+
   .hof-confirm {
     background: $brand-soft;
     border-radius: 0.5rem;
