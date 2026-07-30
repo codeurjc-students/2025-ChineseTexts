@@ -138,6 +138,25 @@ const STATIC_SEO: Record<string, LocalizedSeo> = {
     }
   },
 
+  // Blog — served by real SSR (frontend-ssr via Caddy, like /text/*); this
+  // entry is the base/fallback and the list component refines it with live data.
+  '/blog': {
+    en: {
+      title: 'Chinese Learning Blog — Tips, Guides & Stories | ChineseReads',
+      description:
+        'Articles about learning Chinese: study tips, HSK guides, reading strategies and stories ' +
+        'from the ChineseReads community. New posts regularly.',
+      path: '/blog'
+    },
+    es: {
+      title: 'Blog para aprender chino — Consejos, guías e historias | ChineseReads',
+      description:
+        'Artículos sobre aprender chino: consejos de estudio, guías HSK, estrategias de lectura e ' +
+        'historias de la comunidad de ChineseReads. Nuevos posts con regularidad.',
+      path: '/blog'
+    }
+  },
+
   // Premium plan — public marketing page, indexable.
   '/premium': {
     en: {
@@ -248,6 +267,7 @@ const STATIC_SEO: Record<string, LocalizedSeo> = {
   '/collections': localizedPrivate('My Collections', 'Your saved Chinese vocabulary collections and flashcards.', 'Mis colecciones', 'Tus colecciones de vocabulario chino y tarjetas guardadas.', '/collections'),
   '/profile':     localizedPrivate('My Profile', 'Manage your ChineseReads account.', 'Mi perfil', 'Gestiona tu cuenta de ChineseReads.', '/profile'),
   '/admin-tools': localizedPrivate('Admin Tools', 'Content management tools for administrators.', 'Herramientas de administración', 'Herramientas de gestión de contenido para administradores.', '/admin-tools'),
+  '/blog-editor': localizedPrivate('Blog Editor', 'Write and edit blog posts.', 'Editor del blog', 'Escribe y edita los posts del blog.', '/blog-editor'),
   '/my-tools':    localizedPrivate('My Tools', 'Turn any Chinese text or photo into your own private graded reader.', 'Mis herramientas', 'Convierte cualquier texto o foto en chino en tu propia lectura graduada privada.', '/my-tools'),
   '/my-text':     localizedPrivate('My Text', 'Read your private Chinese text.', 'Mi texto', 'Lee tu texto privado en chino.', '/my-text'),
   '/ai-tools':    localizedPrivate('AI Tools', 'AI-assisted Chinese text tools.', 'Herramientas de IA', 'Herramientas de texto en chino asistidas por IA.', '/ai-tools'),
@@ -330,6 +350,27 @@ const TEXT_DEFAULT: LocalizedSeo = {
 };
 
 /**
+ * Fallback for an individual blog post before the component sets the real title.
+ * Same rationale as TEXT_DEFAULT: no `path` here — resolveSeo() fills in the
+ * page's own /blog/:slug path so the canonical is self-referential from the
+ * first render.
+ */
+const BLOG_POST_DEFAULT: LocalizedSeo = {
+  en: {
+    title: 'Blog Post | ChineseReads',
+    description:
+      'An article about learning Chinese on the ChineseReads blog: study tips, HSK guides, ' +
+      'reading strategies and community stories.'
+  },
+  es: {
+    title: 'Post del blog | ChineseReads',
+    description:
+      'Un artículo sobre aprender chino en el blog de ChineseReads: consejos de estudio, guías ' +
+      'HSK, estrategias de lectura e historias de la comunidad.'
+  }
+};
+
+/**
  * Resolves the SEO config for a given un-prefixed URL path (the caller strips any
  * `/es` prefix and passes the language separately). Query string / fragment
  * already stripped by the caller. Unknown routes resolve to the not-found
@@ -353,6 +394,12 @@ export function resolveSeo(path: string, lang: Lang = 'en'): SeoConfig {
 
   // /text/:id — the TextComponent refines this with the actual text title.
   if (/^\/text\/[^/]+$/.test(clean)) return { ...TEXT_DEFAULT[lang], path: clean };
+
+  // /blog/:slug — the BlogPostComponent refines this with the actual post title.
+  if (/^\/blog\/[^/]+$/.test(clean)) return { ...BLOG_POST_DEFAULT[lang], path: clean };
+
+  // /blog-editor/:id — private admin editor, always noindex.
+  if (/^\/blog-editor\/[^/]+$/.test(clean)) return STATIC_SEO['/blog-editor'][lang];
 
   return { ...NOT_FOUND[lang], path: clean };
 }

@@ -1,0 +1,43 @@
+<main class="blog-post container my-5">
+
+  <!-- Cargando -->
+  <div *ngIf="loading" class="text-center my-5">
+    <div class="spinner-border text-danger" role="status"></div>
+  </div>
+
+  <ng-container *ngIf="!loading && post">
+
+    <!-- Migas + admin -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+      <a class="blog-post-back" [routerLink]="'/blog' | localizeLink">
+        <i class="bi bi-arrow-left me-1"></i>{{ 'blog.back' | transloco }}
+      </a>
+      <a *ngIf="isAdmin" class="btn btn-sm btn-outline-danger rounded-pill px-3"
+         [routerLink]="('/blog-editor/' + post.id) | localizeLink">
+        <i class="bi bi-pencil-square me-1"></i>{{ 'blog.edit' | transloco }}
+      </a>
+    </div>
+
+    <!-- Cabecera del post -->
+    <article class="blog-post-article mx-auto">
+      <header class="mb-4">
+        <span *ngIf="!post.published" class="blog-draft-chip">
+          <i class="bi bi-pencil me-1"></i>{{ 'blog.draft' | transloco }}
+        </span>
+        <h1 class="blog-post-title">{{ title }}</h1>
+        <p *ngIf="excerpt" class="blog-post-excerpt">{{ excerpt }}</p>
+        <p *ngIf="post.publishedOn" class="blog-post-meta">
+          <i class="bi bi-calendar3 me-1"></i>{{ post.publishedOn | date:'longDate' }}
+        </p>
+      </header>
+
+      <img *ngIf="post.hasCover" class="blog-post-cover mb-4" [src]="coverUrl" [alt]="title" />
+
+      <!-- Cuerpo: HTML saneado en backend + sanitizador por defecto de Angular.
+           El wrapper .ql-editor activa los estilos de las clases ql-* de Quill. -->
+      <div class="ql-editor blog-post-body" [innerHTML]="contentHtml"></div>
+    </article>
+
+  </ng-container>
+
+</main>

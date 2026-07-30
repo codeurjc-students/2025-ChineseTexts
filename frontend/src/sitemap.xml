@@ -199,6 +199,24 @@
     <priority>0.6</priority>
   </url>
 
+  <!-- Blog (el listado; los posts /blog/:slug van en el sitemap dinámico /sitemap-blog.xml) -->
+  <url>
+    <loc>https://chinesereads.com/blog</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://chinesereads.com/blog"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://chinesereads.com/es/blog"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chinesereads.com/blog"/>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://chinesereads.com/es/blog</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://chinesereads.com/blog"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://chinesereads.com/es/blog"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chinesereads.com/blog"/>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
   <!-- Privacy policy -->
   <url>
     <loc>https://chinesereads.com/privacy-policy</loc>

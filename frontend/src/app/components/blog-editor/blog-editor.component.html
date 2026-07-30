@@ -1,0 +1,109 @@
+<main class="blog-editor container my-5">
+
+  <!-- Migas -->
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+    <a class="blog-editor-back" [routerLink]="'/blog' | localizeLink">
+      <i class="bi bi-arrow-left me-1"></i>{{ 'blog.back' | transloco }}
+    </a>
+    <h1 class="blog-editor-title m-0">
+      <i class="bi bi-pencil-square me-2"></i>
+      {{ (id != null ? 'blog.editor.headingEdit' : 'blog.editor.heading') | transloco }}
+    </h1>
+  </div>
+
+  <!-- Feedback -->
+  <div *ngIf="feedback" class="alert" [class.alert-success]="!feedbackError" [class.alert-danger]="feedbackError">
+    {{ feedback }}
+  </div>
+
+  <!-- Cargando -->
+  <div *ngIf="loading" class="text-center my-5">
+    <div class="spinner-border text-danger" role="status"></div>
+  </div>
+
+  <div *ngIf="!loading" class="blog-editor-form">
+
+    <!-- Pestañas de idioma -->
+    <ul class="nav nav-tabs mb-3">
+      <li class="nav-item">
+        <button class="nav-link" [class.active]="activeTab === 'en'" (click)="activeTab = 'en'">
+          {{ 'blog.editor.tabEn' | transloco }}
+        </button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link" [class.active]="activeTab === 'es'" (click)="activeTab = 'es'">
+          {{ 'blog.editor.tabEs' | transloco }}
+        </button>
+      </li>
+    </ul>
+
+    <!-- EN -->
+    <div [hidden]="activeTab !== 'en'" class="d-flex flex-column gap-2 mb-3">
+      <input class="form-control fw-bold" [(ngModel)]="titleEn" placeholder="{{ 'blog.editor.ph.titleEn' | transloco }}" />
+      <textarea class="form-control" rows="2" [(ngModel)]="excerptEn" placeholder="{{ 'blog.editor.ph.excerptEn' | transloco }}"></textarea>
+      <quill-editor *ngIf="isBrowser" [(ngModel)]="contentEn" [modules]="quillModules"
+                    format="html" (onEditorCreated)="onEditorCreated($event)"
+                    placeholder="{{ 'blog.editor.ph.contentEn' | transloco }}"></quill-editor>
+    </div>
+
+    <!-- ES -->
+    <div [hidden]="activeTab !== 'es'" class="d-flex flex-column gap-2 mb-3">
+      <input class="form-control fw-bold" [(ngModel)]="titleEs" placeholder="{{ 'blog.editor.ph.titleEs' | transloco }}" />
+      <textarea class="form-control" rows="2" [(ngModel)]="excerptEs" placeholder="{{ 'blog.editor.ph.excerptEs' | transloco }}"></textarea>
+      <quill-editor *ngIf="isBrowser" [(ngModel)]="contentEs" [modules]="quillModules"
+                    format="html" (onEditorCreated)="onEditorCreated($event)"
+                    placeholder="{{ 'blog.editor.ph.contentEs' | transloco }}"></quill-editor>
+    </div>
+
+    <!-- Slug -->
+    <div class="mb-3">
+      <label class="small fw-semibold text-muted d-block mb-1">{{ 'blog.editor.slug' | transloco }}</label>
+      <input class="form-control" [(ngModel)]="slug" placeholder="{{ 'blog.editor.ph.slug' | transloco }}" />
+    </div>
+
+    <!-- Portada -->
+    <div class="mb-3">
+      <label class="small fw-semibold text-muted d-block mb-1">{{ 'blog.editor.cover' | transloco }}</label>
+      <img *ngIf="hasCover" class="blog-editor-cover mb-2" [src]="coverUrl" alt="" />
+      <p *ngIf="id == null" class="small text-muted">{{ 'blog.editor.coverHint' | transloco }}</p>
+      <div *ngIf="id != null" class="d-flex gap-2 flex-wrap">
+        <label class="btn btn-sm btn-outline-danger rounded-pill px-3 mb-0">
+          <i class="bi bi-image me-1"></i>{{ 'blog.editor.uploadCover' | transloco }}
+          <input type="file" accept="image/*" hidden (change)="onCoverSelected($event)" />
+        </label>
+        <button *ngIf="hasCover" class="btn btn-sm btn-outline-secondary rounded-pill px-3" (click)="removeCover()">
+          <i class="bi bi-x-circle me-1"></i>{{ 'blog.editor.removeCover' | transloco }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Publicado -->
+    <div class="form-check form-switch mb-4">
+      <input class="form-check-input" type="checkbox" id="publishedSwitch" [(ngModel)]="published" />
+      <label class="form-check-label fw-semibold" for="publishedSwitch">
+        {{ 'blog.editor.published' | transloco }}
+      </label>
+    </div>
+
+    <!-- Acciones -->
+    <div class="d-flex gap-2 flex-wrap align-items-center">
+      <button class="btn btn-danger rounded-pill px-4" (click)="save()" [disabled]="saving">
+        <i class="bi bi-save me-1"></i>{{ 'blog.editor.save' | transloco }}
+      </button>
+      <button *ngIf="id != null && !confirmingDelete" class="btn btn-outline-danger rounded-pill px-3" (click)="askDelete()">
+        <i class="bi bi-trash me-1"></i>{{ 'blog.editor.delete' | transloco }}
+      </button>
+    </div>
+
+    <!-- Confirmación de borrado -->
+    <div *ngIf="confirmingDelete" class="blog-editor-confirm mt-3">
+      <span><i class="bi bi-exclamation-triangle-fill me-1"></i>{{ 'blog.editor.confirmDelete' | transloco }}</span>
+      <div class="d-flex gap-2 mt-2">
+        <button class="btn btn-sm btn-danger rounded-pill px-3" (click)="confirmDelete()">{{ 'blog.editor.deleteYes' | transloco }}</button>
+        <button class="btn btn-sm btn-outline-secondary rounded-pill px-3" (click)="cancelDelete()">{{ 'blog.editor.cancel' | transloco }}</button>
+      </div>
+    </div>
+
+  </div>
+
+</main>

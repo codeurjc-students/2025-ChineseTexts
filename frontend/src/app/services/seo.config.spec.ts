@@ -24,4 +24,18 @@ describe('resolveSeo', () => {
   it('still falls back to the texts listing for unknown HSK levels', () => {
     expect(resolveSeo('/texts/HSK9', 'en').path).toBe('/texts');
   });
+
+  it('resolves /blog statically and /blog/:slug with a self-referential indexable fallback', () => {
+    expect(resolveSeo('/blog', 'en').title).toContain('Blog');
+    expect(resolveSeo('/blog', 'en').noindex).toBeUndefined();
+
+    const post = resolveSeo('/blog/my-first-post', 'en');
+    expect(post.noindex).toBeUndefined();
+    expect(post.path).toBe('/blog/my-first-post');
+  });
+
+  it('keeps the blog editor noindex in both forms (/blog-editor and /blog-editor/:id)', () => {
+    expect(resolveSeo('/blog-editor', 'en').noindex).toBeTrue();
+    expect(resolveSeo('/blog-editor/5', 'es').noindex).toBeTrue();
+  });
 });

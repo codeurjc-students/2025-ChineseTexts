@@ -17,6 +17,12 @@ export interface SeoConfig {
   image?: string;
   /** Private / authenticated pages should not be indexed by search engines. */
   noindex?: boolean;
+  /** Open Graph object type; blog posts use 'article'. Defaults to 'website'. */
+  type?: 'website' | 'article';
+  /** ISO date of first publication — emitted as article:published_time when type is 'article'. */
+  publishedTime?: string;
+  /** ISO date of last modification — emitted as article:modified_time when type is 'article'. */
+  modifiedTime?: string;
 }
 
 export const SITE_URL = 'https://chinesereads.com';
@@ -69,13 +75,26 @@ export class SeoService {
     this.meta.updateTag({ name: 'googlebot', content: robots });
 
     // Open Graph
-    this.meta.updateTag({ property: 'og:type', content: 'website' });
+    this.meta.updateTag({ property: 'og:type', content: config.type ?? 'website' });
     this.meta.updateTag({ property: 'og:site_name', content: SITE_NAME });
     this.meta.updateTag({ property: 'og:title', content: title });
     this.meta.updateTag({ property: 'og:description', content: description });
     this.meta.updateTag({ property: 'og:url', content: url });
     this.meta.updateTag({ property: 'og:image', content: image });
     this.meta.updateTag({ property: 'og:locale', content: OG_LOCALE[lang] });
+
+    // Article dates (blog posts). Removed when absent so they can never leak
+    // into the next route — same policy as the per-page JSON-LD clear below.
+    if (config.type === 'article' && config.publishedTime) {
+      this.meta.updateTag({ property: 'article:published_time', content: config.publishedTime });
+    } else {
+      this.meta.removeTag("property='article:published_time'");
+    }
+    if (config.type === 'article' && config.modifiedTime) {
+      this.meta.updateTag({ property: 'article:modified_time', content: config.modifiedTime });
+    } else {
+      this.meta.removeTag("property='article:modified_time'");
+    }
 
     // Twitter Card
     this.meta.updateTag({ name: 'twitter:card', content: 'summary_large_image' });
