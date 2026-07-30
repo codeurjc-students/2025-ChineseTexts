@@ -123,16 +123,31 @@
                 <label class="small fw-semibold text-muted d-block mb-1">{{ 'hallOfFame.linksHeading' | transloco }}</label>
                 <div class="d-flex flex-column gap-2">
                   <div *ngFor="let s of e.socials" class="d-flex flex-wrap gap-2 align-items-center">
+                    <!-- Preview en vivo del icono (también para clases custom). -->
+                    <span class="hof-icon-preview"><i class="bi {{ s.icon }}"></i></span>
                     <input class="form-control form-control-sm" style="max-width: 8rem;" [(ngModel)]="s.label" placeholder="{{ 'hallOfFame.ph.linkLabel' | transloco }}" />
                     <input class="form-control form-control-sm" style="max-width: 10rem;" [(ngModel)]="s.icon" placeholder="{{ 'hallOfFame.ph.linkIcon' | transloco }}" />
-                    <input class="form-control form-control-sm flex-grow-1" [(ngModel)]="s.url" placeholder="{{ 'hallOfFame.ph.linkUrl' | transloco }}" />
+                    <input class="form-control form-control-sm flex-grow-1" [(ngModel)]="s.url" (ngModelChange)="onSocialUrlChange(s)" placeholder="{{ 'hallOfFame.ph.linkUrl' | transloco }}" />
                     <button class="btn btn-sm btn-danger rounded-pill px-2" (click)="saveSocial(s)"><i class="bi bi-save"></i></button>
                     <button class="btn btn-sm btn-outline-danger rounded-pill px-2" (click)="deleteSocial(e, s)"><i class="bi bi-trash"></i></button>
                   </div>
                 </div>
-                <button class="btn btn-sm btn-outline-danger rounded-pill px-3 mt-2" (click)="addSocial(e)">
+                <button class="btn btn-sm btn-outline-danger rounded-pill px-3 mt-2" (click)="toggleSocialPicker(e)">
                   <i class="bi bi-plus-lg me-1"></i>{{ 'hallOfFame.addLink' | transloco }}
                 </button>
+
+                <!-- Picker de redes: chip por red conocida + enlace personalizado. -->
+                <div *ngIf="socialPickerFor === e.id" class="mt-2">
+                  <p class="small text-muted mb-1">{{ 'hallOfFame.pickNetwork' | transloco }}</p>
+                  <div class="hof-badge-picker">
+                    <button type="button" class="hof-chip" *ngFor="let p of socialPresets" (click)="addSocial(e, p)">
+                      <i class="bi {{ p.icon }} me-1"></i>{{ p.label }}
+                    </button>
+                    <button type="button" class="hof-chip" (click)="addSocial(e)">
+                      <i class="bi bi-link-45deg me-1"></i>{{ 'hallOfFame.customLink' | transloco }}
+                    </button>
+                  </div>
+                </div>
               </div>
 
               <!-- Acciones -->

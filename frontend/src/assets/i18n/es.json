@@ -714,6 +714,8 @@
     "badgesHeading": "Insignias",
     "linksHeading": "Enlaces",
     "addLink": "Añadir enlace",
+    "pickNetwork": "Elige una red o añade un enlace personalizado:",
+    "customLink": "Enlace personalizado",
     "ph": {
       "name": "Nombre",
       "slug": "Slug (identificador para URL, opcional)",
