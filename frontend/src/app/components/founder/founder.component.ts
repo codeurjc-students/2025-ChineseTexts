@@ -1,5 +1,5 @@
-import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
@@ -45,18 +45,17 @@ export class FounderComponent implements OnInit {
   constructor(
     private founderService: FounderService,
     public login: LoginService,
-    private transloco: TranslocoService,
-    @Inject(PLATFORM_ID) private platformId: Object
+    private transloco: TranslocoService
   ) {}
 
   ngOnInit(): void {
-    // El contenido es dinámico: sólo cargamos en el navegador (evita depender
-    // del backend durante el prerender; el SEO ya se sirve por meta estáticas).
-    if (isPlatformBrowser(this.platformId)) {
-      this.load();
-    } else {
-      this.loading = false;
-    }
+    // Sin guard de plataforma: la página se sirve por SSR real (Caddy
+    // @ssrPages → frontend-ssr, como el Hall of Fame), así el HTML servido
+    // lleva el CV completo y Google lo ve. El error handler de load() deja
+    // estado vacío sin excepción, así que el prerender del build (sin
+    // backend) sigue siendo seguro — y su fichero se retira igualmente en
+    // scripts/remove-ssr-prerender.mjs.
+    this.load();
   }
 
   get isAdmin(): boolean {

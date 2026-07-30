@@ -21,17 +21,21 @@ chinesereads.com, www.chinesereads.com {
         reverse_proxy backend:8080
     }
 
-    # Páginas públicas con contenido dinámico (textos /text/:id, Hall of Fame
-    # y blog /blog + /blog/:slug): son las únicas que se renderizan en el
-    # servidor (contenedor frontend-ssr). Así Google recibe el HTML completo
+    # Páginas públicas con contenido dinámico: TODA página que muestra datos
+    # de la base de datos se renderiza en el servidor (contenedor
+    # frontend-ssr) — textos (/text/:id y los listados /texts), blog (lista y
+    # posts), Hall of Fame y founder. Así Google recibe el HTML completo
     # (contenido, título y metas propios) en la primera pasada, en vez del
-    # shell vacío del SPA. El resto de páginas no cambia: prerender y estáticos
-    # como siempre. Los assets (*.js, *.css…) no entran aquí: los pide el
+    # shell vacío del SPA o de una foto prerenderizada congelada. Las páginas
+    # de contenido fijo (home, /learn, legales…) siguen como prerender
+    # estático. Los assets (*.js, *.css…) no entran aquí: los pide el
     # navegador por su ruta real y los sirve el handle estático de abajo. Los
     # paths sin * son match exacto (p. ej. /hall-of-fame/otra-cosa NO entra y
     # cae al shell SPA). /blog-editor queda FUERA a propósito: es la página
     # privada del admin (shell SPA + noindex; Quill solo corre en navegador).
-    @ssrPages path /text/* /es/text/* /hall-of-fame /es/hall-of-fame /blog /es/blog /blog/* /es/blog/*
+    # Sincronía: cada ruta SSR de path fijo debe estar también en
+    # frontend/scripts/remove-ssr-prerender.mjs (ver ese script).
+    @ssrPages path /text/* /es/text/* /texts /es/texts /texts/* /es/texts/* /hall-of-fame /es/hall-of-fame /blog /es/blog /blog/* /es/blog/* /founder /es/founder
     handle @ssrPages {
         # HTML dinámico: revalidar siempre, igual que el HTML estático de abajo.
         header Cache-Control "no-cache"
