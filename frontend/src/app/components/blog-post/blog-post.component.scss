@@ -57,15 +57,26 @@ $brand-soft: #fdecea;
     font-size: 1.05rem;
     line-height: 1.7;
     color: #333;
+    // .ql-editor trae white-space:pre-wrap (necesario en el editor, no aquí):
+    // en lectura el flujo normal parte por palabras y no pinta blancos raros.
+    white-space: normal;
+
+    // Separación de párrafos estilo Medium (.ql-editor los deja a margin:0).
+    p {
+      margin: 0 0 1rem;
+    }
 
     h2, h3 {
       color: #c0392b;
       font-weight: 700;
       margin-top: 1.75rem;
+      margin-bottom: 0.75rem;
     }
 
+    // Como en Medium: todas las imágenes del cuerpo a ancho completo de la
+    // columna de lectura — tamaños originales dispares quedan uniformes.
     img {
-      max-width: 100%;
+      width: 100%;
       height: auto;
       border-radius: 8px;
       margin: 1rem 0;

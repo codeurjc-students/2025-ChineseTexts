@@ -242,6 +242,21 @@ public class BlogApiTest {
     }
 
     @Test
+    @DisplayName("Quill export quirks are normalized: &nbsp; becomes a space and blank lines survive")
+    public void quillExportIsNormalized() {
+        // El exportador de Quill 2 emite todos los espacios como &nbsp; (rompe el
+        // ajuste de línea por palabras) y las líneas en blanco como <p></p>.
+        int id = createPost(Map.of("titleEn", "Typography",
+                "contentEn", "<p>Hola&nbsp;mundo&nbsp;bonito</p><p></p><p>Segundo</p>"));
+
+        given().cookies(adminCookies).when().get("/api/blog/" + id)
+                .then().statusCode(200)
+                .body("contentEn", containsString("Hola mundo bonito"))
+                .body("contentEn", not(containsString("&nbsp;")))
+                .body("contentEn", containsString("<p><br></p>"));
+    }
+
+    @Test
     @DisplayName("Cover lifecycle: upload (admin), public GET, delete → 404")
     public void coverLifecycle() {
         int id = createPost(Map.of("titleEn", "With cover", "published", true));

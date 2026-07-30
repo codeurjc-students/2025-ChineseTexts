@@ -93,11 +93,17 @@ export class BlogPostComponent implements OnInit {
     return (this.es ? (p.excerptEs || p.excerptEn) : (p.excerptEn || p.excerptEs)) || '';
   }
 
-  /** Cuerpo en el idioma activo con fallback (HTML saneado en el backend). */
+  /**
+   * Cuerpo en el idioma activo con fallback (HTML saneado en el backend).
+   * El replace de &nbsp; cubre los posts guardados ANTES de que el saneado
+   * normalizara los espacios del exportador de Quill 2 (que convertía todos
+   * los espacios en nbsp e impedía partir las líneas por palabras).
+   */
   get contentHtml(): string {
     const p = this.post;
     if (!p) return '';
-    return (this.es ? (p.contentEs || p.contentEn) : (p.contentEn || p.contentEs)) || '';
+    const html = (this.es ? (p.contentEs || p.contentEn) : (p.contentEn || p.contentEs)) || '';
+    return html.replace(/&nbsp;/g, ' ');
   }
 
   get coverUrl(): string {

@@ -27,31 +27,31 @@
     {{ 'blog.empty' | transloco }}
   </p>
 
-  <!-- Tarjetas -->
-  <div *ngIf="!loading" class="row g-4">
-    <div *ngFor="let p of posts" class="col-12 col-md-6 col-lg-4">
-      <article class="blog-card h-100">
-        <a class="blog-card-link" [routerLink]="('/blog/' + p.slug) | localizeLink">
-          <img *ngIf="p.hasCover" class="blog-cover" [src]="coverUrl(p)" [alt]="titleOf(p)" loading="lazy" />
-          <div class="blog-card-body">
-            <span *ngIf="!p.published" class="blog-draft-chip">
-              <i class="bi bi-pencil me-1"></i>{{ 'blog.draft' | transloco }}
-            </span>
-            <h2 class="blog-card-title">{{ titleOf(p) }}</h2>
-            <p *ngIf="excerptOf(p)" class="blog-card-excerpt">{{ excerptOf(p) }}</p>
-            <div class="blog-card-meta">
-              <span *ngIf="p.publishedOn"><i class="bi bi-calendar3 me-1"></i>{{ p.publishedOn | date:'longDate' }}</span>
-              <span class="blog-read-more">{{ 'blog.readMore' | transloco }} <i class="bi bi-arrow-right"></i></span>
-            </div>
+  <!-- Tarjetas: una por línea, estilo Medium (texto a la izquierda, portada
+       como miniatura a la derecha). Un borrador enlaza al editor (su URL
+       pública no existe todavía). -->
+  <div *ngIf="!loading" class="blog-feed mx-auto d-flex flex-column gap-4">
+    <article *ngFor="let p of posts" class="blog-card">
+      <a class="blog-card-link" [routerLink]="cardLink(p) | localizeLink">
+        <div class="blog-card-body">
+          <span *ngIf="!p.published" class="blog-draft-chip">
+            <i class="bi bi-pencil me-1"></i>{{ 'blog.draft' | transloco }}
+          </span>
+          <h2 class="blog-card-title">{{ titleOf(p) }}</h2>
+          <p *ngIf="excerptOf(p)" class="blog-card-excerpt">{{ excerptOf(p) }}</p>
+          <div class="blog-card-meta">
+            <span *ngIf="p.publishedOn"><i class="bi bi-calendar3 me-1"></i>{{ p.publishedOn | date:'longDate' }}</span>
+            <span class="blog-read-more">{{ 'blog.readMore' | transloco }} <i class="bi bi-arrow-right"></i></span>
           </div>
-        </a>
-        <div *ngIf="isAdmin" class="blog-card-admin">
-          <a class="btn btn-sm btn-outline-danger rounded-pill px-3" [routerLink]="('/blog-editor/' + p.id) | localizeLink">
-            <i class="bi bi-pencil-square me-1"></i>{{ 'blog.edit' | transloco }}
-          </a>
         </div>
-      </article>
-    </div>
+        <img *ngIf="p.hasCover" class="blog-cover" [src]="coverUrl(p)" [alt]="titleOf(p)" loading="lazy" />
+      </a>
+      <div *ngIf="isAdmin" class="blog-card-admin">
+        <a class="btn btn-sm btn-outline-danger rounded-pill px-3" [routerLink]="('/blog-editor/' + p.id) | localizeLink">
+          <i class="bi bi-pencil-square me-1"></i>{{ 'blog.edit' | transloco }}
+        </a>
+      </div>
+    </article>
   </div>
 
 </main>

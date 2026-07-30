@@ -69,6 +69,11 @@ describe('BlogListComponent', () => {
     expect(jsonLd['@type']).toBe('Blog');
   });
 
+  it('cards of drafts link to the editor (their public URL would 404) and published ones to the post', () => {
+    expect(component.cardLink({ ...mockPost, published: true })).toBe('/blog/learn-hsk1-fast');
+    expect(component.cardLink({ ...mockPost, published: false })).toBe('/blog-editor/1');
+  });
+
   it('on error it still applies the base SEO with an empty state (prerender safety)', () => {
     const updateSpy = spyOn(seo, 'update').and.callThrough();
     const jsonLdSpy = spyOn(seo, 'setPageJsonLd').and.callThrough();

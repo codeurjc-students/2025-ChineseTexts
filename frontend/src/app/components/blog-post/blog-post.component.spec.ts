@@ -73,6 +73,12 @@ describe('BlogPostComponent', () => {
     expect(component.title).toBe('My first post');
   });
 
+  it('normalizes legacy &nbsp;-encoded spaces when rendering the body', () => {
+    // Posts guardados antes de que el backend normalizara el export de Quill.
+    component.post = { ...mockPost, contentEn: '<p>Hola&nbsp;mundo&nbsp;bonito</p>' };
+    expect(component.contentHtml).toBe('<p>Hola mundo bonito</p>');
+  });
+
   it('applies article SEO and the BlogPosting JSON-LD after update()', () => {
     const updateSpy = spyOn(seo, 'update').and.callThrough();
     const jsonLdSpy = spyOn(seo, 'setPageJsonLd').and.callThrough();

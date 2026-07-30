@@ -220,6 +220,13 @@ public class BlogService {
      * Sanea el HTML del editor: safelist estricta + dos postfiltros — las
      * imágenes solo pueden apuntar a /api/blog/images/{id} (fuera data:,
      * externas…) y del atributo class solo sobreviven clases ql-*.
+     *
+     * Además normaliza dos defectos del exportador HTML de Quill 2 que rompen
+     * la tipografía: convierte TODOS los espacios en &amp;nbsp; (el navegador
+     * no puede partir líneas por palabras y las corta por cualquier sitio) y
+     * exporta las líneas en blanco como &lt;p&gt;&lt;/p&gt; vacíos que se
+     * colapsan (los saltos de línea "desaparecen") — aquí vuelven a ser
+     * espacios normales y &lt;p&gt;&lt;br&gt;&lt;/p&gt; visibles.
      */
     private String sanitize(String html) {
         if (html == null) {
@@ -247,7 +254,16 @@ public class BlogService {
                 el.attr("class", String.join(" ", kept));
             }
         }
-        return doc.body().html();
+        // Párrafo vacío (línea en blanco del editor) → <p><br></p> renderizable.
+        for (Element p : doc.select("p")) {
+            if (p.select("br, img").isEmpty() && p.text().strip().isEmpty()) {
+                p.empty().appendElement("br");
+            }
+        }
+        // jsoup serializa el carácter nbsp como la ENTIDAD &nbsp;, así que se
+        // normaliza sobre la salida ya serializada. Un "&nbsp;" literal escrito
+        // por el autor sale como &amp;nbsp; y no coincide: no se toca.
+        return doc.body().html().replace("&nbsp;", " ");
     }
 
     // ---------- Slug (patrón Hall of Fame) ----------

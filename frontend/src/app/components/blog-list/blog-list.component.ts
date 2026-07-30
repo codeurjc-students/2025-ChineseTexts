@@ -96,6 +96,14 @@ export class BlogListComponent implements OnInit {
     return this.blogService.coverUrl(p.id);
   }
 
+  /**
+   * Destino de la tarjeta: un borrador no tiene URL pública (daría 404), así
+   * que su tarjeta lleva al editor; los publicados, a su página /blog/:slug.
+   */
+  cardLink(p: BlogPostSummary): string {
+    return p.published ? `/blog/${p.slug}` : `/blog-editor/${p.id}`;
+  }
+
   // ---------- SEO ----------
 
   /**
