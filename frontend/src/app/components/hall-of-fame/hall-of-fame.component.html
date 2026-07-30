@@ -47,7 +47,10 @@
       </div>
 
       <!-- ============ Tarjetas ============ -->
-      <div class="row g-4">
+      <!-- justify-content-center: con pocos miembros las tarjetas quedan
+           centradas (intencionado, no huérfano); con la parrilla llena de
+           filas completas no cambia nada. -->
+      <div class="row g-4 justify-content-center">
         <div *ngFor="let e of entries; let i = index"
              class="col-12" [class.col-md-6]="!editing" [class.col-lg-4]="!editing">
           <article class="hof-card h-100">
