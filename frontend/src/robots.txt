@@ -12,6 +12,7 @@ Disallow: /collections
 Disallow: /admin-tools
 Disallow: /ai-tools
 Disallow: /upload-text
+Disallow: /blog-editor
 Disallow: /success
 Disallow: /error
 Disallow: /es/profile
@@ -19,8 +20,10 @@ Disallow: /es/collections
 Disallow: /es/admin-tools
 Disallow: /es/ai-tools
 Disallow: /es/upload-text
+Disallow: /es/blog-editor
 Disallow: /es/success
 Disallow: /es/error
 
 Sitemap: https://chinesereads.com/sitemap.xml
 Sitemap: https://chinesereads.com/sitemap-texts.xml
+Sitemap: https://chinesereads.com/sitemap-blog.xml

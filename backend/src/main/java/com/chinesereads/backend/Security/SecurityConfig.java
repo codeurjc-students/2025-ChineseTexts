@@ -67,6 +67,13 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/api/health", "/api/health/*").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/founder/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/hall-of-fame/**").permitAll()
+                // Blog: lectura pública SOLO de los endpoints exactos (lista publicada,
+                // detalle por slug, portada e imágenes inline). El resto del dominio
+                // (/all, /{id}, escrituras) cae en el catch-all ADMIN de más abajo.
+                .requestMatchers(HttpMethod.GET, "/api/blog").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/blog/slug/*").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/blog/*/cover").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/blog/images/*").permitAll()
                 // One-click email unsubscribe: the visitor comes from a mail client with
                 // no session; the token IS the authentication. Must precede the ADMIN
                 // GET /api/users/* wildcard below (first match wins).
@@ -114,6 +121,11 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/api/hall-of-fame/**").hasAnyRole("ADMIN")
                 .requestMatchers(HttpMethod.PUT, "/api/hall-of-fame/**").hasAnyRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/api/hall-of-fame/**").hasAnyRole("ADMIN")
+                // Blog: catch-all ADMIN para todo lo demás no listado como público arriba
+                // (GET /all y /{id} del editor, POST/PUT/DELETE, subida de imágenes).
+                // Blindaje deliberado: la cadena cierra en anyRequest().permitAll(),
+                // así que un endpoint nuevo del blog sin matcher NUNCA queda público.
+                .requestMatchers("/api/blog/**").hasAnyRole("ADMIN")
                 // Stripe: the webhook is called by Stripe (unauthenticated; verified by
                 // signature) so it must be public — it MUST precede the authed matcher below.
                 .requestMatchers(HttpMethod.POST, "/api/premium/webhook").permitAll()

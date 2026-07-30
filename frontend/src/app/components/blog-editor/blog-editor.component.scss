@@ -1,0 +1,50 @@
+$brand: #c0392b;
+$brand-soft: #fdecea;
+
+.blog-editor {
+  max-width: 900px;
+
+  .blog-editor-back {
+    color: $brand;
+    font-weight: 600;
+    text-decoration: none;
+
+    &:hover { text-decoration: underline; }
+  }
+
+  .blog-editor-title {
+    color: $brand;
+    font-weight: 700;
+    font-size: 1.5rem;
+  }
+
+  .nav-tabs .nav-link {
+    color: #555;
+
+    &.active {
+      color: $brand;
+      font-weight: 600;
+    }
+  }
+
+  // Altura de escritura cómoda para el cuerpo del post.
+  ::ng-deep .ql-container {
+    min-height: 320px;
+    font-size: 1rem;
+  }
+
+  .blog-editor-cover {
+    max-width: 320px;
+    border-radius: 8px;
+    display: block;
+  }
+
+  .blog-editor-confirm {
+    background: $brand-soft;
+    border-radius: 0.5rem;
+    padding: 0.75rem 1rem;
+    color: $brand;
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+}

@@ -21,6 +21,7 @@
     "nav": {
       "toggle": "Alternar navegación",
       "hallOfFame": "Salón de la Fama",
+      "blog": "Blog",
       "myCollections": "Mis colecciones",
       "myTools": "Mis herramientas",
       "adminTools": "Administración",
@@ -775,6 +776,54 @@
     "community": {
       "label": "Alma de la comunidad",
       "desc": "Da vida a la comunidad de ChineseReads"
+    }
+  },
+  "blog": {
+    "title": "Blog de ChineseReads",
+    "subtitle": "Consejos, guías e historias sobre aprender chino",
+    "empty": "Aún no hay posts — ¡el primero llegará pronto!",
+    "readMore": "Leer más",
+    "back": "Volver al blog",
+    "draft": "Borrador",
+    "newPost": "Nuevo post",
+    "edit": "Editar",
+    "showAll": "Ver también borradores",
+    "showPublished": "Ver solo publicados",
+    "editor": {
+      "heading": "Nuevo post",
+      "headingEdit": "Editar post",
+      "tabEn": "English",
+      "tabEs": "Español",
+      "slug": "Slug (identificador para URL)",
+      "cover": "Imagen de portada",
+      "coverHint": "Guarda el post primero para poder subir la portada.",
+      "uploadCover": "Subir portada",
+      "removeCover": "Quitar portada",
+      "published": "Publicado (visible para todos e incluido en el sitemap)",
+      "save": "Guardar",
+      "delete": "Eliminar",
+      "confirmDelete": "¿Eliminar este post? Sus imágenes insertadas también se borrarán.",
+      "deleteYes": "Sí, eliminar",
+      "cancel": "Cancelar",
+      "ph": {
+        "titleEn": "Title in English",
+        "titleEs": "Título en español",
+        "excerptEn": "Short summary in English (card + search results)",
+        "excerptEs": "Resumen corto en español (tarjeta y buscadores)",
+        "contentEn": "Write your post in English…",
+        "contentEs": "Escribe tu post en español…",
+        "slug": "Se deriva del título si se deja vacío"
+      },
+      "feedback": {
+        "saved": "Post guardado.",
+        "saveError": "No se pudo guardar el post.",
+        "deleteError": "No se pudo eliminar el post.",
+        "loadError": "No se pudo cargar el post.",
+        "coverUpdated": "Portada actualizada.",
+        "coverRemoved": "Portada eliminada.",
+        "coverError": "No se pudo actualizar la portada.",
+        "imageError": "No se pudo subir la imagen."
+      }
     }
   },
   "profile": {

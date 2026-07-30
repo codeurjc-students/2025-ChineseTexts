@@ -1,0 +1,57 @@
+<main class="blog container my-5">
+
+  <!-- Barra admin -->
+  <div *ngIf="isAdmin" class="blog-adminbar d-flex flex-wrap gap-2 align-items-center mb-4">
+    <a class="btn btn-sm btn-danger rounded-pill px-3" [routerLink]="'/blog-editor' | localizeLink">
+      <i class="bi bi-plus-circle me-1"></i>{{ 'blog.newPost' | transloco }}
+    </a>
+    <button class="btn btn-sm btn-outline-secondary rounded-pill px-3" (click)="toggleAll()">
+      <i class="bi me-1" [class.bi-eye]="!showingAll" [class.bi-eye-slash]="showingAll"></i>
+      {{ (showingAll ? 'blog.showPublished' : 'blog.showAll') | transloco }}
+    </button>
+  </div>
+
+  <!-- Cabecera -->
+  <header class="text-center mb-5">
+    <h1 class="blog-title"><i class="bi bi-journal-text me-2"></i>{{ 'blog.title' | transloco }}</h1>
+    <p class="blog-subtitle">{{ 'blog.subtitle' | transloco }}</p>
+  </header>
+
+  <!-- Cargando -->
+  <div *ngIf="loading" class="text-center my-5">
+    <div class="spinner-border text-danger" role="status"></div>
+  </div>
+
+  <!-- Vacío -->
+  <p *ngIf="!loading && posts.length === 0" class="text-center text-muted my-5">
+    {{ 'blog.empty' | transloco }}
+  </p>
+
+  <!-- Tarjetas -->
+  <div *ngIf="!loading" class="row g-4">
+    <div *ngFor="let p of posts" class="col-12 col-md-6 col-lg-4">
+      <article class="blog-card h-100">
+        <a class="blog-card-link" [routerLink]="('/blog/' + p.slug) | localizeLink">
+          <img *ngIf="p.hasCover" class="blog-cover" [src]="coverUrl(p)" [alt]="titleOf(p)" loading="lazy" />
+          <div class="blog-card-body">
+            <span *ngIf="!p.published" class="blog-draft-chip">
+              <i class="bi bi-pencil me-1"></i>{{ 'blog.draft' | transloco }}
+            </span>
+            <h2 class="blog-card-title">{{ titleOf(p) }}</h2>
+            <p *ngIf="excerptOf(p)" class="blog-card-excerpt">{{ excerptOf(p) }}</p>
+            <div class="blog-card-meta">
+              <span *ngIf="p.publishedOn"><i class="bi bi-calendar3 me-1"></i>{{ p.publishedOn | date:'longDate' }}</span>
+              <span class="blog-read-more">{{ 'blog.readMore' | transloco }} <i class="bi bi-arrow-right"></i></span>
+            </div>
+          </div>
+        </a>
+        <div *ngIf="isAdmin" class="blog-card-admin">
+          <a class="btn btn-sm btn-outline-danger rounded-pill px-3" [routerLink]="('/blog-editor/' + p.id) | localizeLink">
+            <i class="bi bi-pencil-square me-1"></i>{{ 'blog.edit' | transloco }}
+          </a>
+        </div>
+      </article>
+    </div>
+  </div>
+
+</main>

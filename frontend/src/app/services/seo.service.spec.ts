@@ -108,4 +108,32 @@ describe('SeoService', () => {
     service.update({ title: 'T', description: 'D', path: '/texts' });
     expect(doc.getElementById('seo-page-jsonld')).toBeNull();
   });
+
+  it('should default og:type to website', () => {
+    service.update({ title: 'T', description: 'D', path: '/texts' });
+    expect(meta.getTag("property='og:type'")?.content).toBe('website');
+  });
+
+  it('should emit og:type article with its dates for blog posts', () => {
+    service.update({
+      title: 'Post', description: 'D', path: '/blog/my-post',
+      type: 'article', publishedTime: '2026-07-01', modifiedTime: '2026-07-15'
+    });
+
+    expect(meta.getTag("property='og:type'")?.content).toBe('article');
+    expect(meta.getTag("property='article:published_time'")?.content).toBe('2026-07-01');
+    expect(meta.getTag("property='article:modified_time'")?.content).toBe('2026-07-15');
+  });
+
+  it('should remove the article:* tags on the next non-article update so they never leak', () => {
+    service.update({
+      title: 'Post', description: 'D', path: '/blog/my-post',
+      type: 'article', publishedTime: '2026-07-01', modifiedTime: '2026-07-15'
+    });
+    service.update({ title: 'Home', description: 'D', path: '/' });
+
+    expect(meta.getTag("property='og:type'")?.content).toBe('website');
+    expect(meta.getTag("property='article:published_time'")).toBeNull();
+    expect(meta.getTag("property='article:modified_time'")).toBeNull();
+  });
 });

@@ -14,6 +14,8 @@ import { PrivacyPolicyComponent } from './components/privacy-policy/privacy-poli
 import { TermsOfUseComponent } from './components/terms-of-use/terms-of-use.component';
 import { FounderComponent } from './components/founder/founder.component';
 import { HallOfFameComponent } from './components/hall-of-fame/hall-of-fame.component';
+import { BlogListComponent } from './components/blog-list/blog-list.component';
+import { BlogPostComponent } from './components/blog-post/blog-post.component';
 import { MyToolsComponent } from './components/my-tools/my-tools.component';
 import { MyTextReaderComponent } from './components/my-text-reader/my-text-reader.component';
 import { PremiumComponent } from './components/premium/premium.component';
@@ -49,6 +51,18 @@ const appRoutes: Routes = [
   { path: 'terms-of-use', component: TermsOfUseComponent },
   { path: 'founder', component: FounderComponent },
   { path: 'hall-of-fame', component: HallOfFameComponent },
+  { path: 'blog', component: BlogListComponent },
+  { path: 'blog/:slug', component: BlogPostComponent },
+  // Editor del blog: lazy (loadComponent) para que Quill no entre en el bundle
+  // inicial ni en las páginas públicas; solo lo carga el admin al entrar aquí.
+  {
+    path: 'blog-editor',
+    loadComponent: () => import('./components/blog-editor/blog-editor.component').then(m => m.BlogEditorComponent)
+  },
+  {
+    path: 'blog-editor/:id',
+    loadComponent: () => import('./components/blog-editor/blog-editor.component').then(m => m.BlogEditorComponent)
+  },
   { path: 'premium', component: PremiumComponent },
   { path: 'premium/success', component: PremiumSuccessComponent },
   { path: 'level-test', component: LevelTestComponent },

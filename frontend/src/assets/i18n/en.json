@@ -21,6 +21,7 @@
     "nav": {
       "toggle": "Toggle navigation",
       "hallOfFame": "Hall of Fame",
+      "blog": "Blog",
       "myCollections": "My Collections",
       "myTools": "My Tools",
       "adminTools": "Admin Tools",
@@ -775,6 +776,54 @@
     "community": {
       "label": "Community soul",
       "desc": "Brings the ChineseReads community to life"
+    }
+  },
+  "blog": {
+    "title": "ChineseReads Blog",
+    "subtitle": "Tips, guides and stories about learning Chinese",
+    "empty": "No posts yet — the first one is coming soon!",
+    "readMore": "Read more",
+    "back": "Back to the blog",
+    "draft": "Draft",
+    "newPost": "New post",
+    "edit": "Edit",
+    "showAll": "Show drafts too",
+    "showPublished": "Show published only",
+    "editor": {
+      "heading": "New post",
+      "headingEdit": "Edit post",
+      "tabEn": "English",
+      "tabEs": "Español",
+      "slug": "Slug (URL identifier)",
+      "cover": "Cover image",
+      "coverHint": "Save the post first to upload a cover image.",
+      "uploadCover": "Upload cover",
+      "removeCover": "Remove cover",
+      "published": "Published (visible to everyone and included in the sitemap)",
+      "save": "Save",
+      "delete": "Delete",
+      "confirmDelete": "Delete this post? Its inline images will be deleted too.",
+      "deleteYes": "Yes, delete",
+      "cancel": "Cancel",
+      "ph": {
+        "titleEn": "Title in English",
+        "titleEs": "Título en español",
+        "excerptEn": "Short summary in English (card + search results)",
+        "excerptEs": "Resumen corto en español (tarjeta y buscadores)",
+        "contentEn": "Write your post in English…",
+        "contentEs": "Escribe tu post en español…",
+        "slug": "Derived from the title if left empty"
+      },
+      "feedback": {
+        "saved": "Post saved.",
+        "saveError": "Could not save the post.",
+        "deleteError": "Could not delete the post.",
+        "loadError": "Could not load the post.",
+        "coverUpdated": "Cover updated.",
+        "coverRemoved": "Cover removed.",
+        "coverError": "Could not update the cover.",
+        "imageError": "Could not upload the image."
+      }
     }
   },
   "profile": {
