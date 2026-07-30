@@ -60,6 +60,13 @@ $brand-soft: #fdecea;
     // .ql-editor trae white-space:pre-wrap (necesario en el editor, no aquí):
     // en lectura el flujo normal parte por palabras y no pinta blancos raros.
     white-space: normal;
+  }
+
+  // Los descendientes del cuerpo entran por [innerHTML] y NO llevan el
+  // atributo de aislamiento de Angular (_ngcontent-*), así que las reglas
+  // anidadas normales no los alcanzan: ::ng-deep es imprescindible aquí
+  // (mismo motivo por el que el editor lo usa para .ql-container).
+  .blog-post-body ::ng-deep {
 
     // Separación de párrafos estilo Medium (.ql-editor los deja a margin:0).
     p {
