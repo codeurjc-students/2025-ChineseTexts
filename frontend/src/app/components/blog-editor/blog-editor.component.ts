@@ -191,10 +191,27 @@ export class BlogEditorComponent implements OnInit {
 
   // ---------- Imágenes inline (handler de la toolbar de Quill) ----------
 
-  /** Sustituye el handler de imagen: sube al backend e inserta la URL propia. */
+  /**
+   * Sustituye el handler de imagen (sube al backend e inserta la URL propia)
+   * y hace que un clic sobre una imagen la seleccione — Quill de serie no
+   * selecciona embeds al clicar y solo se podían borrar a ciegas con el
+   * teclado; así, clic + Supr/Retroceso la elimina.
+   */
   onEditorCreated(editor: Quill): void {
     const toolbar = editor.getModule('toolbar') as { addHandler: (name: string, h: () => void) => void };
     toolbar.addHandler('image', () => this.pickImage(editor));
+
+    editor.root.addEventListener('click', (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (target?.tagName !== 'IMG') return;
+      // Quill.find es estático en la clase del editor: localiza el blot de la
+      // imagen y se selecciona esa posición (longitud 1 = el embed entero).
+      const quillClass = editor.constructor as unknown as { find(node: Node): unknown };
+      const blot = quillClass.find(target);
+      if (!blot) return;
+      const index = editor.getIndex(blot as Parameters<Quill['getIndex']>[0]);
+      editor.setSelection(index, 1, 'user');
+    });
   }
 
   private pickImage(editor: Quill): void {

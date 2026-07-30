@@ -156,6 +156,24 @@ public class BlogServiceTest {
     }
 
     @Test
+    @DisplayName("sanitize normalizes Quill's export: nbsp -> space and empty <p> -> <p><br></p>")
+    public void sanitizeNormalizesQuillExport() {
+        when(postRepository.existsBySlug(any())).thenReturn(false);
+
+        blogService.create(new BlogPostUpsertDTO(null, "Typography", null, null, null,
+                "<p>Uno&nbsp;dos&nbsp;tres</p><p></p><p>Fin</p>", null, null));
+
+        ArgumentCaptor<BlogPost> captor = ArgumentCaptor.forClass(BlogPost.class);
+        verify(postRepository).save(captor.capture());
+        String clean = captor.getValue().getContentEn();
+
+        assertTrue(clean.contains("Uno dos tres"));
+        assertFalse(clean.contains("\u00A0"));
+        assertFalse(clean.contains("&nbsp;"));
+        assertTrue(clean.contains("<p><br></p>"));
+    }
+
+    @Test
     @DisplayName("delete removes the post's inline images first")
     public void deleteCascadesImages() {
         BlogPost post = new BlogPost();
