@@ -45,9 +45,9 @@ public class HallOfFameServiceTest {
                 .thenAnswer(inv -> inv.getArgument(0));
     }
 
-    private HallOfFameEntryDTO dto(String name, String slug, String tagline, List<String> badges) {
-        return new HallOfFameEntryDTO(null, name, slug, tagline, null, null, null,
-                null, null, badges, null);
+    private HallOfFameEntryDTO dto(String name, String slug, String taglineEn, List<String> badges) {
+        return new HallOfFameEntryDTO(null, name, slug, taglineEn, null, null, null,
+                null, null, null, badges, null);
     }
 
     @Test
@@ -100,7 +100,8 @@ public class HallOfFameServiceTest {
         HallOfFameEntry entry = new HallOfFameEntry();
         entry.setName("Maria");
         entry.setSlug("maria");
-        entry.setTagline("Old tagline");
+        entry.setTaglineEn("Old tagline");
+        entry.setTaglineEs("Frase vieja");
         entry.setBioEn("Hello");
         entry.setDisplayOrder(3);
         entry.setBadges(new java.util.LinkedHashSet<>(List.of("star")));
@@ -108,7 +109,9 @@ public class HallOfFameServiceTest {
 
         hallOfFameService.update(1L, dto(null, null, "New tagline", null));
         assertEquals("Maria", entry.getName());
-        assertEquals("New tagline", entry.getTagline());
+        assertEquals("New tagline", entry.getTaglineEn());
+        // La versión ES no viajó en el body: se conserva (update parcial).
+        assertEquals("Frase vieja", entry.getTaglineEs());
         assertEquals("Hello", entry.getBioEn());
         assertEquals(3, entry.getDisplayOrder());
         assertEquals(Set.of("star"), entry.getBadges());

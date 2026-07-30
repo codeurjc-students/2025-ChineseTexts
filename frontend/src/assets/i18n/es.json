@@ -720,7 +720,8 @@
     "ph": {
       "name": "Nombre",
       "slug": "Slug (identificador para URL, opcional)",
-      "tagline": "Frase corta (p. ej. Profesora de chino y creadora)",
+      "taglineEn": "Short tagline in English (e.g. Chinese teacher & creator)",
+      "taglineEs": "Frase corta en español (p. ej. Profesora de chino y creadora)",
       "bioEn": "Bio en inglés",
       "bioEs": "Bio en español",
       "code": "Código de descuento (p. ej. MARIA10)",

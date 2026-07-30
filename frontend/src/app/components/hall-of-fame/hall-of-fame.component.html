@@ -72,7 +72,7 @@
             <!-- ============ Vista ============ -->
             <ng-container *ngIf="!editing">
               <h2 class="h4 fw-bold text-center mt-3 mb-1">{{ e.name }}</h2>
-              <p *ngIf="e.tagline" class="text-danger fw-semibold text-center mb-2">{{ e.tagline }}</p>
+              <p *ngIf="taglineOf(e)" class="text-danger fw-semibold text-center mb-2">{{ taglineOf(e) }}</p>
 
               <!-- Badges -->
               <div *ngIf="e.badges.length" class="d-flex flex-wrap justify-content-center gap-2 mb-3">
@@ -103,7 +103,8 @@
             <div *ngIf="editing" class="hof-edit-grid mt-3">
               <input class="form-control fw-bold" [(ngModel)]="e.name" placeholder="{{ 'hallOfFame.ph.name' | transloco }}" />
               <input class="form-control" [(ngModel)]="e.slug" placeholder="{{ 'hallOfFame.ph.slug' | transloco }}" />
-              <input class="form-control" [(ngModel)]="e.tagline" placeholder="{{ 'hallOfFame.ph.tagline' | transloco }}" />
+              <input class="form-control" [(ngModel)]="e.taglineEn" placeholder="{{ 'hallOfFame.ph.taglineEn' | transloco }}" />
+              <input class="form-control" [(ngModel)]="e.taglineEs" placeholder="{{ 'hallOfFame.ph.taglineEs' | transloco }}" />
               <textarea class="form-control" rows="3" [(ngModel)]="e.bioEn" placeholder="{{ 'hallOfFame.ph.bioEn' | transloco }}"></textarea>
               <textarea class="form-control" rows="3" [(ngModel)]="e.bioEs" placeholder="{{ 'hallOfFame.ph.bioEs' | transloco }}"></textarea>
               <input class="form-control" [(ngModel)]="e.discountCode" placeholder="{{ 'hallOfFame.ph.code' | transloco }}" />
