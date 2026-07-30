@@ -20,9 +20,19 @@ import { fileURLToPath } from 'node:url';
 
 const browserDist = join(dirname(fileURLToPath(import.meta.url)), '..', 'dist', 'frontend', 'browser');
 
-// Rutas del matcher @ssrPages que discoverRoutes prerenderiza (las
-// parametrizadas como /blog/:slug o /text/:id no se prerenderizan nunca).
-const SSR_ROUTES = ['blog', 'hall-of-fame', 'es/blog', 'es/hall-of-fame'];
+// Rutas del matcher @ssrPages que el build prerenderiza (las parametrizadas
+// como /blog/:slug o /text/:id no se prerenderizan nunca y son seguras por
+// construcción). Regla: TODA página que muestre datos de BD va por SSR en
+// vivo y su foto prerenderizada se retira aquí.
+const HSK_LEVELS = ['HSK1', 'HSK2', 'HSK3', 'HSK4', 'HSK5', 'HSK6'];
+const EN_ROUTES = [
+  'blog',
+  'hall-of-fame',
+  'founder',
+  'texts',
+  ...HSK_LEVELS.map(level => `texts/${level}`)
+];
+const SSR_ROUTES = [...EN_ROUTES, ...EN_ROUTES.map(route => `es/${route}`)];
 
 let removed = 0;
 for (const route of SSR_ROUTES) {
