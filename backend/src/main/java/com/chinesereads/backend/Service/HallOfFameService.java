@@ -58,7 +58,8 @@ public class HallOfFameService {
         HallOfFameEntry entry = new HallOfFameEntry();
         entry.setName(data.name().trim());
         entry.setSlug(resolveSlug(data.slug(), data.name()));
-        entry.setTagline(data.tagline());
+        entry.setTaglineEn(data.taglineEn());
+        entry.setTaglineEs(data.taglineEs());
         entry.setBioEn(data.bioEn());
         entry.setBioEs(data.bioEs());
         entry.setDiscountCode(data.discountCode());
@@ -90,8 +91,11 @@ public class HallOfFameService {
             }
             entry.setSlug(slug);
         }
-        if (data.tagline() != null) {
-            entry.setTagline(data.tagline());
+        if (data.taglineEn() != null) {
+            entry.setTaglineEn(data.taglineEn());
+        }
+        if (data.taglineEs() != null) {
+            entry.setTaglineEs(data.taglineEs());
         }
         if (data.bioEn() != null) {
             entry.setBioEn(data.bioEn());

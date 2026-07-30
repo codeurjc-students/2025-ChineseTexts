@@ -24,7 +24,8 @@ export interface HallOfFameEntry {
   id?: number;
   name: string;
   slug: string;
-  tagline: string;
+  taglineEn: string;
+  taglineEs: string;
   bioEn: string;
   bioEs: string;
   discountCode: string;

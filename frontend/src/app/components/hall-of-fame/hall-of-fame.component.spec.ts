@@ -15,7 +15,7 @@ describe('HallOfFameComponent', () => {
   let httpMock: HttpTestingController;
 
   const mockEntry: HallOfFameEntry = {
-    id: 1, name: 'María López', slug: 'maria-lopez', tagline: 'Chinese teacher',
+    id: 1, name: 'María López', slug: 'maria-lopez', taglineEn: 'Chinese teacher', taglineEs: '',
     bioEn: 'English bio', bioEs: 'Bio en español', discountCode: 'MARIA10',
     displayOrder: 0, hasPhoto: false, badges: ['pioneer', 'star'], socials: []
   };
@@ -67,6 +67,18 @@ describe('HallOfFameComponent', () => {
     transloco.setActiveLang('es');
     expect(component.bioOf({ ...mockEntry })).toBe('Bio en español');
     expect(component.bioOf({ ...mockEntry, bioEs: '' })).toBe('English bio');
+  });
+
+  it('applies the same language fallback to the tagline', () => {
+    const transloco = TestBed.inject(TranslocoService);
+
+    transloco.setActiveLang('es');
+    // taglineEs vacía → cae a la inglesa.
+    expect(component.taglineOf({ ...mockEntry })).toBe('Chinese teacher');
+    expect(component.taglineOf({ ...mockEntry, taglineEs: 'Profesora de chino' })).toBe('Profesora de chino');
+
+    transloco.setActiveLang('en');
+    expect(component.taglineOf({ ...mockEntry, taglineEn: '', taglineEs: 'Profesora de chino' })).toBe('Profesora de chino');
   });
 
   it('toggleBadge adds and removes keys immutably', () => {

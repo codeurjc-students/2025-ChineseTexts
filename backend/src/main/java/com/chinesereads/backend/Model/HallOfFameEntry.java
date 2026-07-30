@@ -43,7 +43,13 @@ public class HallOfFameEntry {
     @Column(unique = true, nullable = false)
     private String slug;
 
-    private String tagline;
+    // Frase corta bilingüe (mismo patrón de fallback que la bio). taglineEn
+    // reutiliza la columna original "tagline" para conservar sin migración los
+    // datos escritos antes de que el campo fuese bilingüe.
+    @Column(name = "tagline")
+    private String taglineEn;
+
+    private String taglineEs;
 
     // Bio bilingüe (patrón de los textos): el frontend muestra la del idioma
     // activo y cae a la otra si está vacía.
@@ -100,12 +106,20 @@ public class HallOfFameEntry {
         this.slug = slug;
     }
 
-    public String getTagline() {
-        return tagline;
+    public String getTaglineEn() {
+        return taglineEn;
     }
 
-    public void setTagline(String tagline) {
-        this.tagline = tagline;
+    public void setTaglineEn(String taglineEn) {
+        this.taglineEn = taglineEn;
+    }
+
+    public String getTaglineEs() {
+        return taglineEs;
+    }
+
+    public void setTaglineEs(String taglineEs) {
+        this.taglineEs = taglineEs;
     }
 
     public String getBioEn() {

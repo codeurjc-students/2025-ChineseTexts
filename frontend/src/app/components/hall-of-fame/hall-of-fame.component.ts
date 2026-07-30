@@ -119,6 +119,11 @@ export class HallOfFameComponent implements OnInit {
     return (this.es ? (e.bioEs || e.bioEn) : (e.bioEn || e.bioEs)) || '';
   }
 
+  /** Frase corta en el idioma activo, mismo fallback que la bio. */
+  taglineOf(e: HallOfFameEntry): string {
+    return (this.es ? (e.taglineEs || e.taglineEn) : (e.taglineEn || e.taglineEs)) || '';
+  }
+
   /** Iniciales para el avatar por defecto cuando no hay foto. */
   initialsOf(e: HallOfFameEntry): string {
     const name = e.name?.trim();
@@ -145,7 +150,7 @@ export class HallOfFameComponent implements OnInit {
 
   saveEntry(e: HallOfFameEntry): void {
     this.hallOfFameService.update(e.id!, {
-      name: e.name, slug: e.slug, tagline: e.tagline, bioEn: e.bioEn,
+      name: e.name, slug: e.slug, taglineEn: e.taglineEn, taglineEs: e.taglineEs, bioEn: e.bioEn,
       bioEs: e.bioEs, discountCode: e.discountCode, badges: e.badges
     }).subscribe({
       next: (saved) => {
@@ -326,7 +331,8 @@ export class HallOfFameComponent implements OnInit {
             '@type': 'Person',
             name: e.name
           };
-          if (e.tagline) person['description'] = e.tagline;
+          const tagline = this.taglineOf(e);
+          if (tagline) person['description'] = tagline;
           if (e.hasPhoto && e.id) person['image'] = `${SITE_URL}/api/hall-of-fame/${e.id}/photo`;
           const sameAs = e.socials.map(s => s.url).filter(u => !!u);
           if (sameAs.length) person['sameAs'] = sameAs;

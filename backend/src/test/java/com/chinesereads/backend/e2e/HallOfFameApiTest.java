@@ -106,7 +106,8 @@ public class HallOfFameApiTest {
     public void adminCreatesEntry() {
         given().contentType(ContentType.JSON).cookies(adminCookies)
                 .body(Map.of("name", "María López",
-                        "tagline", "Chinese teacher",
+                        "taglineEn", "Chinese teacher",
+                        "taglineEs", "Profesora de chino",
                         "discountCode", "MARIA10",
                         // Sent out of canonical order and duplicated on purpose.
                         "badges", List.of("star", "pioneer", "star")))
@@ -135,10 +136,10 @@ public class HallOfFameApiTest {
                 .then().statusCode(201).extract().path("id");
 
         given().contentType(ContentType.JSON).cookies(adminCookies)
-                .body(Map.of("tagline", "New tagline"))
+                .body(Map.of("taglineEn", "New tagline"))
                 .when().put("/api/hall-of-fame/" + id)
                 .then().statusCode(200)
-                .body("tagline", equalTo("New tagline"))
+                .body("taglineEn", equalTo("New tagline"))
                 .body("name", equalTo("Maria"))
                 .body("bioEn", equalTo("Hello"))
                 .body("displayOrder", equalTo(0))
