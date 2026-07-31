@@ -16,6 +16,7 @@ import { PrivacyPolicyComponent } from './components/privacy-policy/privacy-poli
 import { TermsOfUseComponent } from './components/terms-of-use/terms-of-use.component';
 import { FounderComponent } from './components/founder/founder.component';
 import { HallOfFameComponent } from './components/hall-of-fame/hall-of-fame.component';
+import { HallOfFameMemberComponent } from './components/hall-of-fame-member/hall-of-fame-member.component';
 import { BlogListComponent } from './components/blog-list/blog-list.component';
 import { BlogPostComponent } from './components/blog-post/blog-post.component';
 import { MyToolsComponent } from './components/my-tools/my-tools.component';
@@ -57,6 +58,7 @@ const appRoutes: Routes = [
   { path: 'terms-of-use', component: TermsOfUseComponent },
   { path: 'founder', component: FounderComponent },
   { path: 'hall-of-fame', component: HallOfFameComponent },
+  { path: 'hall-of-fame/:slug', component: HallOfFameMemberComponent },
   { path: 'blog', component: BlogListComponent },
   { path: 'blog/:slug', component: BlogPostComponent },
   // Editor del blog: lazy (loadComponent) para que Quill no entre en el bundle

@@ -1,0 +1,44 @@
+<div class="container my-5 hof-member" *ngIf="entry as e">
+
+  <!-- Volver al listado -->
+  <a class="hof-member-back" [routerLink]="'/hall-of-fame' | localizeLink">
+    <i class="bi bi-arrow-left me-1"></i>{{ 'hallOfFame.member.back' | transloco }}
+  </a>
+
+  <article class="hof-member-card mx-auto mt-3">
+
+    <!-- Foto / avatar -->
+    <div class="text-center">
+      <img *ngIf="e.hasPhoto" [src]="photoUrl()" [alt]="e.name" class="hof-member-photo shadow-sm" />
+      <div *ngIf="!e.hasPhoto" class="hof-member-avatar shadow-sm" aria-hidden="true">{{ initials }}</div>
+    </div>
+
+    <h1 class="h3 fw-bold text-center mt-3 mb-1">{{ e.name }}</h1>
+    <p *ngIf="tagline" class="text-danger fw-semibold text-center mb-2">{{ tagline }}</p>
+
+    <!-- Badges -->
+    <div *ngIf="e.badges.length" class="d-flex flex-wrap justify-content-center gap-2 mb-3">
+      <span *ngFor="let key of e.badges" class="hof-member-badge"
+            [title]="('hofBadges.' + key + '.desc') | transloco">
+        <i class="bi {{ badgeIcon(key) }} me-1"></i>{{ ('hofBadges.' + key + '.label') | transloco }}
+      </span>
+    </div>
+
+    <p *ngIf="bio" class="hof-member-bio mb-3">{{ bio }}</p>
+
+    <!-- Redes -->
+    <div *ngIf="e.socials.length" class="d-flex flex-wrap justify-content-center gap-2 mb-3">
+      <a *ngFor="let s of e.socials" [href]="s.url" target="_blank" rel="noopener noreferrer"
+         class="btn btn-sm btn-outline-danger rounded-pill px-3">
+        <i class="bi {{ s.icon }} me-1"></i>{{ s.label }}
+      </a>
+    </div>
+
+    <!-- Código de descuento -->
+    <div *ngIf="e.discountCode" class="hof-member-code text-center">
+      <span class="hof-member-code-label">{{ 'hallOfFame.code' | transloco }}</span>
+      <span class="hof-member-code-value">{{ e.discountCode }}</span>
+    </div>
+
+  </article>
+</div>

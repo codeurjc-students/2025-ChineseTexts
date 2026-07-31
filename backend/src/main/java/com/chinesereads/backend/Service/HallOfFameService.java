@@ -51,6 +51,11 @@ public class HallOfFameService {
         return hallOfFameMapper.toEntryDTOs(entryRepository.findAllByOrderByDisplayOrderAscIdAsc());
     }
 
+    /** Página detalle pública: entrada por slug o NoSuchElementException (→404). */
+    public HallOfFameEntryDTO getBySlug(String slug) {
+        return hallOfFameMapper.toDTO(entryRepository.findBySlug(slug).orElseThrow());
+    }
+
     public HallOfFameEntryDTO create(HallOfFameEntryDTO data) {
         if (data.name() == null || data.name().isBlank()) {
             throw new IllegalArgumentException("Name is required");

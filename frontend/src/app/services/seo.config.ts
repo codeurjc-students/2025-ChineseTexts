@@ -373,6 +373,27 @@ const BLOG_POST_DEFAULT: LocalizedSeo = {
 };
 
 /**
+ * Fallback for an individual Hall of Fame member profile before the component
+ * sets the real name. Same rationale as BLOG_POST_DEFAULT: no `path` here —
+ * resolveSeo() fills in the page's own /hall-of-fame/:slug path so the
+ * canonical is self-referential from the first render.
+ */
+const HOF_MEMBER_DEFAULT: LocalizedSeo = {
+  en: {
+    title: 'Hall of Fame Member | ChineseReads',
+    description:
+      'Profile of a creator in the ChineseReads Hall of Fame: the influencers and collaborators ' +
+      'helping people learn Chinese by reading.'
+  },
+  es: {
+    title: 'Miembro del Salón de la Fama | ChineseReads',
+    description:
+      'Perfil de un creador en el Salón de la Fama de ChineseReads: los influencers y colaboradores ' +
+      'que ayudan a aprender chino leyendo.'
+  }
+};
+
+/**
  * Resolves the SEO config for a given un-prefixed URL path (the caller strips any
  * `/es` prefix and passes the language separately). Query string / fragment
  * already stripped by the caller. Unknown routes resolve to the not-found
@@ -399,6 +420,10 @@ export function resolveSeo(path: string, lang: Lang = 'en'): SeoConfig {
 
   // /blog/:slug — the BlogPostComponent refines this with the actual post title.
   if (/^\/blog\/[^/]+$/.test(clean)) return { ...BLOG_POST_DEFAULT[lang], path: clean };
+
+  // /hall-of-fame/:slug — the member component refines this with the real name.
+  // Safe by construction: the exact /hall-of-fame path already resolved above.
+  if (/^\/hall-of-fame\/[^/]+$/.test(clean)) return { ...HOF_MEMBER_DEFAULT[lang], path: clean };
 
   // /blog-editor/:id — private admin editor, always noindex.
   if (/^\/blog-editor\/[^/]+$/.test(clean)) return STATIC_SEO['/blog-editor'][lang];

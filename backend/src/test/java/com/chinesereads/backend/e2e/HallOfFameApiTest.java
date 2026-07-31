@@ -118,6 +118,26 @@ public class HallOfFameApiTest {
                 .body("badges", contains("pioneer", "star"));
     }
 
+    // Test E2E: la página detalle pública lee la entrada por slug
+    @Test
+    @DisplayName("GET /api/hall-of-fame/slug/{slug} is public and returns the full entry")
+    public void detailBySlugIsPublic() {
+        createEntry("María López");
+
+        given().when().get("/api/hall-of-fame/slug/maria-lopez")
+                .then().statusCode(200)
+                .body("name", equalTo("María López"))
+                .body("slug", equalTo("maria-lopez"));
+    }
+
+    // Test E2E: slug desconocido → 404 (el frontend lo convierte en soft-404)
+    @Test
+    @DisplayName("GET /api/hall-of-fame/slug/{slug} with an unknown slug returns 404")
+    public void detailUnknownSlugIs404() {
+        given().when().get("/api/hall-of-fame/slug/nadie")
+                .then().statusCode(404);
+    }
+
     @Test
     @DisplayName("Unknown badge key is rejected with 400")
     public void unknownBadgeRejected() {

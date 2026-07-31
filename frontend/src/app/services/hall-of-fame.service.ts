@@ -47,6 +47,11 @@ export class HallOfFameService {
     return this.http.get<HallOfFameEntry[]>(this.apiUrl);
   }
 
+  /** Página detalle pública /hall-of-fame/:slug (404 si el slug no existe). */
+  getBySlug(slug: string): Observable<HallOfFameEntry> {
+    return this.http.get<HallOfFameEntry>(`${this.apiUrl}/slug/${slug}`);
+  }
+
   create(entry: Partial<HallOfFameEntry>): Observable<HallOfFameEntry> {
     return this.http.post<HallOfFameEntry>(this.apiUrl, entry, { withCredentials: true });
   }

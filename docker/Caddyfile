@@ -21,6 +21,12 @@ chinesereads.com, www.chinesereads.com {
         reverse_proxy backend:8080
     }
 
+    # Sitemap dinámico del Salón de la Fama: mismo razonamiento — los perfiles
+    # de miembro viven en la base de datos y deben ser indexables sin redeploy.
+    handle /sitemap-hall-of-fame.xml {
+        reverse_proxy backend:8080
+    }
+
     # Páginas públicas con contenido dinámico: TODA página que muestra datos
     # de la base de datos se renderiza en el servidor (contenedor
     # frontend-ssr) — textos (/text/:id y los listados /texts), blog (lista y
@@ -35,7 +41,7 @@ chinesereads.com, www.chinesereads.com {
     # privada del admin (shell SPA + noindex; Quill solo corre en navegador).
     # Sincronía: cada ruta SSR de path fijo debe estar también en
     # frontend/scripts/remove-ssr-prerender.mjs (ver ese script).
-    @ssrPages path /text/* /es/text/* /texts /es/texts /texts/* /es/texts/* /hall-of-fame /es/hall-of-fame /blog /es/blog /blog/* /es/blog/* /founder /es/founder
+    @ssrPages path /text/* /es/text/* /texts /es/texts /texts/* /es/texts/* /hall-of-fame /es/hall-of-fame /hall-of-fame/* /es/hall-of-fame/* /blog /es/blog /blog/* /es/blog/* /founder /es/founder
     handle @ssrPages {
         # HTML dinámico: revalidar siempre, igual que el HTML estático de abajo.
         header Cache-Control "no-cache"

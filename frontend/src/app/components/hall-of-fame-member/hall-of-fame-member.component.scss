@@ -1,0 +1,83 @@
+// Mismo lenguaje visual que las tarjetas del listado (hall-of-fame.component.scss),
+// con la foto más grande por ser la página protagonista del miembro.
+$brand: #c0392b;
+$brand-soft: #fdecea;
+
+.hof-member {
+  max-width: 640px;
+
+  .hof-member-back {
+    color: #888;
+    text-decoration: none;
+    font-size: 0.95rem;
+
+    &:hover {
+      color: $brand;
+    }
+  }
+
+  .hof-member-card {
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 0.75rem;
+    padding: 2rem 1.75rem;
+  }
+
+  .hof-member-photo,
+  .hof-member-avatar {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .hof-member-avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: $brand-soft;
+    color: $brand;
+    font-size: 2.6rem;
+    font-weight: 700;
+  }
+
+  .hof-member-badge {
+    display: inline-flex;
+    align-items: center;
+    background: $brand-soft;
+    color: $brand;
+    border-radius: 50px;
+    padding: 3px 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: help;
+  }
+
+  .hof-member-bio {
+    color: #555;
+    white-space: pre-line;
+  }
+
+  .hof-member-code {
+    border: 1px dashed $brand;
+    border-radius: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background: #fffdfc;
+
+    .hof-member-code-label {
+      display: block;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #888;
+    }
+
+    .hof-member-code-value {
+      font-family: monospace;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: $brand;
+      letter-spacing: 1px;
+    }
+  }
+}
