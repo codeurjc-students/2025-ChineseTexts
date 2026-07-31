@@ -78,6 +78,12 @@ public class SecurityConfig {
                 // no session; the token IS the authentication. Must precede the ADMIN
                 // GET /api/users/* wildcard below (first match wins).
                 .requestMatchers(HttpMethod.GET, "/api/users/unsubscribe").permitAll()
+                // Password reset (anonymous flow: the visitor forgot their password, so
+                // there is no session; the emailed one-shot token IS the authentication).
+                // /api/auth/** already falls through to permitAll, but these are declared
+                // explicitly so the intent survives any future tightening of that domain.
+                .requestMatchers(HttpMethod.POST, "/api/auth/forgot-password").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/auth/reset-password").permitAll()
                 // USER
                 .requestMatchers("/api/my-texts/**").hasAnyRole("USER", "ADMIN")
                 .requestMatchers(HttpMethod.GET, "/api/flashcards/**").hasAnyRole("USER", "ADMIN")

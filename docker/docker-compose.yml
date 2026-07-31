@@ -73,6 +73,10 @@ services:
       REMINDER_ENABLED: ${REMINDER_ENABLED:-true}
       REMINDER_CRON: ${REMINDER_CRON:-0 0 18 * * *}
       REMINDER_ZONE: ${REMINDER_ZONE:-Europe/Madrid}
+      # Password reset ("forgot my password"): link lifetime in minutes and per-IP
+      # hourly cap on anonymous reset requests (each valid one sends an email).
+      PASSWORD_RESET_TOKEN_MINUTES: ${PASSWORD_RESET_TOKEN_MINUTES:-60}
+      PASSWORD_RESET_RATE_LIMIT_PER_HOUR: ${PASSWORD_RESET_RATE_LIMIT_PER_HOUR:-5}
       # Cost limits and fuses, tunable from docker/.env without touching code (same
       # convention as REMINDER_*: delete the .env line to restore these defaults).
       # The global generation fuse runs at 500/day here (app default is 200) as the

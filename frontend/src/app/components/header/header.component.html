@@ -163,6 +163,16 @@
           </div>
         </div>
 
+        <!-- Autoservicio de reset: cierra el modal y navega a /forgot-password.
+             data-bs-dismiss retira también el backdrop de Bootstrap al navegar. -->
+        <div class="mb-3 text-end">
+          <a [routerLink]="'/forgot-password' | localizeLink"
+             data-bs-dismiss="modal"
+             class="small text-decoration-none forgot-link">
+            {{ 'header.login.forgotPassword' | transloco }}
+          </a>
+        </div>
+
         <div class="text-danger mb-3 text-center" *ngIf="messageError">
           <i class="bi bi-exclamation-circle me-1"></i>{{ messageError }}
         </div>

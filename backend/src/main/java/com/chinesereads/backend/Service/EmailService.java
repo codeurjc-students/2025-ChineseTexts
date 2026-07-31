@@ -95,6 +95,32 @@ public class EmailService {
         log.info("Review reminder ({} due) sent to {}", dueCount, toEmail);
     }
 
+    /**
+     * Sends the password-reset link (in the user's language). TRANSACTIONAL (the user
+     * just asked for it), so it does not depend on {@code emailConsent} and carries no
+     * unsubscribe link. Fire-and-forget like the welcome email — and deliberately so:
+     * the forgot-password endpoint answers the same, in the same time, whether the
+     * account exists or not, so the send must never delay or break the response.
+     */
+    public void sendPasswordResetEmail(String toEmail, String toName, String language,
+                                       String token, int expiryMinutes) {
+        if (!isConfigured()) {
+            return;
+        }
+        CompletableFuture.runAsync(() -> {
+            try {
+                boolean es = "es".equalsIgnoreCase(language);
+                String subject = es
+                        ? "Restablece tu contraseña de ChineseReads 🔑"
+                        : "Reset your ChineseReads password 🔑";
+                send(toEmail, toName, subject, buildPasswordResetHtml(toName, es, token, expiryMinutes));
+                log.info("Password reset email sent to {}", toEmail);
+            } catch (Exception e) {
+                log.warn("Could not send password reset email to {}", toEmail, e);
+            }
+        });
+    }
+
     /** Posts one transactional email to Brevo. */
     private void send(String toEmail, String toName, String subject, String html) {
         send(toEmail, toName, subject, html, Map.of());
@@ -218,6 +244,98 @@ public class EmailService {
                 .replace("%F3T%", f3t).replace("%F3D%", f3d)
                 .replace("%CTA%", cta)
                 .replace("%CTATEST%", ctaTest)
+                .replace("%FOOTER%", footer)
+                .replace("%PRIVACY%", privacy)
+                .replace("%LP%", lp);
+    }
+
+    /**
+     * The password-reset body: same corporate table/inline-style skeleton as the other
+     * emails. Deliberately minimal — one explanation, one CTA with the tokenized link,
+     * the expiry window, and the standard "ignore this if it wasn't you" note (the
+     * account stays untouched until the link is used). The link carries the user's
+     * language prefix so the reset page opens in their language. Exposed for testing.
+     */
+    public String buildPasswordResetHtml(String name, boolean es, String token, int expiryMinutes) {
+        String base = publicUrl;
+        String lp = es ? base + "/es" : base;
+        String logo = base + "/icon-512.png";
+        String safeName = name == null ? "" : name.trim();
+        String resetUrl = lp + "/reset-password?token=" + token;
+
+        String hello = es ? "¡Hola, " + safeName + "! 你好!" : "Hi " + safeName + "! 你好!";
+        String intro = es
+                ? "Hemos recibido una solicitud para restablecer la contraseña de tu cuenta de ChineseReads. Pulsa el botón para elegir una nueva:"
+                : "We received a request to reset the password of your ChineseReads account. Click the button to choose a new one:";
+        String cta = es ? "Restablecer contraseña" : "Reset password";
+        String expiry = es
+                ? "El enlace caduca en " + expiryMinutes + " minutos y solo puede usarse una vez."
+                : "The link expires in " + expiryMinutes + " minutes and can only be used once.";
+        String notYou = es
+                ? "¿No has sido tú? Ignora este correo: tu contraseña seguirá siendo la misma y nadie puede cambiarla sin este enlace."
+                : "Didn't request this? Just ignore this email: your password stays the same and nobody can change it without this link.";
+        String footer = es
+                ? "Recibes este correo porque alguien solicitó restablecer la contraseña de esta cuenta en ChineseReads."
+                : "You're receiving this email because someone requested a password reset for this ChineseReads account.";
+        String privacy = es ? "Política de privacidad" : "Privacy policy";
+
+        return """
+<!doctype html>
+<html>
+<body style="margin:0;padding:0;background-color:#f4f1ec;">
+  <table role="presentation" width="100%%" cellpadding="0" cellspacing="0" style="background-color:#f4f1ec;padding:24px 0;">
+    <tr><td align="center">
+      <table role="presentation" width="600" cellpadding="0" cellspacing="0"
+             style="width:600px;max-width:94%%;background:#ffffff;border-radius:12px;overflow:hidden;font-family:Arial,Helvetica,sans-serif;">
+        <tr>
+          <td style="background:#c0392b;padding:26px 32px;" align="center">
+            <img src="%LOGO%" width="56" height="56" alt="ChineseReads"
+                 style="display:block;border-radius:12px;margin:0 auto 10px;">
+            <div style="color:#ffffff;font-size:22px;font-weight:bold;letter-spacing:.3px;">ChineseReads</div>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:32px 36px 8px;">
+            <h1 style="margin:0 0 12px;font-size:22px;color:#2c3e50;">%HELLO%</h1>
+            <p style="margin:0;font-size:15px;line-height:1.6;color:#444;">%INTRO%</p>
+          </td>
+        </tr>
+        <tr>
+          <td align="center" style="padding:24px 36px 10px;">
+            <a href="%RESETURL%"
+               style="display:inline-block;background:#27ae60;color:#ffffff;text-decoration:none;
+                      font-size:16px;font-weight:bold;padding:13px 34px;border-radius:8px;">%CTA%</a>
+          </td>
+        </tr>
+        <tr>
+          <td align="center" style="padding:0 36px 6px;">
+            <p style="margin:0;font-size:13px;color:#777;line-height:1.6;">%EXPIRY%</p>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:14px 36px 26px;">
+            <p style="margin:0;font-size:13px;line-height:1.6;color:#999;">%NOTYOU%</p>
+          </td>
+        </tr>
+        <tr>
+          <td style="background:#faf9f7;padding:18px 36px;border-top:1px solid #eee;" align="center">
+            <p style="margin:0 0 6px;font-size:12px;color:#999;line-height:1.5;">%FOOTER%</p>
+            <a href="%LP%/privacy-policy" style="font-size:12px;color:#999;">%PRIVACY%</a>
+          </td>
+        </tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>
+"""
+                .replace("%LOGO%", logo)
+                .replace("%HELLO%", hello)
+                .replace("%INTRO%", intro)
+                .replace("%RESETURL%", resetUrl)
+                .replace("%CTA%", cta)
+                .replace("%EXPIRY%", expiry)
+                .replace("%NOTYOU%", notYou)
                 .replace("%FOOTER%", footer)
                 .replace("%PRIVACY%", privacy)
                 .replace("%LP%", lp);

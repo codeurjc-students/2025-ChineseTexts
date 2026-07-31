@@ -83,6 +83,14 @@ public class User {
     private LocalDate lastReviewReminderDay;
     private String unsubscribeToken;
 
+    // Restablecimiento de contraseña ("olvidé mi contraseña"): se guarda el HASH
+    // SHA-256 del token enviado por email — nunca el token en claro, para que un
+    // volcado de la BD no permita tomar cuentas — junto a su caducidad. El token
+    // es de UN solo uso: ambos campos se limpian al consumirse o al fijarse una
+    // nueva contraseña. Nullables: solo existen mientras hay una solicitud viva.
+    private String passwordResetTokenHash;
+    private LocalDateTime passwordResetExpiresAt;
+
     // Suscripción PREMIUM caducable: el usuario disfruta del plan premium mientras
     // premiumUntil sea una fecha/hora futura. Null (o pasada) = plan gratuito. Lo fija
     // un administrador o la pasarela de pago (Stripe). Es la ÚNICA fuente de verdad del
@@ -349,6 +357,22 @@ public class User {
 
     public void setUnsubscribeToken(String unsubscribeToken) {
         this.unsubscribeToken = unsubscribeToken;
+    }
+
+    public String getPasswordResetTokenHash() {
+        return passwordResetTokenHash;
+    }
+
+    public void setPasswordResetTokenHash(String passwordResetTokenHash) {
+        this.passwordResetTokenHash = passwordResetTokenHash;
+    }
+
+    public LocalDateTime getPasswordResetExpiresAt() {
+        return passwordResetExpiresAt;
+    }
+
+    public void setPasswordResetExpiresAt(LocalDateTime passwordResetExpiresAt) {
+        this.passwordResetExpiresAt = passwordResetExpiresAt;
     }
 
     public LocalDateTime getPremiumUntil() {

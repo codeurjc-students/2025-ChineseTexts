@@ -38,4 +38,13 @@ describe('resolveSeo', () => {
     expect(resolveSeo('/blog-editor', 'en').noindex).toBeTrue();
     expect(resolveSeo('/blog-editor/5', 'es').noindex).toBeTrue();
   });
+
+  // Candado: las páginas del flujo de reset son transaccionales → noindex, y el
+  // ?token=… del enlace del email no cambia la resolución (la query se descarta).
+  it('keeps the password-reset pages noindex, with or without the token query', () => {
+    expect(resolveSeo('/forgot-password', 'en').noindex).toBeTrue();
+    expect(resolveSeo('/forgot-password', 'es').noindex).toBeTrue();
+    expect(resolveSeo('/reset-password?token=abc123', 'en').noindex).toBeTrue();
+    expect(resolveSeo('/reset-password?token=abc123', 'es').title).toContain('Nueva contraseña');
+  });
 });

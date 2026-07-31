@@ -19,6 +19,9 @@ public interface UserRepository extends JpaRepository<User, Long>{
     /** One-click unsubscribe: resolves the token embedded in reminder emails. */
     Optional<User> findByUnsubscribeToken(String unsubscribeToken);
 
+    /** Password reset: resolves the SHA-256 hash of the token from the reset email. */
+    Optional<User> findByPasswordResetTokenHash(String passwordResetTokenHash);
+
     Optional<User> findByStripeCustomerId(String stripeCustomerId);
 
     Optional<User> findByStripeSubscriptionId(String stripeSubscriptionId);
