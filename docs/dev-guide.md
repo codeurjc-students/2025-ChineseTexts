@@ -20,12 +20,12 @@
 
 ## Introduction
 
-ChineseReads follows a **distributed MVC architecture** composed of multiple independent services that communicate via REST APIs. The system is split into four main components: a Spring Boot backend (REST API + business logic), an Angular frontend (SPA), a MySQL database, and three Python microservices for AI text generation, OCR image processing, and text-to-speech audio.
+ChineseReads follows a **distributed MVC architecture** composed of multiple independent services that communicate via REST APIs. The system is split into a Spring Boot backend (REST API + business logic), an Angular frontend (prerendered static pages plus a **live SSR container** for DB-backed pages), a MySQL database, three Python microservices for AI text generation, OCR image processing, and text-to-speech audio, and Caddy as the reverse proxy that ties them together.
 
 | Aspect | Description |
 |---|---|
 | **Type** | Web MVC + SPA frontend + REST API + AI Microservices |
-| **Technologies** | Java 21, Spring Boot 4, Angular 17, Transloco (i18n), MySQL 8, Caffeine (cache), Python 3.11, Flask, DeepSeek API, Google Cloud Vision, Google Cloud Text-to-Speech, Stripe (payments) |
+| **Technologies** | Java 21, Spring Boot 4, Angular 17, Transloco (i18n), MySQL 8, Caffeine (cache), Python 3.11, Flask, DeepSeek API, Google Cloud Vision, Google Cloud Text-to-Speech, Stripe (payments), Brevo (transactional email), Quill (blog editor), Umami (analytics) |
 | **Tools** | IntelliJ IDEA, VS Code, Docker, Docker Compose, Caddy, GitHub, Postman |
 | **Quality Control** | Unit tests (JUnit + Mockito), Integration tests (H2), E2E tests (MockMvc), Frontend tests (Jasmine/Karma) |
 | **Deployment** | Docker Compose + Caddy (HTTPS automatic via Let's Encrypt), Azure VM |
@@ -60,12 +60,24 @@ Python 3.11 + Flask microservice running on port 5002. Uses the Google Cloud Tex
 Because it is paid per character, the backend protects it on several fronts (all configurable in `application.properties`): a **length cap** (`tts.max-chars`, rejects an oversized request with `413`), a **Caffeine cache** of the synthesized audio keyed by the exact text (`tts.cache.*`, so identical words/sentences/flashcards are never re-synthesized — the biggest ongoing saving), a **per-IP rate limit** (`tts.rate-limit.per-minute`, returns `429` when exceeded; the client IP is read from `X-Forwarded-For` since the app runs behind Caddy), and a **per-user monthly quota** (`AudioUsageService`).  
 Official site: https://cloud.google.com/text-to-speech
 
+### Transactional Email — Brevo
+The backend sends email through the **Brevo HTTP API** (no SMTP server to run): the welcome email at signup, an opt-in daily SRS review reminder (max one/day, one-click unsubscribe + `List-Unsubscribe` header) and the password-reset link. Credentials come from the environment (`BREVO_API_KEY`, `MAIL_FROM`) and are empty by default, so the app runs normally with email disabled. Templates are bilingual, self-contained HTML built in `EmailService`.  
+Official site: https://www.brevo.com
+
+### Web Analytics — Umami
+Cookie-free, anonymous aggregated analytics (script in `index.html`). Because it sets no cookies and stores no personal data, **no cookie banner is required**.  
+Official site: https://umami.is
+
+### Blog Editor — Quill
+Rich-text WYSIWYG editor (via `ngx-quill`) used only on the admin-only `/blog-editor` page, which is the repo's single lazy-loaded route so Quill never enters the initial bundle nor SSR. Post bodies are sanitized server-side with a **jsoup safelist** before storage.  
+Official site: https://quilljs.com
+
 ### Payments — Stripe
 Recurring subscriptions for the **PREMIUM** plan, integrated in the backend via the Stripe Java SDK (`com.stripe:stripe-java`). Payment happens on **Stripe Checkout's hosted page** (redirect flow), so the app never handles card data (no PCI scope). When Stripe confirms a payment it calls a **signature-verified webhook** (`POST /api/premium/webhook`) that sets the user's premium expiry. A **Billing Portal** session lets users manage or cancel. All Stripe credentials are injected from the environment and empty by default, so the app boots and runs normally with billing disabled. See the [Payments & Premium (Stripe)](#payments--premium-stripe) section for the full flow and configuration.  
 Official site: https://stripe.com
 
 ### Reverse Proxy — Caddy
-Serves the Angular static files, proxies `/api/*` requests to the Spring Boot backend, and manages HTTPS certificates automatically via Let's Encrypt.  
+Serves the Angular static files, proxies `/api/*` requests to the Spring Boot backend, routes every **DB-backed page** (texts and listings, blog, Hall of Fame, founder — the `@ssrPages` matcher) to the live SSR container (`frontend-ssr`, with a fallback to the SPA shell if it is down), proxies the three dynamic sitemaps, and manages HTTPS certificates automatically via Let's Encrypt.  
 Official site: https://caddyserver.com
 
 ### Chinese Tokenizer — Jieba
@@ -89,7 +101,7 @@ Version control, issue tracking, and project management via GitHub Issues and Gi
 Official site: https://github.com
 
 ### Postman
-Used to test and document the REST API. A collection with examples of all API endpoints is available at `docs/ChineseReads.postman_collection.json`.  
+Used during development to test the REST API manually. *(No collection is committed to the repo; the API surface is summarized in [Analysis](analysis.md#api-design).)*  
 Official site: https://www.postman.com
 
 ---
@@ -104,11 +116,7 @@ All services communicate within the same Docker network (`app-network`). Only po
 
 ### API Documentation
 
-The REST API documentation is available in OpenAPI format. You can view it at:  
-👉 [API Documentation](https://raw.githack.com/codeurjc-students/2025-ChineseTexts/main/docs/api/openapi.html) *(pending generation)*
-
-A Postman collection with examples of all endpoints is available at:  
-`docs/ChineseReads.postman_collection.json` *(pending)*
+The API surface (20 controllers) is summarized resource-by-resource in [Analysis → API Design](analysis.md#api-design). An OpenAPI export remains *(pending generation)*.
 
 ---
 
@@ -126,10 +134,11 @@ The frontend is optimized so public pages rank for queries like *"learn chinese 
 | **Per-route metadata** | `src/app/services/seo.service.ts` | Reusable, SSR-safe service that sets title, description, canonical, Open Graph and Twitter tags on every navigation. |
 | **Route → metadata table** | `src/app/services/seo.config.ts` | One place mapping each route (incl. `/texts/:level`) to its SEO metadata. **Add new public routes here.** |
 | **Dynamic text pages** | `src/app/components/text/text.component.ts` | Each `/text/:id` page sets a unique title/description from the text itself. |
-| **Prerendered parameterised routes** | `prerender-routes.txt` (referenced from `angular.json` → `prerender.routesFile`) | Lists fixed parameterised URLs to prerender to static HTML — currently the six `/texts/HSK1…6` level pages — so they get real per-route meta in the initial HTML (not just client-side). |
+| **Prerendered routes** | `prerender-routes.txt` (referenced from `angular.json` → `prerender.routesFile`) + `discoverRoutes` | Fixed-content routes are prerendered to static HTML at build time. **DB-backed routes are live-SSR'd instead**: `scripts/remove-ssr-prerender.mjs` (run by `npm run build`) deletes their prerendered snapshots so they never shadow the live render (bug fixed in PR #140). |
+| **Live SSR container** | `frontend-ssr` (Node, `server.ts`) + Caddy `@ssrPages` | Renders texts and listings, blog, Hall of Fame (+ member profiles) and founder with real DB data on every request, so crawlers always see current content. |
 | **Default tags + structured data** | `src/index.html` | Site-wide defaults, plus JSON-LD (`WebSite`, `EducationalOrganization`, `WebApplication`) for rich results. |
 | **Crawl directives** | `src/robots.txt` | Allows public routes, disallows private/authenticated ones, points to the sitemap. |
-| **Sitemap** | `src/sitemap.xml` | Lists the public, indexable URLs. |
+| **Sitemaps** | `src/sitemap.xml` + `SitemapController` (backend) | The static sitemap lists the fixed public URLs; three **dynamic sitemaps** (`/sitemap-texts.xml`, `/sitemap-blog.xml`, `/sitemap-hall-of-fame.xml`) keep DB-backed pages indexable without a redeploy. All four are referenced from `robots.txt` and proxied at the site root by Caddy. |
 | **PWA manifest** | `src/manifest.webmanifest` | App name, theme color and icon. |
 
 All four static files (`robots.txt`, `sitemap.xml`, `manifest.webmanifest`, `favicon.ico`) are declared in `angular.json` → `assets`, so they are copied to the build output and served at the site root.
@@ -156,7 +165,7 @@ The UI is available in **English and Spanish** (a flag switcher in the header). 
 | **Locale-aware links** | `src/app/i18n/localize-link.pipe.ts` (`\| localizeLink`), `locale-nav.service.ts` (`LocaleNavService`) | Keep navigation within the current language for `routerLink`s and imperative `router.navigate` calls. |
 | **Per-locale SEO** | `src/app/services/seo.service.ts`, `seo.config.ts` | `SeoService.update(config, lang)` emits `hreflang` alternates (`en`/`es`/`x-default`), `og:locale`, `<html lang>` and a self-referencing canonical; `seo.config.ts` is bilingual. `sitemap.xml` carries `hreflang` alternates and `/es` URLs; `prerender-routes.txt` prerenders the `/es` pages to static HTML. |
 
-**Design choices (why):** production serves **prerendered static HTML** (Caddy serves `dist/frontend/browser`; there is no live Node SSR), so each language must be baked into static HTML at build time — hence the synchronous loader. Transloco (runtime, one build, one Caddy mount) was chosen over Angular's compile-time `@angular/localize` (which would need one build per locale and Caddy changes). English stays at the root so existing indexed URLs never move (zero SEO regression); Spanish `/es` URLs are purely additive.
+**Design choices (why):** fixed-content pages are served as **prerendered static HTML** (Caddy serves `dist/frontend/browser`), so each language must be baked into static HTML at build time — hence the synchronous loader; DB-backed pages go through the live SSR container instead (see [SEO](#seo)), which uses the same URL-derived language resolution. Transloco (runtime, one build, one Caddy mount) was chosen over Angular's compile-time `@angular/localize` (which would need one build per locale and Caddy changes). English stays at the root so existing indexed URLs never move (zero SEO regression); Spanish `/es` URLs are purely additive.
 
 **Adding or changing a UI string:** add the key to **both** `en.json` and `es.json` (keep parity) and reference it with `{{ 'namespace.key' | transloco }}` in templates or `transloco.translate('namespace.key')` in TypeScript. In tests, add `translocoTesting()` (from `src/app/i18n/transloco-testing.ts`) to the component's `TestBed` `imports`.
 
@@ -186,6 +195,8 @@ The concrete guard is the **text-generation quota**, tiered by plan. Free users 
 | Audio (TTS) plays / month — words · sentences+text | registered-only · 100 · 15 | unlimited | unlimited | `usage.audio.word.monthly-limit` / `usage.audio.phrase.monthly-limit` |
 | AI word-chat messages / month | registered-only · 10 | unlimited | unlimited | `usage.chat.monthly-limit` |
 
+> Current public prices: **€6.99/month · €59.99/year** (Stripe `price_…` IDs; the UI reads the figures from the i18n dictionaries). In production `docker-compose.yml` raises the global daily fuse to **500** as campaign headroom — the table shows the application defaults.
+
 `UsageService.reserveGeneration` (called by `POST /api/my-texts`) applies one of three lanes: **free** users spend their monthly quota **and** the global daily fuse; **premium** users spend only a per-user daily fair-use counter (no monthly limit, exempt from the global fuse); **admins** are exempt from personal quotas but still bound by the global fuse. `reserveOcr` (the OCR extract step) charges the global fuse only.
 
 Audio (`POST /api/tts`) is **registered-only** (anonymous → 401): `AudioUsageService.reserveAudio` meters two per-user monthly buckets — single words (cheap, high quota) and sentences/full text (expensive, small quota) — with premium and admins exempt. On top of that the endpoint keeps the hard length cap, the per-IP rate limit and the text-keyed cache (`tts.*`).
@@ -213,6 +224,10 @@ The AI contextual word chat (`POST /api/chat/word`) is likewise **registered-onl
 
 > **Webhook robustness:** the account's Stripe API version can be newer than the pinned SDK, so the handler parses the event from the **raw JSON** (`id`, `customer`, `subscription`, `status`, `current_period_end` are stable field names) rather than the SDK's typed deserializer. This is why `jackson-databind` is a direct backend dependency.
 
+### Influencer promotion codes
+
+Admins create percentage **promotion codes** from the influencer panel (backed by `/api/influencers`): the backend creates the Stripe Coupon + Promotion Code (default: first purchase only, single use per customer). Buyers type the code **on Stripe's hosted checkout** (`allow_promotion_codes` — there is no code input in the app; `/premium` tells the user so). The webhook reads `discounts[0].promotion_code` and stores it on the user for attribution, alongside the `?ref=CODE` signup attribution (kept 60 days in `localStorage`). The panel shows signups, redemptions, conversions and **commission settlements** — one ledger row (`InfluencerPayment`) per collected charge, at `influencer.payout.monthly-cents` (€2) / `yearly-cents` (€18), both configurable. Deleting an account (self-service or admin) or revoking premium also **cancels the Stripe subscription** so no further charges occur.
+
 ### Configuration
 
 Five environment variables, injected via `docker-compose.yml` and mapped in `application.properties` (`stripe.*`, `app.public-url`) — all empty by default so the app runs with billing disabled. They live only in `docker/.env` on the server (never committed): `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `STRIPE_PRICE_MONTHLY`, `STRIPE_PRICE_YEARLY`, `APP_PUBLIC_URL`. See [Deployment → Required secret files](#deployment).
@@ -227,7 +242,7 @@ ChineseReads follows an **iterative and incremental** development process inspir
 
 ### Task Management
 - **GitHub Issues** — each feature, bug, or task is tracked as an issue.
-- **GitHub Projects** — visual Kanban board with columns: Backlog, In Progress, Done.
+- **GitHub Projects** — visual Kanban board with columns: Backlog, In Progress, In Review, Done (see [Methodology](methodology.md)).
 
 ### Git Strategy
 - `main` — stable production branch, only receives merges from feature branches via Pull Requests.
@@ -411,7 +426,13 @@ chmod +x ./deploy.sh
 ```
 
 5. Create the required secret files:
-   - `docker/.env` with the DeepSeek API key
+   - `docker/.env` with the secrets and environment overrides. The main groups (all optional — empty defaults keep the app booting with the feature disabled; see `docker-compose.yml` for the full list):
+     - `DEEPSEEK_API_KEY` — AI microservice
+     - `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `STRIPE_PRICE_MONTHLY`, `STRIPE_PRICE_YEARLY` — payments
+     - `BREVO_API_KEY`, `MAIL_FROM`, `MAIL_FROM_NAME` — transactional email
+     - `JWT_SECRET` (generate with `openssl rand -base64 48`) — stable sessions across redeploys
+     - `REMINDER_*` (enabled/cron/zone), `PASSWORD_RESET_*` (token minutes, per-IP hourly limit)
+     - `USAGE_*`, `TTS_*`, `INFLUENCER_PAYOUT_*` — quotas, cost guards and commission amounts
    - `ocr-service/credentials.json` with Google Cloud credentials
    - `tts-service/credentials.json` with the same Google Cloud credentials (Cloud Text-to-Speech API enabled)
 
@@ -419,6 +440,7 @@ chmod +x ./deploy.sh
 ```bash
 ./deploy.sh
 ```
+The script does more than `docker compose up`: it takes a **database backup first and aborts the deploy if the backup fails**, installs an idempotent **daily backup cron (04:15, 14-day rotation)**, builds the frontend with `npm run build` (which runs `remove-ssr-prerender.mjs`), and **force-recreates the `caddy` and `frontend-ssr` containers** (their bind-mounted files change inode on rebuild — without the force-recreate they would keep serving stale content).
 
 ### Verify HTTPS certificates
 ```bash
@@ -436,12 +458,19 @@ docker restart docker-caddy-1
 ```bash
 curl https://chinesereads.com | grep "<title>"
 ```
-If the HTML title ``<title>ChineseReads — Learn Chinese by Reading Graded HSK Texts</title>`` appears in the response, SSR is working correctly. If ``<app-root></app-root>`` or nothing shows, it is not working.
+If the HTML title ``<title>ChineseReads — Learn Chinese by Reading Graded HSK Texts</title>`` appears in the response, prerendering is working. **For the live-SSR pages a correct title is NOT enough** — "right title + empty list" is exactly what a frozen prerender snapshot looks like (PR #140). Verify that **real data** is in the raw HTML:
+```bash
+curl -s https://chinesereads.com/texts | grep -o 'href="/text/[0-9]*"' | head -3   # real links to texts
+curl -s https://chinesereads.com/blog  | grep -o 'href="/blog/[a-z0-9-]*"' | head -3
+```
 
 ### Verify SEO files are served
 ```bash
-curl https://chinesereads.com/robots.txt      # should list the sitemap and Disallow rules
-curl https://chinesereads.com/sitemap.xml      # should list the public URLs
+curl https://chinesereads.com/robots.txt                 # should list the 4 sitemaps and Disallow rules
+curl https://chinesereads.com/sitemap.xml                # static: fixed public URLs
+curl https://chinesereads.com/sitemap-texts.xml          # dynamic (backend)
+curl https://chinesereads.com/sitemap-blog.xml           # dynamic (backend)
+curl https://chinesereads.com/sitemap-hall-of-fame.xml   # dynamic (backend)
 curl -s https://chinesereads.com/texts | grep -o '<meta name="description"[^>]*>'  # route-specific description
 ```
 

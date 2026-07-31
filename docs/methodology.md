@@ -37,4 +37,6 @@ Commit branches follow the conventional commits format:
 | `docs:` | Documentation |
 | `test:` | Tests |
 | `refactor:` | Code refactoring without behaviour change |
+| `style:` | Visual / styling changes without behaviour change |
+| `content:` | Copy and content updates (UI texts, legal pages) |
 | `chore:` | Build, config, dependencies |
