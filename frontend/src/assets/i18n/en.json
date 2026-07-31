@@ -744,6 +744,9 @@
     "editPage": "Edit page",
     "done": "Done",
     "code": "Discount code",
+    "member": {
+      "back": "Back to the Hall of Fame"
+    },
     "uploadPhoto": "Photo",
     "removePhoto": "Remove photo",
     "addEntry": "Add member",

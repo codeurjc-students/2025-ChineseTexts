@@ -39,6 +39,15 @@ describe('resolveSeo', () => {
     expect(resolveSeo('/blog-editor/5', 'es').noindex).toBeTrue();
   });
 
+  it('resolves /hall-of-fame statically and /hall-of-fame/:slug with an indexable fallback', () => {
+    expect(resolveSeo('/hall-of-fame', 'en').noindex).toBeUndefined();
+
+    const member = resolveSeo('/hall-of-fame/maria-lopez', 'en');
+    expect(member.noindex).toBeUndefined();
+    expect(member.path).toBe('/hall-of-fame/maria-lopez');
+    expect(member.title).toContain('Hall of Fame');
+  });
+
   // Candado: las páginas del flujo de reset son transaccionales → noindex, y el
   // ?token=… del enlace del email no cambia la resolución (la query se descarta).
   it('keeps the password-reset pages noindex, with or without the token query', () => {

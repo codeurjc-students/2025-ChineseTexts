@@ -31,3 +31,4 @@ Disallow: /es/reset-password
 Sitemap: https://chinesereads.com/sitemap.xml
 Sitemap: https://chinesereads.com/sitemap-texts.xml
 Sitemap: https://chinesereads.com/sitemap-blog.xml
+Sitemap: https://chinesereads.com/sitemap-hall-of-fame.xml

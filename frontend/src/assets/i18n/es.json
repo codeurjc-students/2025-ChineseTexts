@@ -744,6 +744,9 @@
     "editPage": "Editar página",
     "done": "Hecho",
     "code": "Código de descuento",
+    "member": {
+      "back": "Volver al Salón de la Fama"
+    },
     "uploadPhoto": "Foto",
     "removePhoto": "Quitar foto",
     "addEntry": "Añadir miembro",

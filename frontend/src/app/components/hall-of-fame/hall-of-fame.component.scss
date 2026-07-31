@@ -55,6 +55,17 @@ $brand-soft: #fdecea;
     white-space: pre-line;
   }
 
+  // Nombre-enlace a la página detalle: hereda el color del título y solo
+  // se tiñe de marca al pasar el ratón (la tarjeta no cambia de aspecto).
+  .hof-name-link {
+    color: inherit;
+    text-decoration: none;
+
+    &:hover {
+      color: $brand;
+    }
+  }
+
   // ---------- Chips de badges (vista) ----------
   .hof-badge-chip {
     display: inline-flex;

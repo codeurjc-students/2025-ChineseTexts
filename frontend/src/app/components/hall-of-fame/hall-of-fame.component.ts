@@ -7,6 +7,7 @@ import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { LoginService } from '../../services/login.service';
 import { SeoService, SITE_URL } from '../../services/seo.service';
 import { Lang, addLangPrefix } from '../../i18n/locale.util';
+import { LocalizeLinkPipe } from '../../i18n/localize-link.pipe';
 import { HALL_OF_FAME_BADGES } from '../../data/hall-of-fame-badges';
 import {
   SOCIAL_LINK_PRESETS, SocialLinkPreset, detectSocialPreset
@@ -36,7 +37,7 @@ const GENERIC_LINK_ICON = 'bi-link-45deg';
 @Component({
   selector: 'app-hall-of-fame',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, TranslocoModule],
+  imports: [CommonModule, FormsModule, RouterModule, TranslocoModule, LocalizeLinkPipe],
   templateUrl: './hall-of-fame.component.html',
   styleUrl: './hall-of-fame.component.scss'
 })

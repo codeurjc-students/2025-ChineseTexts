@@ -48,6 +48,20 @@ public class HallOfFameControllerRest {
         return hallOfFameService.getAll();
     }
 
+    /**
+     * Página detalle pública /hall-of-fame/:slug. Público como el listado (el
+     * GET /api/hall-of-fame/** ya es permitAll en SecurityConfig). Slug
+     * desconocido → 404, que el frontend convierte en soft-404 noindex.
+     */
+    @GetMapping("/slug/{slug}")
+    public ResponseEntity<?> getBySlug(@PathVariable String slug) {
+        try {
+            return ResponseEntity.ok(hallOfFameService.getBySlug(slug));
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
     @PostMapping
     public ResponseEntity<?> create(@RequestBody HallOfFameEntryDTO data) {
         try {

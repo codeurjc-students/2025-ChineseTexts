@@ -50,6 +50,21 @@ public class HallOfFameServiceTest {
                 null, null, null, badges, null);
     }
 
+    // Test unitario: getBySlug delega en el repositorio y lanza si no existe (→404)
+    @Test
+    @DisplayName("getBySlug resolves an existing slug and throws for an unknown one")
+    public void getBySlugResolvesOrThrows() {
+        HallOfFameEntry entry = new HallOfFameEntry();
+        entry.setSlug("maria-lopez");
+        when(entryRepository.findBySlug("maria-lopez")).thenReturn(Optional.of(entry));
+        when(entryRepository.findBySlug("nadie")).thenReturn(Optional.empty());
+
+        // El mapper está mockeado (devuelve null): basta con que no lance.
+        hallOfFameService.getBySlug("maria-lopez");
+        assertThrows(java.util.NoSuchElementException.class,
+                () -> hallOfFameService.getBySlug("nadie"));
+    }
+
     @Test
     @DisplayName("create derives a clean slug from a name with diacritics and spaces")
     public void createDerivesSlug() {

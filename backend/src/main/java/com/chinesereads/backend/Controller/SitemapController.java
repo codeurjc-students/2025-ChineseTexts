@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.chinesereads.backend.Repository.BlogPostRepository;
 import com.chinesereads.backend.Repository.BlogPostRepository.BlogSitemapRow;
+import com.chinesereads.backend.Repository.HallOfFameEntryRepository;
+import com.chinesereads.backend.Repository.HallOfFameEntryRepository.HallOfFameSitemapRow;
 import com.chinesereads.backend.Repository.TextRepository.TextSitemapRow;
 import com.chinesereads.backend.Service.TextService;
 
@@ -31,15 +33,18 @@ public class SitemapController {
 
     private final TextService textService;
     private final BlogPostRepository blogPostRepository;
+    private final HallOfFameEntryRepository hallOfFameEntryRepository;
 
     // Site origin for absolute URLs. Same property Stripe uses for its return
     // URLs; in production docker-compose sets it to https://chinesereads.com.
     @Value("${app.public-url}")
     private String publicUrl;
 
-    public SitemapController(TextService textService, BlogPostRepository blogPostRepository) {
+    public SitemapController(TextService textService, BlogPostRepository blogPostRepository,
+                             HallOfFameEntryRepository hallOfFameEntryRepository) {
         this.textService = textService;
         this.blogPostRepository = blogPostRepository;
+        this.hallOfFameEntryRepository = hallOfFameEntryRepository;
     }
 
     @GetMapping(value = "/sitemap-texts.xml", produces = MediaType.APPLICATION_XML_VALUE)
@@ -83,6 +88,32 @@ public class SitemapController {
                     : row.getPublishedOn();
             appendUrl(xml, en, en, es, lastmod);
             appendUrl(xml, es, en, es, lastmod);
+        }
+        xml.append("</urlset>\n");
+        return xml.toString();
+    }
+
+    /**
+     * Dynamic sitemap for the influencer profile pages (/hall-of-fame/:slug and
+     * its /es twin) — same rationale and format as the other two: members live
+     * in the database and must be indexable without a redeploy. Slugs are
+     * [a-z0-9-] by construction (HallOfFameService normalizes them), so the
+     * no-escaping invariant holds. The entity carries no modification date, so
+     * entries go without lastmod (appendUrl tolerates null).
+     */
+    @GetMapping(value = "/sitemap-hall-of-fame.xml", produces = MediaType.APPLICATION_XML_VALUE)
+    public String hallOfFameSitemap() {
+        String base = publicUrl.endsWith("/") ? publicUrl.substring(0, publicUrl.length() - 1) : publicUrl;
+
+        StringBuilder xml = new StringBuilder();
+        xml.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+        xml.append("<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\"\n");
+        xml.append("        xmlns:xhtml=\"http://www.w3.org/1999/xhtml\">\n");
+        for (HallOfFameSitemapRow row : hallOfFameEntryRepository.findSitemapRows()) {
+            String en = base + "/hall-of-fame/" + row.getSlug();
+            String es = base + "/es/hall-of-fame/" + row.getSlug();
+            appendUrl(xml, en, en, es, null);
+            appendUrl(xml, es, en, es, null);
         }
         xml.append("</urlset>\n");
         return xml.toString();

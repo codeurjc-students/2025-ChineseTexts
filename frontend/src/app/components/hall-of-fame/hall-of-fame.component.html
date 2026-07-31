@@ -71,7 +71,13 @@
 
             <!-- ============ Vista ============ -->
             <ng-container *ngIf="!editing">
-              <h2 class="h4 fw-bold text-center mt-3 mb-1">{{ e.name }}</h2>
+              <!-- El nombre es un <a> real a propósito (como los títulos de
+                   /texts): routerLink en otro elemento no emite href y Google
+                   no podría seguir el enlace a la página detalle desde este
+                   listado renderizado por SSR. -->
+              <h2 class="h4 fw-bold text-center mt-3 mb-1">
+                <a class="hof-name-link" [routerLink]="['/hall-of-fame', e.slug] | localizeLink">{{ e.name }}</a>
+              </h2>
               <p *ngIf="taglineOf(e)" class="text-danger fw-semibold text-center mb-2">{{ taglineOf(e) }}</p>
 
               <!-- Badges -->
