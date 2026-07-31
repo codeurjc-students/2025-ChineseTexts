@@ -113,6 +113,13 @@
             {{ 'signup.form.emailConsentLabel' | transloco }}
           </label>
         </div>
+
+        <!-- RGPD art. 13: información en el momento de la recogida — enlace a la
+             política de privacidad junto al propio formulario. -->
+        <p class="small text-muted mt-2 mb-0">
+          {{ 'signup.form.privacyPrefix' | transloco }}
+          <a [routerLink]="'/privacy-policy' | localizeLink" target="_blank" rel="noopener">{{ 'signup.form.privacyLabel' | transloco }}</a>.
+        </p>
       </div>
 
     </form>

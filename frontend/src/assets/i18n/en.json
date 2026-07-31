@@ -99,7 +99,7 @@
     },
     "donation": {
       "bottom": "ChineseReads is developed independently. If you'd like to follow along and help it grow, find us on Instagram:",
-      "button": "Support the Project"
+      "button": "Follow us on Instagram"
     },
     "howItWorks": {
       "heading": "How it works",
@@ -118,7 +118,6 @@
     },
     "badges": {
       "free": "Free",
-      "comingSoon": "Coming Soon",
       "register": "Register"
     },
     "benefits": {
@@ -143,8 +142,8 @@
         "text": "Hear native pronunciation for any text, sentence or word, with natural text-to-speech."
       },
       "tests": {
-        "title": "Personalized Tests",
-        "text": "Practice with quizzes generated from the words and grammar points you struggle with the most."
+        "title": "Smart Review (SRS)",
+        "text": "Review your flashcards with spaced repetition right before you would forget them — and opt in to a daily email reminder with your pending reviews."
       },
       "collections": {
         "title": "Collections & Flashcards",
@@ -177,7 +176,7 @@
         "item4": "Unlimited AI tutor chat",
         "item5": "Cancel anytime — no commitment",
         "cta": "Go Premium",
-        "yearlyNote": "or save 30% with yearly billing"
+        "yearlyNote": "or save 28% with yearly billing"
       }
     }
   },
@@ -442,11 +441,11 @@
     "subtitle": "Join our learning community and start improving your Chinese reading skills today.",
     "benefits": {
       "heading": "Why Join Us",
-      "item1": "Access curated Chinese reading collections",
-      "item2": "Read Chinese texts with interactive features",
-      "item3": "Create Flashcards and study efficiently",
-      "item4": "Use AI tools to enhance your learning experience",
-      "item5": "Learn at your own pace"
+      "item1": "Listen to any text, sentence or word with native-quality audio",
+      "item2": "Ask the AI tutor about any word right in its context",
+      "item3": "Save words to collections and review them with spaced-repetition flashcards",
+      "item4": "Turn your own texts and photos (OCR) into private graded readers",
+      "item5": "Build your reading streak and track your progress with personal stats"
     },
     "infoTitle": "Your Information",
     "form": {
@@ -468,7 +467,9 @@
       "acceptTermsLink": "Terms of Use",
       "acceptTermsSuffix": ".",
       "acceptTermsRequired": "You must accept the Terms of Use to create an account.",
-      "emailConsentLabel": "I'd like to receive learning tips and news by email (optional — you can change this anytime in your profile)"
+      "emailConsentLabel": "Send me a daily email reminder when I have flashcard reviews due (optional — you can change this anytime in your profile)",
+      "privacyPrefix": "Your data is handled as described in the",
+      "privacyLabel": "Privacy Policy"
     },
     "submit": "Create My Account",
     "back": "Back",
@@ -492,16 +493,18 @@
     "s2": {
       "title": "2. The service",
       "intro": "ChineseReads lets you:",
-      "item1": "Read graded HSK texts with word-by-word pinyin and translations (audio requires a free account).",
+      "item1": "Read the public HSK1–6 graded texts — no account needed — with word-by-word pinyin and translations (audio requires a free account).",
       "item2": "Save words into personal vocabulary collections and study them as flashcards.",
       "item3": "Create your own texts from typed text or from images (OCR).",
       "item4": "Listen to text, sentences and words with text-to-speech audio.",
-      "item5": "Ask the AI tutor about any word in the context where you are reading it.",
-      "item6": "Track your reading streaks and progress, and review saved words with spaced repetition."
+      "item5": "Ask the AI tutor about any word in the context where you are reading it (requires a free account and has a monthly quota on the free plan).",
+      "item6": "Track your reading streaks and progress, and review saved words with spaced repetition.",
+      "item7": "Take the free level test and learn from scratch with the pinyin, tones and characters tutorial.",
+      "item8": "Read the blog and meet our collaborators in the Hall of Fame and their profile pages."
     },
     "s3": {
       "title": "3. Your account",
-      "body": "You are responsible for keeping your password safe and for all activity under your account. Please provide accurate information when you register. You must be old enough to consent to the processing of your personal data in your country (in the EU, generally 16, or the age set by your member state)."
+      "body": "You are responsible for keeping your password safe and for all activity under your account. Please provide accurate information when you register. You must be old enough to consent to the processing of your personal data in your country (in the EU, generally 16, or the age set by your member state). If you forget your password you can reset it yourself via \"Forgot your password?\": we will email you a single-use link valid for 60 minutes — do not share it with anyone. Some service emails (welcome and password reset) are sent even if you did not opt into optional communications, because they are needed to run your account."
     },
     "s4": {
       "title": "4. Acceptable use",
@@ -515,11 +518,11 @@
     },
     "s5": {
       "title": "5. Your content",
-      "body": "The texts and images you upload remain yours. They are kept private to your account, and you grant ChineseReads only the permission needed to process and display them back to you — including sending them to the third-party AI, OCR and speech providers listed in the Privacy Policy. You are responsible for having the right to upload whatever you submit."
+      "body": "The texts and images you upload remain yours. They are kept private to your account, and you grant ChineseReads only the permission needed to process and display them back to you — including sending them to the third-party AI, OCR and speech providers listed in the Privacy Policy. You are responsible for having the right to upload whatever you submit. Your texts are kept for as long as you keep them; they are removed when you delete them or delete your account."
     },
     "s6": {
       "title": "6. Intellectual property",
-      "body": "The ChineseReads name, design, code and curated graded texts belong to their creator and are protected by law. You may use them only for your personal, non-commercial language learning."
+      "body": "The ChineseReads name, its design, its code, the curated graded texts, the learning materials of the tutorial and the blog articles belong to its creator and are protected by law. You may only use them for your personal, non-commercial language learning. The photos and bios shown in the Hall of Fame belong to their respective collaborators and are published with their permission."
     },
     "s7": {
       "title": "7. Third-party services and privacy",
@@ -528,7 +531,7 @@
     },
     "payments": {
       "title": "8. Subscriptions and payments",
-      "intro": "ChineseReads offers optional paid PREMIUM subscription plans that raise your usage limits. If you subscribe, the following terms apply:",
+      "intro": "ChineseReads offers optional paid PREMIUM subscription plans that raise your usage limits. The current prices and limits of each plan are those published on the Premium page, which forms part of these terms. If you subscribe, the following terms apply:",
       "item1": "Plans are billed on a recurring basis (monthly or yearly) at the prices shown on the pricing page, in euros. Any applicable taxes are shown or added at checkout.",
       "item2": "Payments are handled by Stripe, our payment provider. ChineseReads never receives or stores your full card details — they are processed directly by Stripe. See the Privacy Policy for how payment data is handled.",
       "item3": "Subscriptions renew automatically at the end of each billing period, charged to your payment method on file, until you cancel.",
@@ -540,7 +543,7 @@
     },
     "promo": {
       "title": "9. Discount codes and referrals",
-      "body": "We sometimes run promotions through discount codes or referral links, often together with collaborators. Codes have no cash value, cannot be exchanged for money and may be modified or deactivated at any time; unless stated otherwise, each code can be used once per customer and applies only to the charges it describes. If we detect fraudulent use of a code or referral link (for example multiple accounts, self-referrals or automated redemptions), we may withdraw the discount or the premium access obtained with it and close the accounts involved."
+      "body": "We sometimes run promotions through discount codes or referral links, often together with collaborators. Codes have no cash value, cannot be exchanged for money and may be modified or deactivated at any time; unless stated otherwise, each code can be used once per customer and applies only to the charges it describes. If we detect fraudulent use of a code or referral link (for example multiple accounts, self-referrals or automated redemptions), we may withdraw the discount or the premium access obtained with it and close the accounts involved. The terms of each collaboration with creators (commissions and settlements) are agreed separately with each collaborator and are not part of these consumer terms."
     },
     "s8": {
       "title": "10. Availability and changes to the service",
@@ -550,7 +553,7 @@
       "title": "11. Suspension and termination",
       "item1": "We may suspend or close an account, with immediate effect where justified, if it breaches these terms or if we have reasonable grounds to suspect fraud or a breach (for example payment fraud or abuse of usage limits or promotional codes).",
       "item2": "We may also stop offering the service, or close accounts, for operational reasons. In that case no further payments will be charged, and any premium period already paid will either remain usable until its end date or be refunded in proportion to the unused time.",
-      "item3": "Free accounts that have been inactive for more than 24 months may be deleted after prior notice by email.",
+      "item3": "We reserve the right to delete free accounts that have been inactive for more than 24 months, always with prior notice by email.",
       "item4": "You can delete your own account at any time from your profile. Doing so automatically cancels any active subscription, so no further charges are made."
     },
     "s9": {
@@ -595,7 +598,7 @@
     "lastUpdated": "Last updated: July 2026",
     "s1": {
       "title": "1. Who we are",
-      "body": "is a web application for learning Mandarin Chinese through graded texts and vocabulary tools. This service is operated as a personal project."
+      "body": "is a web application for learning Mandarin Chinese through graded texts and vocabulary tools. The service is offered as a personal project of José Víctor García Llorente, its creator and the data controller (contact details in section 10)."
     },
     "s2": {
       "title": "2. What data we collect",
@@ -607,20 +610,32 @@
       "activity": "Your learning activity (texts read, reading streaks, saved words and flashcard reviews), used to show your progress and to power optional reminders.",
       "payment": "If you subscribe to PREMIUM: billing identifiers that link your account to your subscription (a Stripe customer ID and subscription ID). Your card details are entered directly on Stripe and are never stored by ChineseReads.",
       "referral": "If you arrived through a promotional link or used a discount code: the campaign code involved (e.g. the name of the collaborator who recommended us), used only to measure how well each collaboration works.",
-      "analytics": "We also measure aggregate traffic with Umami, a cookie-less analytics tool. It collects anonymous, aggregated statistics only (pages visited and where visitors come from), stores no personal data and cannot identify you, so it requires no consent."
+      "content": "The texts and images you upload to create your own readers, together with the words and sentences processed from them. They stay private in your account until you delete them or delete the account.",
+      "metadata": "Account metadata: registration date, last login date, the monthly usage counters (text generations, audio plays and AI messages) used to enforce each plan's limits, and proof of your consents (when you accepted the terms and, if given, the email consent).",
+      "ip": "Your IP address, transiently, to rate-limit requests and prevent abuse (for example on audio playback and on password-reset requests). It is not stored with your profile.",
+      "tokens": "Single-use technical tokens: the one-click unsubscribe token of the reminder emails and, when you request a password reset, the SHA-256 hash of the reset token (never the token itself) together with its expiry.",
+      "analytics": "We also measure aggregate traffic with Umami, a cookie-less analytics tool. It collects anonymous, aggregated statistics only (pages visited and where visitors come from), stores no personal data and cannot identify you, so it requires no consent.",
+      "aiChat": "The messages you exchange with the AI tutor are not stored in our database: they are processed on the fly and only live in your browser during the conversation.",
+      "hof": "The public Hall of Fame pages show information about our collaborators (name, photo, bio, social links and discount code) published with their agreement. To settle their commissions we also record, for each purchase made with a code, the plan, the amount and the invoice identifier."
     },
     "s3": {
       "title": "3. How we use your data",
       "item1": "To provide and maintain the ChineseReads service.",
       "item2": "To manage your account and personalize your experience.",
       "item3": "To analyze anonymous, aggregate usage patterns and improve the application.",
+      "item4": "To send you the service emails (the welcome email and the password-reset link you request) and, only with your consent, the daily review reminder.",
+      "item5": "To process payments and manage your PREMIUM subscription through Stripe, and to meet the related tax and accounting obligations.",
+      "item6": "To enforce each plan's usage limits and prevent abuse and fraud, including measuring the performance of referral campaigns.",
+      "item7": "To handle your GDPR rights requests.",
       "note": "We do not sell, rent, or share your personal data with third parties for marketing purposes."
     },
     "s4": {
-      "title": "4. Cookies",
+      "title": "4. Cookies and local storage",
       "intro": "We only use essential cookies:",
       "essentialLabel": "Essential cookies",
       "essentialBody": "necessary for authentication (JWT token stored in HttpOnly cookie). These cannot be disabled as the service cannot function without them.",
+      "localStorageLabel": "Local storage",
+      "localStorageBody": "your browser also keeps a small local copy of your basic session data so pages load instantly and, if you arrived through a referral link, the campaign code for up to 60 days so the collaboration is credited correctly. This data never tracks you across other sites and is removed when you clear your browser data (the referral code also expires on its own).",
       "withdraw": "We do not use advertising, analytics or any other non-essential cookies, so no cookie consent is required. Our traffic statistics come from Umami, a cookie-less tool (see section 5)."
     },
     "s5": {
@@ -628,18 +643,30 @@
       "intro": "ChineseReads uses the following third-party services:",
       "privacyPolicyLabel": "Privacy policy",
       "stripe": "to process subscription payments securely. Your card and payment details are handled by Stripe as the payment processor; ChineseReads does not receive or store full card numbers.",
-      "umami": "for cookie-less aggregate traffic statistics (pages visited and where visitors come from). It sets no cookies and stores no personal data, so it needs no consent.",
+      "umami": "for aggregated, cookie-free traffic statistics (pages visited and where visits come from), through its managed Umami Cloud service. It technically processes each request (IP address and browser) only to build anonymous aggregated counts, sets no cookies and cannot identify you to us.",
       "deepseek": "to generate Chinese learning texts and to power the AI tutor (asking about words and context). Only the text you send is processed, no account or personal data.",
       "vision": "to extract text from uploaded images. Images are processed and not stored.",
       "tts": "to generate audio pronunciation of Chinese text, words and sentences. Only the Chinese text to be read aloud is sent, no personal data. Audio is generated on demand and not stored.",
-      "brevo": "to send account emails (such as the welcome email when you register) and, only if you opted in, occasional learning tips and news. Your email address and name are shared with Brevo solely to deliver these messages; you can withdraw the optional consent anytime from your profile."
+      "brevo": "to send your account's service emails (the welcome email and the password-reset link when you request one) and, only if you gave your consent, a daily review reminder that includes how many flashcards are due and your reading streak — at most one per day and only when you have reviews pending. Your email address and name are shared with Brevo solely to deliver these messages. You can withdraw the optional consent at any time from your profile or through the one-click unsubscribe link inside the reminder emails themselves (service emails carry no unsubscribe link because they are needed to run your account)."
+    },
+    "sBases": {
+      "title": "6. Legal bases for processing",
+      "intro": "We only process your data where the GDPR allows it:",
+      "contract": "Performance of the contract — your account, the content you create, the service emails and the PREMIUM subscription.",
+      "consent": "Consent — the optional daily review reminder by email (withdrawable at any time).",
+      "interest": "Legitimate interest — preventing abuse and fraud, enforcing usage limits, aggregated statistics and measuring collaborations.",
+      "legal": "Legal obligation — keeping billing records for tax and accounting purposes."
+    },
+    "sTransfers": {
+      "title": "7. International transfers",
+      "body": "Some of the providers listed in section 5 process data outside the European Economic Area: Stripe and Google Cloud in the United States (both certified under the EU-U.S. Data Privacy Framework), and DeepSeek in China, which only ever receives the text you type into the AI features — never your name, email or any account identifier. Brevo processes data within the European Union. No provider receives more data than described in section 5."
     },
     "s6": {
-      "title": "6. Data retention",
-      "body": "Account data is retained as long as your account is active. You can request deletion of your account and all associated data at any time by contacting us. Traffic statistics are anonymous and aggregated and contain no personal data. Records related to payments and subscriptions may be kept for longer where necessary to comply with tax, accounting and anti-fraud obligations, even after the account they belong to has been deleted."
+      "title": "8. Data retention",
+      "body": "Account data is kept while your account is active. You can delete your account yourself at any time from your profile: deletion is immediate, removes your collections, flashcards and created texts, and automatically cancels any active subscription so no further charges occur. You can also ask us to delete it by email. Traffic statistics are anonymous and aggregated and contain no personal data. Payment and subscription records may be kept for longer where necessary to meet tax, accounting and fraud-prevention obligations, even after the account they belong to has been deleted."
     },
     "s7": {
-      "title": "7. Your rights (GDPR)",
+      "title": "9. Your rights (GDPR)",
       "intro": "Under the General Data Protection Regulation (GDPR), you have the right to:",
       "item1": "Access your personal data",
       "item2": "Correct inaccurate data",
@@ -647,10 +674,12 @@
       "item4": "Object to processing",
       "item5": "Data portability",
       "item6": "Withdraw consent at any time",
+      "item7": "Restrict the processing of your data",
+      "item8": "Lodge a complaint with a supervisory authority (in Spain, the AEPD — aepd.es)",
       "contact": "To exercise these rights, contact us at:"
     },
     "s8": {
-      "title": "8. Contact",
+      "title": "10. Contact",
       "body": "If you have any questions about this privacy policy, please contact us at:"
     }
   },
@@ -932,15 +961,15 @@
       "success": "Profile updated successfully!",
       "saving": "Saving...",
       "save": "Save changes",
-      "emailConsentLabel": "Receive learning tips and news by email",
-      "emailConsentHint": "Optional. Account emails (like your welcome email) don't depend on this. You can change it anytime."
+      "emailConsentLabel": "Receive a daily review reminder by email",
+      "emailConsentHint": "Optional. Sent at most once a day and only when you have flashcards due. Service emails (welcome, password reset) don't depend on this."
     },
     "changePassword": {
       "title": "Change password",
       "currentLabel": "Current password",
       "currentPlaceholder": "Enter your current password",
       "newLabel": "New password",
-      "newPlaceholder": "At least 4 characters",
+      "newPlaceholder": "At least 6 characters",
       "confirmLabel": "Confirm new password",
       "confirmPlaceholder": "Repeat new password",
       "mismatch": "Passwords do not match",
@@ -952,7 +981,7 @@
     "deleteAccount": {
       "title": "Delete account",
       "warningTitle": "This action is permanent and cannot be undone.",
-      "warningText": "Your account, your collections and all your flashcards will be permanently deleted. You will be logged out immediately.",
+      "warningText": "Your account, your collections, your flashcards and your created texts will be permanently deleted, and any active subscription will be cancelled automatically. You will be logged out immediately.",
       "typePrefix": "Type",
       "typeSuffix": "to confirm",
       "deleting": "Deleting...",
@@ -1624,7 +1653,7 @@
   "premium": {
     "kicker": "ChineseReads Premium",
     "title": "Learn Chinese without limits",
-    "subtitle": "Go Premium for unlimited graded readers, unlimited audio and an unlimited AI tutor that explains any word in context — never blocked by shared limits.",
+    "subtitle": "Go Premium for unlimited private graded readers created from your own texts, unlimited audio and an unlimited AI tutor that explains any word in context — never blocked by shared limits.",
     "errorGeneric": "Something went wrong. Please try again.",
     "current": {
       "title": "You're Premium",
@@ -1650,12 +1679,18 @@
     "benefits": {
       "title": "What's included",
       "item1": "Unlimited private graded readers — no monthly cap (the free plan allows 10 per month)",
-      "item2": "Unlimited audio — full narration of any text, sentence and word",
+      "item2": "Unlimited audio — full narration of any text, sentence and word (free plan: 100 word plays and 15 sentence/text plays per month)",
       "item3": "Unlimited AI tutor — ask about any word or sentence in context (free plan: 10 messages/month)",
       "item4": "Support an independently developed project and help it grow"
     },
     "secureNote": "Secure payment powered by Stripe. Cancel anytime.",
-    "finePrint": "Subscriptions renew automatically until cancelled; you can cancel anytime. Prices are in euros; applicable taxes are shown at checkout. Payments are processed by Stripe.",
+    "finePrint": "Subscriptions renew automatically until cancelled; you can cancel anytime. Prices are in euros; applicable taxes are shown at checkout. Payments are processed by Stripe. By subscribing you request immediate access to digital content and acknowledge that you lose the 14-day withdrawal right once your premium access starts.",
+    "promoHint": "Have a creator's discount code? You can enter it on Stripe's secure checkout page before paying.",
+    "legal": {
+      "intro": "Full conditions:",
+      "terms": "Terms of Use",
+      "privacy": "Privacy Policy"
+    },
     "loginHint": "You'll be asked to sign in or create a free account before subscribing."
   },
   "premiumSuccess": {

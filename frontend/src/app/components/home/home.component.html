@@ -96,7 +96,9 @@
           <div class="feature-icon"><i class="bi bi-stars"></i></div>
           <h3 class="fw-bold">
             {{ 'home.benefits.ai.title' | transloco }}
-            <span class="premium-badge" style="background:#27ae60;">{{ 'home.badges.free' | transloco }}</span>
+            <!-- Badge "Regístrate", no "Gratis": el propio texto dice que requiere
+                 cuenta gratuita — el badge verde de gratis era contradictorio. -->
+            <span class="premium-badge">{{ 'home.badges.register' | transloco }}</span>
           </h3>
           <p>
             {{ 'home.benefits.ai.text' | transloco }}

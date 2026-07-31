@@ -62,7 +62,19 @@
       <i class="bi bi-lock-fill"></i> {{ t('premium.secureNote') }}
     </p>
 
+    <!-- Los códigos de descuento de los creadores se teclean en el checkout de
+         Stripe (allow_promotion_codes), no aquí — este aviso evita buscarlo en vano. -->
+    <p class="premium-secure">
+      <i class="bi bi-ticket-perforated"></i> {{ t('premium.promoHint') }}
+    </p>
+
     <p class="premium-fineprint">{{ t('premium.finePrint') }}</p>
+
+    <p class="premium-fineprint">
+      {{ t('premium.legal.intro') }}
+      <a [routerLink]="'/terms-of-use' | localizeLink">{{ t('premium.legal.terms') }}</a> ·
+      <a [routerLink]="'/privacy-policy' | localizeLink">{{ t('premium.legal.privacy') }}</a>
+    </p>
 
     <p class="premium-login-hint" *ngIf="!isLogged">
       <i class="bi bi-info-circle"></i> {{ t('premium.loginHint') }}

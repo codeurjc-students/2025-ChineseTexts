@@ -1,10 +1,12 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 
 import { LoginService } from '../../services/login.service';
 import { PremiumService } from '../../services/premium.service';
 import { LocaleNavService } from '../../i18n/locale-nav.service';
+import { LocalizeLinkPipe } from '../../i18n/localize-link.pipe';
 
 /**
  * Public pricing / upgrade page (/premium). Shows the plan cards for anonymous and
@@ -15,7 +17,7 @@ import { LocaleNavService } from '../../i18n/locale-nav.service';
 @Component({
   selector: 'app-premium',
   standalone: true,
-  imports: [CommonModule, TranslocoModule],
+  imports: [CommonModule, RouterModule, TranslocoModule, LocalizeLinkPipe],
   templateUrl: './premium.component.html',
   styleUrl: './premium.component.scss'
 })
