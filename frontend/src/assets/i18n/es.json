@@ -99,7 +99,7 @@
     },
     "donation": {
       "bottom": "ChineseReads se desarrolla de forma independiente. Si quieres seguirlo de cerca y ayudarlo a crecer, encuéntranos en Instagram:",
-      "button": "Apoya el proyecto"
+      "button": "Síguenos en Instagram"
     },
     "howItWorks": {
       "heading": "Cómo funciona",
@@ -118,7 +118,6 @@
     },
     "badges": {
       "free": "Gratis",
-      "comingSoon": "Próximamente",
       "register": "Regístrate"
     },
     "benefits": {
@@ -143,8 +142,8 @@
         "text": "Escucha la pronunciación nativa de cualquier texto, frase o palabra con síntesis de voz natural."
       },
       "tests": {
-        "title": "Tests personalizados",
-        "text": "Practica con cuestionarios generados a partir de las palabras y los puntos gramaticales que más te cuestan."
+        "title": "Repaso inteligente (SRS)",
+        "text": "Repasa tus tarjetas con repetición espaciada justo antes de que se te olviden — y, si quieres, recibe un recordatorio diario por email con tus repasos pendientes."
       },
       "collections": {
         "title": "Colecciones y flashcards",
@@ -177,7 +176,7 @@
         "item4": "Chat con el tutor IA ilimitado",
         "item5": "Cancela cuando quieras — sin compromiso",
         "cta": "Hazte Premium",
-        "yearlyNote": "o ahorra un 30 % con el plan anual"
+        "yearlyNote": "o ahorra un 28 % con el plan anual"
       }
     }
   },
@@ -442,11 +441,11 @@
     "subtitle": "Únete a nuestra comunidad de aprendizaje y empieza hoy mismo a mejorar tu comprensión lectora del chino.",
     "benefits": {
       "heading": "Por qué unirte",
-      "item1": "Accede a colecciones de lecturas en chino cuidadosamente seleccionadas",
-      "item2": "Lee textos en chino con funciones interactivas",
-      "item3": "Crea tarjetas de memoria y estudia de forma eficiente",
-      "item4": "Usa herramientas de IA para mejorar tu experiencia de aprendizaje",
-      "item5": "Aprende a tu propio ritmo"
+      "item1": "Escucha cualquier texto, frase o palabra con audio de calidad nativa",
+      "item2": "Pregunta al tutor de IA sobre cualquier palabra en su propio contexto",
+      "item3": "Guarda palabras en colecciones y repásalas con tarjetas de repetición espaciada",
+      "item4": "Convierte tus propios textos y fotos (OCR) en lecturas graduadas privadas",
+      "item5": "Construye tu racha de lectura y sigue tu progreso con estadísticas personales"
     },
     "infoTitle": "Tus datos",
     "form": {
@@ -468,7 +467,9 @@
       "acceptTermsLink": "términos de uso",
       "acceptTermsSuffix": ".",
       "acceptTermsRequired": "Debes aceptar los términos de uso para crear una cuenta.",
-      "emailConsentLabel": "Quiero recibir consejos de aprendizaje y novedades por email (opcional — puedes cambiarlo cuando quieras en tu perfil)"
+      "emailConsentLabel": "Quiero recibir un recordatorio diario por email cuando tenga repasos de tarjetas pendientes (opcional — puedes cambiarlo cuando quieras en tu perfil)",
+      "privacyPrefix": "Tus datos se tratan como describe la",
+      "privacyLabel": "Política de privacidad"
     },
     "submit": "Crear mi cuenta",
     "back": "Volver",
@@ -492,16 +493,18 @@
     "s2": {
       "title": "2. El servicio",
       "intro": "ChineseReads te permite:",
-      "item1": "Leer textos graduados HSK con pinyin palabra por palabra y traducciones (el audio requiere una cuenta gratuita).",
+      "item1": "Leer los textos graduados HSK1–6 públicos — sin necesidad de cuenta — con pinyin palabra por palabra y traducciones (el audio requiere una cuenta gratuita).",
       "item2": "Guardar palabras en colecciones de vocabulario personales y estudiarlas como tarjetas.",
       "item3": "Crear tus propios textos a partir de texto escrito o de imágenes (OCR).",
       "item4": "Escuchar textos, frases y palabras con audio de síntesis de voz.",
-      "item5": "Preguntar al tutor de IA sobre cualquier palabra en el contexto en el que la estás leyendo.",
-      "item6": "Seguir tus rachas y tu progreso de lectura, y repasar las palabras guardadas con repetición espaciada."
+      "item5": "Preguntar al tutor de IA sobre cualquier palabra en el contexto en el que la estás leyendo (requiere una cuenta gratuita y tiene una cuota mensual en el plan gratis).",
+      "item6": "Seguir tus rachas y tu progreso de lectura, y repasar las palabras guardadas con repetición espaciada.",
+      "item7": "Hacer el test de nivel gratuito y aprender desde cero con el tutorial de pinyin, tonos y caracteres.",
+      "item8": "Leer el blog y conocer a nuestros colaboradores en el Salón de la Fama y sus páginas de perfil."
     },
     "s3": {
       "title": "3. Tu cuenta",
-      "body": "Eres responsable de mantener tu contraseña a salvo y de toda la actividad realizada con tu cuenta. Proporciona información veraz al registrarte. Debes tener la edad suficiente para consentir el tratamiento de tus datos personales en tu país (en la UE, por lo general 16 años, o la edad que fije tu Estado miembro)."
+      "body": "Eres responsable de mantener tu contraseña a salvo y de toda la actividad realizada con tu cuenta. Proporciona información veraz al registrarte. Debes tener la edad suficiente para consentir el tratamiento de tus datos personales en tu país (en la UE, por lo general 16 años, o la edad que fije tu Estado miembro). Si olvidas tu contraseña puedes restablecerla tú mismo desde «¿Olvidaste tu contraseña?»: te enviaremos por email un enlace de un solo uso válido durante 60 minutos — no lo compartas con nadie. Algunos correos de servicio (bienvenida y restablecimiento) se envían aunque no actives las comunicaciones opcionales, porque son necesarios para gestionar tu cuenta."
     },
     "s4": {
       "title": "4. Uso aceptable",
@@ -515,11 +518,11 @@
     },
     "s5": {
       "title": "5. Tu contenido",
-      "body": "Los textos e imágenes que subes siguen siendo tuyos. Se mantienen privados en tu cuenta y concedes a ChineseReads únicamente el permiso necesario para procesarlos y mostrártelos de vuelta, incluido su envío a los proveedores externos de IA, OCR y voz que figuran en la Política de privacidad. Eres responsable de tener derecho a subir todo lo que envíes."
+      "body": "Los textos e imágenes que subes siguen siendo tuyos. Se mantienen privados en tu cuenta y concedes a ChineseReads únicamente el permiso necesario para procesarlos y mostrártelos de vuelta, incluido su envío a los proveedores externos de IA, OCR y voz que figuran en la Política de privacidad. Eres responsable de tener derecho a subir todo lo que envíes. Tus textos se conservan mientras los mantengas; se eliminan cuando los borras o al eliminar tu cuenta."
     },
     "s6": {
       "title": "6. Propiedad intelectual",
-      "body": "El nombre ChineseReads, su diseño, su código y los textos graduados seleccionados pertenecen a su creador y están protegidos por la ley. Solo puedes usarlos para tu aprendizaje de idiomas personal y no comercial."
+      "body": "El nombre ChineseReads, su diseño, su código, los textos graduados seleccionados, los materiales del tutorial de aprendizaje y los artículos del blog pertenecen a su creador y están protegidos por la ley. Solo puedes usarlos para tu aprendizaje de idiomas personal y no comercial. Las fotos y biografías del Salón de la Fama pertenecen a sus respectivos colaboradores y se publican con su permiso."
     },
     "s7": {
       "title": "7. Servicios de terceros y privacidad",
@@ -528,7 +531,7 @@
     },
     "payments": {
       "title": "8. Suscripciones y pagos",
-      "intro": "ChineseReads ofrece planes de suscripción PREMIUM opcionales de pago que amplían tus límites de uso. Si te suscribes, se aplican las siguientes condiciones:",
+      "intro": "ChineseReads ofrece planes de suscripción PREMIUM opcionales de pago que amplían tus límites de uso. Los precios y límites vigentes de cada plan son los publicados en la página Premium, que forma parte de estos términos. Si te suscribes, se aplican las siguientes condiciones:",
       "item1": "Los planes se facturan de forma recurrente (mensual o anual) a los precios indicados en la página de precios, en euros. Los impuestos aplicables, cuando corresponda, se muestran o se añaden en el momento del pago.",
       "item2": "Los pagos los gestiona Stripe, nuestro proveedor de pagos. ChineseReads nunca recibe ni almacena los datos completos de tu tarjeta: los procesa directamente Stripe. Consulta la Política de privacidad para saber cómo se tratan los datos de pago.",
       "item3": "Las suscripciones se renuevan automáticamente al final de cada periodo de facturación, con cargo al método de pago registrado, hasta que las canceles.",
@@ -540,7 +543,7 @@
     },
     "promo": {
       "title": "9. Códigos de descuento y referidos",
-      "body": "En ocasiones lanzamos promociones mediante códigos de descuento o enlaces de referido, a menudo junto a colaboradores. Los códigos no tienen valor en efectivo, no son canjeables por dinero y pueden modificarse o desactivarse en cualquier momento; salvo que se indique lo contrario, cada código es de un solo uso por cliente y se aplica únicamente a los cobros que describe. Si detectamos un uso fraudulento de un código o enlace de referido (por ejemplo varias cuentas, autorreferencias o canjes automatizados), podemos retirar el descuento o el acceso premium obtenido con él y cerrar las cuentas implicadas."
+      "body": "En ocasiones lanzamos promociones mediante códigos de descuento o enlaces de referido, a menudo junto a colaboradores. Los códigos no tienen valor en efectivo, no son canjeables por dinero y pueden modificarse o desactivarse en cualquier momento; salvo que se indique lo contrario, cada código es de un solo uso por cliente y se aplica únicamente a los cobros que describe. Si detectamos un uso fraudulento de un código o enlace de referido (por ejemplo varias cuentas, autorreferencias o canjes automatizados), podemos retirar el descuento o el acceso premium obtenido con él y cerrar las cuentas implicadas. Las condiciones de cada colaboración con creadores (comisiones y liquidaciones) se pactan por separado con cada colaborador y no forman parte de estos términos de consumo."
     },
     "s8": {
       "title": "10. Disponibilidad y cambios en el servicio",
@@ -550,7 +553,7 @@
       "title": "11. Suspensión y terminación",
       "item1": "Podemos suspender o cerrar una cuenta, con efecto inmediato cuando esté justificado, si incumple estos términos o si tenemos motivos razonables para sospechar un fraude o un incumplimiento (por ejemplo fraude en los pagos o abuso de los límites de uso o de los códigos promocionales).",
       "item2": "También podemos dejar de ofrecer el servicio, o cerrar cuentas, por razones operativas. En ese caso no se realizarán más cobros, y cualquier periodo premium ya pagado seguirá siendo utilizable hasta su fecha de fin o se reembolsará en proporción al tiempo no disfrutado.",
-      "item3": "Las cuentas gratuitas inactivas durante más de 24 meses podrán eliminarse tras un aviso previo por correo electrónico.",
+      "item3": "Nos reservamos el derecho a eliminar cuentas gratuitas inactivas durante más de 24 meses, siempre con un aviso previo por correo electrónico.",
       "item4": "Puedes eliminar tu propia cuenta en cualquier momento desde tu perfil. Al hacerlo se cancela automáticamente cualquier suscripción activa, de modo que no se producen más cobros."
     },
     "s9": {
@@ -595,7 +598,7 @@
     "lastUpdated": "Última actualización: julio de 2026",
     "s1": {
       "title": "1. Quiénes somos",
-      "body": "es una aplicación web para aprender chino mandarín mediante textos graduados y herramientas de vocabulario. Este servicio se ofrece como un proyecto personal."
+      "body": "es una aplicación web para aprender chino mandarín mediante textos graduados y herramientas de vocabulario. Este servicio se ofrece como un proyecto personal de José Víctor García Llorente, su creador y responsable del tratamiento (datos de contacto en la sección 10)."
     },
     "s2": {
       "title": "2. Qué datos recopilamos",
@@ -607,20 +610,32 @@
       "activity": "Tu actividad de aprendizaje (textos leídos, rachas de lectura, palabras guardadas y repasos de tarjetas), usada para mostrarte tu progreso y para los recordatorios opcionales.",
       "payment": "Si te suscribes a PREMIUM: identificadores de facturación que vinculan tu cuenta con tu suscripción (un ID de cliente y un ID de suscripción de Stripe). Los datos de tu tarjeta se introducen directamente en Stripe y ChineseReads nunca los almacena.",
       "referral": "Si llegaste a través de un enlace promocional o usaste un código de descuento: el código de campaña correspondiente (p. ej. el nombre del colaborador que nos recomendó), usado únicamente para medir el rendimiento de cada colaboración.",
-      "analytics": "También medimos el tráfico agregado con Umami, una herramienta de analítica sin cookies. Solo recopila estadísticas anónimas y agregadas (páginas visitadas y procedencia de las visitas), no almacena datos personales y no puede identificarte, por lo que no requiere consentimiento."
+      "content": "Los textos e imágenes que subes para crear tus propias lecturas, junto con las palabras y frases procesadas a partir de ellos. Permanecen privados en tu cuenta hasta que los borres o elimines la cuenta.",
+      "metadata": "Metadatos de la cuenta: fecha de registro, fecha del último acceso, los contadores mensuales de uso (generaciones de texto, audios y mensajes de IA) empleados para aplicar los límites de cada plan, y la prueba de tus consentimientos (cuándo aceptaste los términos y, si lo diste, el consentimiento de email).",
+      "ip": "Tu dirección IP, de forma transitoria, para limitar la frecuencia de las peticiones y prevenir abusos (por ejemplo en el audio y en las solicitudes de restablecer contraseña). No se almacena junto a tu perfil.",
+      "tokens": "Tokens técnicos de un solo uso: el de la baja en un clic de los correos de recordatorio y, cuando pides restablecer la contraseña, el hash SHA-256 del token de restablecimiento (nunca el token en claro) junto con su caducidad.",
+      "analytics": "También medimos el tráfico agregado con Umami, una herramienta de analítica sin cookies. Solo recopila estadísticas anónimas y agregadas (páginas visitadas y procedencia de las visitas), no almacena datos personales y no puede identificarte, por lo que no requiere consentimiento.",
+      "aiChat": "Los mensajes que intercambias con el tutor de IA no se guardan en nuestra base de datos: se procesan al vuelo y solo existen en tu navegador mientras dura la conversación.",
+      "hof": "Las páginas públicas del Salón de la Fama muestran información de nuestros colaboradores (nombre, foto, biografía, redes y código de descuento) publicada con su acuerdo. Para liquidar sus comisiones registramos además, por cada compra hecha con un código, el plan, el importe y el identificador de la factura."
     },
     "s3": {
       "title": "3. Cómo usamos tus datos",
       "item1": "Para proporcionar y mantener el servicio ChineseReads.",
       "item2": "Para gestionar tu cuenta y personalizar tu experiencia.",
       "item3": "Para analizar patrones de uso anónimos y agregados y mejorar la aplicación.",
+      "item4": "Para enviarte los correos de servicio (el de bienvenida y el enlace de restablecer contraseña que solicitas) y, solo con tu consentimiento, el recordatorio diario de repasos.",
+      "item5": "Para procesar los pagos y gestionar tu suscripción PREMIUM a través de Stripe, y cumplir las obligaciones fiscales y contables asociadas.",
+      "item6": "Para aplicar los límites de uso de cada plan y prevenir el abuso y el fraude, incluida la medición del rendimiento de las campañas de referidos.",
+      "item7": "Para atender tus solicitudes de derechos RGPD.",
       "note": "No vendemos, alquilamos ni compartimos tus datos personales con terceros con fines de marketing."
     },
     "s4": {
-      "title": "4. Cookies",
+      "title": "4. Cookies y almacenamiento local",
       "intro": "Solo usamos cookies esenciales:",
       "essentialLabel": "Cookies esenciales",
       "essentialBody": "necesarias para la autenticación (token JWT almacenado en una cookie HttpOnly). No se pueden desactivar, ya que el servicio no puede funcionar sin ellas.",
+      "localStorageLabel": "Almacenamiento local",
+      "localStorageBody": "tu navegador guarda también una pequeña copia local de tus datos básicos de sesión para que las páginas carguen al instante y, si llegaste por un enlace de referido, el código de campaña durante un máximo de 60 días para atribuir correctamente la colaboración. Estos datos nunca te siguen por otros sitios y se eliminan al borrar los datos del navegador (el código de referido caduca además por sí solo).",
       "withdraw": "No usamos cookies publicitarias, analíticas ni de ningún otro tipo no esencial, por lo que no se requiere consentimiento de cookies. Nuestras estadísticas de tráfico provienen de Umami, una herramienta sin cookies (ver sección 5)."
     },
     "s5": {
@@ -628,18 +643,30 @@
       "intro": "ChineseReads utiliza los siguientes servicios de terceros:",
       "privacyPolicyLabel": "Política de privacidad",
       "stripe": "para procesar los pagos de las suscripciones de forma segura. Los datos de tu tarjeta y de pago los gestiona Stripe como procesador de pagos; ChineseReads no recibe ni almacena los números completos de tarjeta.",
-      "umami": "para estadísticas agregadas de tráfico sin cookies (páginas visitadas y procedencia de las visitas). No instala cookies ni almacena datos personales, por lo que no requiere consentimiento.",
+      "umami": "para estadísticas agregadas de tráfico sin cookies (páginas visitadas y procedencia de las visitas), a través de su servicio gestionado Umami Cloud. Procesa técnicamente cada petición (dirección IP y navegador) solo para construir recuentos anónimos agregados, no instala cookies y no nos permite identificarte.",
       "deepseek": "para generar textos de aprendizaje en chino y para el tutor IA (preguntar sobre palabras y contexto). Solo se procesa el texto que envías, ningún dato de cuenta ni personal.",
       "vision": "para extraer texto de las imágenes subidas. Las imágenes se procesan y no se almacenan.",
       "tts": "para generar la pronunciación en audio de textos, palabras y frases en chino. Solo se envía el texto en chino que se va a leer en voz alta, ningún dato personal. El audio se genera bajo demanda y no se almacena.",
-      "brevo": "para enviar correos de cuenta (como el de bienvenida al registrarte) y, solo si diste tu consentimiento, consejos de aprendizaje y novedades ocasionales. Tu email y tu nombre se comparten con Brevo únicamente para entregar estos mensajes; puedes retirar el consentimiento opcional en cualquier momento desde tu perfil."
+      "brevo": "para enviar los correos de servicio de tu cuenta (el de bienvenida y el enlace de restablecer contraseña cuando lo pides) y, solo si diste tu consentimiento, un recordatorio diario de repasos que incluye cuántas tarjetas tienes pendientes y tu racha de lectura — como máximo uno al día y solo cuando tienes repasos pendientes. Tu email y tu nombre se comparten con Brevo únicamente para entregar estos mensajes. Puedes retirar el consentimiento opcional en cualquier momento desde tu perfil o con el enlace de baja en un clic que llevan los propios correos de recordatorio (los correos de servicio no llevan enlace de baja porque son necesarios para gestionar tu cuenta)."
+    },
+    "sBases": {
+      "title": "6. Base jurídica del tratamiento",
+      "intro": "Solo tratamos tus datos cuando el RGPD lo permite:",
+      "contract": "Ejecución del contrato — tu cuenta, el contenido que creas, los correos de servicio y la suscripción PREMIUM.",
+      "consent": "Consentimiento — el recordatorio diario de repasos por email, opcional (revocable en cualquier momento).",
+      "interest": "Interés legítimo — prevenir el abuso y el fraude, aplicar los límites de uso, las estadísticas agregadas y la medición de las colaboraciones.",
+      "legal": "Obligación legal — conservar los registros de facturación con fines fiscales y contables."
+    },
+    "sTransfers": {
+      "title": "7. Transferencias internacionales",
+      "body": "Algunos de los proveedores de la sección 5 tratan datos fuera del Espacio Económico Europeo: Stripe y Google Cloud en Estados Unidos (ambos certificados en el Marco de Privacidad de Datos UE-EE. UU.), y DeepSeek en China, que solo recibe el texto que escribes en las funciones de IA — nunca tu nombre, tu email ni ningún identificador de tu cuenta. Brevo trata los datos dentro de la Unión Europea. Ningún proveedor recibe más datos de los descritos en la sección 5."
     },
     "s6": {
-      "title": "6. Conservación de los datos",
-      "body": "Los datos de la cuenta se conservan mientras tu cuenta esté activa. Puedes solicitar la eliminación de tu cuenta y de todos los datos asociados en cualquier momento contactando con nosotros. Las estadísticas de tráfico son anónimas y agregadas y no contienen datos personales. Los registros relacionados con pagos y suscripciones pueden conservarse durante más tiempo cuando sea necesario para cumplir obligaciones fiscales, contables y de prevención del fraude, incluso después de que la cuenta a la que pertenecen se haya eliminado."
+      "title": "8. Conservación de los datos",
+      "body": "Los datos de la cuenta se conservan mientras tu cuenta esté activa. Puedes eliminar tu cuenta tú mismo en cualquier momento desde tu perfil: el borrado es inmediato, elimina tus colecciones, tarjetas y textos creados, y cancela automáticamente cualquier suscripción activa para que no haya más cobros. También puedes pedirnos el borrado por email. Las estadísticas de tráfico son anónimas y agregadas y no contienen datos personales. Los registros de pagos y suscripciones pueden conservarse más tiempo cuando sea necesario para cumplir obligaciones fiscales, contables y de prevención del fraude, incluso después de eliminarse la cuenta a la que pertenecen."
     },
     "s7": {
-      "title": "7. Tus derechos (RGPD)",
+      "title": "9. Tus derechos (RGPD)",
       "intro": "En virtud del Reglamento General de Protección de Datos (RGPD), tienes derecho a:",
       "item1": "Acceder a tus datos personales",
       "item2": "Rectificar datos inexactos",
@@ -647,10 +674,12 @@
       "item4": "Oponerte al tratamiento",
       "item5": "Portabilidad de los datos",
       "item6": "Retirar el consentimiento en cualquier momento",
+      "item7": "Limitar el tratamiento de tus datos",
+      "item8": "Presentar una reclamación ante la autoridad de control (en España, la AEPD — aepd.es)",
       "contact": "Para ejercer estos derechos, contacta con nosotros en:"
     },
     "s8": {
-      "title": "8. Contacto",
+      "title": "10. Contacto",
       "body": "Si tienes alguna pregunta sobre esta política de privacidad, contacta con nosotros en:"
     }
   },
@@ -932,15 +961,15 @@
       "success": "¡Perfil actualizado correctamente!",
       "saving": "Guardando...",
       "save": "Guardar cambios",
-      "emailConsentLabel": "Recibir consejos de aprendizaje y novedades por email",
-      "emailConsentHint": "Opcional. Los correos de cuenta (como el de bienvenida) no dependen de esto. Puedes cambiarlo en cualquier momento."
+      "emailConsentLabel": "Recibir un recordatorio diario de repasos por email",
+      "emailConsentHint": "Opcional. Como máximo uno al día y solo cuando tienes tarjetas pendientes. Los correos de servicio (bienvenida, restablecer contraseña) no dependen de esto."
     },
     "changePassword": {
       "title": "Cambiar contraseña",
       "currentLabel": "Contraseña actual",
       "currentPlaceholder": "Introduce tu contraseña actual",
       "newLabel": "Nueva contraseña",
-      "newPlaceholder": "Al menos 4 caracteres",
+      "newPlaceholder": "Al menos 6 caracteres",
       "confirmLabel": "Confirma la nueva contraseña",
       "confirmPlaceholder": "Repite la nueva contraseña",
       "mismatch": "Las contraseñas no coinciden",
@@ -952,7 +981,7 @@
     "deleteAccount": {
       "title": "Eliminar cuenta",
       "warningTitle": "Esta acción es permanente y no se puede deshacer.",
-      "warningText": "Tu cuenta, tus colecciones y todas tus tarjetas se eliminarán permanentemente. Se cerrará tu sesión de inmediato.",
+      "warningText": "Tu cuenta, tus colecciones, tus tarjetas y tus textos creados se eliminarán permanentemente, y cualquier suscripción activa se cancelará automáticamente. Se cerrará tu sesión de inmediato.",
       "typePrefix": "Escribe",
       "typeSuffix": "para confirmar",
       "deleting": "Eliminando...",
@@ -1624,7 +1653,7 @@
   "premium": {
     "kicker": "ChineseReads Premium",
     "title": "Aprende chino sin límites",
-    "subtitle": "Hazte Premium para lecturas graduadas ilimitadas, audio ilimitado y un tutor IA ilimitado que te explica cualquier palabra en contexto — sin bloqueos por límites compartidos.",
+    "subtitle": "Hazte Premium para crear lecturas graduadas privadas ilimitadas a partir de tus propios textos, audio ilimitado y un tutor IA ilimitado que te explica cualquier palabra en contexto — sin bloqueos por límites compartidos.",
     "errorGeneric": "Algo ha salido mal. Inténtalo de nuevo.",
     "current": {
       "title": "Eres Premium",
@@ -1650,12 +1679,18 @@
     "benefits": {
       "title": "Qué incluye",
       "item1": "Lecturas graduadas privadas ilimitadas, sin tope mensual (el plan gratis permite 10 al mes)",
-      "item2": "Audio ilimitado — narración completa de cualquier texto, frase y palabra",
+      "item2": "Audio ilimitado — narración completa de cualquier texto, frase y palabra (plan gratis: 100 audios de palabra y 15 de frase o texto al mes)",
       "item3": "Tutor IA ilimitado — pregunta sobre cualquier palabra o frase en contexto (plan gratis: 10 mensajes/mes)",
       "item4": "Apoya un proyecto de desarrollo independiente y ayúdalo a crecer"
     },
     "secureNote": "Pago seguro con Stripe. Cancela cuando quieras.",
-    "finePrint": "Las suscripciones se renuevan automáticamente hasta que las canceles; puedes cancelar cuando quieras. Precios en euros; los impuestos aplicables se muestran en el pago. Los pagos los procesa Stripe.",
+    "finePrint": "Las suscripciones se renuevan automáticamente hasta que las canceles; puedes cancelar cuando quieras. Precios en euros; los impuestos aplicables se muestran en el pago. Los pagos los procesa Stripe. Al suscribirte solicitas el acceso inmediato al contenido digital y aceptas que pierdes el derecho de desistimiento de 14 días una vez activado tu acceso premium.",
+    "promoHint": "¿Tienes un código de descuento de un creador? Podrás introducirlo en la página de pago seguro de Stripe antes de pagar.",
+    "legal": {
+      "intro": "Condiciones completas:",
+      "terms": "Términos de uso",
+      "privacy": "Política de privacidad"
+    },
     "loginHint": "Se te pedirá iniciar sesión o crear una cuenta gratuita antes de suscribirte."
   },
   "premiumSuccess": {
