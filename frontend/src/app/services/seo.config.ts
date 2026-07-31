@@ -273,7 +273,9 @@ const STATIC_SEO: Record<string, LocalizedSeo> = {
   '/ai-tools':    localizedPrivate('AI Tools', 'AI-assisted Chinese text tools.', 'Herramientas de IA', 'Herramientas de texto en chino asistidas por IA.', '/ai-tools'),
   '/upload-text': localizedPrivate('Upload Text', 'Upload a new Chinese text.', 'Subir texto', 'Sube un nuevo texto en chino.', '/upload-text'),
   '/success':     localizedPrivate('Success', 'Operation completed successfully.', 'Éxito', 'Operación completada correctamente.', '/success'),
-  '/error':       localizedPrivate('Error', 'Something went wrong.', 'Error', 'Algo ha salido mal.', '/error')
+  '/error':       localizedPrivate('Error', 'Something went wrong.', 'Error', 'Algo ha salido mal.', '/error'),
+  '/forgot-password': localizedPrivate('Forgot Password', 'Request a link to reset your ChineseReads password.', 'Recuperar contraseña', 'Solicita un enlace para restablecer tu contraseña de ChineseReads.', '/forgot-password'),
+  '/reset-password':  localizedPrivate('Reset Password', 'Choose a new password for your ChineseReads account.', 'Nueva contraseña', 'Elige una nueva contraseña para tu cuenta de ChineseReads.', '/reset-password')
 };
 
 /** Builds a noindex LocalizedSeo entry for a private/transactional page. */

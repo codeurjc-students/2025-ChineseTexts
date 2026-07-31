@@ -46,8 +46,48 @@
       "emailInvalid": "Please enter a valid email address.",
       "passwordRequired": "Password is required.",
       "blocked": "Your account has been blocked.",
-      "incorrect": "Incorrect credentials. Please try again."
+      "incorrect": "Incorrect credentials. Please try again.",
+      "forgotPassword": "Forgot your password?"
     }
+  },
+  "forgotPassword": {
+    "title": "Forgot your password?",
+    "subtitle": "Enter the email of your account and we will send you a link to reset your password.",
+    "form": {
+      "emailLabel": "Email",
+      "emailPlaceholder": "Enter your email",
+      "emailInvalid": "Please enter a valid email address."
+    },
+    "submit": "Send reset link",
+    "sending": "Sending…",
+    "successTitle": "Check your inbox",
+    "successMessage": "If an account exists for that email, we have sent a link to reset your password. The link expires in 60 minutes — remember to check your spam folder.",
+    "backHome": "Back to home",
+    "errorGeneric": "Something went wrong. Please try again.",
+    "errors": {
+      "tooManyRequests": "Too many requests. Please wait a while and try again."
+    }
+  },
+  "resetPassword": {
+    "title": "Choose a new password",
+    "subtitle": "Enter the new password for your ChineseReads account.",
+    "form": {
+      "newLabel": "New password",
+      "newPlaceholder": "At least 6 characters",
+      "confirmLabel": "Confirm new password",
+      "confirmPlaceholder": "Repeat the new password",
+      "tooShort": "The password must be at least 6 characters.",
+      "mismatch": "Passwords do not match."
+    },
+    "submit": "Save new password",
+    "saving": "Saving…",
+    "successTitle": "Password updated",
+    "successMessage": "Your password has been changed. You can now log in with it.",
+    "loginNow": "Log in",
+    "invalidTitle": "Invalid or expired link",
+    "invalidMessage": "This reset link is not valid anymore — it may have expired or already been used. You can request a new one.",
+    "requestNew": "Request a new link",
+    "errorGeneric": "Something went wrong. Please try again."
   },
   "home": {
     "hero": {

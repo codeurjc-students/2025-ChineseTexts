@@ -139,6 +139,7 @@ All four static files (`robots.txt`, `sitemap.xml`, `manifest.webmanifest`, `fav
 1. Add the route in `app.routes.ts` (a single `appRoutes` array is served both at the root and under the `/es` prefix, so one entry covers both languages — see [Internationalization](#internationalization-i18n)).
 2. Add its metadata (title, description, `path`) to `STATIC_SEO` in `seo.config.ts` **in both `en` and `es`**. Keep titles keyword-rich and under ~60 characters where possible.
 3. If it should be indexed, add its `<loc>` to `sitemap.xml` **for both the English and the `/es` URL, with `hreflang` alternates**, and add the route (and its `/es` twin) to `prerender-routes.txt`; if it is private/authenticated, set `noindex: true` and add a `Disallow` line to `robots.txt` (root and `/es`).
+4. **If the page shows database data, it must live-render (SSR), never serve a prerendered snapshot** — a snapshot baked at build time (with no backend reachable) would shadow live SSR forever with a frozen empty state (the bug fixed in PR #140). For every such page: add its path (and the `/es` twin) to `@ssrPages` in `docker/Caddyfile` **and**, if the path is static (no `:param` — parameterised routes are never prerendered and are safe), to `SSR_ROUTES` in `frontend/scripts/remove-ssr-prerender.mjs`. Never ignore that script's "missing file" warning at build time, and verify the deployed page **with real data in the raw HTML** (`curl | grep`), not just with a correct title — "right title + empty list" is exactly what the frozen snapshot looks like.
 
 ---
 

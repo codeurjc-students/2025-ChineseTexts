@@ -46,8 +46,48 @@
       "emailInvalid": "Introduce un correo electrónico válido.",
       "passwordRequired": "La contraseña es obligatoria.",
       "blocked": "Tu cuenta ha sido bloqueada.",
-      "incorrect": "Credenciales incorrectas. Inténtalo de nuevo."
+      "incorrect": "Credenciales incorrectas. Inténtalo de nuevo.",
+      "forgotPassword": "¿Olvidaste tu contraseña?"
     }
+  },
+  "forgotPassword": {
+    "title": "¿Olvidaste tu contraseña?",
+    "subtitle": "Introduce el correo de tu cuenta y te enviaremos un enlace para restablecer tu contraseña.",
+    "form": {
+      "emailLabel": "Correo electrónico",
+      "emailPlaceholder": "Introduce tu correo",
+      "emailInvalid": "Introduce un correo electrónico válido."
+    },
+    "submit": "Enviar enlace",
+    "sending": "Enviando…",
+    "successTitle": "Revisa tu bandeja de entrada",
+    "successMessage": "Si existe una cuenta con ese correo, te hemos enviado un enlace para restablecer tu contraseña. El enlace caduca en 60 minutos — revisa también la carpeta de spam.",
+    "backHome": "Volver al inicio",
+    "errorGeneric": "Algo ha salido mal. Inténtalo de nuevo.",
+    "errors": {
+      "tooManyRequests": "Demasiadas solicitudes. Espera un rato e inténtalo de nuevo."
+    }
+  },
+  "resetPassword": {
+    "title": "Elige una nueva contraseña",
+    "subtitle": "Introduce la nueva contraseña de tu cuenta de ChineseReads.",
+    "form": {
+      "newLabel": "Nueva contraseña",
+      "newPlaceholder": "Al menos 6 caracteres",
+      "confirmLabel": "Confirma la nueva contraseña",
+      "confirmPlaceholder": "Repite la nueva contraseña",
+      "tooShort": "La contraseña debe tener al menos 6 caracteres.",
+      "mismatch": "Las contraseñas no coinciden."
+    },
+    "submit": "Guardar nueva contraseña",
+    "saving": "Guardando…",
+    "successTitle": "Contraseña actualizada",
+    "successMessage": "Tu contraseña se ha cambiado. Ya puedes iniciar sesión con ella.",
+    "loginNow": "Iniciar sesión",
+    "invalidTitle": "Enlace no válido o caducado",
+    "invalidMessage": "Este enlace de restablecimiento ya no es válido: puede haber caducado o haberse usado. Puedes pedir uno nuevo.",
+    "requestNew": "Pedir un enlace nuevo",
+    "errorGeneric": "Algo ha salido mal. Inténtalo de nuevo."
   },
   "home": {
     "hero": {

@@ -104,4 +104,31 @@ public class EmailServiceTest {
     public void testUnconfiguredReminderIsNoop() {
         assertDoesNotThrow(() -> emailService.sendReviewReminderEmail("a@a.com", "A", "en", 3, 0, "t"));
     }
+
+    @Test
+    @DisplayName("The English reset email carries the tokenized link, the expiry and the ignore note")
+    public void testPasswordResetHtmlEnglish() {
+        String html = emailService.buildPasswordResetHtml("John", false, "tok-123", 60);
+        assertTrue(html.contains("https://chinesereads.com/reset-password?token=tok-123")); // sin /es
+        assertTrue(html.contains("Reset password"));
+        assertTrue(html.contains("expires in 60 minutes"));
+        assertTrue(html.contains("Didn't request this?"));
+        assertFalse(html.contains("unsubscribe")); // transaccional: sin link de baja
+    }
+
+    @Test
+    @DisplayName("The Spanish reset email links to /es/reset-password with Spanish copy")
+    public void testPasswordResetHtmlSpanish() {
+        String html = emailService.buildPasswordResetHtml("María", true, "tok-456", 30);
+        assertTrue(html.contains("https://chinesereads.com/es/reset-password?token=tok-456"));
+        assertTrue(html.contains("Restablecer contraseña"));
+        assertTrue(html.contains("caduca en 30 minutos"));
+        assertTrue(html.contains("¿No has sido tú?"));
+    }
+
+    @Test
+    @DisplayName("Sending a reset email while unconfigured is a silent no-op (never throws)")
+    public void testUnconfiguredResetIsNoop() {
+        assertDoesNotThrow(() -> emailService.sendPasswordResetEmail("a@a.com", "A", "en", "t", 60));
+    }
 }

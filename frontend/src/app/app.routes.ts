@@ -2,6 +2,8 @@ import { Routes } from '@angular/router';
 import { HomeComponent } from './components/home/home.component';
 import { TextsComponent } from './components/texts/texts.component';
 import { SignupComponent } from './components/signup/signup.component';
+import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
+import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
 import { SuccessComponent } from './components/success/success.component';
 import { ErrorComponent } from './components/error/error.component';
 import { TextComponent } from './components/text/text.component';
@@ -37,6 +39,10 @@ const appRoutes: Routes = [
   { path: 'texts', component: TextsComponent },
   { path: 'texts/:level', component: TextsComponent },
   { path: 'signup', component: SignupComponent },
+  // Flujo anónimo "olvidé mi contraseña": pedir enlace y fijar la nueva con el
+  // token del email (?token=… en query param, así no hace falta ruta con parámetro).
+  { path: 'forgot-password', component: ForgotPasswordComponent },
+  { path: 'reset-password', component: ResetPasswordComponent },
   { path: 'success', component: SuccessComponent },
   { path: 'error', component: ErrorComponent },
   { path: 'text/:id', component: TextComponent },

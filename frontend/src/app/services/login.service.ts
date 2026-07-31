@@ -44,6 +44,20 @@ export class LoginService {
     );
   }
 
+  /**
+   * Pide un enlace de restablecimiento de contraseña. El backend responde 200
+   * exista o no la cuenta (anti-enumeración), así que el componente muestra
+   * siempre el mismo mensaje neutro de éxito.
+   */
+  public forgotPassword(email: string): Observable<any> {
+    return this.http.post(BASE_URL + "forgot-password", { email });
+  }
+
+  /** Consume el token del email de reset y fija la nueva contraseña. */
+  public resetPassword(token: string, newPassword: string): Observable<any> {
+    return this.http.post(BASE_URL + "reset-password", { token, newPassword });
+  }
+
   public logout(): Observable<any> {
     return this.http.post(BASE_URL + "logout", {}, { withCredentials: true }).pipe(
       tap(() => {
