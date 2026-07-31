@@ -29,5 +29,10 @@ export function stripLangPrefix(url: string): string {
 export function addLangPrefix(path: string, lang: Lang): string {
   const p = path.startsWith('/') ? path : '/' + path;
   if (lang !== 'es') return p;
-  return p === '/' ? '/es' : '/es' + p;
+  if (p === '/') return '/es';
+  // Home con query/fragmento (p. ej. "/?ref=MARIA30" de un enlace de campaña):
+  // quitar la barra para producir "/es?ref=…" — "/es/?ref=…" no casa con ninguna
+  // ruta y caía en el 404 (bug detectado en el star test del 31-07).
+  if (p.startsWith('/?') || p.startsWith('/#')) return '/es' + p.slice(1);
+  return '/es' + p;
 }
