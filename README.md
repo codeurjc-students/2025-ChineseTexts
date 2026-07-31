@@ -1,9 +1,9 @@
 # ChineseReads
 
-ChineseReads is a web application designed to facilitate the learning of Mandarin Chinese through graded texts, spaced repetition, vocabulary collections, personalized exams, text-to-speech audio pronunciation, dictionary management, and AI-assisted utilities. A free tier keeps the core reading tools open to everyone, with an optional **PREMIUM** subscription (via Stripe) that raises usage limits. The interface is available in English and Spanish. Its purpose is to promote accessible language education for everyone.
+ChineseReads is a web application designed to facilitate the learning of Mandarin Chinese through graded texts, spaced-repetition flashcards (SM-2), vocabulary collections, exams, an AI word tutor, text-to-speech audio pronunciation, reading streaks and personal statistics, a free HSK level test, a learn-to-read tutorial, user-generated private texts (paste or OCR photo), a blog and an influencer Hall of Fame. A free tier keeps the core reading tools open to everyone, with an optional **PREMIUM** subscription (via Stripe) that raises usage limits. The interface is available in English and Spanish, fully SEO-optimized (live SSR for dynamic pages). Its purpose is to promote accessible language education for everyone.
 
 ---
-> ⚠️ The application is currently in active development. Core functionalities have been implemented and the app is deployed at [chinesereads.com](https://chinesereads.com). Some planned features described in the objectives are still pending implementation.
+> ⚠️ The application is live at [chinesereads.com](https://chinesereads.com). All planned functionality is implemented; the remaining technical objective is the CI/CD pipeline (see [Objectives](docs/objectives.md)).
 
 ---
 
