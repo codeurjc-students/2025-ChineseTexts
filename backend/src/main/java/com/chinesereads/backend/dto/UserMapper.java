@@ -46,6 +46,8 @@ public interface UserMapper {
     @Mapping(target = "emailConsentAt", ignore = true)
     @Mapping(target = "lastReviewReminderDay", ignore = true)
     @Mapping(target = "unsubscribeToken", ignore = true)
+    @Mapping(target = "passwordResetTokenHash", ignore = true)
+    @Mapping(target = "passwordResetExpiresAt", ignore = true)
     @Mapping(target = "stripeCustomerId", ignore = true)
     @Mapping(target = "stripeSubscriptionId", ignore = true)
     // referralSource is NOT ignored: it is a legitimate signup input (sanitized in the
