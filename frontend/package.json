@@ -7,6 +7,7 @@
     "build": "ng build && node scripts/remove-ssr-prerender.mjs",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
+    "check:learn-audio": "node scripts/check-learn-audio.mjs",
     "serve:ssr:frontend": "node dist/frontend/server/server.mjs"
   },
   "private": true,

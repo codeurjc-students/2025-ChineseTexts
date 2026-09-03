@@ -215,15 +215,15 @@ const STATIC_SEO: Record<string, LocalizedSeo> = {
     en: {
       title: 'What Is Pinyin? Learn Pinyin Basics with Audio (Lesson 1) | ChineseReads',
       description:
-        'Learn pinyin from zero: how every Chinese syllable is built from an initial, a final and a tone, with ' +
-        'audio examples and the sounds that trip up beginners (x, q, zh, c). Free lesson 1 of 3.',
+        'Learn pinyin from zero: how every Chinese syllable is built, plus the complete sound chart — vowels, ' +
+        'consonants, diphthongs and nasal finals — with audio for every sound. Free lesson 1 of 3.',
       path: '/learn/pinyin'
     },
     es: {
       title: '¿Qué es el pinyin? Aprende pinyin desde cero con audio (Lección 1) | ChineseReads',
       description:
-        'Aprende pinyin desde cero: cómo cada sílaba china se forma con una inicial, una final y un tono, con ' +
-        'ejemplos de audio y los sonidos que más confunden (x, q, zh, c). Lección 1 de 3, gratis.',
+        'Aprende pinyin desde cero: cómo se forma cada sílaba china y la tabla completa de sonidos — vocales, ' +
+        'consonantes, diptongos y finales nasales — con audio de cada sonido. Lección 1 de 3, gratis.',
       path: '/learn/pinyin'
     }
   },

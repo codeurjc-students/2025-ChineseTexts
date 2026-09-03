@@ -14,6 +14,7 @@
  *       GOOGLE_TTS_API_KEY=<your-key> node scripts/generate-learn-audio.mjs
  *
  * Idempotent: existing files are skipped, so a partial run can just be re-run.
+ * Afterwards run `npm run check:learn-audio` to verify the assets match the lessons.
  */
 
 import { mkdir, writeFile, access, readFile } from 'node:fs/promises';
@@ -70,11 +71,30 @@ const MANIFEST = [
   { file: 'er4shi2.mp3', text: '二十' },
   { file: 'san1ge4.mp3', text: '三个' },
   { file: 'zhong1guo2.mp3', text: '中国' },
-  // Pinyin lesson extras (/learn/pinyin)
+  // Pinyin sound chart (/learn/pinyin) — one example word per sound that the
+  // tones/characters lessons do not already provide
   { file: 'ba1.mp3', text: '八' },
   { file: 'he1.mp3', text: '喝' },
   { file: 'qi1.mp3', text: '七' },
   { file: 'cai4.mp3', text: '菜' },
+  { file: 'wu3.mp3', text: '五' },
+  { file: 'pao3.mp3', text: '跑' },
+  { file: 'fan4.mp3', text: '饭' },
+  { file: 'gou3.mp3', text: '狗' },
+  { file: 'kan4.mp3', text: '看' },
+  { file: 'jia1.mp3', text: '家' },
+  { file: 'chi1.mp3', text: '吃' },
+  { file: 'zi4.mp3', text: '字' },
+  { file: 'ai4.mp3', text: '爱' },
+  { file: 'bei3.mp3', text: '北' },
+  { file: 'liu4.mp3', text: '六' },
+  { file: 'xie4.mp3', text: '谢' },
+  { file: 'yue4.mp3', text: '月' },
+  { file: 'xin1.mp3', text: '新' },
+  { file: 'chun1.mp3', text: '春' },
+  { file: 'yun2.mp3', text: '云' },
+  { file: 'mang2.mp3', text: '忙' },
+  { file: 'leng3.mp3', text: '冷' },
 ];
 
 async function exists(path) {
