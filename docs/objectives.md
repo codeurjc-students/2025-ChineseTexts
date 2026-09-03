@@ -60,7 +60,7 @@ The main goal of ChineseReads is to provide a structured and accessible platform
 |---|---|---|
 | T01 | Distributed architecture with 3+ independent services (currently 7 containers) | ✅ |
 | T02 | Containerization with Docker | ✅ |
-| T03 | Cloud deployment (Azure VM) | ✅ |
+| T03 | Cloud deployment (Hetzner Cloud VM) | ✅ |
 | T04 | REST API communication between services | ✅ |
 | T05 | Relational database (MySQL) | ✅ |
 | T06 | AI service integration (DeepSeek) | ✅ |
