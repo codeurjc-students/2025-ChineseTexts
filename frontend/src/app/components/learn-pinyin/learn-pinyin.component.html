@@ -33,10 +33,10 @@
     </div>
   </section>
 
-  <!-- Sample initials -->
+  <!-- 1. Simple vowels: a o e i u ü -->
   <section>
-    <h2>{{ 'learn.pinyin.initialsHeading' | transloco }}</h2>
-    <p>{{ 'learn.pinyin.initialsIntro' | transloco }}</p>
+    <h2>{{ 'learn.pinyin.vowelsHeading' | transloco }}</h2>
+    <p>{{ 'learn.pinyin.vowelsIntro' | transloco }}</p>
     <div class="table-responsive">
       <table class="lp-table">
         <thead>
@@ -48,7 +48,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let s of initials">
+          <tr *ngFor="let s of vowels">
             <td class="lp-symbol">{{ s.symbol }}</td>
             <td class="lp-sounds">{{ es ? s.soundsLikeEs : s.soundsLikeEn }}</td>
             <td>
@@ -65,12 +65,12 @@
     </div>
   </section>
 
-  <!-- Sample finals -->
+  <!-- 2. Consonants, in the seven groups of the school chart -->
   <section>
-    <h2>{{ 'learn.pinyin.finalsHeading' | transloco }}</h2>
-    <p>{{ 'learn.pinyin.finalsIntro' | transloco }}</p>
+    <h2>{{ 'learn.pinyin.consonantsHeading' | transloco }}</h2>
+    <p>{{ 'learn.pinyin.consonantsIntro' | transloco }}</p>
     <div class="table-responsive">
-      <table class="lp-table">
+      <table class="lp-table lp-table--grouped">
         <thead>
           <tr>
             <th>{{ 'learn.pinyin.tableSymbol' | transloco }}</th>
@@ -79,8 +79,8 @@
             <th class="text-center"><i class="bi bi-volume-up"></i></th>
           </tr>
         </thead>
-        <tbody>
-          <tr *ngFor="let s of finals">
+        <tbody *ngFor="let group of consonantGroups">
+          <tr *ngFor="let s of group">
             <td class="lp-symbol">{{ s.symbol }}</td>
             <td class="lp-sounds">{{ es ? s.soundsLikeEs : s.soundsLikeEn }}</td>
             <td>
@@ -97,19 +97,93 @@
     </div>
   </section>
 
-  <!-- Common pitfalls -->
+  <!-- 3. Diphthongs: ai ei ui ao ou iu ie üe -->
   <section>
-    <h2>{{ 'learn.pinyin.pitfallsHeading' | transloco }}</h2>
-    <p>{{ 'learn.pinyin.pitfallsIntro' | transloco }}</p>
+    <h2>{{ 'learn.pinyin.diphthongsHeading' | transloco }}</h2>
+    <p>{{ 'learn.pinyin.diphthongsIntro' | transloco }}</p>
+    <div class="table-responsive">
+      <table class="lp-table">
+        <thead>
+          <tr>
+            <th>{{ 'learn.pinyin.tableSymbol' | transloco }}</th>
+            <th>{{ 'learn.pinyin.tableSoundsLike' | transloco }}</th>
+            <th>{{ 'learn.pinyin.tableExample' | transloco }}</th>
+            <th class="text-center"><i class="bi bi-volume-up"></i></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let s of diphthongs">
+            <td class="lp-symbol">{{ s.symbol }}</td>
+            <td class="lp-sounds">{{ es ? s.soundsLikeEs : s.soundsLikeEn }}</td>
+            <td>
+              <span class="lp-ex-pinyin">{{ s.exampleSyllable }}</span>
+              <span class="lp-ex-hanzi">{{ s.exampleHanzi }}</span>
+              <span class="lp-ex-meaning">({{ es ? s.exampleMeaningEs : s.exampleMeaningEn }})</span>
+            </td>
+            <td class="text-center">
+              <app-audio-button size="sm" [src]="audioBase + s.audio" [label]="'learn.common.listen' | transloco"></app-audio-button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 4. Nasal finals: an en in un ün · ang eng ing ong -->
+  <section>
+    <h2>{{ 'learn.pinyin.nasalsHeading' | transloco }}</h2>
+    <p>{{ 'learn.pinyin.nasalsIntro' | transloco }}</p>
+    <div class="table-responsive">
+      <table class="lp-table">
+        <thead>
+          <tr>
+            <th>{{ 'learn.pinyin.tableSymbol' | transloco }}</th>
+            <th>{{ 'learn.pinyin.tableSoundsLike' | transloco }}</th>
+            <th>{{ 'learn.pinyin.tableExample' | transloco }}</th>
+            <th class="text-center"><i class="bi bi-volume-up"></i></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let s of nasals">
+            <td class="lp-symbol">{{ s.symbol }}</td>
+            <td class="lp-sounds">{{ es ? s.soundsLikeEs : s.soundsLikeEn }}</td>
+            <td>
+              <span class="lp-ex-pinyin">{{ s.exampleSyllable }}</span>
+              <span class="lp-ex-hanzi">{{ s.exampleHanzi }}</span>
+              <span class="lp-ex-meaning">({{ es ? s.exampleMeaningEs : s.exampleMeaningEn }})</span>
+            </td>
+            <td class="text-center">
+              <app-audio-button size="sm" [src]="audioBase + s.audio" [label]="'learn.common.listen' | transloco"></app-audio-button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- The three spelling rules every first class teaches -->
+  <section>
+    <h2>{{ 'learn.pinyin.rulesHeading' | transloco }}</h2>
     <div class="row g-3">
-      <div class="col-sm-6" *ngFor="let s of pitfalls">
-        <div class="lp-pitfall">
-          <div class="lp-pitfall-head">
-            <span class="lp-symbol">{{ s.symbol }}</span>
-            <app-audio-button size="sm" [src]="audioBase + s.audio" [label]="'learn.common.listen' | transloco"></app-audio-button>
-          </div>
-          <p>{{ es ? s.soundsLikeEs : s.soundsLikeEn }}</p>
-          <p class="lp-ex-meaning">{{ s.exampleSyllable }} {{ s.exampleHanzi }} — {{ es ? s.exampleMeaningEs : s.exampleMeaningEn }}</p>
+      <div class="col-md-4">
+        <div class="lp-rule">
+          <h3>{{ 'learn.pinyin.rule1Title' | transloco }}</h3>
+          <p>{{ 'learn.pinyin.rule1Text' | transloco }}</p>
+          <p class="lp-rule-ex">yī 一 · wǔ 五 · yú 鱼</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="lp-rule">
+          <h3>{{ 'learn.pinyin.rule2Title' | transloco }}</h3>
+          <p>{{ 'learn.pinyin.rule2Text' | transloco }}</p>
+          <p class="lp-rule-ex">yú 鱼 · yuè 月 · qù 去</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="lp-rule">
+          <h3>{{ 'learn.pinyin.rule3Title' | transloco }}</h3>
+          <p>{{ 'learn.pinyin.rule3Text' | transloco }}</p>
+          <p class="lp-rule-ex">b–p · d–t · g–k · j–q · zh–ch · z–c</p>
         </div>
       </div>
     </div>

@@ -338,6 +338,24 @@ python3 ttsService.py
 ```
 The service will be available at `http://localhost:5002`.
 
+### Tutorial audio assets (`/learn`)
+
+The free `/learn` tutorial (pinyin, tones, characters) does **not** call the TTS service: its audio is a set of static mp3 files committed to git under `frontend/src/assets/audio/learn/` and served by Caddy at zero per-visit cost. Each lesson's data file (`frontend/src/app/data/learn-*.ts`) references those files by name (`ma1.mp3` = pinyin without diacritics + tone digit per syllable, neutral tone = `5`).
+
+When a lesson gains or loses an example word:
+
+1. Add/remove the entry in `MANIFEST` in `frontend/scripts/generate-learn-audio.mjs` (the text is always hanzi so Google resolves the pronunciation itself).
+2. Generate the missing files **locally** (needs the same Google Cloud key as the TTS service; the script is idempotent and skips files that already exist):
+   ```bash
+   cd frontend
+   GOOGLE_TTS_CREDENTIALS=../tts-service/credentials.json node scripts/generate-learn-audio.mjs
+   ```
+3. Verify that lesson references, manifest and files on disk match exactly (no missing file, no orphan) and commit the mp3s together with the code:
+   ```bash
+   npm run check:learn-audio
+   ```
+   The check exits with code 1 and lists every mismatch. Merge only when it prints `OK`.
+
 ---
 
 ## Running Tests

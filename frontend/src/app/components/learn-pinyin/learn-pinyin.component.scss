@@ -106,8 +106,12 @@
 .lp-ex-hanzi { color: #2c3e50; font-size: 1.15rem; margin-right: 6px; }
 .lp-ex-meaning { color: #888; font-size: 0.88rem; }
 
-/* ——— Pitfalls ——— */
-.lp-pitfall {
+/* Consonant chart: a thicker line between the seven school groups */
+.lp-table--grouped tbody + tbody tr:first-child td { border-top: 2px solid #e6e6e6; }
+.lp-table--grouped tbody tr:last-child td { border-bottom: none; }
+
+/* ——— Spelling rules ——— */
+.lp-rule {
   height: 100%;
   background: #fff;
   border: 1px solid #eee;
@@ -115,13 +119,10 @@
   border-radius: 8px;
   padding: 16px 18px;
 
-  p { margin: 8px 0 0; font-size: 0.92rem; }
+  h3 { color: #2c3e50; font-weight: 700; font-size: 1rem; margin: 0; }
+  p  { margin: 8px 0 0; font-size: 0.92rem; }
 }
-.lp-pitfall-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
+.lp-rule-ex { color: #c0392b; font-weight: 600; }
 
 /* ——— Next lesson CTA ——— */
 .lp-next {
