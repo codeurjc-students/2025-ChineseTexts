@@ -27,8 +27,8 @@ ChineseReads follows a **distributed MVC architecture** composed of multiple ind
 | **Type** | Web MVC + SPA frontend + REST API + AI Microservices |
 | **Technologies** | Java 21, Spring Boot 4, Angular 17, Transloco (i18n), MySQL 8, Caffeine (cache), Python 3.11, Flask, DeepSeek API, Google Cloud Vision, Google Cloud Text-to-Speech, Stripe (payments), Brevo (transactional email), Quill (blog editor), Umami (analytics) |
 | **Tools** | IntelliJ IDEA, VS Code, Docker, Docker Compose, Caddy, GitHub, Postman |
-| **Quality Control** | Unit tests (JUnit + Mockito), Integration tests (H2), E2E tests (MockMvc), Frontend tests (Jasmine/Karma) |
-| **Deployment** | Docker Compose + Caddy (HTTPS automatic via Let's Encrypt), Azure VM |
+| **Quality Control** | Unit tests (JUnit + Mockito), Integration tests (H2), E2E API tests (RestAssured), Frontend tests (Jasmine/Karma) |
+| **Deployment** | Docker Compose + Caddy (HTTPS automatic via Let's Encrypt), Hetzner Cloud VM |
 | **Development Process** | Iterative and incremental, GitHub Issues + Projects, feature branches |
 
 ---
@@ -93,7 +93,7 @@ IDE for Java/Spring Boot backend development, Angular frontend development and P
 Official site: https://code.visualstudio.com
 
 ### Docker + Docker Compose
-Used to containerize all services (backend, database, frontend proxy, AI microservice, OCR microservice, TTS microservice) and orchestrate them in a single `docker-compose.yml`.  
+Used to containerize all services (Caddy proxy, SSR frontend, backend, database, AI microservice, OCR microservice, TTS microservice) and orchestrate them in a single `docker-compose.yml`.  
 Official site: https://www.docker.com
 
 ### GitHub
@@ -365,7 +365,7 @@ When a lesson gains or loses an example word:
 cd backend
 ./mvnw test
 ```
-Runs unit tests (Mockito), integration tests (H2 in-memory database), and E2E API tests (MockMvc).
+Runs unit tests (Mockito), integration tests (H2 in-memory database), E2E API tests (RestAssured against the app on a random port) and the MockMvc web-layer tests.
 
 ### Frontend tests
 ```bash
@@ -412,14 +412,13 @@ APP_PUBLIC_URL=https://chinesereads.com  # origin used for Checkout return URLs
 
 **`tts-service/credentials.json`:** the same Google service-account key as the OCR service. The **Cloud Text-to-Speech API** must be enabled in the Google Cloud project (Console → APIs & Services → Enable APIs → "Cloud Text-to-Speech API").
 
-### Deploy to Azure VM
+### Deploy to the cloud VM (Hetzner Cloud)
 
-1. Create a Resource Group and an Ubuntu 24.04 LTS VM on Azure.
-2. Open inbound ports 80 (HTTP) and 443 (HTTPS) in the networking settings.
+1. Create an Ubuntu LTS server in Hetzner Cloud (production runs on an 8 GB instance in the Helsinki region).
+2. Allow inbound ports 22 (SSH), 80 (HTTP) and 443 (HTTPS) in the cloud firewall.
 3. Connect via SSH:
 ```bash
-chmod 600 ./chinesereads_key.pem
-ssh -i ./chinesereads_key.pem azureuser@<VM_IP>
+ssh root@<VM_IP>
 ```
 
 4. Prepare the VM:
