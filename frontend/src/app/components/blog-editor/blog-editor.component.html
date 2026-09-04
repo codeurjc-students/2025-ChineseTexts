@@ -38,7 +38,7 @@
     </ul>
 
     <!-- EN -->
-    <div [hidden]="activeTab !== 'en'" class="d-flex flex-column gap-2 mb-3">
+    <div [class.d-none]="activeTab !== 'en'" class="d-flex flex-column gap-2 mb-3">
       <input class="form-control fw-bold" [(ngModel)]="titleEn" placeholder="{{ 'blog.editor.ph.titleEn' | transloco }}" />
       <textarea class="form-control" rows="2" [(ngModel)]="excerptEn" placeholder="{{ 'blog.editor.ph.excerptEn' | transloco }}"></textarea>
       <quill-editor *ngIf="isBrowser" [(ngModel)]="contentEn" [modules]="quillModules"
@@ -47,7 +47,7 @@
     </div>
 
     <!-- ES -->
-    <div [hidden]="activeTab !== 'es'" class="d-flex flex-column gap-2 mb-3">
+    <div [class.d-none]="activeTab !== 'es'" class="d-flex flex-column gap-2 mb-3">
       <input class="form-control fw-bold" [(ngModel)]="titleEs" placeholder="{{ 'blog.editor.ph.titleEs' | transloco }}" />
       <textarea class="form-control" rows="2" [(ngModel)]="excerptEs" placeholder="{{ 'blog.editor.ph.excerptEs' | transloco }}"></textarea>
       <quill-editor *ngIf="isBrowser" [(ngModel)]="contentEs" [modules]="quillModules"
