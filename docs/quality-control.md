@@ -102,5 +102,5 @@ Approximate line counts (source only, excluding generated code and dependencies)
 | Backend (Java, main) | 144 | ~12,400 |
 | Backend (Java, tests) | 42 | ~6,300 |
 | Frontend (TypeScript/HTML/SCSS) | 216 | ~25,900 |
-| Python microservices | 4 | ~800 |
-| **Total** | **~400** | **~45,400** |
+| Python microservices | 4 | ~950 |
+| **Total** | **~400** | **~45,550** |

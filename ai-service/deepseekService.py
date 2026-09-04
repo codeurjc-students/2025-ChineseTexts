@@ -65,6 +65,8 @@ Array: {input_text}
 
 PROMPT_WORD_CHAT_SYSTEM = """You are a friendly, expert Chinese tutor helping a learner understand ONE specific word as it appears in a text they are reading.
 
+LANGUAGE OF YOUR REPLY: {language_full}. The learner reads {language_full} and CANNOT follow an explanation written in Chinese. Every sentence of your explanation must be in {language_full}; Chinese characters and pinyin may appear only as the examples being explained, always followed by their meaning in {language_full}.
+
 The word: {word}
 The sentence it appears in: {sentence}
 The full text being read: {text}
@@ -77,8 +79,74 @@ Rules:
 - Stay strictly on the topic of this word and its context. If the learner asks about something unrelated (other topics, general chit-chat, tasks that are not about this word), politely decline in one short sentence and steer them back to the word.
 - Be concise, clear and encouraging: short explanations and examples a learner can follow.
 - Write in a natural, conversational tone, as if you were a friendly tutor talking to the learner in person. Do NOT use Markdown or any formatting symbols: no asterisks for bold or italics, no "#" headings, no numbered "1." section headers, no bullet-point markers. Use plain sentences and short paragraphs; a line break between ideas is fine. You may still write Chinese characters and pinyin inline.
-- ALWAYS reply in {language_full}, whatever language the question is in.
+- ALWAYS reply in {language_full}, whatever language the question, the word or the text is in. Never answer in Chinese.
 """
+
+# The reader's UI language decides the tutor's language. DeepSeek sometimes answers
+# in Chinese anyway (the context is mostly Chinese), so the reply is checked and
+# re-requested — the learner must never receive an explanation they cannot read.
+CHAT_LANGUAGES = {"es": "Spanish (español)", "en": "English"}
+CHAT_REMINDER = {"es": "(Responde en español.)", "en": "(Reply in English.)"}
+CHAT_REWRITE = {
+    "es": "Tu respuesta anterior estaba escrita en chino y el alumno no puede leerla. "
+          "Vuelve a escribir la explicación completa en español, conservando los caracteres "
+          "chinos y el pinyin solo como ejemplos.",
+    "en": "Your previous answer was written in Chinese and the learner cannot read it. "
+          "Rewrite the whole explanation in English, keeping Chinese characters and pinyin "
+          "only as examples.",
+}
+PROMPT_TRANSLATE_REPLY = """Translate the following Chinese tutor explanation into {language_full}.
+Keep the Chinese characters and pinyin that appear as examples, each followed by its meaning in {language_full}.
+Keep the same friendly tone and paragraph structure. Do not use Markdown. Output only the translation.
+
+{reply}
+"""
+LATIN_LETTER_RE = re.compile(r"[A-Za-zÀ-ÿ]")
+
+
+def chat_language(code: str) -> str:
+    """Normalises the UI language code to the two languages the tutor speaks."""
+    return "es" if str(code or "").strip().lower().startswith("es") else "en"
+
+
+def is_written_in_chinese(reply: str) -> bool:
+    """True when the reply's prose is Chinese: more Chinese characters than Latin letters.
+    A correct English/Spanish explanation quotes a few characters as examples, so its
+    Latin letters always outnumber them."""
+    return len(CHINESE_CHAR_RE.findall(reply)) > len(LATIN_LETTER_RE.findall(reply))
+
+
+def with_language_reminder(history: list, lang: str) -> list:
+    """Appends a short reminder to the LAST user turn: models weigh the latest user
+    message most, so this is what keeps the reply in the reader's language."""
+    out = [dict(m) for m in history]
+    for m in reversed(out):
+        if m.get("role") == "user":
+            m["content"] = f"{(m.get('content') or '').rstrip()}\n\n{CHAT_REMINDER[lang]}"
+            break
+    return out
+
+
+def chat_in_language(system_prompt: str, history: list, lang: str) -> str:
+    """Asks the tutor and guarantees the reply is in the reader's language:
+    1) reminder on the last user turn; 2) if Chinese, ask for a rewrite; 3) if still
+    Chinese, translate the reply. Extra calls happen only when the model slips."""
+    reply = call_deepseek_chat(system_prompt, with_language_reminder(history, lang))
+    if not reply or not is_written_in_chinese(reply):
+        return reply
+    print(f"[ai-service] Tutor replied in Chinese (wanted {lang}); asking for a rewrite")
+    retry_history = with_language_reminder(
+        history + [{"role": "assistant", "content": reply}, {"role": "user", "content": CHAT_REWRITE[lang]}],
+        lang)
+    rewritten = call_deepseek_chat(system_prompt, retry_history)
+    if rewritten and not is_written_in_chinese(rewritten):
+        return rewritten
+    print(f"[ai-service] Rewrite still in Chinese (wanted {lang}); translating the reply")
+    translated = call_deepseek(PROMPT_TRANSLATE_REPLY
+                               .replace("{language_full}", CHAT_LANGUAGES[lang])
+                               .replace("{reply}", rewritten or reply))
+    return translated or rewritten or reply
+
 
 CHINESE_CHAR_RE = re.compile(r"[一-鿿]")
 
@@ -382,9 +450,9 @@ def chat_word():
     text = str(data.get("text", "")).strip()
     translation = str(data.get("translation", "")).strip()
     level = str(data.get("level", "")).strip()
-    language = str(data.get("language", "en")).strip().lower()
+    lang = chat_language(data.get("language", "en"))
 
-    language_full = "Spanish (español)" if language == "es" else "English"
+    language_full = CHAT_LANGUAGES[lang]
     level_line = f"The learner's HSK level: {level}" if level else ""
 
     system_prompt = PROMPT_WORD_CHAT_SYSTEM\
@@ -395,7 +463,7 @@ def chat_word():
         .replace("{level_line}", level_line)\
         .replace("{language_full}", language_full)
 
-    reply = call_deepseek_chat(system_prompt, history)
+    reply = chat_in_language(system_prompt, history, lang)
     if not reply:
         return jsonify({"error": "Empty reply from AI"}), 500
     return jsonify({"reply": reply})
