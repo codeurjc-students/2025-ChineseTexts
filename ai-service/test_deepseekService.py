@@ -288,6 +288,7 @@ class AiServiceTestCase(unittest.TestCase):
         retry_history = mock_chat.call_args_list[1].args[1]
         self.assertEqual(retry_history[-2]["content"], chinese)
         self.assertIn("Rewrite the whole explanation in English", retry_history[-1]["content"])
+        self.assertTrue(retry_history[-1]["content"].endswith("(Reply in English.)"))
 
     @patch("deepseekService.call_deepseek")
     @patch("deepseekService.call_deepseek_chat")
@@ -305,6 +306,44 @@ class AiServiceTestCase(unittest.TestCase):
         self.assertEqual(mock_chat.call_count, 2)
         prompt = mock_call.call_args.args[0]
         self.assertIn("into English", prompt)
+        self.assertIn(chinese, prompt)
+
+    @patch("deepseekService.call_deepseek")
+    @patch("deepseekService.call_deepseek_chat")
+    def test_chat_word_chinese_reply_is_rewritten_spanish(self, mock_chat, mock_call):
+        chinese = "好的，我们来一起看看“真”这个字。先看发音：真，读作 zhēn，第一声。"
+        mock_chat.side_effect = [chinese, "真 (zhēn) significa aquí realmente, como en 真美丽, realmente bonito."]
+        response = self.client.post("/chatWord", json={
+            "word": "真",
+            "language": "es",
+            "history": [{"role": "user", "content": "Explícamela."}],
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.get_json()["reply"],
+                         "真 (zhēn) significa aquí realmente, como en 真美丽, realmente bonito.")
+        self.assertEqual(mock_chat.call_count, 2)
+        mock_call.assert_not_called()
+        retry_history = mock_chat.call_args_list[1].args[1]
+        self.assertEqual(retry_history[-2]["content"], chinese)
+        self.assertIn("Vuelve a escribir la explicación completa en español", retry_history[-1]["content"])
+        self.assertTrue(retry_history[-1]["content"].endswith("(Responde en español.)"))
+
+    @patch("deepseekService.call_deepseek")
+    @patch("deepseekService.call_deepseek_chat")
+    def test_chat_word_falls_back_to_translation_spanish(self, mock_chat, mock_call):
+        chinese = "好的，我们来一起看看“真”这个字。先看发音：真，读作 zhēn，第一声。"
+        mock_chat.side_effect = [chinese, chinese]
+        mock_call.return_value = "Veamos 真 (zhēn): aquí significa realmente."
+        response = self.client.post("/chatWord", json={
+            "word": "真",
+            "language": "es",
+            "history": [{"role": "user", "content": "Explícamela."}],
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.get_json()["reply"], "Veamos 真 (zhēn): aquí significa realmente.")
+        self.assertEqual(mock_chat.call_count, 2)
+        prompt = mock_call.call_args.args[0]
+        self.assertIn("into Spanish (español)", prompt)
         self.assertIn(chinese, prompt)
 
     @patch("deepseekService.call_deepseek_chat")
