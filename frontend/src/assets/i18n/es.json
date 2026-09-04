@@ -420,8 +420,7 @@
     "save": {
       "button": "Guardar",
       "notLogged": "Debes iniciar sesión para guardar palabras.",
-      "noCollections": "Aún no tienes colecciones.",
-      "createOne": "Crea una",
+      "noCollections": "Tu primera colección: ponle nombre y guarda.",
       "success": "¡Palabra guardada!",
       "duplicate": "Ya está en esta colección.",
       "error": "Algo ha salido mal.",
@@ -429,7 +428,8 @@
       "confirm": "Confirmar",
       "newCollection": "+ Nueva colección",
       "collectionNamePlaceholder": "Nombre de la colección...",
-      "create": "Crear",
+      "create": "Crear y guardar",
+      "defaultCollectionName": "Mis palabras",
       "cancel": "Cancelar"
     },
     "translation": {

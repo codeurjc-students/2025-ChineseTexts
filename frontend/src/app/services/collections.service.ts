@@ -76,7 +76,7 @@ export class CollectionsService {
   }
 
   createCollection(title: string): Observable<CollectionDTO> {
-    return this.http.post<CollectionDTO>(`${this.apiUrl}?title=${title}`, {}, { withCredentials: true });
+    return this.http.post<CollectionDTO>(`${this.apiUrl}?title=${encodeURIComponent(title)}`, {}, { withCredentials: true });
   }
 
   addFlashcard(collectionId: number, chinese: string, textId: number): Observable<FlashcardDTO> {
