@@ -131,10 +131,9 @@
             <i class="bi bi-lock"></i> {{ 'text.save.notLogged' | transloco }}
           </div>
 
-          <!-- Sin colecciones -->
-          <div *ngIf="saveStatus === 'no-collections' && !showNewCollectionInput" class="save-message save-message--warn">
+          <!-- Sin colecciones: el formulario de abajo ya viene abierto y relleno -->
+          <div *ngIf="saveStatus === 'no-collections'" class="save-message save-message--warn">
             <i class="bi bi-collection"></i> {{ 'text.save.noCollections' | transloco }}
-            <button class="btn-link-red" (click)="showNewCollectionInput = true">{{ 'text.save.createOne' | transloco }}</button>
           </div>
 
           <!-- Éxito -->

@@ -249,7 +249,13 @@ export class TextComponent implements OnInit, OnDestroy {
       next: (cols) => {
         this.collections = cols;
         if (cols.length === 0) {
+          // Primera palabra de un usuario sin colecciones: el formulario de nueva
+          // colección se abre ya relleno con un nombre por defecto (editable), de
+          // modo que guardar cuesta un toque y ninguna decisión. Los usuarios que ya
+          // tienen colecciones no pasan por aquí y ven el selector de siempre.
           this.saveStatus = 'no-collections';
+          this.newCollectionTitle = this.transloco.translate('text.save.defaultCollectionName');
+          this.showNewCollectionInput = true;
         }
         this.showSavePanel = true;
       },
@@ -274,6 +280,10 @@ export class TextComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Crea la colección y guarda en ella la palabra pendiente en un solo paso
+   * (antes solo la creaba y preseleccionaba, obligando a un "Confirmar" extra).
+   */
   createCollectionAndSave(): void {
     if (!this.newCollectionTitle.trim()) return;
 
@@ -284,6 +294,7 @@ export class TextComponent implements OnInit, OnDestroy {
         this.newCollectionTitle = '';
         this.showNewCollectionInput = false;
         this.saveStatus = 'idle';
+        this.confirmSave();
       },
       error: () => this.saveStatus = 'error'
     });

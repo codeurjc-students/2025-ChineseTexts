@@ -420,8 +420,7 @@
     "save": {
       "button": "Save",
       "notLogged": "You must be logged in to save words.",
-      "noCollections": "You have no collections yet.",
-      "createOne": "Create one",
+      "noCollections": "Your first collection — name it and save:",
       "success": "Word saved!",
       "duplicate": "Already in this collection.",
       "error": "Something went wrong.",
@@ -429,7 +428,8 @@
       "confirm": "Confirm",
       "newCollection": "+ New collection",
       "collectionNamePlaceholder": "Collection name...",
-      "create": "Create",
+      "create": "Create and save",
+      "defaultCollectionName": "My words",
       "cancel": "Cancel"
     },
     "translation": {

@@ -2,7 +2,7 @@ import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideRouter, Router } from '@angular/router';
-import { of, Subject } from 'rxjs';
+import { of, Subject, throwError } from 'rxjs';
 
 import { TextComponent } from './text.component';
 import { TextsService, TextItem } from '../../services/texts.service';
@@ -226,6 +226,72 @@ describe('TextComponent', () => {
 
     expect(component.saveStatus).toBe('not-logged');
     expect(component.showSavePanel).toBeTrue();
+  });
+
+  // Test 12b: primera palabra de un usuario SIN colecciones — el formulario de nueva
+  // colección se abre ya relleno con el nombre por defecto (editable), sin pedirle
+  // que invente un nombre antes de haber guardado nada
+  it('should open a prefilled new-collection form when the user has no collections', () => {
+    loginServiceSpy.isLogged.and.returnValue(true);
+    collectionsServiceSpy.getUserCollections.and.returnValue(of([]));
+    fixture.detectChanges();
+
+    component.addWord('你好');
+
+    expect(component.saveStatus).toBe('no-collections');
+    expect(component.showNewCollectionInput).toBeTrue();
+    expect(component.newCollectionTitle).toBe('My words');
+    expect(component.showSavePanel).toBeTrue();
+  });
+
+  // Test 12c: un usuario que YA tiene colecciones ve el selector de siempre: nada
+  // prerrellenado ni formulario abierto (los usuarios existentes no notan cambio)
+  it('should keep the collection selector flow untouched for users with collections', () => {
+    loginServiceSpy.isLogged.and.returnValue(true);
+    collectionsServiceSpy.getUserCollections.and.returnValue(of([
+      { id: 7, title: 'HSK1', creationDate: '2026-01-01', flashcards: [] } as any
+    ]));
+    fixture.detectChanges();
+
+    component.addWord('你好');
+
+    expect(component.saveStatus).toBe('idle');
+    expect(component.showNewCollectionInput).toBeFalse();
+    expect(component.newCollectionTitle).toBe('');
+    expect(component.collections.length).toBe(1);
+  });
+
+  // Test 12d: "Crear y guardar" crea la colección Y guarda la palabra pendiente en un
+  // solo paso (antes solo la creaba y exigía un "Confirmar" adicional)
+  it('should create the collection and save the pending word in one step', () => {
+    loginServiceSpy.isLogged.and.returnValue(true);
+    collectionsServiceSpy.getUserCollections.and.returnValue(of([]));
+    collectionsServiceSpy.createCollection.and.returnValue(of(
+      { id: 42, title: 'My words', creationDate: '2026-09-04', flashcards: [] } as any));
+    collectionsServiceSpy.addFlashcard.and.returnValue(of({ id: 1 } as any));
+    fixture.detectChanges();
+
+    component.addWord('你好');
+    component.createCollectionAndSave();
+
+    expect(collectionsServiceSpy.createCollection).toHaveBeenCalledWith('My words');
+    expect(collectionsServiceSpy.addFlashcard).toHaveBeenCalledWith(42, '你好', mockText.id);
+    expect(component.saveStatus).toBe('success');
+    expect(component.collections.length).toBe(1);
+  });
+
+  // Test 12e: si falla la creación de la colección no se intenta guardar la palabra
+  it('should report an error and not save the word when creating the collection fails', () => {
+    loginServiceSpy.isLogged.and.returnValue(true);
+    collectionsServiceSpy.getUserCollections.and.returnValue(of([]));
+    collectionsServiceSpy.createCollection.and.returnValue(throwError(() => new Error('boom')));
+    fixture.detectChanges();
+
+    component.addWord('你好');
+    component.createCollectionAndSave();
+
+    expect(collectionsServiceSpy.addFlashcard).not.toHaveBeenCalled();
+    expect(component.saveStatus).toBe('error');
   });
 
   // Test 13: getSentencesString divide correctamente una traducción por puntos
