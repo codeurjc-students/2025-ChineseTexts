@@ -8,6 +8,7 @@ import { LoginService } from '../../services/login.service';
 import { AuthUiService } from '../../services/auth-ui.service';
 import { LocaleNavService } from '../../i18n/locale-nav.service';
 import { LocalizeLinkPipe } from '../../i18n/localize-link.pipe';
+import { PasswordToggleComponent } from '../password-toggle/password-toggle.component';
 
 /**
  * Página "Nueva contraseña" (/reset-password?token=…), destino del enlace del
@@ -18,7 +19,7 @@ import { LocalizeLinkPipe } from '../../i18n/localize-link.pipe';
 @Component({
   selector: 'app-reset-password',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, TranslocoModule, LocalizeLinkPipe],
+  imports: [CommonModule, FormsModule, RouterModule, TranslocoModule, LocalizeLinkPipe, PasswordToggleComponent],
   templateUrl: './reset-password.component.html',
   styleUrl: './reset-password.component.scss'
 })

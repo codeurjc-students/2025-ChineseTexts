@@ -10,11 +10,12 @@ import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { LocaleNavService } from '../../i18n/locale-nav.service';
 import { LocalizeLinkPipe } from '../../i18n/localize-link.pipe';
 import { ReferralService } from '../../services/referral.service';
+import { PasswordToggleComponent } from '../password-toggle/password-toggle.component';
 
 @Component({
   selector: 'app-signup',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule, TranslocoModule, LocalizeLinkPipe],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, TranslocoModule, LocalizeLinkPipe, PasswordToggleComponent],
   templateUrl: './signup.component.html',
   styleUrls: ['./signup.component.scss']
 })

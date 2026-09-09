@@ -7,6 +7,10 @@
       "close": "Cerrar",
       "back": "Atrás",
       "loading": "Cargando…"
+    },
+    "password": {
+      "show": "Mostrar contraseña",
+      "hide": "Ocultar contraseña"
     }
   },
   "notice": {

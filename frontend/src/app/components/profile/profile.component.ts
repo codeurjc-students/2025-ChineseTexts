@@ -8,13 +8,14 @@ import { LoginService } from '../../services/login.service';
 import { UserService, UserDTO } from '../../services/users.service';
 import { LocaleNavService } from '../../i18n/locale-nav.service';
 import { ActivityService, Stats } from '../../services/activity.service';
+import { PasswordToggleComponent } from '../password-toggle/password-toggle.component';
 
 type ProfileSection = 'view' | 'editProfile' | 'editPassword' | 'deleteAccount';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, FormsModule, TranslocoModule],
+  imports: [CommonModule, FormsModule, TranslocoModule, PasswordToggleComponent],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss'
 })

@@ -13,11 +13,12 @@ import { AuthUiService } from '../../services/auth-ui.service';
 import { ActivityService } from '../../services/activity.service';
 import { CollectionsService } from '../../services/collections.service';
 import { Lang, addLangPrefix, stripLangPrefix } from '../../i18n/locale.util';
+import { PasswordToggleComponent } from '../password-toggle/password-toggle.component';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, TranslocoModule, LocalizeLinkPipe],
+  imports: [CommonModule, RouterModule, FormsModule, TranslocoModule, LocalizeLinkPipe, PasswordToggleComponent],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss'
 })

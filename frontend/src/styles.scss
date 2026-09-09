@@ -1,1 +1,18 @@
 /* You can add global styles to this file, and also import other style files */
+
+/* Password fields with a show/hide button (<app-password-toggle>): the wrapper
+   anchors the button over the input's right edge and reserves room for it. */
+.password-field {
+  position: relative;
+  display: block;
+  width: 100%;
+}
+.password-field > input {
+  width: 100%;
+  padding-right: 2.75rem;
+  box-sizing: border-box;
+}
+/* Bootstrap paints its validation icon where the button sits; the red border stays. */
+.password-field > input.form-control.is-invalid {
+  background-image: none;
+}

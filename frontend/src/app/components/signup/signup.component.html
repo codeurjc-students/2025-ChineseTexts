@@ -59,14 +59,18 @@
 
       <div class="form-group mb-3">
         <label for="password">{{ 'signup.form.passwordLabel' | transloco }}</label>
-        <input
-          id="password"
-          type="password"
-          class="form-control"
-          [class.is-invalid]="signupForm.get('password')?.invalid && signupForm.get('password')?.touched"
-          formControlName="password"
-          placeholder="{{ 'signup.form.passwordPlaceholder' | transloco }}"
-        >
+        <div class="password-field">
+          <input
+            #signupPassword
+            id="password"
+            type="password"
+            class="form-control"
+            [class.is-invalid]="signupForm.get('password')?.invalid && signupForm.get('password')?.touched"
+            formControlName="password"
+            placeholder="{{ 'signup.form.passwordPlaceholder' | transloco }}"
+          >
+          <app-password-toggle [target]="signupPassword"></app-password-toggle>
+        </div>
         <div class="invalid-feedback"
              *ngIf="signupForm.get('password')?.touched">
           <span *ngIf="signupForm.get('password')?.errors?.['required']">{{ 'signup.form.passwordRequired' | transloco }}</span>
