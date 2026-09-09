@@ -604,7 +604,7 @@
   },
   "privacyPolicy": {
     "title": "Privacy Policy",
-    "lastUpdated": "Last updated: July 2026",
+    "lastUpdated": "Last updated: September 2026",
     "s1": {
       "title": "1. Who we are",
       "body": "is a web application for learning Mandarin Chinese through graded texts and vocabulary tools. The service is offered as a personal project of José Víctor García Llorente, its creator and the data controller (contact details in section 10)."
@@ -621,7 +621,7 @@
       "referral": "If you arrived through a promotional link or used a discount code: the campaign code involved (e.g. the name of the collaborator who recommended us), used only to measure how well each collaboration works.",
       "content": "The texts and images you upload to create your own readers, together with the words and sentences processed from them. They stay private in your account until you delete them or delete the account.",
       "metadata": "Account metadata: registration date, last login date, the monthly usage counters (text generations, audio plays and AI messages) used to enforce each plan's limits, and proof of your consents (when you accepted the terms and, if given, the email consent).",
-      "ip": "Your IP address, transiently, to rate-limit requests and prevent abuse (for example on audio playback and on password-reset requests). It is not stored with your profile.",
+      "ip": "Your IP address, transiently, to rate-limit requests and prevent abuse (for example on audio playback, on login attempts and on password-reset requests). It is not stored with your profile.",
       "tokens": "Single-use technical tokens: the one-click unsubscribe token of the reminder emails and, when you request a password reset, the SHA-256 hash of the reset token (never the token itself) together with its expiry.",
       "analytics": "We also measure aggregate traffic with Umami, a cookie-less analytics tool. It collects anonymous, aggregated statistics only (pages visited and where visitors come from), stores no personal data and cannot identify you, so it requires no consent.",
       "aiChat": "The messages you exchange with the AI tutor are not stored in our database: they are processed on the fly and only live in your browser during the conversation.",
@@ -672,7 +672,7 @@
     },
     "s6": {
       "title": "8. Data retention",
-      "body": "Account data is kept while your account is active. You can delete your account yourself at any time from your profile: deletion is immediate, removes your collections, flashcards and created texts, and automatically cancels any active subscription so no further charges occur. You can also ask us to delete it by email. Traffic statistics are anonymous and aggregated and contain no personal data. Payment and subscription records may be kept for longer where necessary to meet tax, accounting and fraud-prevention obligations, even after the account they belong to has been deleted."
+      "body": "Account data is kept while your account is active. You can delete your account yourself at any time from your profile: deletion is immediate, removes your collections, flashcards and created texts, and automatically cancels any active subscription so no further charges occur. You can also ask us to delete it by email. Database backups are kept for a maximum of 14 days and then destroyed automatically; they are used only to restore the service after a technical failure, so a deleted account may remain in them for that period. Traffic statistics are anonymous and aggregated and contain no personal data. Payment and subscription records may be kept for longer where necessary to meet tax, accounting and fraud-prevention obligations, even after the account they belong to has been deleted."
     },
     "s7": {
       "title": "9. Your rights (GDPR)",

@@ -604,7 +604,7 @@
   },
   "privacyPolicy": {
     "title": "Política de Privacidad",
-    "lastUpdated": "Última actualización: julio de 2026",
+    "lastUpdated": "Última actualización: septiembre de 2026",
     "s1": {
       "title": "1. Quiénes somos",
       "body": "es una aplicación web para aprender chino mandarín mediante textos graduados y herramientas de vocabulario. Este servicio se ofrece como un proyecto personal de José Víctor García Llorente, su creador y responsable del tratamiento (datos de contacto en la sección 10)."
@@ -621,7 +621,7 @@
       "referral": "Si llegaste a través de un enlace promocional o usaste un código de descuento: el código de campaña correspondiente (p. ej. el nombre del colaborador que nos recomendó), usado únicamente para medir el rendimiento de cada colaboración.",
       "content": "Los textos e imágenes que subes para crear tus propias lecturas, junto con las palabras y frases procesadas a partir de ellos. Permanecen privados en tu cuenta hasta que los borres o elimines la cuenta.",
       "metadata": "Metadatos de la cuenta: fecha de registro, fecha del último acceso, los contadores mensuales de uso (generaciones de texto, audios y mensajes de IA) empleados para aplicar los límites de cada plan, y la prueba de tus consentimientos (cuándo aceptaste los términos y, si lo diste, el consentimiento de email).",
-      "ip": "Tu dirección IP, de forma transitoria, para limitar la frecuencia de las peticiones y prevenir abusos (por ejemplo en el audio y en las solicitudes de restablecer contraseña). No se almacena junto a tu perfil.",
+      "ip": "Tu dirección IP, de forma transitoria, para limitar la frecuencia de las peticiones y prevenir abusos (por ejemplo en el audio, en los intentos de inicio de sesión y en las solicitudes de restablecer contraseña). No se almacena junto a tu perfil.",
       "tokens": "Tokens técnicos de un solo uso: el de la baja en un clic de los correos de recordatorio y, cuando pides restablecer la contraseña, el hash SHA-256 del token de restablecimiento (nunca el token en claro) junto con su caducidad.",
       "analytics": "También medimos el tráfico agregado con Umami, una herramienta de analítica sin cookies. Solo recopila estadísticas anónimas y agregadas (páginas visitadas y procedencia de las visitas), no almacena datos personales y no puede identificarte, por lo que no requiere consentimiento.",
       "aiChat": "Los mensajes que intercambias con el tutor de IA no se guardan en nuestra base de datos: se procesan al vuelo y solo existen en tu navegador mientras dura la conversación.",
@@ -672,7 +672,7 @@
     },
     "s6": {
       "title": "8. Conservación de los datos",
-      "body": "Los datos de la cuenta se conservan mientras tu cuenta esté activa. Puedes eliminar tu cuenta tú mismo en cualquier momento desde tu perfil: el borrado es inmediato, elimina tus colecciones, tarjetas y textos creados, y cancela automáticamente cualquier suscripción activa para que no haya más cobros. También puedes pedirnos el borrado por email. Las estadísticas de tráfico son anónimas y agregadas y no contienen datos personales. Los registros de pagos y suscripciones pueden conservarse más tiempo cuando sea necesario para cumplir obligaciones fiscales, contables y de prevención del fraude, incluso después de eliminarse la cuenta a la que pertenecen."
+      "body": "Los datos de la cuenta se conservan mientras tu cuenta esté activa. Puedes eliminar tu cuenta tú mismo en cualquier momento desde tu perfil: el borrado es inmediato, elimina tus colecciones, tarjetas y textos creados, y cancela automáticamente cualquier suscripción activa para que no haya más cobros. También puedes pedirnos el borrado por email. Las copias de seguridad de la base de datos se conservan un máximo de 14 días y se destruyen automáticamente; solo se usan para restaurar el servicio ante un fallo técnico, por lo que una cuenta eliminada puede permanecer en ellas durante ese plazo. Las estadísticas de tráfico son anónimas y agregadas y no contienen datos personales. Los registros de pagos y suscripciones pueden conservarse más tiempo cuando sea necesario para cumplir obligaciones fiscales, contables y de prevención del fraude, incluso después de eliminarse la cuenta a la que pertenecen."
     },
     "s7": {
       "title": "9. Tus derechos (RGPD)",
