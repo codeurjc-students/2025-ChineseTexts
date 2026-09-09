@@ -38,6 +38,20 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 			var claims = jwtTokenProvider.validateToken(request, true);
 			var userDetails = userDetailsService.loadUserByUsername(claims.getSubject());
 
+			// A blocked account is "disabled" (see RepositoryUserDetailsService). Login and
+			// refresh already reject it, but a cookie issued BEFORE the block stays valid
+			// for up to 7 days, so the check has to happen here too: the request goes on
+			// unauthenticated (protected endpoints answer 401) and the browser is told to
+			// drop both cookies, which ends the session on the spot.
+			if (!userDetails.isEnabled()) {
+				// No identifier in the log on purpose: no personal data in server logs.
+				log.info("Dropped the session of a blocked account on {}", request.getRequestURI());
+				response.addCookie(TokenType.ACCESS.expiredCookie());
+				response.addCookie(TokenType.REFRESH.expiredCookie());
+				filterChain.doFilter(request, response);
+				return;
+			}
+
 			UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
 						userDetails, null, userDetails.getAuthorities());
 				
