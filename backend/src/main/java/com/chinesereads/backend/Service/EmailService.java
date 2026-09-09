@@ -168,9 +168,13 @@ public class EmailService {
         String f3d = es ? "Una lectura al día enciende tu racha 🔥 y crea el hábito." : "One reading a day lights your streak 🔥 and builds the habit.";
         String cta = es ? "Empieza a leer" : "Start reading";
         String ctaTest = es ? "O haz primero el test de nivel →" : "Or take the level test first →";
+        // The second sentence is the way out for someone whose address was used by a
+        // third party (we do not verify emails at signup): one reply and the account goes.
         String footer = es
-                ? "Recibes este correo porque acabas de crear una cuenta en ChineseReads."
-                : "You're receiving this email because you just created a ChineseReads account.";
+                ? "Recibes este correo porque acabas de crear una cuenta en ChineseReads. "
+                        + "Si no has sido tú, responde a este correo y eliminaremos la cuenta."
+                : "You're receiving this email because you just created a ChineseReads account. "
+                        + "If that wasn't you, reply to this email and we will delete the account.";
         String privacy = es ? "Política de privacidad" : "Privacy policy";
 
         return """
