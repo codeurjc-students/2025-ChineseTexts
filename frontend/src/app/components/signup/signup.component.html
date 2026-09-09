@@ -71,8 +71,10 @@
           >
           <app-password-toggle [target]="signupPassword"></app-password-toggle>
         </div>
-        <div class="invalid-feedback"
-             *ngIf="signupForm.get('password')?.touched">
+        <!-- d-block: the input lives inside .password-field, so Bootstrap's sibling rule
+             (.is-invalid ~ .invalid-feedback) no longer applies; the *ngIf does the gating. -->
+        <div class="invalid-feedback d-block"
+             *ngIf="signupForm.get('password')?.invalid && signupForm.get('password')?.touched">
           <span *ngIf="signupForm.get('password')?.errors?.['required']">{{ 'signup.form.passwordRequired' | transloco }}</span>
           <span *ngIf="signupForm.get('password')?.errors?.['minlength']">
             {{ 'signup.form.passwordMinlength' | transloco }}

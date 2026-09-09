@@ -56,6 +56,17 @@ describe('HeaderComponent', () => {
     expect(component.passwordError).toBe('Password is required.');
   });
 
+  // Test 2b: el aviso de contraseña obligatoria se RENDERIZA bajo el campo
+  it('renders the password-required message under the field, not only the red border', () => {
+    component.loginEmail = 'test@test.com';
+    component.loginPassword = '';
+    component.login();
+    fixture.detectChanges();
+    const feedback = fixture.nativeElement.querySelector('.invalid-feedback.d-block') as HTMLElement;
+    expect(feedback).not.toBeNull();
+    expect(feedback.textContent).toContain('Password is required.');
+  });
+
   // Test 3: Login exitoso llama al servicio con credenciales correctas
   it('should call login service with correct credentials on successful login', () => {
     loginServiceSpy.login.and.returnValue(EMPTY);
