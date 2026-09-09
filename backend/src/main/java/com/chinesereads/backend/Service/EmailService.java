@@ -169,12 +169,14 @@ public class EmailService {
         String cta = es ? "Empieza a leer" : "Start reading";
         String ctaTest = es ? "O haz primero el test de nivel →" : "Or take the level test first →";
         // The second sentence is the way out for someone whose address was used by a
-        // third party (we do not verify emails at signup): one reply and the account goes.
+        // third party (we do not verify emails at signup). It points to "contact us"
+        // rather than "reply" so it stays true whatever mailbox the sender address is;
+        // the privacy-policy link right below carries the contact details.
         String footer = es
                 ? "Recibes este correo porque acabas de crear una cuenta en ChineseReads. "
-                        + "Si no has sido tú, responde a este correo y eliminaremos la cuenta."
+                        + "Si no has sido tú, ponte en contacto con nosotros y eliminaremos la cuenta."
                 : "You're receiving this email because you just created a ChineseReads account. "
-                        + "If that wasn't you, reply to this email and we will delete the account.";
+                        + "If that wasn't you, contact us and we will delete the account.";
         String privacy = es ? "Política de privacidad" : "Privacy policy";
 
         return """

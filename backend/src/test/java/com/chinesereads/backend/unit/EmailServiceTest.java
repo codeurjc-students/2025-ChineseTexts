@@ -61,7 +61,7 @@ public class EmailServiceTest {
         assertTrue(html.contains("https://chinesereads.com/level-test"));
         assertTrue(html.contains("Privacy policy"));
         // Way out for a recipient whose address was used by someone else.
-        assertTrue(html.contains("If that wasn't you, reply to this email"));
+        assertTrue(html.contains("If that wasn't you, contact us"));
     }
 
     @Test
@@ -72,7 +72,7 @@ public class EmailServiceTest {
         assertTrue(html.contains("https://chinesereads.com/es/texts"));
         assertTrue(html.contains("https://chinesereads.com/es/level-test"));
         assertTrue(html.contains("Política de privacidad"));
-        assertTrue(html.contains("Si no has sido tú, responde a este correo"));
+        assertTrue(html.contains("Si no has sido tú, ponte en contacto con nosotros"));
     }
 
     @Test
