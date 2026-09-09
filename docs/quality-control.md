@@ -10,7 +10,7 @@ ChineseReads applies automated testing at multiple levels across both the backen
 
 ### Unit Tests (Mockito)
 
-Located in `backend/src/test/java/com/chinesereads/backend/unit/` (24 test classes, one per service).
+Located in `backend/src/test/java/com/chinesereads/backend/unit/` (25 test classes, one per service or security component).
 
 Tests that verify the business logic of individual service classes in isolation, using Mockito to mock dependencies. Representative examples:
 
@@ -26,7 +26,7 @@ Tests that verify the business logic of individual service classes in isolation,
 | `EmailServiceTest` | `EmailService` | Configuration gate, bilingual templates for the three email types |
 | `ReviewReminderServiceTest` | `ReviewReminderService` | The four sending conditions, max-1/day idempotency, retry on failure |
 
-Other covered services include usage quotas (text/audio/chat), rate limiters, influencer stats and settlements, activity/streaks, JWT and health checks.
+Other covered services include usage quotas (text/audio/chat), rate limiters, influencer stats and settlements, activity/streaks, JWT (token provider and the request filter that drops a blocked account's session) and health checks.
 
 ### Integration Tests (H2)
 
@@ -39,7 +39,7 @@ Tests that verify the interaction between the service layer and the database usi
 
 ### E2E API Tests (RestAssured)
 
-Located in `backend/src/test/java/com/chinesereads/backend/e2e/` (13 test classes). They start the full application on a random port and exercise the real HTTP request/response cycle: `TextApiTest`, `SignupApiTest`, `ProfileApiTest`, `PasswordResetApiTest` (+ its rate-limit twin), `UnsubscribeApiTest`, `BlogApiTest`, `HallOfFameApiTest`, `FounderApiTest`, `InfluencerApiTest`, and one per sitemap (`SitemapApiTest`, `SitemapBlogApiTest`, `SitemapHallOfFameApiTest`).
+Located in `backend/src/test/java/com/chinesereads/backend/e2e/` (14 test classes). They start the full application on a random port and exercise the real HTTP request/response cycle: `TextApiTest`, `SignupApiTest`, `ProfileApiTest`, `AccountBlockApiTest` (blocking a user ends their live session), `PasswordResetApiTest` (+ its rate-limit twin), `UnsubscribeApiTest`, `BlogApiTest`, `HallOfFameApiTest`, `FounderApiTest`, `InfluencerApiTest`, and one per sitemap (`SitemapApiTest`, `SitemapBlogApiTest`, `SitemapHallOfFameApiTest`).
 
 These tests also verify authorization: that unauthenticated requests return 401, that regular users cannot access admin endpoints (403), and that authenticated admin users can perform all operations.
 
@@ -53,8 +53,8 @@ These tests also verify authorization: that unauthenticated requests return 401,
 
 | Category | Count |
 |---|---|
-| Test classes | 42 (24 unit, 2 integration, 13 E2E, 2 web-layer, 1 context load) |
-| **Total backend tests** | **278** |
+| Test classes | 44 (25 unit, 2 integration, 14 E2E, 2 web-layer, 1 context load) |
+| **Total backend tests** | **284** |
 | Failures | 0 |
 
 ---
@@ -100,7 +100,7 @@ Approximate line counts (source only, excluding generated code and dependencies)
 | Layer | Files | Approx. lines of code |
 |---|---|---|
 | Backend (Java, main) | 144 | ~12,400 |
-| Backend (Java, tests) | 42 | ~6,300 |
+| Backend (Java, tests) | 44 | ~6,500 |
 | Frontend (TypeScript/HTML/SCSS) | 216 | ~25,900 |
 | Python microservices | 4 | ~1,000 |
-| **Total** | **~400** | **~45,600** |
+| **Total** | **~400** | **~45,800** |

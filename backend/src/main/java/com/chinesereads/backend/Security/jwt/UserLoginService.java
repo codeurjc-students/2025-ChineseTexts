@@ -98,8 +98,8 @@ public class UserLoginService {
 
 	public String logout(HttpServletResponse response) {
 		SecurityContextHolder.clearContext();
-		response.addCookie(removeTokenCookie(TokenType.ACCESS));
-		response.addCookie(removeTokenCookie(TokenType.REFRESH));
+		response.addCookie(TokenType.ACCESS.expiredCookie());
+		response.addCookie(TokenType.REFRESH.expiredCookie());
 
 		return "logout successfully";
 	}
@@ -107,14 +107,6 @@ public class UserLoginService {
 	private Cookie buildTokenCookie(TokenType type, String token) {
 		Cookie cookie = new Cookie(type.cookieName, token);
 		cookie.setMaxAge((int) type.duration.getSeconds());
-		cookie.setHttpOnly(true);
-		cookie.setPath("/");
-		return cookie;
-	}
-
-	private Cookie removeTokenCookie(TokenType type){
-		Cookie cookie = new Cookie(type.cookieName, "");
-		cookie.setMaxAge(0);
 		cookie.setHttpOnly(true);
 		cookie.setPath("/");
 		return cookie;
