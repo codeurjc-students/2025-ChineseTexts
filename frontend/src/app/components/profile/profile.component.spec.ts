@@ -95,7 +95,7 @@ describe('ProfileComponent', () => {
     component.savePassword();
 
     expect(component.passwordStatus).toBe('error');
-    expect(component.passwordError).toContain('6 characters');
+    expect(component.passwordError).toContain('8 characters');
   });
 
   // Test unitario 6: savePassword muestra error si las contraseñas no coinciden

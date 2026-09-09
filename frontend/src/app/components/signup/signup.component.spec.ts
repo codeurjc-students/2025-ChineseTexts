@@ -90,16 +90,16 @@ describe('SignupComponent', () => {
     expect(component.signupForm.get('email')?.invalid).toBeTrue();
   });
 
-  // Test nuevo: password con menos de 6 caracteres es inválida
-  it('should mark password as invalid when shorter than 6 characters', () => {
+  // Test nuevo: password con menos de 8 caracteres es inválida
+  it('should mark password as invalid when shorter than 8 characters', () => {
     component.signupForm.get('password')?.setValue('abc');
     expect(component.signupForm.get('password')?.invalid).toBeTrue();
     expect(component.signupForm.get('password')?.errors?.['minlength']).toBeTruthy();
   });
 
-  // Test nuevo: password con 6 o más caracteres es válida
-  it('should mark password as valid when 6 or more characters', () => {
-    component.signupForm.get('password')?.setValue('abc123');
+  // Test nuevo: password con 8 o más caracteres es válida
+  it('should mark password as valid when 8 or more characters', () => {
+    component.signupForm.get('password')?.setValue('abc12345');
     expect(component.signupForm.get('password')?.valid).toBeTrue();
   });
 
@@ -135,18 +135,18 @@ describe('SignupComponent', () => {
     const mockUser: UserDTO = {
       id: 1, email: 'test@test.com', name: 'Test',
       language: 'en', collections: [], roles: ['USER'],
-      password: 'pass123', newPassword: null
+      password: 'pass1234', newPassword: null
     };
     userServiceSpy.register.and.returnValue(of(mockUser));
     loginServiceSpy.login.and.returnValue(of({}));
 
     component.signupForm.setValue({
       name: 'Test', email: 'test@test.com',
-      password: 'pass123', language: 'en', acceptTerms: true, emailConsent: false
+      password: 'pass1234', language: 'en', acceptTerms: true, emailConsent: false
     });
     component.submitSignup();
 
-    expect(loginServiceSpy.login).toHaveBeenCalledWith('test@test.com', 'pass123');
+    expect(loginServiceSpy.login).toHaveBeenCalledWith('test@test.com', 'pass1234');
     expect(navigateSpy).toHaveBeenCalledWith(['/']);
   });
 
@@ -155,13 +155,13 @@ describe('SignupComponent', () => {
     userServiceSpy.register.and.returnValue(of({
       id: 1, email: 'test@test.com', name: 'Test',
       language: 'en', collections: [], roles: ['USER'],
-      password: 'pass123', newPassword: null
+      password: 'pass1234', newPassword: null
     } as UserDTO));
     loginServiceSpy.login.and.returnValue(throwError(() => new Error('boom')));
 
     component.signupForm.setValue({
       name: 'Test', email: 'test@test.com',
-      password: 'pass123', language: 'en', acceptTerms: true, emailConsent: false
+      password: 'pass1234', language: 'en', acceptTerms: true, emailConsent: false
     });
     component.submitSignup();
 
@@ -176,7 +176,7 @@ describe('SignupComponent', () => {
 
     component.signupForm.setValue({
       name: 'Test', email: 'existing@test.com',
-      password: 'pass123', language: 'en', acceptTerms: true, emailConsent: false
+      password: 'pass1234', language: 'en', acceptTerms: true, emailConsent: false
     });
     component.submitSignup();
 
@@ -189,7 +189,7 @@ describe('SignupComponent', () => {
 
     component.signupForm.setValue({
       name: 'Test', email: 'test@test.com',
-      password: 'pass123', language: 'en', acceptTerms: true, emailConsent: false
+      password: 'pass1234', language: 'en', acceptTerms: true, emailConsent: false
     });
     component.submitSignup();
 
@@ -204,7 +204,7 @@ describe('SignupComponent', () => {
 
     component.signupForm.setValue({
       name: 'Test', email: 'test@test.com',
-      password: 'pass123', language: 'en', acceptTerms: true, emailConsent: false
+      password: 'pass1234', language: 'en', acceptTerms: true, emailConsent: false
     });
     component.submitSignup();
 

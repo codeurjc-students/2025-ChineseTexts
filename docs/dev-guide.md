@@ -448,7 +448,7 @@ chmod +x ./deploy.sh
      - `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `STRIPE_PRICE_MONTHLY`, `STRIPE_PRICE_YEARLY` — payments
      - `BREVO_API_KEY`, `MAIL_FROM`, `MAIL_FROM_NAME` — transactional email
      - `JWT_SECRET` (generate with `openssl rand -base64 48`) — stable sessions across redeploys
-     - `REMINDER_*` (enabled/cron/zone), `PASSWORD_RESET_*` (token minutes, per-IP hourly limit)
+     - `REMINDER_*` (enabled/cron/zone), `PASSWORD_RESET_*` (token minutes, per-IP hourly limit), `LOGIN_RATE_LIMIT_*` (failed login attempts per IP / per email, window minutes)
      - `USAGE_*`, `TTS_*`, `INFLUENCER_PAYOUT_*` — quotas, cost guards and commission amounts
    - `ocr-service/credentials.json` with Google Cloud credentials
    - `tts-service/credentials.json` with the same Google Cloud credentials (Cloud Text-to-Speech API enabled)

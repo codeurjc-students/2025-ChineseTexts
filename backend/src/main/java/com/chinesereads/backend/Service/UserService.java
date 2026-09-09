@@ -27,6 +27,13 @@ import com.chinesereads.backend.dto.UserMapper;
 @Service
 public class UserService {
 
+    /**
+     * Minimum password length, enforced server-side on signup, password change and
+     * password reset (the forms mirror it). Applies to NEW passwords only: existing
+     * accounts keep logging in with whatever they have.
+     */
+    public static final int MIN_PASSWORD_LENGTH = 8;
+
     private final UserRepository userRepository;
 
     private final UserMapper userMapper;

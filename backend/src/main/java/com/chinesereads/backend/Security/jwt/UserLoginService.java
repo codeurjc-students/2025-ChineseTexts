@@ -6,6 +6,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,9 +16,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
+import com.chinesereads.backend.Security.ClientIp;
+import com.chinesereads.backend.Service.LoginRateLimiterService;
 import com.chinesereads.backend.Service.UserService;
 
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Service
@@ -30,30 +34,53 @@ public class UserLoginService {
 	private final JwtTokenProvider jwtTokenProvider;
 	private final UserService userService;
 
-	public UserLoginService(AuthenticationManager authenticationManager, UserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider, UserService userService) {
+	private final LoginRateLimiterService loginRateLimiter;
+
+	public UserLoginService(AuthenticationManager authenticationManager, UserDetailsService userDetailsService,
+			JwtTokenProvider jwtTokenProvider, UserService userService, LoginRateLimiterService loginRateLimiter) {
 		this.authenticationManager = authenticationManager;
 		this.userDetailsService = userDetailsService;
 		this.jwtTokenProvider = jwtTokenProvider;
 		this.userService = userService;
+		this.loginRateLimiter = loginRateLimiter;
 	}
 
-	public ResponseEntity<AuthResponse> login(HttpServletResponse response, LoginRequest loginRequest) {
+	public ResponseEntity<AuthResponse> login(HttpServletRequest request, HttpServletResponse response,
+			LoginRequest loginRequest) {
+
+		String username = loginRequest.getUsername();
+		String clientIp = ClientIp.of(request);
+
+		// Brute-force guard: once this IP or this account has burnt its failed attempts,
+		// refuse BEFORE checking the password (a correct guess must not slip through).
+		if (loginRateLimiter.isBlocked(clientIp, username)) {
+			return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body(new AuthResponse(
+					AuthResponse.Status.FAILURE,
+					"Too many failed login attempts. Please try again in a few minutes."));
+		}
 
 		Authentication authentication;
 		try {
 			authentication = authenticationManager.authenticate(
-					new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+					new UsernamePasswordAuthenticationToken(username, loginRequest.getPassword()));
 		} catch (DisabledException | LockedException e) {
-			// Blocked account: reject with a clear, distinguishable response (403).
+			// Blocked account: reject with a clear, distinguishable response (403). It
+			// still counts as a failure so a blocked account cannot be probed for free.
+			loginRateLimiter.recordFailure(clientIp, username);
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AuthResponse(
 					AuthResponse.Status.FAILURE,
 					"Your account has been blocked. Please contact support."));
+		} catch (BadCredentialsException e) {
+			// Wrong password or unknown email: same 401 and same body for both, so the
+			// response never reveals which emails are registered.
+			loginRateLimiter.recordFailure(clientIp, username);
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new AuthResponse(
+					AuthResponse.Status.FAILURE, "Invalid credentials."));
 		}
 
 		SecurityContextHolder.getContext().setAuthentication(authentication);
+		loginRateLimiter.recordSuccess(username);
 
-
-		String username = loginRequest.getUsername();
 		UserDetails user = userDetailsService.loadUserByUsername(username);
 
 		// Record the successful login moment for the admin panel.

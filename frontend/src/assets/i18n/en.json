@@ -46,6 +46,7 @@
       "emailInvalid": "Please enter a valid email address.",
       "passwordRequired": "Password is required.",
       "blocked": "Your account has been blocked.",
+      "tooManyAttempts": "Too many failed attempts. Please wait a few minutes and try again.",
       "incorrect": "Incorrect credentials. Please try again.",
       "forgotPassword": "Forgot your password?"
     }
@@ -73,10 +74,10 @@
     "subtitle": "Enter the new password for your ChineseReads account.",
     "form": {
       "newLabel": "New password",
-      "newPlaceholder": "At least 6 characters",
+      "newPlaceholder": "At least 8 characters",
       "confirmLabel": "Confirm new password",
       "confirmPlaceholder": "Repeat the new password",
-      "tooShort": "The password must be at least 6 characters.",
+      "tooShort": "The password must be at least 8 characters.",
       "mismatch": "Passwords do not match."
     },
     "submit": "Save new password",
@@ -466,9 +467,9 @@
       "emailRequired": "Email is required.",
       "emailInvalid": "Please enter a valid email address.",
       "passwordLabel": "Password",
-      "passwordPlaceholder": "Create a secure password (min. 6 characters)",
+      "passwordPlaceholder": "Create a secure password (min. 8 characters)",
       "passwordRequired": "Password is required.",
-      "passwordMinlength": "Password must be at least 6 characters.",
+      "passwordMinlength": "Password must be at least 8 characters.",
       "languageLabel": "Preferred Language",
       "languageEnglish": "English",
       "languageSpanish": "Spanish",
@@ -488,7 +489,7 @@
       "emailInUse": "This email is already registered. Try logging in instead.",
       "invalidEmail": "Please enter a valid email address.",
       "nameRequired": "Full name is required.",
-      "passwordTooShort": "Your password is too short. Please use at least 6 characters.",
+      "passwordTooShort": "Your password is too short. Please use at least 8 characters.",
       "termsNotAccepted": "You must accept the Terms of Use to create an account."
     }
   },
@@ -978,7 +979,7 @@
       "currentLabel": "Current password",
       "currentPlaceholder": "Enter your current password",
       "newLabel": "New password",
-      "newPlaceholder": "At least 6 characters",
+      "newPlaceholder": "At least 8 characters",
       "confirmLabel": "Confirm new password",
       "confirmPlaceholder": "Repeat new password",
       "mismatch": "Passwords do not match",
@@ -1000,7 +1001,7 @@
       "nameEmpty": "Name cannot be empty.",
       "updateFailed": "Error updating profile. Please try again.",
       "currentPasswordEmpty": "Please enter your current password.",
-      "newPasswordTooShort": "New password must be at least 6 characters.",
+      "newPasswordTooShort": "New password must be at least 8 characters.",
       "newPasswordsMismatch": "New passwords do not match.",
       "newPasswordSameAsCurrent": "New password must be different from the current one.",
       "changePasswordFailed": "Error changing password. Please try again.",
