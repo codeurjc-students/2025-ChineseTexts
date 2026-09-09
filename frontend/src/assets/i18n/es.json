@@ -46,6 +46,7 @@
       "emailInvalid": "Introduce un correo electrónico válido.",
       "passwordRequired": "La contraseña es obligatoria.",
       "blocked": "Tu cuenta ha sido bloqueada.",
+      "tooManyAttempts": "Demasiados intentos fallidos. Espera unos minutos y vuelve a intentarlo.",
       "incorrect": "Credenciales incorrectas. Inténtalo de nuevo.",
       "forgotPassword": "¿Olvidaste tu contraseña?"
     }
@@ -73,10 +74,10 @@
     "subtitle": "Introduce la nueva contraseña de tu cuenta de ChineseReads.",
     "form": {
       "newLabel": "Nueva contraseña",
-      "newPlaceholder": "Al menos 6 caracteres",
+      "newPlaceholder": "Al menos 8 caracteres",
       "confirmLabel": "Confirma la nueva contraseña",
       "confirmPlaceholder": "Repite la nueva contraseña",
-      "tooShort": "La contraseña debe tener al menos 6 caracteres.",
+      "tooShort": "La contraseña debe tener al menos 8 caracteres.",
       "mismatch": "Las contraseñas no coinciden."
     },
     "submit": "Guardar nueva contraseña",
@@ -466,9 +467,9 @@
       "emailRequired": "El correo electrónico es obligatorio.",
       "emailInvalid": "Introduce una dirección de correo electrónico válida.",
       "passwordLabel": "Contraseña",
-      "passwordPlaceholder": "Crea una contraseña segura (mín. 6 caracteres)",
+      "passwordPlaceholder": "Crea una contraseña segura (mín. 8 caracteres)",
       "passwordRequired": "La contraseña es obligatoria.",
-      "passwordMinlength": "La contraseña debe tener al menos 6 caracteres.",
+      "passwordMinlength": "La contraseña debe tener al menos 8 caracteres.",
       "languageLabel": "Idioma preferido",
       "languageEnglish": "Inglés",
       "languageSpanish": "Español",
@@ -488,7 +489,7 @@
       "emailInUse": "Este correo electrónico ya está registrado. Prueba a iniciar sesión.",
       "invalidEmail": "Introduce una dirección de correo electrónico válida.",
       "nameRequired": "El nombre completo es obligatorio.",
-      "passwordTooShort": "La contraseña es demasiado corta. Usa al menos 6 caracteres.",
+      "passwordTooShort": "La contraseña es demasiado corta. Usa al menos 8 caracteres.",
       "termsNotAccepted": "Debes aceptar los términos de uso para crear una cuenta."
     }
   },
@@ -978,7 +979,7 @@
       "currentLabel": "Contraseña actual",
       "currentPlaceholder": "Introduce tu contraseña actual",
       "newLabel": "Nueva contraseña",
-      "newPlaceholder": "Al menos 6 caracteres",
+      "newPlaceholder": "Al menos 8 caracteres",
       "confirmLabel": "Confirma la nueva contraseña",
       "confirmPlaceholder": "Repite la nueva contraseña",
       "mismatch": "Las contraseñas no coinciden",
@@ -1000,7 +1001,7 @@
       "nameEmpty": "El nombre no puede estar vacío.",
       "updateFailed": "Error al actualizar el perfil. Inténtalo de nuevo.",
       "currentPasswordEmpty": "Introduce tu contraseña actual.",
-      "newPasswordTooShort": "La nueva contraseña debe tener al menos 6 caracteres.",
+      "newPasswordTooShort": "La nueva contraseña debe tener al menos 8 caracteres.",
       "newPasswordsMismatch": "Las nuevas contraseñas no coinciden.",
       "newPasswordSameAsCurrent": "La nueva contraseña debe ser diferente de la actual.",
       "changePasswordFailed": "Error al cambiar la contraseña. Inténtalo de nuevo.",

@@ -10,7 +10,7 @@ ChineseReads applies automated testing at multiple levels across both the backen
 
 ### Unit Tests (Mockito)
 
-Located in `backend/src/test/java/com/chinesereads/backend/unit/` (25 test classes, one per service or security component).
+Located in `backend/src/test/java/com/chinesereads/backend/unit/` (26 test classes, one per service or security component).
 
 Tests that verify the business logic of individual service classes in isolation, using Mockito to mock dependencies. Representative examples:
 
@@ -39,7 +39,7 @@ Tests that verify the interaction between the service layer and the database usi
 
 ### E2E API Tests (RestAssured)
 
-Located in `backend/src/test/java/com/chinesereads/backend/e2e/` (14 test classes). They start the full application on a random port and exercise the real HTTP request/response cycle: `TextApiTest`, `SignupApiTest`, `ProfileApiTest`, `AccountBlockApiTest` (blocking a user ends their live session), `PasswordResetApiTest` (+ its rate-limit twin), `UnsubscribeApiTest`, `BlogApiTest`, `HallOfFameApiTest`, `FounderApiTest`, `InfluencerApiTest`, and one per sitemap (`SitemapApiTest`, `SitemapBlogApiTest`, `SitemapHallOfFameApiTest`).
+Located in `backend/src/test/java/com/chinesereads/backend/e2e/` (15 test classes). They start the full application on a random port and exercise the real HTTP request/response cycle: `TextApiTest`, `SignupApiTest`, `ProfileApiTest`, `AccountBlockApiTest` (blocking a user ends their live session), `LoginRateLimitApiTest` (login brute-force guard), `PasswordResetApiTest` (+ its rate-limit twin), `UnsubscribeApiTest`, `BlogApiTest`, `HallOfFameApiTest`, `FounderApiTest`, `InfluencerApiTest`, and one per sitemap (`SitemapApiTest`, `SitemapBlogApiTest`, `SitemapHallOfFameApiTest`).
 
 These tests also verify authorization: that unauthenticated requests return 401, that regular users cannot access admin endpoints (403), and that authenticated admin users can perform all operations.
 
@@ -53,8 +53,8 @@ These tests also verify authorization: that unauthenticated requests return 401,
 
 | Category | Count |
 |---|---|
-| Test classes | 44 (25 unit, 2 integration, 14 E2E, 2 web-layer, 1 context load) |
-| **Total backend tests** | **284** |
+| Test classes | 46 (26 unit, 2 integration, 15 E2E, 2 web-layer, 1 context load) |
+| **Total backend tests** | **292** |
 | Failures | 0 |
 
 ---
@@ -99,8 +99,8 @@ Approximate line counts (source only, excluding generated code and dependencies)
 
 | Layer | Files | Approx. lines of code |
 |---|---|---|
-| Backend (Java, main) | 144 | ~12,400 |
-| Backend (Java, tests) | 44 | ~6,500 |
+| Backend (Java, main) | 146 | ~12,600 |
+| Backend (Java, tests) | 46 | ~6,700 |
 | Frontend (TypeScript/HTML/SCSS) | 216 | ~25,900 |
 | Python microservices | 4 | ~1,000 |
-| **Total** | **~400** | **~45,800** |
+| **Total** | **~400** | **~46,100** |

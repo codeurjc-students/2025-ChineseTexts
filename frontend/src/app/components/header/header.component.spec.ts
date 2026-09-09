@@ -80,6 +80,18 @@ describe('HeaderComponent', () => {
     expect(component.messageError).toContain('Incorrect credentials');
   });
 
+  // Test 4b: demasiados intentos fallidos (429) muestra su propio mensaje
+  it('should show the too-many-attempts message when login is rate limited (429)', () => {
+    loginServiceSpy.login.and.returnValue(throwError(() => ({ status: 429 })));
+
+    component.loginEmail = 'test@test.com';
+    component.loginPassword = 'whatever';
+    component.login();
+
+    expect(component.loginPassword).toBe('');
+    expect(component.messageError).toContain('Too many failed attempts');
+  });
+
   // Test 5: Logout llama al servicio y redirige a home
   it('should call logout and navigate to home', () => {
     const navigateSpy = spyOn(router, 'navigate');

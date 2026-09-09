@@ -54,8 +54,8 @@ export class ResetPasswordComponent implements OnInit {
   submit(): void {
     this.passwordError = '';
     this.errorMessage = '';
-    // Mismo mínimo que el formulario de registro (6) + confirmación como en el perfil.
-    if (this.newPassword.length < 6) {
+    // Mismo mínimo que el formulario de registro (8) + confirmación como en el perfil.
+    if (this.newPassword.length < 8) {
       this.passwordError = this.transloco.translate('resetPassword.form.tooShort');
       return;
     }

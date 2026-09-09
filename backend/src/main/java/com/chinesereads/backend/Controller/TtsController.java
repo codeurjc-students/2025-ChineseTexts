@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.chinesereads.backend.Security.ClientIp;
 import com.chinesereads.backend.Model.User;
 import com.chinesereads.backend.Repository.UserRepository;
 import com.chinesereads.backend.Service.AudioUsageService;
@@ -113,13 +114,6 @@ public class TtsController {
      * fall back to the direct remote address when the header is absent.
      */
     private String clientKey(HttpServletRequest request) {
-        String forwarded = request.getHeader("X-Forwarded-For");
-        if (forwarded != null && !forwarded.isBlank()) {
-            // X-Forwarded-For may be a comma-separated list; the first entry is the client.
-            int comma = forwarded.indexOf(',');
-            return (comma > 0 ? forwarded.substring(0, comma) : forwarded).trim();
-        }
-        String remote = request.getRemoteAddr();
-        return remote != null ? remote : "unknown";
+        return ClientIp.of(request);
     }
 }

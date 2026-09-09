@@ -45,6 +45,7 @@ The main goal of ChineseReads is to provide a structured and accessible platform
 | F35 | Self-service "forgot my password" (emailed single-use hashed token, 60-min expiry, rate-limited) | ✅ |
 | F36 | Self-service account deletion (also cancels any active Stripe subscription) | ✅ |
 | F37 | Privacy Policy + GDPR-complete legal pages (legal bases, international transfers, data inventory) | ✅ |
+| F38 | Account security hardening: blocking ends live sessions, login brute-force guard (per IP + per email), 8-character password minimum | ✅ |
 
 ### Pending Functionalities
 

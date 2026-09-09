@@ -62,9 +62,10 @@ public class UserControllerRest {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(Map.of("code", "NAME_REQUIRED", "message", "Name is required"));
         }
-        if (password == null || password.length() < 4) {
+        if (password == null || password.length() < UserService.MIN_PASSWORD_LENGTH) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(Map.of("code", "PASSWORD_TOO_SHORT", "message", "Password must be at least 4 characters"));
+                    .body(Map.of("code", "PASSWORD_TOO_SHORT",
+                            "message", "Password must be at least " + UserService.MIN_PASSWORD_LENGTH + " characters"));
         }
         // GDPR: consent is enforced HERE, not just by the client checkbox. A stale cached
         // page (or any direct API call) that omits it is rejected, so we never create an
@@ -159,6 +160,11 @@ public class UserControllerRest {
         if (newPassword == null || newPassword.isBlank()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(Map.of("message", "New password cannot be empty"));
+        }
+        if (newPassword.length() < UserService.MIN_PASSWORD_LENGTH) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("code", "PASSWORD_TOO_SHORT",
+                            "message", "Password must be at least " + UserService.MIN_PASSWORD_LENGTH + " characters"));
         }
         UserDTO updated = userService.changePassword(principal.getName(), newPassword);
         return ResponseEntity.ok(updated);

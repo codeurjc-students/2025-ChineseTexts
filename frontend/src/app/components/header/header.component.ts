@@ -179,11 +179,14 @@ export class HeaderComponent implements OnInit {
         this.loginEmail = '';
         this.loginPassword = '';
         this.loginAttempted = false;
-        // A blocked account returns 403; anything else is treated as invalid
-        // credentials. Both messages are rendered in the active UI language.
+        // A blocked account returns 403 and a client over its failed-attempt budget
+        // gets 429; anything else is treated as invalid credentials. All messages are
+        // rendered in the active UI language.
         this.messageError = err?.status === 403
           ? this.transloco.translate('header.login.blocked')
-          : this.transloco.translate('header.login.incorrect');
+          : err?.status === 429
+            ? this.transloco.translate('header.login.tooManyAttempts')
+            : this.transloco.translate('header.login.incorrect');
       }
     });
   }

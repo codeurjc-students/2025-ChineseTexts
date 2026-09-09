@@ -34,6 +34,10 @@
 - **Cookie-free analytics.** Google Analytics and the cookie banner were removed; Umami (anonymous aggregates) is the only analytics.
 - **Legal pages refreshed.** The Privacy Policy now covers the full data inventory, legal bases, international transfers and the current email set; Terms describe the real feature set and payment conditions.
 
+## Recently added (September 2026)
+
+- **Account security hardening.** Blocking a user from the admin panel now ends their live session on the next request (the JWT filter checks the flag and expires both cookies). The login has a brute-force guard: only failed attempts count, per client IP and per email, and at the cap it answers 429 until the window expires, even with the right password (limits configurable via `LOGIN_RATE_LIMIT_*`). New passwords must be at least 8 characters, enforced server-side on signup, change and reset; existing accounts are not affected.
+
 ## Known Limitations
 
 - The SSR prerender during build runs without a backend, so DB-backed pages would be baked as empty snapshots; `npm run build` therefore removes those snapshots (`frontend/scripts/remove-ssr-prerender.mjs`) so they never shadow the live SSR (bug fixed in PR #140). "fetch failed" warnings in the build log are expected and harmless.

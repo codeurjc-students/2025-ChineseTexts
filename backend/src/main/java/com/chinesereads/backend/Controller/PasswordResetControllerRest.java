@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.chinesereads.backend.Service.PasswordResetRateLimiterService;
+import com.chinesereads.backend.Security.ClientIp;
 import com.chinesereads.backend.Service.PasswordResetService;
+import com.chinesereads.backend.Service.UserService;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -74,10 +76,10 @@ public class PasswordResetControllerRest {
         String newPassword = body.get("newPassword");
         // Mismo mínimo que el registro (UserControllerRest.registerUser); el
         // frontend aplica su propio mínimo de 6 como en el formulario de signup.
-        if (newPassword == null || newPassword.length() < 4) {
+        if (newPassword == null || newPassword.length() < UserService.MIN_PASSWORD_LENGTH) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(Map.of("code", "PASSWORD_TOO_SHORT",
-                            "message", "Password must be at least 4 characters"));
+                            "message", "Password must be at least " + UserService.MIN_PASSWORD_LENGTH + " characters"));
         }
         boolean done = passwordResetService.resetPassword(token, newPassword);
         if (!done) {
@@ -95,13 +97,6 @@ public class PasswordResetControllerRest {
      * (Mismo helper que TtsController — deliberadamente local a cada controlador.)
      */
     private String clientKey(HttpServletRequest request) {
-        String forwarded = request.getHeader("X-Forwarded-For");
-        if (forwarded != null && !forwarded.isBlank()) {
-            // X-Forwarded-For may be a comma-separated list; the first entry is the client.
-            int comma = forwarded.indexOf(',');
-            return (comma > 0 ? forwarded.substring(0, comma) : forwarded).trim();
-        }
-        String remote = request.getRemoteAddr();
-        return remote != null ? remote : "unknown";
+        return ClientIp.of(request);
     }
 }

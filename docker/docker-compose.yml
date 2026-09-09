@@ -77,6 +77,11 @@ services:
       # hourly cap on anonymous reset requests (each valid one sends an email).
       PASSWORD_RESET_TOKEN_MINUTES: ${PASSWORD_RESET_TOKEN_MINUTES:-60}
       PASSWORD_RESET_RATE_LIMIT_PER_HOUR: ${PASSWORD_RESET_RATE_LIMIT_PER_HOUR:-5}
+      # Login brute-force guard: failed attempts allowed per IP and per email inside
+      # the window (minutes) before the login answers 429.
+      LOGIN_RATE_LIMIT_PER_IP: ${LOGIN_RATE_LIMIT_PER_IP:-30}
+      LOGIN_RATE_LIMIT_PER_EMAIL: ${LOGIN_RATE_LIMIT_PER_EMAIL:-10}
+      LOGIN_RATE_LIMIT_WINDOW_MINUTES: ${LOGIN_RATE_LIMIT_WINDOW_MINUTES:-15}
       # Cost limits and fuses, tunable from docker/.env without touching code (same
       # convention as REMINDER_*: delete the .env line to restore these defaults).
       # The global generation fuse runs at 500/day here (app default is 200) as the

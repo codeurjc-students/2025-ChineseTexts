@@ -184,7 +184,7 @@ export class ProfileComponent implements OnInit {
       return;
     }
 
-    if (this.newPassword.length < 6) {
+    if (this.newPassword.length < 8) {
       this.passwordError = this.transloco.translate('profile.errors.newPasswordTooShort');
       this.passwordStatus = 'error';
       return;

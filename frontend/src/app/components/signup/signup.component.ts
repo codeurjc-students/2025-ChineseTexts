@@ -36,7 +36,7 @@ export class SignupComponent implements OnInit, OnDestroy {
     this.signupForm = this.fb.group({
       name: ['', Validators.required],
       email: ['', [Validators.required, Validators.email, this.strictEmailValidator]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
+      password: ['', [Validators.required, Validators.minLength(8)]],
       language: ['en', Validators.required],
       // GDPR: must actively accept the terms of use to register (unchecked by default).
       acceptTerms: [false, Validators.requiredTrue],

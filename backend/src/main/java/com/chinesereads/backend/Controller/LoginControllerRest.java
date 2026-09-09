@@ -8,6 +8,7 @@ import com.chinesereads.backend.Security.jwt.AuthResponse.Status;
 import com.chinesereads.backend.Security.jwt.LoginRequest;
 import com.chinesereads.backend.Security.jwt.UserLoginService;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import org.springframework.http.ResponseEntity;
@@ -28,8 +29,9 @@ public class LoginControllerRest {
     }
 
     @PostMapping("/login")
-	public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
-		return userLoginService.login(response, loginRequest);
+	public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest loginRequest, HttpServletRequest request,
+			HttpServletResponse response) {
+		return userLoginService.login(request, response, loginRequest);
 	}
 
     @PostMapping("/refresh")

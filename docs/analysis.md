@@ -51,6 +51,7 @@ The backend exposes a RESTful API organized around the following resources:
 - Passwords hashed with **BCrypt**.
 - Self-service password reset: emailed single-use token (only its **SHA-256 hash** is stored), 60-minute expiry, identical response whether the email exists (no account enumeration), per-IP rate limit.
 - Anonymous cost-sensitive endpoints protected by per-IP rate limiting (Caffeine) and per-user quotas.
+- Login brute-force guard: only failed attempts count, per client IP and per email, inside a fixed window (429 at the cap, even with the right password); wrong password and unknown email get the same 401. Minimum password length (8) enforced server-side on signup, change and reset. Blocking a user ends their live session on the next request.
 - Blog content sanitized server-side with a **jsoup safelist** (plus Angular's default `[innerHTML]` sanitizer — double defense).
 - CSRF disabled (stateless JWT architecture).
 - HTTPS enforced via Caddy with automatic Let's Encrypt certificates.
