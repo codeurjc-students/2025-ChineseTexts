@@ -63,7 +63,7 @@ These tests also verify authorization: that unauthenticated requests return 401,
 
 ### Component Tests (Jasmine/Karma)
 
-Located in `frontend/src/app/**/*.spec.ts` (48 spec files covering components, services, pipes and data catalogs).
+Located in `frontend/src/app/**/*.spec.ts` (49 spec files covering components, services, pipes and data catalogs).
 
 Each test file verifies the logic of an Angular component in isolation. HTTP calls are replaced with Jasmine spies or `HttpTestingController`, so no backend is needed. Translations use the real dictionaries via a `translocoTesting()` helper. Representative examples:
 
@@ -101,6 +101,6 @@ Approximate line counts (source only, excluding generated code and dependencies)
 |---|---|---|
 | Backend (Java, main) | 146 | ~12,600 |
 | Backend (Java, tests) | 46 | ~6,700 |
-| Frontend (TypeScript/HTML/SCSS) | 216 | ~25,900 |
+| Frontend (TypeScript/HTML/SCSS) | 220 | ~26,100 |
 | Python microservices | 4 | ~1,000 |
-| **Total** | **~400** | **~46,100** |
+| **Total** | **~410** | **~46,300** |

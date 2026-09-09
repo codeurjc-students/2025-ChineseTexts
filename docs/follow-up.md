@@ -37,6 +37,7 @@
 ## Recently added (September 2026)
 
 - **Account security hardening.** Blocking a user from the admin panel now ends their live session on the next request (the JWT filter checks the flag and expires both cookies). The login has a brute-force guard: only failed attempts count, per client IP and per email, and at the cap it answers 429 until the window expires, even with the right password (limits configurable via `LOGIN_RATE_LIMIT_*`). New passwords must be at least 8 characters, enforced server-side on signup, change and reset; existing accounts are not affected.
+- **Show/hide password button.** Every password field (login, signup, profile and reset) gets an accessible eye button that reveals what was typed — the modern replacement for a "repeat your password" field. The welcome email now tells recipients how to remove an account they did not create.
 
 ## Known Limitations
 

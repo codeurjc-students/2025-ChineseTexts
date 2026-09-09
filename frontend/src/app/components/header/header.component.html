@@ -148,16 +148,20 @@
 
         <div class="mb-3">
           <label for="loginPassword" class="form-label">{{ 'header.login.passwordLabel' | transloco }}</label>
-          <input
-            [(ngModel)]="loginPassword"
-            name="loginPassword"
-            type="password"
-            class="form-control"
-            [class.is-invalid]="loginAttempted && passwordError"
-            id="loginPassword"
-            placeholder="{{ 'header.login.passwordPlaceholder' | transloco }}"
-            (keydown.enter)="login()"
-          />
+          <div class="password-field">
+            <input
+              #loginPasswordInput
+              [(ngModel)]="loginPassword"
+              name="loginPassword"
+              type="password"
+              class="form-control"
+              [class.is-invalid]="loginAttempted && passwordError"
+              id="loginPassword"
+              placeholder="{{ 'header.login.passwordPlaceholder' | transloco }}"
+              (keydown.enter)="login()"
+            />
+            <app-password-toggle [target]="loginPasswordInput"></app-password-toggle>
+          </div>
           <div class="invalid-feedback" *ngIf="loginAttempted && passwordError">
             {{ passwordError }}
           </div>
