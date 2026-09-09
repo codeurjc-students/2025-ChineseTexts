@@ -97,6 +97,18 @@ describe('SignupComponent', () => {
     expect(component.signupForm.get('password')?.errors?.['minlength']).toBeTruthy();
   });
 
+  // Test nuevo: el mensaje de longitud mínima se RENDERIZA (no solo el borde rojo)
+  it('shows the minimum-length message under the password field when too short and touched', () => {
+    const control = component.signupForm.get('password')!;
+    control.setValue('abc');
+    control.markAsTouched();
+    fixture.detectChanges();
+    const feedback = fixture.nativeElement.querySelector('.invalid-feedback') as HTMLElement;
+    expect(feedback).withContext('feedback element must exist').not.toBeNull();
+    expect(feedback.classList).toContain('d-block');
+    expect(feedback.textContent).toContain('at least 8 characters');
+  });
+
   // Test nuevo: password con 8 o más caracteres es válida
   it('should mark password as valid when 8 or more characters', () => {
     component.signupForm.get('password')?.setValue('abc12345');

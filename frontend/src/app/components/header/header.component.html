@@ -162,7 +162,8 @@
             />
             <app-password-toggle [target]="loginPasswordInput"></app-password-toggle>
           </div>
-          <div class="invalid-feedback" *ngIf="loginAttempted && passwordError">
+          <!-- d-block: see signup — the wrapper breaks Bootstrap's sibling rule. -->
+          <div class="invalid-feedback d-block" *ngIf="loginAttempted && passwordError">
             {{ passwordError }}
           </div>
         </div>
