@@ -661,6 +661,7 @@
       "deepseek": "to generate Chinese learning texts and to power the AI tutor (asking about words and context). Only the text you send is processed, no account or personal data.",
       "vision": "to extract text from uploaded images. Images are processed and not stored.",
       "tts": "to generate audio pronunciation of Chinese text, words and sentences. Only the Chinese text to be read aloud is sent, no personal data. Audio is generated on demand and not stored.",
+      "hetzner": "to host the service: the servers ChineseReads runs on and where its database is stored (including your account data and your content) are located in Germany and operated by Hetzner as a data processor, under contract and solely on our behalf; Hetzner does not access the data for its own purposes.",
       "brevo": "to send your account's service emails (the welcome email and the password-reset link when you request one) and, only if you gave your consent, a daily review reminder that includes how many flashcards are due and your reading streak — at most one per day and only when you have reviews pending. Your email address and name are shared with Brevo solely to deliver these messages. You can withdraw the optional consent at any time from your profile or through the one-click unsubscribe link inside the reminder emails themselves (service emails carry no unsubscribe link because they are needed to run your account)."
     },
     "sBases": {
@@ -673,7 +674,7 @@
     },
     "sTransfers": {
       "title": "7. International transfers",
-      "body": "Some of the providers listed in section 5 process data outside the European Economic Area: Stripe and Google Cloud in the United States (both certified under the EU-U.S. Data Privacy Framework), and DeepSeek in China, which only ever receives the text you type into the AI features — never your name, email or any account identifier. Brevo processes data within the European Union. No provider receives more data than described in section 5."
+      "body": "Some of the providers listed in section 5 process data outside the European Economic Area: Stripe and Google Cloud in the United States (both certified under the EU-U.S. Data Privacy Framework), and DeepSeek in China, which only ever receives the text you type into the AI features — never your name, email or any account identifier. Hetzner (hosting, Germany) and Brevo process data within the European Union. No provider receives more data than described in section 5."
     },
     "s6": {
       "title": "8. Data retention",
