@@ -661,6 +661,7 @@
       "deepseek": "para generar textos de aprendizaje en chino y para el tutor IA (preguntar sobre palabras y contexto). Solo se procesa el texto que envías, ningún dato de cuenta ni personal.",
       "vision": "para extraer texto de las imágenes subidas. Las imágenes se procesan y no se almacenan.",
       "tts": "para generar la pronunciación en audio de textos, palabras y frases en chino. Solo se envía el texto en chino que se va a leer en voz alta, ningún dato personal. El audio se genera bajo demanda y no se almacena.",
+      "hetzner": "para alojar el servicio: los servidores en los que funciona ChineseReads y en los que se almacena su base de datos (incluidos tus datos de cuenta y tu contenido) están en Alemania y los opera Hetzner como encargado del tratamiento, bajo contrato y solo por nuestra cuenta; Hetzner no accede a los datos para fines propios.",
       "brevo": "para enviar los correos de servicio de tu cuenta (el de bienvenida y el enlace de restablecer contraseña cuando lo pides) y, solo si diste tu consentimiento, un recordatorio diario de repasos que incluye cuántas tarjetas tienes pendientes y tu racha de lectura — como máximo uno al día y solo cuando tienes repasos pendientes. Tu email y tu nombre se comparten con Brevo únicamente para entregar estos mensajes. Puedes retirar el consentimiento opcional en cualquier momento desde tu perfil o con el enlace de baja en un clic que llevan los propios correos de recordatorio (los correos de servicio no llevan enlace de baja porque son necesarios para gestionar tu cuenta)."
     },
     "sBases": {
@@ -673,7 +674,7 @@
     },
     "sTransfers": {
       "title": "7. Transferencias internacionales",
-      "body": "Algunos de los proveedores de la sección 5 tratan datos fuera del Espacio Económico Europeo: Stripe y Google Cloud en Estados Unidos (ambos certificados en el Marco de Privacidad de Datos UE-EE. UU.), y DeepSeek en China, que solo recibe el texto que escribes en las funciones de IA — nunca tu nombre, tu email ni ningún identificador de tu cuenta. Brevo trata los datos dentro de la Unión Europea. Ningún proveedor recibe más datos de los descritos en la sección 5."
+      "body": "Algunos de los proveedores de la sección 5 tratan datos fuera del Espacio Económico Europeo: Stripe y Google Cloud en Estados Unidos (ambos certificados en el Marco de Privacidad de Datos UE-EE. UU.), y DeepSeek en China, que solo recibe el texto que escribes en las funciones de IA — nunca tu nombre, tu email ni ningún identificador de tu cuenta. Hetzner (alojamiento, Alemania) y Brevo tratan los datos dentro de la Unión Europea. Ningún proveedor recibe más datos de los descritos en la sección 5."
     },
     "s6": {
       "title": "8. Conservación de los datos",
