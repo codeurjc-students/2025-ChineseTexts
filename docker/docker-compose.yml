@@ -110,7 +110,14 @@ services:
       - app-network
 
   db:
-    image: mysql:8.0
+    # Pinned ON PURPOSE to the exact version running in production (checked on the
+    # VPS 24-10-2026). deploy.sh now re-pulls every base image on each deploy, and
+    # MySQL is the one stateful, non-reversible piece: a minor bump upgrades the
+    # data directory in place and MySQL does not support downgrading. The DB is not
+    # reachable from the Internet (no published ports), so its security patches
+    # can wait for a deliberate upgrade: backup -> change this number -> deploy ->
+    # `restore-db.sh --drill` on the pre-deploy dump.
+    image: mysql:8.0.45
     restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: password
