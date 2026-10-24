@@ -23,8 +23,12 @@ services:
   # deploy.sh needs no extra build step — it only force-recreates this container
   # (same stale-mount reason as Caddy). If this container is down, Caddy falls back
   # to the SPA shell: worst case equals the pre-SSR behavior.
+  # Runtime pinned to the current Node LTS line: Node 20 reached end-of-life in
+  # 2026 and no longer receives security releases (e.g. the October 2026 Brotli
+  # RCE / TLS fixes shipped only for 22/24/26). This image only RUNS the already
+  # compiled bundle; the build itself (Angular CLI) keeps using the host Node.
   frontend-ssr:
-    image: node:20-alpine
+    image: node:22-alpine
     restart: unless-stopped
     working_dir: /app
     command: ["node", "server/server.mjs"]
@@ -106,7 +110,14 @@ services:
       - app-network
 
   db:
-    image: mysql:8.0
+    # Pinned ON PURPOSE to the exact version running in production (checked on the
+    # VPS 24-10-2026). deploy.sh now re-pulls every base image on each deploy, and
+    # MySQL is the one stateful, non-reversible piece: a minor bump upgrades the
+    # data directory in place and MySQL does not support downgrading. The DB is not
+    # reachable from the Internet (no published ports), so its security patches
+    # can wait for a deliberate upgrade: backup -> change this number -> deploy ->
+    # `restore-db.sh --drill` on the pre-deploy dump.
+    image: mysql:8.0.45
     restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: password
