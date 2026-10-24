@@ -1,4 +1,8 @@
 flask
 flask-cors
 google-cloud-vision
-pillow
+# Pillow decodes the image uploaded by the user (Image.open), so it must stay on
+# a patched release: 13.0.0 (16-10-2026) fixed critical heap overflows in the
+# JPEG/TIFF/JPEG2000/FlashPix decoders. Pinning the floor also invalidates the
+# cached pip layer so the fix actually reaches the image on the next build.
+pillow>=13.0.0

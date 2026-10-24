@@ -42,9 +42,20 @@ npm install
 npm run build
 cd ../docker
 
-# 2. Build y arrancar todo con Docker Compose
+# 2. Build y arrancar todo con Docker Compose.
+#    `--pull` en el build y el `pull` previo son imprescindibles: sin ellos Docker
+#    reutiliza para siempre las imágenes base ya descargadas (caddy, temurin,
+#    python, node, mysql), así que los parches de seguridad de esas imágenes
+#    nunca llegaban al servidor por mucho que se desplegara. `--ignore-buildable`
+#    descarga solo las imágenes de servicios sin Dockerfile (las demás las
+#    refresca el build). Si la descarga falla (red), `set -e` aborta AQUÍ, antes
+#    de tocar ningún contenedor: lo que está en marcha sigue en marcha.
+echo "Pulling updated base images..."
+docker compose --env-file .env pull --ignore-buildable
+echo "Building services..."
+docker compose --env-file .env build --pull
 echo "Starting all services..."
-docker compose --env-file .env up -d --build
+docker compose --env-file .env up -d
 
 # 2b. Recrear Caddy para que tome el Caddyfile actualizado. El Caddyfile va
 #     bind-mounted como fichero ÚNICO: al hacer `git pull` se sustituye por un
